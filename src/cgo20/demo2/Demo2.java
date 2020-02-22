@@ -13,8 +13,8 @@ import imop.parser.Program;
 public class Demo2 {
 
 	public static void main(String[] args) {
+		args = new String[]{"-f", "runner/cgo-eg/example.c", "-nru"}; 
 		Program.parseNormalizeInput(args);
-
 		/*
 		 * TODO: Code here for 2.B. Print body and predicate of each
 		 * while-statement in the program.

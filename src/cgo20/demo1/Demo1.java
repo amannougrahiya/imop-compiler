@@ -19,6 +19,7 @@ public class Demo1 {
 	 * Driver method for Demo #1.
 	 */
 	public static void main(String[] args) {
+		args = new String[]{"-f", "runner/cgo-eg/example.c", "-nru"}; 
 		/*
 		 * (A) Invoke the correct function here for parsing the file provided
 		 * via the parameter args.
@@ -31,7 +32,7 @@ public class Demo1 {
 		// TODO: Code here for (B)
 
 		/*
-		 * (C) Find and print all those statements that have a given label.
+		 * (C) Find and print all those statements that have a given label, say "test".
 		 */
 		// TODO: Code here for (C)
 

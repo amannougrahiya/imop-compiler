@@ -13,6 +13,7 @@ import imop.parser.Program;
 public class Demo7 {
 
 	public static void main(String[] args) {
+		args = new String[]{"-f", "runner/cgo-eg/example.c", "-nru"}; 
 		Program.parseNormalizeInput(args);
 		/*
 		 * Write barrier: Write a pass that instruments a program such that

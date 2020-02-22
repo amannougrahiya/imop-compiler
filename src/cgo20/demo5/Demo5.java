@@ -15,6 +15,7 @@ import imop.parser.Program;
 public class Demo5 {
 
 	public static void main(String[] args) {
+		args = new String[]{"-f", "runner/cgo-eg/example.c", "-nru"}; 
 		Program.parseNormalizeInput(args);
 		for (ExpressionStatement expStmt : Misc.getInheritedEnclosee(Program.getRoot(), ExpressionStatement.class)) {
 			/*
@@ -24,8 +25,7 @@ public class Demo5 {
 		}
 		/*
 		 * TODO: Write a pass that prints all those expression-statements which
-		 * may
-		 * write to a variable with given name.
+		 * may write to a variable with given name, say "thisVar".
 		 */
 
 		for (ExpressionStatement expStmt1 : Misc.getInheritedEnclosee(Program.getRoot(), ExpressionStatement.class)) {

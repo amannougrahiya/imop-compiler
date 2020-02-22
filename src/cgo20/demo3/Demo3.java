@@ -16,6 +16,7 @@ import imop.parser.Program;
 public class Demo3 {
 
 	public static void main(String[] args) {
+		args = new String[]{"-f", "runner/cgo-eg/example.c", "-nru"}; 
 		Program.parseNormalizeInput(args);
 		for (FunctionDefinition func : Program.getRoot().getInfo().getAllFunctionDefinitions()) {
 			/*
