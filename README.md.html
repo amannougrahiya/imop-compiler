@@ -49,27 +49,32 @@ Note that these scripts already set the <code>-cp</code> and <code>-Djava.librar
 <p class="has-line-data" data-line-start="55" data-line-end="56">Following are the steps to set up the project in Eclipse.</p>
 <ol>
 <li class="has-line-data" data-line-start="56" data-line-end="57">Create a <em>New Java Project</em> in Eclipse, on top of the same location where IMOP’s repository has been cloned. Let’s assume that the name of this project is <code>imop-compiler</code>.</li>
-<li class="has-line-data" data-line-start="57" data-line-end="65">Perform the following changes in the <em>Properties</em> of the project (Right-click on the project’s name in the <em>Package Explore</em>, and select <em>Properties</em>):
+<li class="has-line-data" data-line-start="57" data-line-end="71">Perform the following changes in the <em>Properties</em> of the project (Right-click on the project’s name in the <em>Package Explore</em>, and select <em>Properties</em>):
 <ul>
 <li class="has-line-data" data-line-start="58" data-line-end="59">In <em>Java Build Path</em> --&gt; <em>Libraries</em> --&gt; <em>Add JARs</em>, select all the JARs present at <code>imop-compiler/third-party-tools</code>.</li>
-<li class="has-line-data" data-line-start="59" data-line-end="65">Next, we need to set up a default run-configuration, say <em>Main</em>.<br>
+<li class="has-line-data" data-line-start="59" data-line-end="65">In <em>Java Build Path</em> --&gt; <em>Source</em> --&gt; <em>Excluded</em> --&gt; <em>Edit</em>, add the following source paths for exclusion:<pre><code class="has-line-data" data-line-start="61" data-line-end="65">imop/lib/test
+imop/projects/
+imop/lib/analysis/dataflow/generic/ReversePostOrderWorkList.java
+</code></pre>
+</li>
+<li class="has-line-data" data-line-start="65" data-line-end="71">Next, we need to set up a default run-configuration, say <em>Main</em>.<br>
 If a default configuration doesn’t already exist, create one using <em>Run/Debug Settings</em> --&gt; <em>New…</em> --&gt; <em>Java Application</em> --&gt; <em>Edit Configuration</em>. The <em>Name</em> field can be set as <em>Main</em> (or any other name of your choice). Set <code>imop.Main</code> as the <em>Main class</em>.<br>
 In our default configuration, we need to make the following changes:
 <ul>
-<li class="has-line-data" data-line-start="62" data-line-end="63">In <em>Arguments</em> --&gt; <em>Working Directory</em>, select <em>Other</em>, and set it as <code>${workspace_loc:imop-compiler/bin}</code>.</li>
-<li class="has-line-data" data-line-start="63" data-line-end="65">In <em>Arguments</em> --&gt; <em>VM Arguments</em>, add the following: <code>-ea -Xms512M -Xmx42048M</code> (Feel free to use smaller values for smaller projects.)</li>
+<li class="has-line-data" data-line-start="68" data-line-end="69">In <em>Arguments</em> --&gt; <em>Working Directory</em>, select <em>Other</em>, and set it as <code>${workspace_loc:imop-compiler/bin}</code>.</li>
+<li class="has-line-data" data-line-start="69" data-line-end="71">In <em>Arguments</em> --&gt; <em>VM Arguments</em>, add the following: <code>-ea -Xms512M -Xmx42048M</code> (Feel free to use smaller values for smaller projects.)</li>
 </ul>
 </li>
 </ul>
 </li>
 </ol>
-<h4 class="code-line" data-line-start=65 data-line-end=66 ><a id="Testing_IMOP_via_Eclipse_65"></a>Testing IMOP via Eclipse</h4>
-<p class="has-line-data" data-line-start="66" data-line-end="68">All our sample client codes are written in <code>imop.Main</code>. In <code>Main.main()</code>, parsing and some pre-processing of the input file is done via a call to <code>Program.parseNormalizeInput(args)</code>, where <code>args</code> are the command-line arguments received by <code>main()</code>.<br>
+<h4 class="code-line" data-line-start=71 data-line-end=72 ><a id="Testing_IMOP_via_Eclipse_71"></a>Testing IMOP via Eclipse</h4>
+<p class="has-line-data" data-line-start="72" data-line-end="74">All our sample client codes are written in <code>imop.Main</code>. In <code>Main.main()</code>, parsing and some pre-processing of the input file is done via a call to <code>Program.parseNormalizeInput(args)</code>, where <code>args</code> are the command-line arguments received by <code>main()</code>.<br>
 If we are running our project from within Eclipse, and provide no command-line arguments explicitly (by setting them in the Run/Debug configurations, for example), then IMOP will assume that the file-path string is the one that is returned by <code>Program.defaultCommandLineArguments()</code>. This method also sets the values for various global flags, which are used whenever we are running the project from within the Eclipse IDE (i.e., when no command-line arguments are provided). An explanation of these flags can be found in <strong>Section 1</strong> of the “Part B: Code Review Document”. Further explanation about the method <code>Program.parseAndNormalize(args)</code> can be found in <strong>Section 2</strong> of the same document.</p>
-<p class="has-line-data" data-line-start="69" data-line-end="70">There are various methods in <code>Main.main()</code> that are used to test different components of the proposed optimizations. For more information, kindly check their respective documentations/notes.</p>
-<h4 class="code-line" data-line-start=71 data-line-end=72 ><a id="Verifying_the_output_program_71"></a>Verifying the output program</h4>
-<p class="has-line-data" data-line-start="72" data-line-end="73">For small- and medium-sized programs, the output programs can be manually compared with the original/intermediate state of input program. In case of NPB benchmarks, we test the correctness of an output file by pasting it to the appropriate location within <code>imop-compiler/NPB3.0-omp-C-master</code>, after renaming it to the required <code>*.c</code> file, making it, and then executing it.</p>
-<p class="has-line-data" data-line-start="74" data-line-end="75">Note that all intermediate and final output files are generated at <code>imop-compiler/output-dump</code>.</p>
+<p class="has-line-data" data-line-start="75" data-line-end="76">There are various methods in <code>Main.main()</code> that are used to test different components of the proposed optimizations. For more information, kindly check their respective documentations/notes.</p>
+<h4 class="code-line" data-line-start=77 data-line-end=78 ><a id="Verifying_the_output_program_77"></a>Verifying the output program</h4>
+<p class="has-line-data" data-line-start="78" data-line-end="79">For small- and medium-sized programs, the output programs can be manually compared with the original/intermediate state of input program. In case of NPB benchmarks, we test the correctness of an output file by pasting it to the appropriate location within <code>imop-compiler/NPB3.0-omp-C-master</code>, after renaming it to the required <code>*.c</code> file, making it, and then executing it.</p>
+<p class="has-line-data" data-line-start="80" data-line-end="81">Note that all intermediate and final output files are generated at <code>imop-compiler/output-dump</code>.</p>
 <hr>
 <hr>
 
