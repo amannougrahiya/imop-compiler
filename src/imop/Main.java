@@ -409,6 +409,8 @@ public class Main {
 	 * Given a label, print all statements in the program with that label.
 	 */
 	public static void demo1(String label) {
+		
+		
 		//Get statement with label "L1"
 		for (FunctionDefinition func : Program.getRoot().getInfo().getAllFunctionDefinitions()) {
 			Statement stmt = func.getInfo().getStatementWithLabel(label);
