@@ -1,0 +1,49 @@
+digraph graph403930795 {
+	compound=true;
+	edge[color=blue];
+	subgraph cluster1920147706 {
+		compound=true;
+		style=dotted;
+		label="main()";
+		node691404076[label="B_FuDe", shape="triangle"];
+		node1057064084[label="E_FuDe", shape="invtriangle"];
+		subgraph cluster1021592569 {
+			compound=true;
+			style=dotted;
+			label="CompoundStatement";
+			node1476116591[label="B_CoSt", shape="triangle"];
+			node1369541409[label="E_CoSt", shape="invtriangle"];
+			node1656197285[label="int x = 10;"];
+			subgraph cluster2085813377 {
+				compound=true;
+				style=dotted;
+				label="CompoundStatement";
+				node1965269980[label="B_CoSt", shape="triangle"];
+				node671536858[label="E_CoSt", shape="invtriangle"];
+				node1986677191[label="int x = 20;"];
+				subgraph cluster498537855 {
+					compound=true;
+					style=dotted;
+					label="CompoundStatement";
+					node1977776214[label="B_CoSt", shape="triangle"];
+					node1808584758[label="E_CoSt", shape="invtriangle"];
+					node1330415865[label="int x = 30;"];
+				}
+				node1786077314[label="x = 40;"];
+			}
+			node213095762[label="x = 50;"];
+		}
+	}
+	node691404076 -> node1476116591[tailport=s, headport=n, weight=8, lhead=cluster1021592569];
+	node1476116591 -> node1656197285[tailport=s, headport=n, weight=8];
+	node1656197285 -> node1965269980[lhead=cluster2085813377, weight=8, tailport=s, headport=n];
+	node1965269980 -> node1986677191[tailport=s, headport=n, weight=8];
+	node1986677191 -> node1977776214[lhead=cluster498537855, weight=8, tailport=s, headport=n];
+	node1977776214 -> node1330415865[tailport=s, headport=n, weight=8];
+	node1330415865 -> node1808584758[weight=8, tailport=s, headport=n];
+	node1808584758 -> node1786077314[tailport=s, headport=n, weight=8, ltail=cluster498537855];
+	node1786077314 -> node671536858[weight=8, tailport=s, headport=n];
+	node671536858 -> node213095762[tailport=s, headport=n, weight=8, ltail=cluster2085813377];
+	node213095762 -> node1369541409[weight=8, tailport=s, headport=n];
+	node1369541409 -> node1057064084[tailport=s, headport=n, weight=8, ltail=cluster1021592569];
+}

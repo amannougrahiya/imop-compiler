@@ -1,0 +1,67 @@
+digraph graph1797112335 {
+	compound=true;
+	edge[color=blue];
+	subgraph cluster1175662879 {
+		compound=true;
+		style=dotted;
+		label="main()";
+		node1698746141[label="B_FuDe", shape="triangle"];
+		node248050873[label="E_FuDe", shape="invtriangle"];
+		subgraph cluster197149397 {
+			compound=true;
+			style=dotted;
+			label="CompoundStatement";
+			node1417941371[label="B_CoSt", shape="triangle"];
+			node937366737[label="E_CoSt", shape="invtriangle"];
+			node2130400175[label="int x = 10;"];
+			subgraph cluster1998876751 {
+				compound=true;
+				style=dotted;
+				label="ParallelConstruct";
+				node64989209[label="B_PaCo", shape="triangle"];
+				node1290358063[label="E_PaCo", shape="invtriangle"];
+				subgraph cluster1756039478 {
+					compound=true;
+					style=dotted;
+					label="CompoundStatement";
+					node1020897892[label="B_CoSt", shape="triangle"];
+					node1119371910[label="E_CoSt", shape="invtriangle"];
+					node1144979403[label="int localX = 9;"];
+					subgraph cluster1961667779 {
+						compound=true;
+						style=dotted;
+						label="TaskConstruct";
+						node85435056[label="B_TaCo", shape="triangle"];
+						node87784678[label="E_TaCo", shape="invtriangle"];
+						subgraph cluster910691117 {
+							compound=true;
+							style=dotted;
+							label="CompoundStatement";
+							node668152723[label="B_CoSt", shape="triangle"];
+							node526981115[label="E_CoSt", shape="invtriangle"];
+							node1105958076[label="localX = x;"];
+						}
+					}
+					node931987151[label="localX = 11;"];
+				}
+			}
+			node159190022[label="localX = 12;"];
+		}
+	}
+	node1698746141 -> node1417941371[tailport=s, headport=n, weight=8, lhead=cluster197149397];
+	node1417941371 -> node2130400175[tailport=s, headport=n, weight=8];
+	node2130400175 -> node64989209[lhead=cluster1998876751, weight=8, tailport=s, headport=n];
+	node64989209 -> node1020897892[tailport=s, headport=n, weight=8, lhead=cluster1756039478];
+	node1020897892 -> node1144979403[tailport=s, headport=n, weight=8];
+	node1144979403 -> node85435056[lhead=cluster1961667779, weight=8, tailport=s, headport=n];
+	node85435056 -> node668152723[tailport=s, headport=n, weight=8, lhead=cluster910691117];
+	node668152723 -> node1105958076[tailport=s, headport=n, weight=8];
+	node1105958076 -> node526981115[weight=8, tailport=s, headport=n];
+	node526981115 -> node87784678[tailport=s, headport=n, weight=8, ltail=cluster910691117];
+	node87784678 -> node931987151[tailport=s, headport=n, weight=8, ltail=cluster1961667779];
+	node931987151 -> node1119371910[weight=8, tailport=s, headport=n];
+	node1119371910 -> node1290358063[tailport=s, headport=n, weight=8, ltail=cluster1756039478];
+	node1290358063 -> node159190022[tailport=s, headport=n, weight=8, ltail=cluster1998876751];
+	node159190022 -> node937366737[weight=8, tailport=s, headport=n];
+	node937366737 -> node248050873[tailport=s, headport=n, weight=8, ltail=cluster197149397];
+}

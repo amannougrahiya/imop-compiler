@@ -1,0 +1,8 @@
+bt.S:  Mop/s total     =                  2145.99
+cg.S:  Mop/s total     =                   677.14
+ep.S:  Mop/s total     =                    90.23
+ft.S:  Mop/s total     =                  3178.57
+is.S:  Mop/s total     =                   516.03
+lu.S:  Mop/s total     =                  2677.55
+mg.S:  Mop/s total     =                   685.37
+sp.S:  Mop/s total     =                    26.47

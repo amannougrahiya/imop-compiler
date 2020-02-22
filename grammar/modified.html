@@ -1,0 +1,4006 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+<HEAD>
+	<META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=utf-8">
+	<TITLE>BNF for C with OpenMP</TITLE>
+	<META NAME="GENERATOR" CONTENT="OpenOffice 4.1.3  (Unix)">
+	<META NAME="CREATED" CONTENT="0;0">
+	<META NAME="CHANGEDBY" CONTENT="Aman Nougrahiya">
+	<META NAME="CHANGED" CONTENT="20170810;19130800">
+</HEAD>
+<BODY LANG="en-IN" DIR="LTR" vlink=blue>
+<H1 ALIGN=CENTER>BNF for C with OpenMP</H1>
+<P>Color Code:</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;<SPAN STYLE="background: #ffff00">CFG
+Non-Leaf Node</SPAN></P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;<SPAN STYLE="background: #adff2f">CFG Leaf
+Node</SPAN></P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;<SPAN STYLE="background: #ffa500">Inheritance
+hierarchy's superclass Node</SPAN></P>
+<TABLE WIDTH=832 BORDER=0 CELLPADDING=2 CELLSPACING=0>
+	<COL WIDTH=234>
+	<COL WIDTH=38>
+	<COL WIDTH=548>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod1"></A>TranslationUnit</P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT>( <A HREF="#prod2">ElementsOfTranslation</A> )+</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod2"></A>ElementsOfTranslation</P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT><A HREF="#prod3">ExternalDeclaration</A></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234></TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>|</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT><A HREF="#prod4">UnknownCpp</A></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234></TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>|</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT><A HREF="#prod5">UnknownPragma</A></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod3"></A>ExternalDeclaration</P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT><A HREF="#prod6">Declaration</A></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234></TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>|</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT><A HREF="#prod7">FunctionDefinition</A></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234></TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>|</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT><A HREF="#prod8">DeclareReductionDirective</A></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234></TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>|</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT><A HREF="#prod9">ThreadPrivateDirective</A></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod7"></A><SPAN STYLE="background: #ffff00">FunctionDefinition</SPAN></P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT>( <A HREF="#prod10">DeclarationSpecifiers</A> )?
+			<A HREF="#prod11">Declarator</A> ( <A HREF="#prod12">DeclarationList</A>
+			)? <A HREF="#prod13">CompoundStatement</A></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod6"></A><SPAN STYLE="background: #adff2f">Declaration</SPAN></P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT><A HREF="#prod10">DeclarationSpecifiers</A> (
+			<A HREF="#prod14">InitDeclaratorList</A> )? &quot;;&quot;</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod12"></A>DeclarationList</P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT>( <A HREF="#prod6">Declaration</A> )+</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod10"></A>DeclarationSpecifiers</P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT>( <A HREF="#prod15">ADeclarationSpecifier</A> )+</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod15"></A>ADeclarationSpecifier</P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT><A HREF="#prod16">StorageClassSpecifier</A></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234></TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>|</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT><A HREF="#prod17">TypeSpecifier</A></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234></TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>|</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT><A HREF="#prod18">TypeQualifier</A></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod16"></A>StorageClassSpecifier</P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT>&lt;AUTO&gt;</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234></TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>|</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT>&lt;REGISTER&gt;</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234></TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>|</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT>&lt;STATIC&gt;</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234></TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>|</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT>&lt;EXTERN&gt;</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234></TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>|</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT>&lt;TYPEDEF&gt;</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod17"></A>TypeSpecifier</P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT>( &lt;VOID&gt; | &lt;CHAR&gt; | &lt;SHORT&gt; |
+			&lt;INT&gt; | &lt;LONG&gt; | &lt;FLOAT&gt; | &lt;DOUBLE&gt; |
+			&lt;SIGNED&gt; | &lt;UNSIGNED&gt; | <A HREF="#prod19">StructOrUnionSpecifier</A>
+			| <A HREF="#prod20">EnumSpecifier</A> | <A HREF="#prod21">TypedefName</A>
+			)</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod18"></A>TypeQualifier</P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT>&lt;RESTRICT&gt;</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234></TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>|</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT>&lt;CONST&gt;</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234></TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>|</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT>&lt;VOLATILE&gt;</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234></TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>|</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT>&lt;INLINE&gt;</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234></TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>|</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT>&lt;CCONST&gt;</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234></TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>|</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT>&lt;CINLINED&gt;</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234></TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>|</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT>&lt;CINLINED2&gt;</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234></TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>|</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT>&lt;CSIGNED&gt;</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234></TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>|</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT>&lt;CSIGNED2&gt;</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod19"></A>StructOrUnionSpecifier</P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT>( <A HREF="#prod22">StructOrUnionSpecifierWithList</A>
+			| <A HREF="#prod23">StructOrUnionSpecifierWithId</A> )</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod22"></A>StructOrUnionSpecifierWithList</P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT><A HREF="#prod24">StructOrUnion</A> ( &lt;IDENTIFIER&gt;
+			)? &quot;{&quot; <A HREF="#prod25">StructDeclarationList</A> &quot;}&quot;</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod23"></A>StructOrUnionSpecifierWithId</P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT><A HREF="#prod24">StructOrUnion</A> &lt;IDENTIFIER&gt;</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod24"></A>StructOrUnion</P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT>&lt;STRUCT&gt;</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234></TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>|</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT>&lt;UNION&gt;</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod25"></A>StructDeclarationList</P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT>( <A HREF="#prod26">StructDeclaration</A> )+</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod14"></A>InitDeclaratorList</P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT><A HREF="#prod27">InitDeclarator</A> ( &quot;,&quot;
+			<A HREF="#prod27">InitDeclarator</A> )*</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod27"></A>InitDeclarator</P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT><A HREF="#prod11">Declarator</A> ( &quot;=&quot;
+			<A HREF="#prod28">Initializer</A> )?</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod26"></A>StructDeclaration</P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT><A HREF="#prod29">SpecifierQualifierList</A>
+			<A HREF="#prod30">StructDeclaratorList</A> &quot;;&quot;</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod29"></A>SpecifierQualifierList</P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT>( <A HREF="#prod31">ASpecifierQualifier</A> )+</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod31"></A>ASpecifierQualifier</P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT><A HREF="#prod17">TypeSpecifier</A></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234></TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>|</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT><A HREF="#prod18">TypeQualifier</A></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod30"></A>StructDeclaratorList</P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT><A HREF="#prod32">StructDeclarator</A> ( &quot;,&quot;
+			<A HREF="#prod32">StructDeclarator</A> )*</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod32"></A>StructDeclarator</P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT><A HREF="#prod33">StructDeclaratorWithDeclarator</A></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234></TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>|</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT><A HREF="#prod34">StructDeclaratorWithBitField</A></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod33"></A>StructDeclaratorWithDeclarator</P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT><A HREF="#prod11">Declarator</A> ( &quot;:&quot;
+			<A HREF="#prod35">ConstantExpression</A> )?</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod34"></A>StructDeclaratorWithBitField</P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT>&quot;:&quot; <A HREF="#prod35">ConstantExpression</A></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod20"></A>EnumSpecifier</P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT><A HREF="#prod36">EnumSpecifierWithList</A></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234></TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>|</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT><A HREF="#prod37">EnumSpecifierWithId</A></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod36"></A>EnumSpecifierWithList</P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT>&lt;ENUM&gt; ( &lt;IDENTIFIER&gt; )? &quot;{&quot;
+			<A HREF="#prod38">EnumeratorList</A> &quot;}&quot;</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod37"></A>EnumSpecifierWithId</P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT>&lt;ENUM&gt; &lt;IDENTIFIER&gt;</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod38"></A>EnumeratorList</P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT><A HREF="#prod39">Enumerator</A> ( &quot;,&quot;
+			<A HREF="#prod39">Enumerator</A> )*</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod39"></A>Enumerator</P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT>&lt;IDENTIFIER&gt; ( &quot;=&quot;
+			<A HREF="#prod35">ConstantExpression</A> )?</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod11"></A>Declarator</P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT>( <A HREF="#prod40">Pointer</A> )? <A HREF="#prod41">DirectDeclarator</A></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod41"></A>DirectDeclarator</P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT><A HREF="#prod42">IdentifierOrDeclarator</A>
+			<A HREF="#prod43">DeclaratorOpList</A></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod43"></A>DeclaratorOpList</P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT>( <A HREF="#prod44">ADeclaratorOp</A> )*</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod44"></A>ADeclaratorOp</P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT><A HREF="#prod45">DimensionSize</A></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234></TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>|</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT><A HREF="#prod46">ParameterTypeListClosed</A></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234></TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>|</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT><A HREF="#prod47">OldParameterListClosed</A></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod45"></A>DimensionSize</P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT>&quot;[&quot; ( <A HREF="#prod35">ConstantExpression</A>
+			)? &quot;]&quot;</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod46"></A>ParameterTypeListClosed</P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT>&quot;(&quot; ( <A HREF="#prod48">ParameterTypeList</A>
+			)? &quot;)&quot;</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod47"></A>OldParameterListClosed</P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT>&quot;(&quot; ( <A HREF="#prod49">OldParameterList</A>
+			)? &quot;)&quot;</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod42"></A>IdentifierOrDeclarator</P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT>&lt;IDENTIFIER&gt;</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234></TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>|</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT>&quot;(&quot; <A HREF="#prod11">Declarator</A> &quot;)&quot;</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod40"></A>Pointer</P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT>( &quot;*&quot; | &quot;^&quot; ) (
+			<A HREF="#prod50">TypeQualifierList</A> )? ( <A HREF="#prod40">Pointer</A>
+			)?</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod50"></A>TypeQualifierList</P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT>( <A HREF="#prod18">TypeQualifier</A> )+</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod48"></A>ParameterTypeList</P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT><A HREF="#prod51">ParameterList</A> ( &quot;,&quot;
+			&quot;...&quot; )?</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod51"></A>ParameterList</P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT><A HREF="#prod52">ParameterDeclaration</A> ( &quot;,&quot;
+			<A HREF="#prod52">ParameterDeclaration</A> )*</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod52"></A><SPAN STYLE="background: #adff2f">ParameterDeclaration</SPAN></P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT><A HREF="#prod10">DeclarationSpecifiers</A>
+			<A HREF="#prod53">ParameterAbstraction</A></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod53"></A>ParameterAbstraction</P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT><A HREF="#prod11">Declarator</A></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234></TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>|</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT><A HREF="#prod54">AbstractOptionalDeclarator</A></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod54"></A>AbstractOptionalDeclarator</P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT>( <A HREF="#prod55">AbstractDeclarator</A> )?</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod49"></A>OldParameterList</P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT>&lt;IDENTIFIER&gt; ( &quot;,&quot; &lt;IDENTIFIER&gt;
+			)*</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod28"></A>Initializer</P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT><A HREF="#prod56">AssignmentExpression</A></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234></TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>|</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT><A HREF="#prod57">ArrayInitializer</A></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod57"></A>ArrayInitializer</P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT>&quot;{&quot; <A HREF="#prod58">InitializerList</A>
+			( &quot;,&quot; )? &quot;}&quot;</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod58"></A>InitializerList</P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT><A HREF="#prod28">Initializer</A> ( &quot;,&quot;
+			<A HREF="#prod28">Initializer</A> )*</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod59"></A>TypeName</P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT><A HREF="#prod29">SpecifierQualifierList</A> (
+			<A HREF="#prod55">AbstractDeclarator</A> )?</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod55"></A>AbstractDeclarator</P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT><A HREF="#prod60">AbstractDeclaratorWithPointer</A></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234></TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>|</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT><A HREF="#prod61">DirectAbstractDeclarator</A></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod60"></A>AbstractDeclaratorWithPointer</P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT><A HREF="#prod40">Pointer</A> (
+			<A HREF="#prod61">DirectAbstractDeclarator</A> )?</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod61"></A>DirectAbstractDeclarator</P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT><A HREF="#prod62">AbstractDimensionOrParameter</A>
+			<A HREF="#prod63">DimensionOrParameterList</A></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod62"></A>AbstractDimensionOrParameter</P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT><A HREF="#prod64">AbstractDeclaratorClosed</A></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234></TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>|</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT><A HREF="#prod45">DimensionSize</A></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234></TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>|</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT><A HREF="#prod46">ParameterTypeListClosed</A></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod64"></A>AbstractDeclaratorClosed</P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT>&quot;(&quot; <A HREF="#prod55">AbstractDeclarator</A>
+			&quot;)&quot;</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod63"></A>DimensionOrParameterList</P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT>( <A HREF="#prod65">ADimensionOrParameter</A> )*</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod65"></A>ADimensionOrParameter</P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT><A HREF="#prod45">DimensionSize</A></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234></TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>|</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT><A HREF="#prod46">ParameterTypeListClosed</A></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod21"></A>TypedefName</P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT>&lt;IDENTIFIER&gt;</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod66"></A><SPAN STYLE="background: #ffa500">Statement</SPAN></P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT><A HREF="#prod67">LabeledStatement</A></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234></TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>|</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT><A HREF="#prod68">ExpressionStatement</A></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234></TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>|</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT><A HREF="#prod227"><SPAN STYLE="background: #00ffff">CallStatement</SPAN></A></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234></TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>|</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT><A HREF="#prod13">CompoundStatement</A></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234></TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>|</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT><A HREF="#prod69">SelectionStatement</A></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234></TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>|</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT><A HREF="#prod70">IterationStatement</A></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234></TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>|</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT><A HREF="#prod71">JumpStatement</A></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234></TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>|</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT><A HREF="#prod5">UnknownPragma</A></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234></TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>|</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT><A HREF="#prod72">OmpConstruct</A></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234></TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>|</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT><A HREF="#prod73">OmpDirective</A></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234></TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>|</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT><A HREF="#prod4">UnknownCpp</A></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod4"></A><SPAN STYLE="background: #adff2f">UnknownCpp</SPAN></P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT>&quot;#&quot; &lt;UNKNOWN_CPP&gt;</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod74"></A>OmpEol</P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT>&lt;OMP_CR&gt;</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234></TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>|</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT>&lt;OMP_NL&gt;</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod72"></A><SPAN STYLE="background: #ffa500">OmpConstruct</SPAN></P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT><A HREF="#prod75">ParallelConstruct</A></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234></TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>|</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT><A HREF="#prod76">ForConstruct</A></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234></TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>|</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT><A HREF="#prod77">SectionsConstruct</A></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234></TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>|</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT><A HREF="#prod78">SingleConstruct</A></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234></TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>|</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT><A HREF="#prod79">ParallelForConstruct</A></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234></TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>|</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT><A HREF="#prod80">ParallelSectionsConstruct</A></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234></TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>|</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT><A HREF="#prod81">TaskConstruct</A></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234></TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>|</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT><A HREF="#prod82">MasterConstruct</A></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234></TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>|</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT><A HREF="#prod83">CriticalConstruct</A></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234></TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>|</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT><A HREF="#prod84">AtomicConstruct</A></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234></TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>|</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT><A HREF="#prod85">OrderedConstruct</A></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod73"></A><SPAN STYLE="background: #ffa500">OmpDirective</SPAN></P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT><A HREF="#prod86">BarrierDirective</A></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234></TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>|</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT><A HREF="#prod87">TaskwaitDirective</A></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234></TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>|</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT><A HREF="#prod88">TaskyieldDirective</A></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234></TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>|</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT><A HREF="#prod89">FlushDirective</A></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod75"></A><SPAN STYLE="background: #ffff00">Parallel</SPAN><SPAN STYLE="background: #ffa500">Construct</SPAN></P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT><A HREF="#prod90">OmpPragma</A> <A HREF="#prod91">ParallelDirective</A>
+			<A HREF="#prod66">Statement</A></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod90"></A>OmpPragma</P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT>&quot;#&quot; &lt;PRAGMA&gt; &lt;OMP&gt;</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod5"></A><SPAN STYLE="background: #adff2f">UnknownPragma</SPAN></P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT>&quot;#&quot; &lt;PRAGMA&gt; &lt;UNKNOWN_CPP&gt;</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod91"></A>ParallelDirective</P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT>&lt;PARALLEL&gt; <A HREF="#prod92">UniqueParallelOrDataClauseList</A>
+			<A HREF="#prod74">OmpEol</A></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod92"></A>UniqueParallelOrDataClauseList</P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT>( <A HREF="#prod93">AUniqueParallelOrDataClause</A>
+			)*</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod93"></A>AUniqueParallelOrDataClause</P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT><A HREF="#prod94">UniqueParallelClause</A></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234></TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>|</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT><A HREF="#prod95">DataClause</A></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod94"></A>UniqueParallelClause</P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT><A HREF="#prod96">IfClause</A></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234></TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>|</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT><A HREF="#prod97">NumThreadsClause</A></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod96"></A><SPAN STYLE="background: #adff2f">IfClause</SPAN></P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT>&lt;IF&gt; &quot;(&quot; <A HREF="#prod98">Expression</A>
+			&quot;)&quot;</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod97"></A><SPAN STYLE="background: #adff2f">NumThreadsClause</SPAN></P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT>&lt;NUM_THREADS&gt; &quot;(&quot; <A HREF="#prod98">Expression</A>
+			&quot;)&quot;</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod95"></A>DataClause</P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT><A HREF="#prod99">OmpPrivateClause</A></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234></TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>|</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT><A HREF="#prod100">OmpFirstPrivateClause</A></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234></TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>|</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT><A HREF="#prod101">OmpLastPrivateClause</A></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234></TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>|</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT><A HREF="#prod102">OmpSharedClause</A></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234></TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>|</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT><A HREF="#prod103">OmpCopyinClause</A></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234></TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>|</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT><A HREF="#prod104">OmpDfltSharedClause</A></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234></TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>|</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT><A HREF="#prod105">OmpDfltNoneClause</A></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234></TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>|</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT><A HREF="#prod106">OmpReductionClause</A></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod99"></A>OmpPrivateClause</P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT>&lt;PRIVATE&gt; &quot;(&quot; <A HREF="#prod107">VariableList</A>
+			&quot;)&quot;</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod100"></A>OmpFirstPrivateClause</P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT>&lt;FIRSTPRIVATE&gt; &quot;(&quot; <A HREF="#prod107">VariableList</A>
+			&quot;)&quot;</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod101"></A>OmpLastPrivateClause</P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT>&lt;LASTPRIVATE&gt; &quot;(&quot; <A HREF="#prod107">VariableList</A>
+			&quot;)&quot;</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod102"></A>OmpSharedClause</P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT>&lt;SHARED&gt; &quot;(&quot; <A HREF="#prod107">VariableList</A>
+			&quot;)&quot;</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod103"></A>OmpCopyinClause</P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT>&lt;COPYIN&gt; &quot;(&quot; <A HREF="#prod107">VariableList</A>
+			&quot;)&quot;</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod104"></A>OmpDfltSharedClause</P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT>&lt;DFLT&gt; &quot;(&quot; &lt;SHARED&gt; &quot;)&quot;</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod105"></A>OmpDfltNoneClause</P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT>&lt;DFLT&gt; &quot;(&quot; &lt;NONE&gt; &quot;)&quot;</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod106"></A>OmpReductionClause</P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT>&lt;REDUCTION&gt; &quot;(&quot; <A HREF="#prod108">ReductionOp</A>
+			&quot;:&quot; <A HREF="#prod107">VariableList</A> &quot;)&quot;</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod76"></A><SPAN STYLE="background: #ffff00">ForConstruct</SPAN></P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT><A HREF="#prod90">OmpPragma</A> <A HREF="#prod109">ForDirective</A>
+			<A HREF="#prod110">OmpForHeader</A> <A HREF="#prod66">Statement</A></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod109"></A>ForDirective</P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT>&lt;FOR&gt; <A HREF="#prod111">UniqueForOrDataOrNowaitClauseList</A>
+			<A HREF="#prod74">OmpEol</A></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod111"></A>UniqueForOrDataOrNowaitClauseList</P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT>( <A HREF="#prod112">AUniqueForOrDataOrNowaitClause</A>
+			)*</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod112"></A>AUniqueForOrDataOrNowaitClause</P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT><A HREF="#prod113">UniqueForClause</A></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234></TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>|</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT><A HREF="#prod95">DataClause</A></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234></TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>|</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT><A HREF="#prod114">NowaitClause</A></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod114"></A>NowaitClause</P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT>&lt;NOWAIT&gt;</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod113"></A>UniqueForClause</P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT>&lt;ORDERED&gt;</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234></TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>|</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT><A HREF="#prod115">UniqueForClauseSchedule</A></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234></TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>|</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT><A HREF="#prod116">UniqueForCollapse</A></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod116"></A>UniqueForCollapse</P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT>&lt;COLLAPSE&gt; &quot;(&quot; <A HREF="#prod98">Expression</A>
+			&quot;)&quot;</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod115"></A>UniqueForClauseSchedule</P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT>&lt;SCHEDULE&gt; &quot;(&quot; <A HREF="#prod117">ScheduleKind</A>
+			( &quot;,&quot; <A HREF="#prod98">Expression</A> )? &quot;)&quot;</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod117"></A>ScheduleKind</P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT>&lt;STATIC&gt;</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234></TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>|</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT>&lt;DYNAMIC&gt;</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234></TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>|</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT>&lt;GUIDED&gt;</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234></TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>|</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT>&lt;RUNTIME&gt;</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod110"></A>OmpForHeader</P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT>&lt;FOR&gt; &quot;(&quot; <A HREF="#prod118">OmpForInitExpression</A>
+			&quot;;&quot; <A HREF="#prod119">OmpForCondition</A> &quot;;&quot;
+			<A HREF="#prod120">OmpForReinitExpression</A> &quot;)&quot;</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod118"></A><SPAN STYLE="background: #adff2f">OmpForInitExpression</SPAN></P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT>&lt;IDENTIFIER&gt; &quot;=&quot; <A HREF="#prod98">Expression</A></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod119"></A><SPAN STYLE="background: #adff2f">OmpForCondition</SPAN></P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT><A HREF="#prod121">OmpForLTCondition</A></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234></TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>|</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT><A HREF="#prod122">OmpForLECondition</A></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234></TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>|</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT><A HREF="#prod123">OmpForGTCondition</A></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234></TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>|</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT><A HREF="#prod124">OmpForGECondition</A></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod121"></A>OmpForLTCondition</P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT>&lt;IDENTIFIER&gt; &quot;&lt;&quot; <A HREF="#prod98">Expression</A></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod122"></A>OmpForLECondition</P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT>&lt;IDENTIFIER&gt; &quot;&lt;=&quot; <A HREF="#prod98">Expression</A></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod123"></A>OmpForGTCondition</P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT>&lt;IDENTIFIER&gt; &quot;&gt;&quot; <A HREF="#prod98">Expression</A></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod124"></A>OmpForGECondition</P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT>&lt;IDENTIFIER&gt; &quot;&gt;=&quot; <A HREF="#prod98">Expression</A></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod120"></A><SPAN STYLE="background: #adff2f">OmpForReinit</SPAN><SPAN STYLE="background: #ffa500">Expression</SPAN></P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT><A HREF="#prod125">PostIncrementId</A></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234></TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>|</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT><A HREF="#prod126">PostDecrementId</A></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234></TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>|</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT><A HREF="#prod127">PreIncrementId</A></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234></TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>|</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT><A HREF="#prod128">PreDecrementId</A></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234></TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>|</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT><A HREF="#prod129">ShortAssignPlus</A></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234></TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>|</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT><A HREF="#prod130">ShortAssignMinus</A></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234></TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>|</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT><A HREF="#prod131">OmpForAdditive</A></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234></TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>|</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT><A HREF="#prod132">OmpForSubtractive</A></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234></TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>|</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT><A HREF="#prod133">OmpForMultiplicative</A></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod125"></A>PostIncrementId</P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT>&lt;IDENTIFIER&gt; &quot;++&quot;</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod126"></A>PostDecrementId</P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT>&lt;IDENTIFIER&gt; &quot;--&quot;</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod127"></A>PreIncrementId</P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT>&quot;++&quot; &lt;IDENTIFIER&gt;</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod128"></A>PreDecrementId</P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT>&quot;--&quot; &lt;IDENTIFIER&gt;</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod129"></A>ShortAssignPlus</P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT>&lt;IDENTIFIER&gt; &quot;+=&quot; <A HREF="#prod98">Expression</A></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod130"></A>ShortAssignMinus</P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT>&lt;IDENTIFIER&gt; &quot;-=&quot; <A HREF="#prod98">Expression</A></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod131"></A>OmpForAdditive</P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT>&lt;IDENTIFIER&gt; &quot;=&quot; &lt;IDENTIFIER&gt;
+			&quot;+&quot; <A HREF="#prod134">AdditiveExpression</A></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod132"></A>OmpForSubtractive</P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT>&lt;IDENTIFIER&gt; &quot;=&quot; &lt;IDENTIFIER&gt;
+			&quot;-&quot; <A HREF="#prod134">AdditiveExpression</A></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod133"></A>OmpForMultiplicative</P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT>&lt;IDENTIFIER&gt; &quot;=&quot;
+			<A HREF="#prod135">MultiplicativeExpression</A> &quot;+&quot;
+			&lt;IDENTIFIER&gt;</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod77"></A><SPAN STYLE="background: #ffff00">SectionsConstruct</SPAN></P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT><A HREF="#prod90">OmpPragma</A> &lt;SECTIONS&gt;
+			<A HREF="#prod136">NowaitDataClauseList</A> <A HREF="#prod74">OmpEol</A>
+			<A HREF="#prod137">SectionsScope</A></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod136"></A>NowaitDataClauseList</P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT>( <A HREF="#prod138">ANowaitDataClause</A> )*</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod138"></A>ANowaitDataClause</P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT><A HREF="#prod114">NowaitClause</A></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234></TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>|</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT><A HREF="#prod95">DataClause</A></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod137"></A>SectionsScope</P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT>&quot;{&quot; ( <A HREF="#prod66">Statement</A> )? (
+			<A HREF="#prod139">ASection</A> )* &quot;}&quot;</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod139"></A>ASection</P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT><A HREF="#prod90">OmpPragma</A> &lt;SECTION&gt;
+			<A HREF="#prod74">OmpEol</A> <A HREF="#prod66">Statement</A></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod78"></A><SPAN STYLE="background: #ffff00">SingleConstruct</SPAN></P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT><A HREF="#prod90">OmpPragma</A> &lt;SINGLE&gt;
+			<A HREF="#prod140">SingleClauseList</A> <A HREF="#prod74">OmpEol</A>
+			<A HREF="#prod66">Statement</A></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod140"></A>SingleClauseList</P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT>( <A HREF="#prod141">ASingleClause</A> )*</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod141"></A>ASingleClause</P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT><A HREF="#prod114">NowaitClause</A></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234></TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>|</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT><A HREF="#prod95">DataClause</A></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234></TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>|</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT><A HREF="#prod142">OmpCopyPrivateClause</A></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod142"></A>OmpCopyPrivateClause</P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT>&lt;COPYPRIVATE&gt; &quot;(&quot; <A HREF="#prod107">VariableList</A>
+			&quot;)&quot;</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod81"></A><SPAN STYLE="background: #ffff00">TaskConstruct</SPAN></P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT><A HREF="#prod90">OmpPragma</A> &lt;TASK&gt; (
+			<A HREF="#prod143">TaskClause</A> )* <A HREF="#prod74">OmpEol</A>
+			<A HREF="#prod66">Statement</A></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod143"></A>TaskClause</P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT><A HREF="#prod95">DataClause</A></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234></TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>|</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT><A HREF="#prod144">UniqueTaskClause</A></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod144"></A>UniqueTaskClause</P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT><A HREF="#prod96">IfClause</A></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234></TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>|</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT><A HREF="#prod145">FinalClause</A></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234></TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>|</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT><A HREF="#prod146">UntiedClause</A></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234></TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>|</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT><A HREF="#prod147">MergeableClause</A></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod145"></A><SPAN STYLE="background: #adff2f">FinalClause</SPAN></P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT>&lt;FINAL&gt; &quot;(&quot; <A HREF="#prod98">Expression</A>
+			&quot;)&quot;</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod146"></A>UntiedClause</P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT>&lt;UNTIED&gt;</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod147"></A>MergeableClause</P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT>&lt;MERGEABLE&gt;</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod79"></A><SPAN STYLE="background: #ffff00">ParallelForConstruct</SPAN></P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT><A HREF="#prod90">OmpPragma</A> &lt;PARALLEL&gt;
+			&lt;FOR&gt; <A HREF="#prod148">UniqueParallelOrUniqueForOrDataClauseList</A>
+			<A HREF="#prod74">OmpEol</A> <A HREF="#prod110">OmpForHeader</A>
+			<A HREF="#prod66">Statement</A></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod148"></A>UniqueParallelOrUniqueForOrDataClauseList</P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT>( <A HREF="#prod149">AUniqueParallelOrUniqueForOrDataClause</A>
+			)*</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod149"></A>AUniqueParallelOrUniqueForOrDataClause</P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT><A HREF="#prod94">UniqueParallelClause</A></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234></TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>|</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT><A HREF="#prod113">UniqueForClause</A></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234></TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>|</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT><A HREF="#prod95">DataClause</A></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod80"></A><SPAN STYLE="background: #ffff00">ParallelSectionsConstruct</SPAN></P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT><A HREF="#prod90">OmpPragma</A> &lt;PARALLEL&gt;
+			&lt;SECTIONS&gt; <A HREF="#prod92">UniqueParallelOrDataClauseList</A>
+			<A HREF="#prod74">OmpEol</A> <A HREF="#prod137">SectionsScope</A></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod82"></A><SPAN STYLE="background: #ffff00">MasterConstruct</SPAN></P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT><A HREF="#prod90">OmpPragma</A> &lt;MASTER&gt;
+			<A HREF="#prod74">OmpEol</A> <A HREF="#prod66">Statement</A></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod83"></A><SPAN STYLE="background: #ffff00">CriticalConstruct</SPAN></P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT><A HREF="#prod90">OmpPragma</A> &lt;CRITICAL&gt; (
+			<A HREF="#prod150">RegionPhrase</A> )? <A HREF="#prod74">OmpEol</A>
+			<A HREF="#prod66">Statement</A></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod150"></A>RegionPhrase</P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT>&quot;(&quot; &lt;IDENTIFIER&gt; &quot;)&quot;</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod84"></A><SPAN STYLE="background: #ffff00">AtomicConstruct</SPAN></P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT><A HREF="#prod90">OmpPragma</A> &lt;ATOMIC&gt; (
+			<A HREF="#prod151">AtomicClause</A> )? <A HREF="#prod74">OmpEol</A>
+			<A HREF="#prod68">Statement</A></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod151"></A>AtomicClause</P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT>&lt;READ&gt;</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234></TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>|</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT>&lt;WRITE&gt;</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234></TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>|</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT>&lt;UPDATE&gt;</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234></TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>|</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT>&lt;CAPTURE&gt;</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod89"></A><SPAN STYLE="background: #adff2f">Flush<SPAN STYLE="background: #ffa500">Directive</SPAN></SPAN></P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT><A HREF="#prod90">OmpPragma</A> &lt;FLUSH&gt; (
+			<A HREF="#prod152">FlushVars</A> )? <A HREF="#prod74">OmpEol</A></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod152"></A>FlushVars</P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT>&quot;(&quot; <A HREF="#prod107">VariableList</A>
+			&quot;)&quot;</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod85"></A><SPAN STYLE="background: #ffff00">OrderedConstruct</SPAN></P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT><A HREF="#prod90">OmpPragma</A> &lt;ORDERED&gt;
+			<A HREF="#prod74">OmpEol</A> <A HREF="#prod66">Statement</A></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod86"></A><SPAN STYLE="background: #adff2f">BarrierDirective</SPAN></P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT><A HREF="#prod90">OmpPragma</A> &lt;BARRIER&gt;
+			<A HREF="#prod74">OmpEol</A></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod87"></A><SPAN STYLE="background: #adff2f">TaskwaitDirective</SPAN></P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT><A HREF="#prod90">OmpPragma</A> &lt;TASKWAIT&gt;
+			<A HREF="#prod74">OmpEol</A></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod88"></A><SPAN STYLE="background: #adff2f">TaskyieldDirective</SPAN></P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT><A HREF="#prod90">OmpPragma</A> &lt;TASKYIELD&gt;
+			<A HREF="#prod74">OmpEol</A></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod9"></A>ThreadPrivateDirective</P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT><A HREF="#prod90">OmpPragma</A> &lt;THREADPRIVATE&gt;
+			&quot;(&quot; <A HREF="#prod107">VariableList</A> &quot;)&quot;
+			<A HREF="#prod74">OmpEol</A></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod8"></A>DeclareReductionDirective</P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT><A HREF="#prod90">OmpPragma</A> &lt;DECLARE&gt;
+			&lt;REDUCTION&gt; &quot;(&quot; <A HREF="#prod108">ReductionOp</A>
+			&quot;:&quot; <A HREF="#prod153">ReductionTypeList</A> &quot;:&quot;
+			<A HREF="#prod98">Expression</A> &quot;)&quot; ( <A HREF="#prod154">InitializerClause</A>
+			)? <A HREF="#prod74">OmpEol</A></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod153"></A>ReductionTypeList</P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT>( <A HREF="#prod17">TypeSpecifier</A> )*</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod154"></A>InitializerClause</P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT><A HREF="#prod155">AssignInitializerClause</A></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234></TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>|</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT><A HREF="#prod156">ArgumentInitializerClause</A></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod155"></A>AssignInitializerClause</P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT>&lt;INITIALIZER&gt; &quot;(&quot; &lt;IDENTIFIER&gt;
+			&quot;=&quot; <A HREF="#prod28">Initializer</A> &quot;)&quot;</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod156"></A>ArgumentInitializerClause</P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT>&lt;INITIALIZER&gt; &quot;(&quot; &lt;IDENTIFIER&gt;
+			&quot;(&quot; <A HREF="#prod157">ExpressionList</A> &quot;)&quot;
+			&quot;)&quot;</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod108"></A>ReductionOp</P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT>&lt;IDENTIFIER&gt;</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234></TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>|</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT>&quot;+&quot;</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234></TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>|</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT>&quot;*&quot;</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234></TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>|</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT>&quot;-&quot;</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234></TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>|</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT>&quot;&amp;&quot;</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234></TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>|</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT>&quot;^&quot;</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234></TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>|</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT>&quot;|&quot;</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234></TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>|</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT>&quot;||&quot;</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234></TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>|</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT>&quot;&amp;&amp;&quot;</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod107"></A>VariableList</P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT>&lt;IDENTIFIER&gt; ( &quot;,&quot; &lt;IDENTIFIER&gt;
+			)*</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod67"></A><SPAN STYLE="background: #ffa500">LabeledStatement</SPAN></P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT><A HREF="#prod158">SimpleLabeledStatement</A></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234></TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>|</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT><A HREF="#prod159">CaseLabeledStatement</A></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234></TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>|</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT><A HREF="#prod160">DefaultLabeledStatement</A></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod158"></A>SimpleLabeledStatement</P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT>&lt;IDENTIFIER&gt; &quot;:&quot; <A HREF="#prod66">Statement</A></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod159"></A>CaseLabeledStatement</P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT>&lt;CASE&gt; <A HREF="#prod35">ConstantExpression</A>
+			&quot;:&quot; <A HREF="#prod66">Statement</A></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod160"></A>DefaultLabeledStatement</P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT>&lt;DFLT&gt; &quot;:&quot; <A HREF="#prod66">Statement</A></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod68"></A><SPAN STYLE="background: #adff2f">ExpressionStatement</SPAN></P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT>( <A HREF="#prod98">Expression</A> )? &quot;;&quot;</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod13"></A><SPAN STYLE="background: #ffff00">CompoundStatement</SPAN></P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT>&quot;{&quot; ( <A HREF="#prod161">CompoundStatementElement</A>
+			)* &quot;}&quot;</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod161"></A>CompoundStatementElement</P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT><A HREF="#prod6">Declaration</A></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234></TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>|</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT><A HREF="#prod66">Statement</A></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod69"></A><SPAN STYLE="background: #ffa500">SelectionStatement</SPAN></P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT><A HREF="#prod162">IfStatement</A></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234></TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>|</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT><A HREF="#prod163">SwitchStatement</A></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod162"></A><SPAN STYLE="background: #ffff00">IfStatement</SPAN></P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT>&lt;IF&gt; &quot;(&quot; <A HREF="#prod98">Expression</A>
+			&quot;)&quot; <A HREF="#prod66">Statement</A> ( &lt;ELSE&gt;
+			<A HREF="#prod66">Statement</A> )?</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod163"></A><SPAN STYLE="background: #ffff00">SwitchStatement</SPAN></P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT>&lt;SWITCH&gt; &quot;(&quot; <A HREF="#prod98">Expression</A>
+			&quot;)&quot; <A HREF="#prod66">Statement</A></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod70"></A><SPAN STYLE="background: #ffa500">IterationStatement</SPAN></P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT><A HREF="#prod164">WhileStatement</A></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234></TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>|</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT><A HREF="#prod165">DoStatement</A></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234></TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>|</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT><A HREF="#prod166">ForStatement</A></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod164"></A><SPAN STYLE="background: #ffff00">WhileStatement</SPAN></P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT>&lt;WHILE&gt; &quot;(&quot; <A HREF="#prod98">Expression</A>
+			&quot;)&quot; <A HREF="#prod66">Statement</A></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod165"></A><SPAN STYLE="background: #ffff00">DoStatement</SPAN></P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT>&lt;DO&gt; <A HREF="#prod66">Statement</A> &lt;WHILE&gt;
+			&quot;(&quot; <A HREF="#prod98">Expression</A> &quot;)&quot; &quot;;&quot;</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod166"></A><SPAN STYLE="background: #ffff00">ForStatement</SPAN></P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT>&lt;FOR&gt; &quot;(&quot; ( <A HREF="#prod98">Expression</A>
+			)? &quot;;&quot; ( <A HREF="#prod98">Expression</A> )? &quot;;&quot;
+			( <A HREF="#prod98">Expression</A> )? &quot;)&quot; <A HREF="#prod66">Statement</A></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod71"></A><SPAN STYLE="background: #ffa500">JumpStatement</SPAN></P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT><A HREF="#prod167">GotoStatement</A></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234></TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>|</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT><A HREF="#prod168">ContinueStatement</A></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234></TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>|</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT><A HREF="#prod169">BreakStatement</A></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234></TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>|</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT><A HREF="#prod170">ReturnStatement</A></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod167"></A><SPAN STYLE="background: #adff2f">GotoStatement</SPAN></P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT>&lt;GOTO&gt; &lt;IDENTIFIER&gt; &quot;;&quot;</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod168"></A><SPAN STYLE="background: #adff2f">ContinueStatement</SPAN></P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT>&lt;CONTINUE&gt; &quot;;&quot;</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod169"></A><SPAN STYLE="background: #adff2f">BreakStatement</SPAN></P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT>&lt;BREAK&gt; &quot;;&quot;</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod170"></A><SPAN STYLE="background: #adff2f">ReturnStatement</SPAN></P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT>&lt;RETURN&gt; ( <A HREF="#prod98">Expression</A> )?
+			&quot;;&quot;</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod98"></A><SPAN STYLE="background: #adff2f">Expre</SPAN><SPAN STYLE="background: #ffa500">ssion</SPAN></P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT><A HREF="#prod56">AssignmentExpression</A> ( &quot;,&quot;
+			<A HREF="#prod56">AssignmentExpression</A> )*</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod56"></A>AssignmentExpression</P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT><A HREF="#prod171">NonConditionalExpression</A></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234></TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>|</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT><A HREF="#prod172">ConditionalExpression</A></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod171"></A>NonConditionalExpression</P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT><A HREF="#prod173">UnaryExpression</A>
+			<A HREF="#prod174">AssignmentOperator</A> <A HREF="#prod56">AssignmentExpression</A></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod174"></A>AssignmentOperator</P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT>&quot;=&quot;</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234></TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>|</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT>&quot;*=&quot;</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234></TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>|</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT>&quot;/=&quot;</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234></TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>|</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT>&quot;%=&quot;</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234></TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>|</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT>&quot;+=&quot;</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234></TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>|</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT>&quot;-=&quot;</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234></TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>|</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT>&quot;&lt;&lt;=&quot;</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234></TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>|</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT>&quot;&gt;&gt;=&quot;</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234></TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>|</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT>&quot;&amp;=&quot;</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234></TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>|</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT>&quot;^=&quot;</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234></TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>|</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT>&quot;|=&quot;</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod172"></A>ConditionalExpression</P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT><A HREF="#prod175">LogicalORExpression</A> ( &quot;?&quot;
+			<A HREF="#prod98">Expression</A> &quot;:&quot;
+			<A HREF="#prod172">ConditionalExpression</A> )?</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod35"></A>ConstantExpression</P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT><A HREF="#prod172">ConditionalExpression</A></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod175"></A>LogicalORExpression</P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT><A HREF="#prod176">LogicalANDExpression</A> ( &quot;||&quot;
+			<A HREF="#prod175">LogicalORExpression</A> )?</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod176"></A>LogicalANDExpression</P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT><A HREF="#prod177">InclusiveORExpression</A> ( &quot;&amp;&amp;&quot;
+			<A HREF="#prod176">LogicalANDExpression</A> )?</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod177"></A>InclusiveORExpression</P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT><A HREF="#prod178">ExclusiveORExpression</A> ( &quot;|&quot;
+			<A HREF="#prod177">InclusiveORExpression</A> )?</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod178"></A>ExclusiveORExpression</P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT><A HREF="#prod179">ANDExpression</A> ( &quot;^&quot;
+			<A HREF="#prod178">ExclusiveORExpression</A> )?</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod179"></A>ANDExpression</P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT><A HREF="#prod180">EqualityExpression</A> ( &quot;&amp;&quot;
+			<A HREF="#prod179">ANDExpression</A> )?</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod180"></A>EqualityExpression</P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT><A HREF="#prod181">RelationalExpression</A> (
+			<A HREF="#prod182">EqualOptionalExpression</A> )?</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod182"></A>EqualOptionalExpression</P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT><A HREF="#prod183">EqualExpression</A></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234></TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>|</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT><A HREF="#prod184">NonEqualExpression</A></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod183"></A>EqualExpression</P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT>&quot;==&quot; <A HREF="#prod180">EqualityExpression</A></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod184"></A>NonEqualExpression</P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT>&quot;!=&quot; <A HREF="#prod180">EqualityExpression</A></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod181"></A>RelationalExpression</P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT><A HREF="#prod185">ShiftExpression</A> (
+			<A HREF="#prod186">RelationalOptionalExpression</A> )?</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod186"></A>RelationalOptionalExpression</P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT><A HREF="#prod187">RelationalLTExpression</A></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234></TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>|</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT><A HREF="#prod188">RelationalGTExpression</A></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234></TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>|</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT><A HREF="#prod189">RelationalLEExpression</A></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234></TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>|</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT><A HREF="#prod190">RelationalGEExpression</A></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod187"></A>RelationalLTExpression</P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT>&quot;&lt;&quot; <A HREF="#prod181">RelationalExpression</A></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod188"></A>RelationalGTExpression</P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT>&quot;&gt;&quot; <A HREF="#prod181">RelationalExpression</A></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod189"></A>RelationalLEExpression</P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT>&quot;&lt;=&quot; <A HREF="#prod181">RelationalExpression</A></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod190"></A>RelationalGEExpression</P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT>&quot;&gt;=&quot; <A HREF="#prod181">RelationalExpression</A></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod185"></A>ShiftExpression</P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT><A HREF="#prod134">AdditiveExpression</A> (
+			<A HREF="#prod191">ShiftOptionalExpression</A> )?</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod191"></A>ShiftOptionalExpression</P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT><A HREF="#prod192">ShiftLeftExpression</A></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234></TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>|</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT><A HREF="#prod193">ShiftRightExpression</A></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod192"></A>ShiftLeftExpression</P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT>&quot;&gt;&gt;&quot; <A HREF="#prod185">ShiftExpression</A></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod193"></A>ShiftRightExpression</P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT>&quot;&lt;&lt;&quot; <A HREF="#prod185">ShiftExpression</A></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod134"></A>AdditiveExpression</P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT><A HREF="#prod135">MultiplicativeExpression</A> (
+			<A HREF="#prod194">AdditiveOptionalExpression</A> )?</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod194"></A>AdditiveOptionalExpression</P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT><A HREF="#prod195">AdditivePlusExpression</A></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234></TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>|</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT><A HREF="#prod196">AdditiveMinusExpression</A></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod195"></A>AdditivePlusExpression</P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT>&quot;+&quot; <A HREF="#prod134">AdditiveExpression</A></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod196"></A>AdditiveMinusExpression</P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT>&quot;-&quot; <A HREF="#prod134">AdditiveExpression</A></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod135"></A>MultiplicativeExpression</P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT><A HREF="#prod197">CastExpression</A> (
+			<A HREF="#prod198">MultiplicativeOptionalExpression</A> )?</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod198"></A>MultiplicativeOptionalExpression</P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT><A HREF="#prod199">MultiplicativeMultiExpression</A></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234></TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>|</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT><A HREF="#prod200">MultiplicativeDivExpression</A></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234></TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>|</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT><A HREF="#prod201">MultiplicativeModExpression</A></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod199"></A>MultiplicativeMultiExpression</P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT>&quot;*&quot; <A HREF="#prod135">MultiplicativeExpression</A></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod200"></A>MultiplicativeDivExpression</P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT>&quot;/&quot; <A HREF="#prod135">MultiplicativeExpression</A></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod201"></A>MultiplicativeModExpression</P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT>&quot;%&quot; <A HREF="#prod135">MultiplicativeExpression</A></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod197"></A>CastExpression</P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT><A HREF="#prod202">CastExpressionTyped</A></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234></TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>|</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT><A HREF="#prod173">UnaryExpression</A></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod202"></A>CastExpressionTyped</P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT>&quot;(&quot; <A HREF="#prod59">TypeName</A> &quot;)&quot;
+			<A HREF="#prod197">CastExpression</A></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod173"></A>UnaryExpression</P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT><A HREF="#prod203">UnaryExpressionPreIncrement</A></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234></TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>|</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT><A HREF="#prod204">UnaryExpressionPreDecrement</A></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234></TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>|</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT><A HREF="#prod205">UnarySizeofExpression</A></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234></TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>|</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT><A HREF="#prod206">UnaryCastExpression</A></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234></TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>|</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT><A HREF="#prod207">PostfixExpression</A></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod203"></A>UnaryExpressionPreIncrement</P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT>&quot;++&quot; <A HREF="#prod173">UnaryExpression</A></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod204"></A>UnaryExpressionPreDecrement</P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT>&quot;--&quot; <A HREF="#prod173">UnaryExpression</A></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod206"></A>UnaryCastExpression</P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT><A HREF="#prod208">UnaryOperator</A> <A HREF="#prod197">CastExpression</A></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod205"></A>UnarySizeofExpression</P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT><A HREF="#prod209">SizeofTypeName</A></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234></TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>|</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT><A HREF="#prod210">SizeofUnaryExpression</A></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod210"></A>SizeofUnaryExpression</P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT>&lt;SIZEOF&gt; <A HREF="#prod173">UnaryExpression</A></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod209"></A>SizeofTypeName</P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT>&lt;SIZEOF&gt; &quot;(&quot; <A HREF="#prod59">TypeName</A>
+			&quot;)&quot;</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod208"></A>UnaryOperator</P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT>&quot;&amp;&quot;</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234></TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>|</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT>&quot;*&quot;</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234></TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>|</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT>&quot;+&quot;</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234></TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>|</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT>&quot;-&quot;</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234></TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>|</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT>&quot;~&quot;</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234></TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>|</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT>&quot;!&quot;</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod207"></A>PostfixExpression</P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT><A HREF="#prod211">PrimaryExpression</A>
+			<A HREF="#prod212">PostfixOperationsList</A></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod212"></A>PostfixOperationsList</P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT>( <A HREF="#prod213">APostixOperation</A> )*</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod213"></A>APostixOperation</P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT><A HREF="#prod214">BracketExpression</A></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234></TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>|</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT><A HREF="#prod215">ArgumentList</A></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234></TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>|</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT><A HREF="#prod216">DotId</A></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234></TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>|</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT><A HREF="#prod217">ArrowId</A></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234></TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>|</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT><A HREF="#prod218">PlusPlus</A></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234></TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>|</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT><A HREF="#prod219">MinusMinus</A></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod218"></A>PlusPlus</P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT>&quot;++&quot;</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod219"></A>MinusMinus</P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT>&quot;--&quot;</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod214"></A>BracketExpression</P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT>&quot;[&quot; <A HREF="#prod98">Expression</A> &quot;]&quot;</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod215"></A>ArgumentList</P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT>&quot;(&quot; ( <A HREF="#prod157">ExpressionList</A>
+			)? &quot;)&quot;</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod216"></A>DotId</P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT>&quot;.&quot; &lt;IDENTIFIER&gt;</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod217"></A>ArrowId</P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT>&quot;-&gt;&quot; &lt;IDENTIFIER&gt;</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod211"></A>PrimaryExpression</P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT>&lt;IDENTIFIER&gt;</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234></TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>|</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT><A HREF="#prod220">Constant</A></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234></TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>|</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT><A HREF="#prod221">ExpressionClosed</A></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod221"></A>ExpressionClosed</P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT>&quot;(&quot; <A HREF="#prod98">Expression</A> &quot;)&quot;</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod157"></A>ExpressionList</P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT><A HREF="#prod56">AssignmentExpression</A> ( &quot;,&quot;
+			<A HREF="#prod56">AssignmentExpression</A> )*</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod220"></A>Constant</P>
+		</TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>::=</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT>&lt;INTEGER_LITERAL&gt;</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234></TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>|</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT>&lt;FLOATING_POINT_LITERAL&gt;</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234></TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>|</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT>&lt;CHARACTER_LITERAL&gt;</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234></TD>
+		<TD WIDTH=38>
+			<P ALIGN=CENTER>|</P>
+		</TD>
+		<TD WIDTH=548>
+			<P ALIGN=LEFT>( &lt;STRING_LITERAL&gt; )+</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod2211"></A><SPAN STYLE="background: #adff2f">BeginNode</SPAN></P>
+		</TD>
+		<TD WIDTH=38></TD>
+		<TD WIDTH=548></TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod222"></A><SPAN STYLE="background: #adff2f">EndNode</SPAN></P>
+		</TD>
+		<TD WIDTH=38></TD>
+		<TD WIDTH=548></TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod223"></A><SPAN STYLE="background: #adff2f">DummyFlushDirective</SPAN></P>
+		</TD>
+		<TD WIDTH=38></TD>
+		<TD WIDTH=548></TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod226"></A>SimplePrimaryExpression</P>
+		</TD>
+		<TD WIDTH=38></TD>
+		<TD WIDTH=548></TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod227"></A><SPAN STYLE="background: #ffff00">CallStatement</SPAN></P>
+		</TD>
+		<TD WIDTH=38></TD>
+		<TD WIDTH=548></TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod228"></A><SPAN STYLE="background: #adff2f">PreCallNode</SPAN></P>
+		</TD>
+		<TD WIDTH=38></TD>
+		<TD WIDTH=548></TD>
+	</TR>
+	<TR>
+		<TD WIDTH=234>
+			<P ALIGN=RIGHT><A NAME="prod229"></A><SPAN STYLE="background: #adff2f">PostCallNode</SPAN></P>
+		</TD>
+		<TD WIDTH=38></TD>
+		<TD WIDTH=548></TD>
+	</TR>
+</TABLE>
+<P><BR><BR>
+</P>
+</BODY>
+</HTML>

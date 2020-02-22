@@ -1,0 +1,53 @@
+digraph graph835631769 {
+	compound=true;
+	edge[color=blue];
+	subgraph cluster43368234 {
+		compound=true;
+		style=dotted;
+		label="main()";
+		node197107207[label="B_FuDe", shape="triangle"];
+		node1878454236[label="E_FuDe", shape="invtriangle"];
+		subgraph cluster724081353 {
+			compound=true;
+			style=dotted;
+			label="CompoundStatement";
+			node82517097[label="B_CoSt", shape="triangle"];
+			node1943266645[label="E_CoSt", shape="invtriangle"];
+			node721648892[label="int x;"];
+			subgraph cluster1150436743 {
+				compound=true;
+				style=dotted;
+				label="CompoundStatement";
+				node407241000[label="B_CoSt", shape="triangle"];
+				node1960031800[label="E_CoSt", shape="invtriangle"];
+				node1149747394[label="int x;"];
+				node309271464[label="
+#pragma omp flush
+"];
+			}
+			subgraph cluster973604748 {
+				compound=true;
+				style=dotted;
+				label="CompoundStatement";
+				node1401095299[label="B_CoSt", shape="triangle"];
+				node704143329[label="E_CoSt", shape="invtriangle"];
+				node1134601005[label="int x;"];
+				node963573938[label="
+#pragma omp flush
+"];
+			}
+		}
+	}
+	node197107207 -> node82517097[tailport=s, headport=n, weight=8, lhead=cluster724081353];
+	node82517097 -> node721648892[tailport=s, headport=n, weight=8];
+	node721648892 -> node407241000[lhead=cluster1150436743, weight=8, tailport=s, headport=n];
+	node407241000 -> node1149747394[tailport=s, headport=n, weight=8];
+	node1149747394 -> node309271464[weight=8, tailport=s, headport=n];
+	node309271464 -> node1960031800[weight=8, tailport=s, headport=n];
+	node1960031800 -> node1401095299[tailport=s, headport=n, ltail=cluster1150436743, lhead=cluster973604748];
+	node1401095299 -> node1134601005[tailport=s, headport=n, weight=8];
+	node1134601005 -> node963573938[weight=8, tailport=s, headport=n];
+	node963573938 -> node704143329[weight=8, tailport=s, headport=n];
+	node704143329 -> node1943266645[tailport=s, headport=n, weight=8, ltail=cluster973604748];
+	node1943266645 -> node1878454236[tailport=s, headport=n, weight=8, ltail=cluster724081353];
+}

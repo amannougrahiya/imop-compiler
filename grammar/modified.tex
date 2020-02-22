@@ -1,0 +1,1274 @@
+% This file was converted to LaTeX by Writer2LaTeX ver. 1.5.2
+% see http://writer2latex.sourceforge.net for more info
+\documentclass[screen]{acmprep}
+\usepackage[ascii]{inputenc}
+\usepackage{amsmath}
+\usepackage{amssymb,amsfonts,textcomp}
+\usepackage[T1]{fontenc}
+\usepackage[english]{babel}
+\usepackage{color}
+\usepackage{array}
+\usepackage{supertabular}
+\usepackage{hhline}
+\usepackage{hyperref}
+\hypersetup{pdftex, colorlinks=true, linkcolor=blue, citecolor=blue, filecolor=blue, urlcolor=blue, pdftitle=BNF for C with OpenMP, pdfauthor=Aman Nougrahiya, pdfsubject=, pdfkeywords=}
+\makeatletter
+\newcommand\arraybslash{\let\\\@arraycr}
+\makeatother
+% Page layout (geometry)
+\setlength\voffset{-1in}
+\setlength\hoffset{-1in}
+\setlength\topmargin{2cm}
+\setlength\oddsidemargin{2cm}
+\setlength\textheight{25.7cm}
+\setlength\textwidth{17.001cm}
+\setlength\footskip{0.0cm}
+\setlength\headheight{0cm}
+\setlength\headsep{0cm}
+% Footnote rule
+\setlength{\skip\footins}{0.119cm}
+\renewcommand\footnoterule{\vspace*{-0.018cm}\setlength\leftskip{0pt}\setlength\rightskip{0pt plus 1fil}\noindent\textcolor{black}{\rule{0.25\columnwidth}{0.018cm}}\vspace*{0.101cm}}
+% Pages styles
+\makeatletter
+\newcommand\ps@Standard{
+  \renewcommand\@oddhead{}
+  \renewcommand\@evenhead{}
+  \renewcommand\@oddfoot{}
+  \renewcommand\@evenfoot{}
+  \renewcommand\thepage{\arabic{page}}
+}
+\newcommand\ps@HTML{
+  \renewcommand\@oddhead{}
+  \renewcommand\@evenhead{}
+  \renewcommand\@oddfoot{}
+  \renewcommand\@evenfoot{}
+  \renewcommand\thepage{\arabic{page}}
+}
+\makeatother
+\pagestyle{Standard}
+\setlength\tabcolsep{1mm}
+\renewcommand\arraystretch{1.3}
+\title{BNF for C with OpenMP}
+\author{Aman Nougrahiya}
+\date{2017-08-10}
+\begin{document}
+\clearpage\setcounter{page}{1}\pagestyle{HTML}
+{\centering\bfseries
+EBNF for C with OpenMP
+\par}
+
+%Color Code:
+%
+%~~~~CFG Non-Leaf Node
+%
+%~~~~CFG Leaf Node
+%
+%~~~~Inheritance hierarchy's superclass Node
+
+%\begin{flushleft}
+\tablefirsthead{}
+\tablehead{}
+\tabletail{}
+\tablelasttail{}
+\small
+\begin{center}
+%\begin{supertabular}{m{5.6740003cm}m{0.83199996cm}m{13.407001cm}}
+	\begin{supertabular}{rcp{.6\linewidth}}
+\raggedleft TranslationUnit &
+\centering ::= &
+( \hyperlink{prod2}{ElementsOfTranslation} )+\\
+\raggedleft \hypertarget{prod2}{}ElementsOfTranslation &
+\centering ::= &
+\hyperlink{prod3}{ExternalDeclaration}\\
+~
+ &
+\centering {\textbar} &
+\hyperlink{prod4}{UnknownCpp}\\
+~
+ &
+\centering {\textbar} &
+\hyperlink{prod5}{UnknownPragma}\\
+\raggedleft \hypertarget{prod3}{}ExternalDeclaration &
+\centering ::= &
+\hyperlink{prod6}{Declaration}\\
+~
+ &
+\centering {\textbar} &
+\hyperlink{prod7}{FunctionDefinition}\\
+~
+ &
+\centering {\textbar} &
+\hyperlink{prod8}{DeclareReductionDirective}\\
+~
+ &
+\centering {\textbar} &
+\hyperlink{prod9}{ThreadPrivateDirective}\\
+\raggedleft \hypertarget{prod7}{}FunctionDefinition &
+\centering ::= &
+( \hyperlink{prod10}{DeclarationSpecifiers} )? \hyperlink{prod11}{Declarator} ( \hyperlink{prod12}{DeclarationList} )?
+\hyperlink{prod13}{CompoundStatement}\\
+\raggedleft \hypertarget{prod6}{}Declaration &
+\centering ::= &
+\hyperlink{prod10}{DeclarationSpecifiers} ( \hyperlink{prod14}{InitDeclaratorList} )? {\textquotedbl};{\textquotedbl}\\
+\raggedleft \hypertarget{prod12}{}DeclarationList &
+\centering ::= &
+( \hyperlink{prod6}{Declaration} )+\\
+\raggedleft \hypertarget{prod10}{}DeclarationSpecifiers &
+\centering ::= &
+( \hyperlink{prod15}{ADeclarationSpecifier} )+\\
+\raggedleft \hypertarget{prod15}{}ADeclarationSpecifier &
+\centering ::= &
+\hyperlink{prod16}{StorageClassSpecifier}\\
+~
+ &
+\centering {\textbar} &
+\hyperlink{prod17}{TypeSpecifier}\\
+~
+ &
+\centering {\textbar} &
+\hyperlink{prod18}{TypeQualifier}\\
+\raggedleft \hypertarget{prod16}{}StorageClassSpecifier &
+\centering ::= &
+{\textless}AUTO{\textgreater} {\textbar} {\textless}REGISTER{\textgreater} {\textbar} {\textless}STATIC{\textgreater} {\textbar} {\textless}EXTERN{\textgreater} {\textbar} {\textless}TYPEDEF{\textgreater}\\
+\raggedleft \hypertarget{prod17}{}TypeSpecifier &
+\centering ::= &
+ {\textless}VOID{\textgreater} {\textbar} {\textless}CHAR{\textgreater} {\textbar} {\textless}SHORT{\textgreater}
+{\textbar} {\textless}INT{\textgreater} {\textbar} {\textless}LONG{\textgreater} {\textbar}
+{\textless}FLOAT{\textgreater} {\textbar} {\textless}DOUBLE{\textgreater} {\textbar} {\textless}SIGNED{\textgreater}
+{\textbar} {\textless}UNSIGNED{\textgreater} {\textbar} \hyperlink{prod19}{StructOrUnionSpecifier} {\textbar}
+\hyperlink{prod20}{EnumSpecifier} {\textbar} \hyperlink{prod21}{TypedefName}\\
+\raggedleft \hypertarget{prod18}{}TypeQualifier &
+\centering ::= &
+{\textless}RESTRICT{\textgreater} {\textbar} {\textless}CONST{\textgreater} {\textbar} {\textless}VOLATILE{\textgreater} {\textbar} {\textless}INLINE{\textgreater} {\textbar} {\textless}CCONST{\textgreater} {\textbar} {\textless}CINLINED{\textgreater} {\textbar} {\textless}CINLINED2{\textgreater} {\textbar} {\textless}CSIGNED{\textgreater} {\textbar} {\textless}CSIGNED2{\textgreater}\\
+\raggedleft \hypertarget{prod19}{}StructOrUnionSpecifier &
+\centering ::= &
+( \hyperlink{prod22}{StructOrUnionSpecifierWithList} {\textbar} \hyperlink{prod23}{StructOrUnionSpecifierWithId} )\\
+\raggedleft \hypertarget{prod22}{}StructOrUnionSpecifierWithList &
+\centering ::= &
+\hyperlink{prod24}{StructOrUnion} ( {\textless}IDENTIFIER{\textgreater} )? {\textquotedbl}\{{\textquotedbl}
+\hyperlink{prod25}{StructDeclarationList} {\textquotedbl}\}{\textquotedbl}\\
+\raggedleft \hypertarget{prod23}{}StructOrUnionSpecifierWithId &
+\centering ::= &
+\hyperlink{prod24}{StructOrUnion} {\textless}IDENTIFIER{\textgreater}\\
+\raggedleft \hypertarget{prod24}{}StructOrUnion &
+\centering ::= &
+{\textless}STRUCT{\textgreater} {\textbar} {\textless}UNION{\textgreater}\\
+\raggedleft \hypertarget{prod25}{}StructDeclarationList &
+\centering ::= &
+( \hyperlink{prod26}{StructDeclaration} )+\\
+\raggedleft \hypertarget{prod14}{}InitDeclaratorList &
+\centering ::= &
+\hyperlink{prod27}{InitDeclarator} ( {\textquotedbl},{\textquotedbl} \hyperlink{prod27}{InitDeclarator} )*\\
+\raggedleft \hypertarget{prod27}{}InitDeclarator &
+\centering ::= &
+\hyperlink{prod11}{Declarator} ( {\textquotedbl}={\textquotedbl} \hyperlink{prod28}{Initializer} )?\\
+\raggedleft \hypertarget{prod26}{}StructDeclaration &
+\centering ::= &
+\hyperlink{prod29}{SpecifierQualifierList} \hyperlink{prod30}{StructDeclaratorList} {\textquotedbl};{\textquotedbl}\\
+\raggedleft \hypertarget{prod29}{}SpecifierQualifierList &
+\centering ::= &
+( \hyperlink{prod31}{ASpecifierQualifier} )+\\
+\raggedleft \hypertarget{prod31}{}ASpecifierQualifier &
+\centering ::= &
+\hyperlink{prod17}{TypeSpecifier}\\
+~
+ &
+\centering {\textbar} &
+\hyperlink{prod18}{TypeQualifier}\\
+\raggedleft \hypertarget{prod30}{}StructDeclaratorList &
+\centering ::= &
+\hyperlink{prod32}{StructDeclarator} ( {\textquotedbl},{\textquotedbl} \hyperlink{prod32}{StructDeclarator} )*\\
+\raggedleft \hypertarget{prod32}{}StructDeclarator &
+\centering ::= &
+\hyperlink{prod33}{StructDeclaratorWithDeclarator}\\
+~
+ &
+\centering {\textbar} &
+\hyperlink{prod34}{StructDeclaratorWithBitField}\\
+\raggedleft \hypertarget{prod33}{}StructDeclaratorWithDeclarator &
+\centering ::= &
+\hyperlink{prod11}{Declarator} ( {\textquotedbl}:{\textquotedbl} \hyperlink{prod35}{ConstantExpression} )?\\
+\raggedleft \hypertarget{prod34}{}StructDeclaratorWithBitField &
+\centering ::= &
+{\textquotedbl}:{\textquotedbl} \hyperlink{prod35}{ConstantExpression}\\
+\raggedleft \hypertarget{prod20}{}EnumSpecifier &
+\centering ::= &
+\hyperlink{prod36}{EnumSpecifierWithList}\\
+~
+ &
+\centering {\textbar} &
+\hyperlink{prod37}{EnumSpecifierWithId}\\
+\raggedleft \hypertarget{prod36}{}EnumSpecifierWithList &
+\centering ::= &
+{\textless}ENUM{\textgreater} ( {\textless}IDENTIFIER{\textgreater} )? {\textquotedbl}\{{\textquotedbl}
+\hyperlink{prod38}{EnumeratorList} {\textquotedbl}\}{\textquotedbl}\\
+\raggedleft \hypertarget{prod37}{}EnumSpecifierWithId &
+\centering ::= &
+{\textless}ENUM{\textgreater} {\textless}IDENTIFIER{\textgreater}\\
+\raggedleft \hypertarget{prod38}{}EnumeratorList &
+\centering ::= &
+\hyperlink{prod39}{Enumerator} ( {\textquotedbl},{\textquotedbl} \hyperlink{prod39}{Enumerator} )*\\
+\raggedleft \hypertarget{prod39}{}Enumerator &
+\centering ::= &
+{\textless}IDENTIFIER{\textgreater} ( {\textquotedbl}={\textquotedbl} \hyperlink{prod35}{ConstantExpression} )?\\
+\raggedleft \hypertarget{prod11}{}Declarator &
+\centering ::= &
+( \hyperlink{prod40}{Pointer} )? \hyperlink{prod41}{DirectDeclarator}\\
+\raggedleft \hypertarget{prod41}{}DirectDeclarator &
+\centering ::= &
+\hyperlink{prod42}{IdentifierOrDeclarator} \hyperlink{prod43}{DeclaratorOpList}\\
+\raggedleft \hypertarget{prod43}{}DeclaratorOpList &
+\centering ::= &
+( \hyperlink{prod44}{ADeclaratorOp} )*\\
+\raggedleft \hypertarget{prod44}{}ADeclaratorOp &
+\centering ::= &
+\hyperlink{prod45}{DimensionSize}\\
+~
+ &
+\centering {\textbar} &
+\hyperlink{prod46}{ParameterTypeListClosed}\\
+~
+ &
+\centering {\textbar} &
+\hyperlink{prod47}{OldParameterListClosed}\\
+\raggedleft \hypertarget{prod45}{}DimensionSize &
+\centering ::= &
+{\textquotedbl}[{\textquotedbl} ( \hyperlink{prod35}{ConstantExpression} )? {\textquotedbl}]{\textquotedbl}\\
+\raggedleft \hypertarget{prod46}{}ParameterTypeListClosed &
+\centering ::= &
+{\textquotedbl}({\textquotedbl} ( \hyperlink{prod48}{ParameterTypeList} )? {\textquotedbl}){\textquotedbl}\\
+\raggedleft \hypertarget{prod47}{}OldParameterListClosed &
+\centering ::= &
+{\textquotedbl}({\textquotedbl} ( \hyperlink{prod49}{OldParameterList} )? {\textquotedbl}){\textquotedbl}\\
+\raggedleft \hypertarget{prod42}{}IdentifierOrDeclarator &
+\centering ::= &
+{\textless}IDENTIFIER{\textgreater}\\
+~
+ &
+\centering {\textbar} &
+{\textquotedbl}({\textquotedbl} \hyperlink{prod11}{Declarator} {\textquotedbl}){\textquotedbl}\\
+\raggedleft \hypertarget{prod40}{}Pointer &
+\centering ::= &
+( {\textquotedbl}*{\textquotedbl} {\textbar} {\textquotedbl}\^{}{\textquotedbl} ) (
+\hyperlink{prod50}{TypeQualifierList} )? ( \hyperlink{prod40}{Pointer} )?\\
+\raggedleft \hypertarget{prod50}{}TypeQualifierList &
+\centering ::= &
+( \hyperlink{prod18}{TypeQualifier} )+\\
+\raggedleft \hypertarget{prod48}{}ParameterTypeList &
+\centering ::= &
+\hyperlink{prod51}{ParameterList} ( {\textquotedbl},{\textquotedbl} {\textquotedbl}...{\textquotedbl} )?\\
+\raggedleft \hypertarget{prod51}{}ParameterList &
+\centering ::= &
+\hyperlink{prod52}{ParameterDeclaration} ( {\textquotedbl},{\textquotedbl} \hyperlink{prod52}{ParameterDeclaration} )*\\
+\raggedleft \hypertarget{prod52}{}ParameterDeclaration &
+\centering ::= &
+\hyperlink{prod10}{DeclarationSpecifiers} \hyperlink{prod53}{ParameterAbstraction}\\
+\raggedleft \hypertarget{prod53}{}ParameterAbstraction &
+\centering ::= &
+\hyperlink{prod11}{Declarator}\\
+~
+ &
+\centering {\textbar} &
+\hyperlink{prod54}{AbstractOptionalDeclarator}\\
+\raggedleft \hypertarget{prod54}{}AbstractOptionalDeclarator &
+\centering ::= &
+( \hyperlink{prod55}{AbstractDeclarator} )?\\
+\raggedleft \hypertarget{prod49}{}OldParameterList &
+\centering ::= &
+{\textless}IDENTIFIER{\textgreater} ( {\textquotedbl},{\textquotedbl} {\textless}IDENTIFIER{\textgreater} )*\\
+\raggedleft \hypertarget{prod28}{}Initializer &
+\centering ::= &
+\hyperlink{prod56}{AssignmentExpression}\\
+~
+ &
+\centering {\textbar} &
+\hyperlink{prod57}{ArrayInitializer}\\
+\raggedleft \hypertarget{prod57}{}ArrayInitializer &
+\centering ::= &
+{\textquotedbl}\{{\textquotedbl} \hyperlink{prod58}{InitializerList} ( {\textquotedbl},{\textquotedbl} )?
+{\textquotedbl}\}{\textquotedbl}\\
+\raggedleft \hypertarget{prod58}{}InitializerList &
+\centering ::= &
+\hyperlink{prod28}{Initializer} ( {\textquotedbl},{\textquotedbl} \hyperlink{prod28}{Initializer} )*\\
+\raggedleft \hypertarget{prod59}{}TypeName &
+\centering ::= &
+\hyperlink{prod29}{SpecifierQualifierList} ( \hyperlink{prod55}{AbstractDeclarator} )?\\
+\raggedleft \hypertarget{prod55}{}AbstractDeclarator &
+\centering ::= &
+\hyperlink{prod60}{AbstractDeclaratorWithPointer}\\
+~
+ &
+\centering {\textbar} &
+\hyperlink{prod61}{DirectAbstractDeclarator}\\
+\raggedleft \hypertarget{prod60}{}AbstractDeclaratorWithPointer &
+\centering ::= &
+\hyperlink{prod40}{Pointer} ( \hyperlink{prod61}{DirectAbstractDeclarator} )?\\
+\raggedleft \hypertarget{prod61}{}DirectAbstractDeclarator &
+\centering ::= &
+\hyperlink{prod62}{AbstractDimensionOrParameter} \hyperlink{prod63}{DimensionOrParameterList}\\
+\raggedleft \hypertarget{prod62}{}AbstractDimensionOrParameter &
+\centering ::= &
+\hyperlink{prod64}{AbstractDeclaratorClosed}\\
+~
+ &
+\centering {\textbar} &
+\hyperlink{prod45}{DimensionSize}\\
+~
+ &
+\centering {\textbar} &
+\hyperlink{prod46}{ParameterTypeListClosed}\\
+\raggedleft \hypertarget{prod64}{}AbstractDeclaratorClosed &
+\centering ::= &
+{\textquotedbl}({\textquotedbl} \hyperlink{prod55}{AbstractDeclarator} {\textquotedbl}){\textquotedbl}\\
+\raggedleft \hypertarget{prod63}{}DimensionOrParameterList &
+\centering ::= &
+( \hyperlink{prod65}{ADimensionOrParameter} )*\\
+\raggedleft \hypertarget{prod65}{}ADimensionOrParameter &
+\centering ::= &
+\hyperlink{prod45}{DimensionSize}\\
+~
+ &
+\centering {\textbar} &
+\hyperlink{prod46}{ParameterTypeListClosed}\\
+\raggedleft \hypertarget{prod21}{}TypedefName &
+\centering ::= &
+{\textless}IDENTIFIER{\textgreater}\\
+\raggedleft \hypertarget{prod66}{}Statement &
+\centering ::= &
+\hyperlink{prod67}{LabeledStatement}\\
+~
+ &
+\centering {\textbar} &
+\hyperlink{prod68}{ExpressionStatement}\\
+~
+ &
+\centering {\textbar} &
+\hyperlink{prod227}{CallStatement}\\
+~
+ &
+\centering {\textbar} &
+\hyperlink{prod13}{CompoundStatement}\\
+~
+ &
+\centering {\textbar} &
+\hyperlink{prod69}{SelectionStatement}\\
+~
+ &
+\centering {\textbar} &
+\hyperlink{prod70}{IterationStatement}\\
+~
+ &
+\centering {\textbar} &
+\hyperlink{prod71}{JumpStatement}\\
+~
+ &
+\centering {\textbar} &
+\hyperlink{prod5}{UnknownPragma}\\
+~
+ &
+\centering {\textbar} &
+\hyperlink{prod72}{OmpConstruct}\\
+~
+ &
+\centering {\textbar} &
+\hyperlink{prod73}{OmpDirective}\\
+~
+ &
+\centering {\textbar} &
+\hyperlink{prod4}{UnknownCpp}\\
+\raggedleft \hypertarget{prod4}{}UnknownCpp &
+\centering ::= &
+{\textquotedbl}\#{\textquotedbl} {\textless}UNKNOWN\_CPP{\textgreater}\\
+\raggedleft \hypertarget{prod74}{}OmpEol &
+\centering ::= &
+{\textless}OMP\_CR{\textgreater}\\
+~
+ &
+\centering {\textbar} &
+{\textless}OMP\_NL{\textgreater}\\
+\raggedleft \hypertarget{prod72}{}OmpConstruct &
+\centering ::= &
+\hyperlink{prod75}{ParallelConstruct}\\
+~
+ &
+\centering {\textbar} &
+\hyperlink{prod76}{ForConstruct}\\
+~
+ &
+\centering {\textbar} &
+\hyperlink{prod77}{SectionsConstruct}\\
+~
+ &
+\centering {\textbar} &
+\hyperlink{prod78}{SingleConstruct}\\
+~
+ &
+\centering {\textbar} &
+\hyperlink{prod79}{ParallelForConstruct}\\
+~
+ &
+\centering {\textbar} &
+\hyperlink{prod80}{ParallelSectionsConstruct}\\
+~
+ &
+\centering {\textbar} &
+\hyperlink{prod81}{TaskConstruct}\\
+~
+ &
+\centering {\textbar} &
+\hyperlink{prod82}{MasterConstruct}\\
+~
+ &
+\centering {\textbar} &
+\hyperlink{prod83}{CriticalConstruct}\\
+~
+ &
+\centering {\textbar} &
+\hyperlink{prod84}{AtomicConstruct}\\
+~
+ &
+\centering {\textbar} &
+\hyperlink{prod85}{OrderedConstruct}\\
+\raggedleft \hypertarget{prod73}{}OmpDirective &
+\centering ::= &
+\hyperlink{prod86}{BarrierDirective}\\
+~
+ &
+\centering {\textbar} &
+\hyperlink{prod87}{TaskwaitDirective}\\
+~
+ &
+\centering {\textbar} &
+\hyperlink{prod88}{TaskyieldDirective}\\
+~
+ &
+\centering {\textbar} &
+\hyperlink{prod89}{FlushDirective}\\
+\raggedleft \hypertarget{prod75}{}ParallelConstruct &
+\centering ::= &
+\hyperlink{prod90}{OmpPragma} \hyperlink{prod91}{ParallelDirective} \hyperlink{prod66}{Statement}\\
+\raggedleft \hypertarget{prod90}{}OmpPragma &
+\centering ::= &
+{\textquotedbl}\#{\textquotedbl} {\textless}PRAGMA{\textgreater} {\textless}OMP{\textgreater}\\
+\raggedleft \hypertarget{prod5}{}UnknownPragma &
+\centering ::= &
+{\textquotedbl}\#{\textquotedbl} {\textless}PRAGMA{\textgreater} {\textless}UNKNOWN\_CPP{\textgreater}\\
+\raggedleft \hypertarget{prod91}{}ParallelDirective &
+\centering ::= &
+{\textless}PARALLEL{\textgreater} \hyperlink{prod92}{UniqueParallelOrDataClauseList} \hyperlink{prod74}{OmpEol}\\
+\raggedleft \hypertarget{prod92}{}UniqueParallelOrDataClauseList &
+\centering ::= &
+( \hyperlink{prod93}{AUniqueParallelOrDataClause} )*\\
+\raggedleft \hypertarget{prod93}{}AUniqueParallelOrDataClause &
+\centering ::= &
+\hyperlink{prod94}{UniqueParallelClause}\\
+~
+ &
+\centering {\textbar} &
+\hyperlink{prod95}{DataClause}\\
+\raggedleft \hypertarget{prod94}{}UniqueParallelClause &
+\centering ::= &
+\hyperlink{prod96}{IfClause}\\
+~
+ &
+\centering {\textbar} &
+\hyperlink{prod97}{NumThreadsClause}\\
+\raggedleft \hypertarget{prod96}{}IfClause &
+\centering ::= &
+{\textless}IF{\textgreater} {\textquotedbl}({\textquotedbl} \hyperlink{prod98}{Expression}
+{\textquotedbl}){\textquotedbl}\\
+\raggedleft \hypertarget{prod97}{}NumThreadsClause &
+\centering ::= &
+{\textless}NUM\_THREADS{\textgreater} {\textquotedbl}({\textquotedbl} \hyperlink{prod98}{Expression}
+{\textquotedbl}){\textquotedbl}\\
+\raggedleft \hypertarget{prod95}{}DataClause &
+\centering ::= &
+\hyperlink{prod99}{OmpPrivateClause}\\
+~
+ &
+\centering {\textbar} &
+\hyperlink{prod100}{OmpFirstPrivateClause}\\
+~
+ &
+\centering {\textbar} &
+\hyperlink{prod101}{OmpLastPrivateClause}\\
+~
+ &
+\centering {\textbar} &
+\hyperlink{prod102}{OmpSharedClause}\\
+~
+ &
+\centering {\textbar} &
+\hyperlink{prod103}{OmpCopyinClause}\\
+~
+ &
+\centering {\textbar} &
+\hyperlink{prod104}{OmpDfltSharedClause}\\
+~
+ &
+\centering {\textbar} &
+\hyperlink{prod105}{OmpDfltNoneClause}\\
+~
+ &
+\centering {\textbar} &
+\hyperlink{prod106}{OmpReductionClause}\\
+\raggedleft \hypertarget{prod99}{}OmpPrivateClause &
+\centering ::= &
+{\textless}PRIVATE{\textgreater} {\textquotedbl}({\textquotedbl} \hyperlink{prod107}{VariableList}
+{\textquotedbl}){\textquotedbl}\\
+\raggedleft \hypertarget{prod100}{}OmpFirstPrivateClause &
+\centering ::= &
+{\textless}FIRSTPRIVATE{\textgreater} {\textquotedbl}({\textquotedbl} \hyperlink{prod107}{VariableList}
+{\textquotedbl}){\textquotedbl}\\
+\raggedleft \hypertarget{prod101}{}OmpLastPrivateClause &
+\centering ::= &
+{\textless}LASTPRIVATE{\textgreater} {\textquotedbl}({\textquotedbl} \hyperlink{prod107}{VariableList}
+{\textquotedbl}){\textquotedbl}\\
+\raggedleft \hypertarget{prod102}{}OmpSharedClause &
+\centering ::= &
+{\textless}SHARED{\textgreater} {\textquotedbl}({\textquotedbl} \hyperlink{prod107}{VariableList}
+{\textquotedbl}){\textquotedbl}\\
+\raggedleft \hypertarget{prod103}{}OmpCopyinClause &
+\centering ::= &
+{\textless}COPYIN{\textgreater} {\textquotedbl}({\textquotedbl} \hyperlink{prod107}{VariableList}
+{\textquotedbl}){\textquotedbl}\\
+\raggedleft \hypertarget{prod104}{}OmpDfltSharedClause &
+\centering ::= &
+{\textless}DFLT{\textgreater} {\textquotedbl}({\textquotedbl} {\textless}SHARED{\textgreater}
+{\textquotedbl}){\textquotedbl}\\
+\raggedleft \hypertarget{prod105}{}OmpDfltNoneClause &
+\centering ::= &
+{\textless}DFLT{\textgreater} {\textquotedbl}({\textquotedbl} {\textless}NONE{\textgreater}
+{\textquotedbl}){\textquotedbl}\\
+\raggedleft \hypertarget{prod106}{}OmpReductionClause &
+\centering ::= &
+{\textless}REDUCTION{\textgreater} {\textquotedbl}({\textquotedbl} \hyperlink{prod108}{ReductionOp}
+{\textquotedbl}:{\textquotedbl} \hyperlink{prod107}{VariableList} {\textquotedbl}){\textquotedbl}\\
+\raggedleft \hypertarget{prod76}{}ForConstruct &
+\centering ::= &
+\hyperlink{prod90}{OmpPragma} \hyperlink{prod109}{ForDirective} \hyperlink{prod110}{OmpForHeader}
+\hyperlink{prod66}{Statement}\\
+\raggedleft \hypertarget{prod109}{}ForDirective &
+\centering ::= &
+{\textless}FOR{\textgreater} \hyperlink{prod111}{UniqueForOrDataOrNowaitClauseList} \hyperlink{prod74}{OmpEol}\\
+\raggedleft \hypertarget{prod111}{}UniqueForOrDataOrNowaitClauseList &
+\centering ::= &
+( \hyperlink{prod112}{AUniqueForOrDataOrNowaitClause} )*\\
+\raggedleft \hypertarget{prod112}{}AUniqueForOrDataOrNowaitClause &
+\centering ::= &
+\hyperlink{prod113}{UniqueForClause}\\
+~
+ &
+\centering {\textbar} &
+\hyperlink{prod95}{DataClause}\\
+~
+ &
+\centering {\textbar} &
+\hyperlink{prod114}{NowaitClause}\\
+\raggedleft \hypertarget{prod114}{}NowaitClause &
+\centering ::= &
+{\textless}NOWAIT{\textgreater}\\
+\raggedleft \hypertarget{prod113}{}UniqueForClause &
+\centering ::= &
+{\textless}ORDERED{\textgreater}\\
+~
+ &
+\centering {\textbar} &
+\hyperlink{prod115}{UniqueForClauseSchedule}\\
+~
+ &
+\centering {\textbar} &
+\hyperlink{prod116}{UniqueForCollapse}\\
+\raggedleft \hypertarget{prod116}{}UniqueForCollapse &
+\centering ::= &
+{\textless}COLLAPSE{\textgreater} {\textquotedbl}({\textquotedbl} \hyperlink{prod98}{Expression}
+{\textquotedbl}){\textquotedbl}\\
+\raggedleft \hypertarget{prod115}{}UniqueForClauseSchedule &
+\centering ::= &
+{\textless}SCHEDULE{\textgreater} {\textquotedbl}({\textquotedbl} \hyperlink{prod117}{ScheduleKind} (
+{\textquotedbl},{\textquotedbl} \hyperlink{prod98}{Expression} )? {\textquotedbl}){\textquotedbl}\\
+\raggedleft \hypertarget{prod117}{}ScheduleKind &
+\centering ::= &
+{\textless}STATIC{\textgreater} {\textbar} {\textless}DYNAMIC{\textgreater} {\textbar} {\textless}GUIDED{\textgreater} {\textbar} {\textless}RUNTIME{\textgreater}\\
+\raggedleft \hypertarget{prod110}{}OmpForHeader &
+\centering ::= &
+{\textless}FOR{\textgreater} {\textquotedbl}({\textquotedbl} \hyperlink{prod118}{OmpForInitExpression}
+{\textquotedbl};{\textquotedbl} \hyperlink{prod119}{OmpForCondition} {\textquotedbl};{\textquotedbl}
+\hyperlink{prod120}{OmpForReinitExpression} {\textquotedbl}){\textquotedbl}\\
+\raggedleft \hypertarget{prod118}{}OmpForInitExpression &
+\centering ::= &
+{\textless}IDENTIFIER{\textgreater} {\textquotedbl}={\textquotedbl} \hyperlink{prod98}{Expression}\\
+\raggedleft \hypertarget{prod119}{}OmpForCondition &
+\centering ::= &
+\hyperlink{prod121}{OmpForLTCondition}\\
+~
+ &
+\centering {\textbar} &
+\hyperlink{prod122}{OmpForLECondition}\\
+~
+ &
+\centering {\textbar} &
+\hyperlink{prod123}{OmpForGTCondition}\\
+~
+ &
+\centering {\textbar} &
+\hyperlink{prod124}{OmpForGECondition}\\
+\raggedleft \hypertarget{prod121}{}OmpForLTCondition &
+\centering ::= &
+{\textless}IDENTIFIER{\textgreater} {\textquotedbl}{\textless}{\textquotedbl} \hyperlink{prod98}{Expression}\\
+\raggedleft \hypertarget{prod122}{}OmpForLECondition &
+\centering ::= &
+{\textless}IDENTIFIER{\textgreater} {\textquotedbl}{\textless}={\textquotedbl} \hyperlink{prod98}{Expression}\\
+\raggedleft \hypertarget{prod123}{}OmpForGTCondition &
+\centering ::= &
+{\textless}IDENTIFIER{\textgreater} {\textquotedbl}{\textgreater}{\textquotedbl} \hyperlink{prod98}{Expression}\\
+\raggedleft \hypertarget{prod124}{}OmpForGECondition &
+\centering ::= &
+{\textless}IDENTIFIER{\textgreater} {\textquotedbl}{\textgreater}={\textquotedbl} \hyperlink{prod98}{Expression}\\
+\raggedleft \hypertarget{prod120}{}OmpForReinitExpression &
+\centering ::= &
+\hyperlink{prod125}{PostIncrementId}\\
+~
+ &
+\centering {\textbar} &
+\hyperlink{prod126}{PostDecrementId}\\
+~
+ &
+\centering {\textbar} &
+\hyperlink{prod127}{PreIncrementId}\\
+~
+ &
+\centering {\textbar} &
+\hyperlink{prod128}{PreDecrementId}\\
+~
+ &
+\centering {\textbar} &
+\hyperlink{prod129}{ShortAssignPlus}\\
+~
+ &
+\centering {\textbar} &
+\hyperlink{prod130}{ShortAssignMinus}\\
+~
+ &
+\centering {\textbar} &
+\hyperlink{prod131}{OmpForAdditive}\\
+~
+ &
+\centering {\textbar} &
+\hyperlink{prod132}{OmpForSubtractive}\\
+~
+ &
+\centering {\textbar} &
+\hyperlink{prod133}{OmpForMultiplicative}\\
+\raggedleft \hypertarget{prod125}{}PostIncrementId &
+\centering ::= &
+{\textless}IDENTIFIER{\textgreater} {\textquotedbl}++{\textquotedbl}\\
+\raggedleft \hypertarget{prod126}{}PostDecrementId &
+\centering ::= &
+{\textless}IDENTIFIER{\textgreater} {\textquotedbl}-{}-{\textquotedbl}\\
+\raggedleft \hypertarget{prod127}{}PreIncrementId &
+\centering ::= &
+{\textquotedbl}++{\textquotedbl} {\textless}IDENTIFIER{\textgreater}\\
+\raggedleft \hypertarget{prod128}{}PreDecrementId &
+\centering ::= &
+{\textquotedbl}-{}-{\textquotedbl} {\textless}IDENTIFIER{\textgreater}\\
+\raggedleft \hypertarget{prod129}{}ShortAssignPlus &
+\centering ::= &
+{\textless}IDENTIFIER{\textgreater} {\textquotedbl}+={\textquotedbl} \hyperlink{prod98}{Expression}\\
+\raggedleft \hypertarget{prod130}{}ShortAssignMinus &
+\centering ::= &
+{\textless}IDENTIFIER{\textgreater} {\textquotedbl}-={\textquotedbl} \hyperlink{prod98}{Expression}\\
+\raggedleft \hypertarget{prod131}{}OmpForAdditive &
+\centering ::= &
+{\textless}IDENTIFIER{\textgreater} {\textquotedbl}={\textquotedbl} {\textless}IDENTIFIER{\textgreater}
+{\textquotedbl}+{\textquotedbl} \hyperlink{prod134}{AdditiveExpression}\\
+\raggedleft \hypertarget{prod132}{}OmpForSubtractive &
+\centering ::= &
+{\textless}IDENTIFIER{\textgreater} {\textquotedbl}={\textquotedbl} {\textless}IDENTIFIER{\textgreater}
+{\textquotedbl}-{\textquotedbl} \hyperlink{prod134}{AdditiveExpression}\\
+\raggedleft \hypertarget{prod133}{}OmpForMultiplicative &
+\centering ::= &
+{\textless}IDENTIFIER{\textgreater} {\textquotedbl}={\textquotedbl} \hyperlink{prod135}{MultiplicativeExpression}
+{\textquotedbl}+{\textquotedbl} {\textless}IDENTIFIER{\textgreater}\\
+\raggedleft \hypertarget{prod77}{}SectionsConstruct &
+\centering ::= &
+\hyperlink{prod90}{OmpPragma} {\textless}SECTIONS{\textgreater} \hyperlink{prod136}{NowaitDataClauseList}
+\hyperlink{prod74}{OmpEol} \hyperlink{prod137}{SectionsScope}\\
+\raggedleft \hypertarget{prod136}{}NowaitDataClauseList &
+\centering ::= &
+( \hyperlink{prod138}{ANowaitDataClause} )*\\
+\raggedleft \hypertarget{prod138}{}ANowaitDataClause &
+\centering ::= &
+\hyperlink{prod114}{NowaitClause}\\
+~
+ &
+\centering {\textbar} &
+\hyperlink{prod95}{DataClause}\\
+\raggedleft \hypertarget{prod137}{}SectionsScope &
+\centering ::= &
+{\textquotedbl}\{{\textquotedbl} ( \hyperlink{prod66}{Statement} )? ( \hyperlink{prod139}{ASection} )*
+{\textquotedbl}\}{\textquotedbl}\\
+\raggedleft \hypertarget{prod139}{}ASection &
+\centering ::= &
+\hyperlink{prod90}{OmpPragma} {\textless}SECTION{\textgreater} \hyperlink{prod74}{OmpEol}
+\hyperlink{prod66}{Statement}\\
+\raggedleft \hypertarget{prod78}{}SingleConstruct &
+\centering ::= &
+\hyperlink{prod90}{OmpPragma} {\textless}SINGLE{\textgreater} \hyperlink{prod140}{SingleClauseList}
+\hyperlink{prod74}{OmpEol} \hyperlink{prod66}{Statement}\\
+\raggedleft \hypertarget{prod140}{}SingleClauseList &
+\centering ::= &
+( \hyperlink{prod141}{ASingleClause} )*\\
+\raggedleft \hypertarget{prod141}{}ASingleClause &
+\centering ::= &
+\hyperlink{prod114}{NowaitClause}\\
+~
+ &
+\centering {\textbar} &
+\hyperlink{prod95}{DataClause}\\
+~
+ &
+\centering {\textbar} &
+\hyperlink{prod142}{OmpCopyPrivateClause}\\
+\raggedleft \hypertarget{prod142}{}OmpCopyPrivateClause &
+\centering ::= &
+{\textless}COPYPRIVATE{\textgreater} {\textquotedbl}({\textquotedbl} \hyperlink{prod107}{VariableList}
+{\textquotedbl}){\textquotedbl}\\
+\raggedleft \hypertarget{prod81}{}TaskConstruct &
+\centering ::= &
+\hyperlink{prod90}{OmpPragma} {\textless}TASK{\textgreater} ( \hyperlink{prod143}{TaskClause} )*
+\hyperlink{prod74}{OmpEol} \hyperlink{prod66}{Statement}\\
+\raggedleft \hypertarget{prod143}{}TaskClause &
+\centering ::= &
+\hyperlink{prod95}{DataClause}\\
+~
+ &
+\centering {\textbar} &
+\hyperlink{prod144}{UniqueTaskClause}\\
+\raggedleft \hypertarget{prod144}{}UniqueTaskClause &
+\centering ::= &
+\hyperlink{prod96}{IfClause}\\
+~
+ &
+\centering {\textbar} &
+\hyperlink{prod145}{FinalClause}\\
+~
+ &
+\centering {\textbar} &
+\hyperlink{prod146}{UntiedClause}\\
+~
+ &
+\centering {\textbar} &
+\hyperlink{prod147}{MergeableClause}\\
+\raggedleft \hypertarget{prod145}{}FinalClause &
+\centering ::= &
+{\textless}FINAL{\textgreater} {\textquotedbl}({\textquotedbl} \hyperlink{prod98}{Expression}
+{\textquotedbl}){\textquotedbl}\\
+\raggedleft \hypertarget{prod146}{}UntiedClause &
+\centering ::= &
+{\textless}UNTIED{\textgreater}\\
+\raggedleft \hypertarget{prod147}{}MergeableClause &
+\centering ::= &
+{\textless}MERGEABLE{\textgreater}\\
+\raggedleft \hypertarget{prod79}{}ParallelForConstruct &
+\centering ::= &
+\hyperlink{prod90}{OmpPragma} {\textless}PARALLEL{\textgreater} {\textless}FOR{\textgreater}
+\hyperlink{prod148}{UniqueParallelOrUniqueForOrDataClauseList} \hyperlink{prod74}{OmpEol}
+\hyperlink{prod110}{OmpForHeader} \hyperlink{prod66}{Statement}\\
+\raggedleft \hypertarget{prod148}{}UniqueParallelOrUniqueForOrDataClauseList &
+\centering ::= &
+( \hyperlink{prod149}{AUniqueParallelOrUniqueForOrDataClause} )*\\
+\raggedleft \hypertarget{prod149}{}AUniqueParallelOrUniqueForOrDataClause &
+\centering ::= &
+\hyperlink{prod94}{UniqueParallelClause}\\
+~
+ &
+\centering {\textbar} &
+\hyperlink{prod113}{UniqueForClause}\\
+~
+ &
+\centering {\textbar} &
+\hyperlink{prod95}{DataClause}\\
+\raggedleft \hypertarget{prod80}{}ParallelSectionsConstruct &
+\centering ::= &
+\hyperlink{prod90}{OmpPragma} {\textless}PARALLEL{\textgreater} {\textless}SECTIONS{\textgreater}
+\hyperlink{prod92}{UniqueParallelOrDataClauseList} \hyperlink{prod74}{OmpEol} \hyperlink{prod137}{SectionsScope}\\
+\raggedleft \hypertarget{prod82}{}MasterConstruct &
+\centering ::= &
+\hyperlink{prod90}{OmpPragma} {\textless}MASTER{\textgreater} \hyperlink{prod74}{OmpEol} \hyperlink{prod66}{Statement}\\
+\raggedleft \hypertarget{prod83}{}CriticalConstruct &
+\centering ::= &
+\hyperlink{prod90}{OmpPragma} {\textless}CRITICAL{\textgreater} ( \hyperlink{prod150}{RegionPhrase} )?
+\hyperlink{prod74}{OmpEol} \hyperlink{prod66}{Statement}\\
+\raggedleft \hypertarget{prod150}{}RegionPhrase &
+\centering ::= &
+{\textquotedbl}({\textquotedbl} {\textless}IDENTIFIER{\textgreater} {\textquotedbl}){\textquotedbl}\\
+\raggedleft \hypertarget{prod84}{}AtomicConstruct &
+\centering ::= &
+\hyperlink{prod90}{OmpPragma} {\textless}ATOMIC{\textgreater} ( \hyperlink{prod151}{AtomicClause} )?
+\hyperlink{prod74}{OmpEol} \hyperlink{prod68}{Statement}\\
+\raggedleft \hypertarget{prod151}{}AtomicClause &
+\centering ::= &
+{\textless}READ{\textgreater} {\textbar} {\textless}WRITE{\textgreater} {\textbar} {\textless}UPDATE{\textgreater} {\textbar} {\textless}CAPTURE{\textgreater}\\
+\raggedleft \hypertarget{prod89}{}FlushDirective &
+\centering ::= &
+\hyperlink{prod90}{OmpPragma} {\textless}FLUSH{\textgreater} ( \hyperlink{prod152}{FlushVars} )?
+\hyperlink{prod74}{OmpEol}\\
+\raggedleft \hypertarget{prod152}{}FlushVars &
+\centering ::= &
+{\textquotedbl}({\textquotedbl} \hyperlink{prod107}{VariableList} {\textquotedbl}){\textquotedbl}\\
+\raggedleft \hypertarget{prod85}{}OrderedConstruct &
+\centering ::= &
+\hyperlink{prod90}{OmpPragma} {\textless}ORDERED{\textgreater} \hyperlink{prod74}{OmpEol}
+\hyperlink{prod66}{Statement}\\
+\raggedleft \hypertarget{prod86}{}BarrierDirective &
+\centering ::= &
+\hyperlink{prod90}{OmpPragma} {\textless}BARRIER{\textgreater} \hyperlink{prod74}{OmpEol}\\
+\raggedleft \hypertarget{prod87}{}TaskwaitDirective &
+\centering ::= &
+\hyperlink{prod90}{OmpPragma} {\textless}TASKWAIT{\textgreater} \hyperlink{prod74}{OmpEol}\\
+\raggedleft \hypertarget{prod88}{}TaskyieldDirective &
+\centering ::= &
+\hyperlink{prod90}{OmpPragma} {\textless}TASKYIELD{\textgreater} \hyperlink{prod74}{OmpEol}\\
+\raggedleft \hypertarget{prod9}{}ThreadPrivateDirective &
+\centering ::= &
+\hyperlink{prod90}{OmpPragma} {\textless}THREADPRIVATE{\textgreater} {\textquotedbl}({\textquotedbl}
+\hyperlink{prod107}{VariableList} {\textquotedbl}){\textquotedbl} \hyperlink{prod74}{OmpEol}\\
+\raggedleft \hypertarget{prod8}{}DeclareReductionDirective &
+\centering ::= &
+\hyperlink{prod90}{OmpPragma} {\textless}DECLARE{\textgreater} {\textless}REDUCTION{\textgreater}
+{\textquotedbl}({\textquotedbl} \hyperlink{prod108}{ReductionOp} {\textquotedbl}:{\textquotedbl}
+\hyperlink{prod153}{ReductionTypeList} {\textquotedbl}:{\textquotedbl} \hyperlink{prod98}{Expression}
+{\textquotedbl}){\textquotedbl} ( \hyperlink{prod154}{InitializerClause} )? \hyperlink{prod74}{OmpEol}\\
+\raggedleft \hypertarget{prod153}{}ReductionTypeList &
+\centering ::= &
+( \hyperlink{prod17}{TypeSpecifier} )*\\
+\raggedleft \hypertarget{prod154}{}InitializerClause &
+\centering ::= &
+\hyperlink{prod155}{AssignInitializerClause}\\
+~
+ &
+\centering {\textbar} &
+\hyperlink{prod156}{ArgumentInitializerClause}\\
+\raggedleft \hypertarget{prod155}{}AssignInitializerClause &
+\centering ::= &
+{\textless}INITIALIZER{\textgreater} {\textquotedbl}({\textquotedbl} {\textless}IDENTIFIER{\textgreater}
+{\textquotedbl}={\textquotedbl} \hyperlink{prod28}{Initializer} {\textquotedbl}){\textquotedbl}\\
+\raggedleft \hypertarget{prod156}{}ArgumentInitializerClause &
+\centering ::= &
+{\textless}INITIALIZER{\textgreater} {\textquotedbl}({\textquotedbl} {\textless}IDENTIFIER{\textgreater}
+{\textquotedbl}({\textquotedbl} \hyperlink{prod157}{ExpressionList} {\textquotedbl}){\textquotedbl}
+{\textquotedbl}){\textquotedbl}\\
+\raggedleft \hypertarget{prod108}{}ReductionOp &
+\centering ::= &
+{\textless}IDENTIFIER{\textgreater} {\textbar} {\textquotedbl}+{\textquotedbl} {\textbar} {\textquotedbl}*{\textquotedbl} {\textbar} {\textquotedbl}-{\textquotedbl} {\textbar} {\textquotedbl}\&{\textquotedbl} {\textbar} {\textquotedbl}\^{}{\textquotedbl} {\textbar} {\textquotedbl}{\textbar}{\textquotedbl} {\textbar} {\textquotedbl}{\textbar}{\textbar}{\textquotedbl} {\textbar} {\textquotedbl}\&\&{\textquotedbl}\\
+\raggedleft \hypertarget{prod107}{}VariableList &
+\centering ::= &
+{\textless}IDENTIFIER{\textgreater} ( {\textquotedbl},{\textquotedbl} {\textless}IDENTIFIER{\textgreater} )*\\
+\raggedleft \hypertarget{prod67}{}LabeledStatement &
+\centering ::= &
+\hyperlink{prod158}{SimpleLabeledStatement}\\
+~
+ &
+\centering {\textbar} &
+\hyperlink{prod159}{CaseLabeledStatement}\\
+~
+ &
+\centering {\textbar} &
+\hyperlink{prod160}{DefaultLabeledStatement}\\
+\raggedleft \hypertarget{prod158}{}SimpleLabeledStatement &
+\centering ::= &
+{\textless}IDENTIFIER{\textgreater} {\textquotedbl}:{\textquotedbl} \hyperlink{prod66}{Statement}\\
+\raggedleft \hypertarget{prod159}{}CaseLabeledStatement &
+\centering ::= &
+{\textless}CASE{\textgreater} \hyperlink{prod35}{ConstantExpression} {\textquotedbl}:{\textquotedbl}
+\hyperlink{prod66}{Statement}\\
+\raggedleft \hypertarget{prod160}{}DefaultLabeledStatement &
+\centering ::= &
+{\textless}DFLT{\textgreater} {\textquotedbl}:{\textquotedbl} \hyperlink{prod66}{Statement}\\
+\raggedleft \hypertarget{prod68}{}ExpressionStatement &
+\centering ::= &
+( \hyperlink{prod98}{Expression} )? {\textquotedbl};{\textquotedbl}\\
+\raggedleft \hypertarget{prod13}{}CompoundStatement &
+\centering ::= &
+{\textquotedbl}\{{\textquotedbl} ( \hyperlink{prod161}{CompoundStatementElement} )* {\textquotedbl}\}{\textquotedbl}\\
+\raggedleft \hypertarget{prod161}{}CompoundStatementElement &
+\centering ::= &
+\hyperlink{prod6}{Declaration}\\
+~
+ &
+\centering {\textbar} &
+\hyperlink{prod66}{Statement}\\
+\raggedleft \hypertarget{prod69}{}SelectionStatement &
+\centering ::= &
+\hyperlink{prod162}{IfStatement}\\
+~
+ &
+\centering {\textbar} &
+\hyperlink{prod163}{SwitchStatement}\\
+\raggedleft \hypertarget{prod162}{}IfStatement &
+\centering ::= &
+{\textless}IF{\textgreater} {\textquotedbl}({\textquotedbl} \hyperlink{prod98}{Expression}
+{\textquotedbl}){\textquotedbl} \hyperlink{prod66}{Statement} ( {\textless}ELSE{\textgreater}
+\hyperlink{prod66}{Statement} )?\\
+\raggedleft \hypertarget{prod163}{}SwitchStatement &
+\centering ::= &
+{\textless}SWITCH{\textgreater} {\textquotedbl}({\textquotedbl} \hyperlink{prod98}{Expression}
+{\textquotedbl}){\textquotedbl} \hyperlink{prod66}{Statement}\\
+\raggedleft \hypertarget{prod70}{}IterationStatement &
+\centering ::= &
+\hyperlink{prod164}{WhileStatement}\\
+~
+ &
+\centering {\textbar} &
+\hyperlink{prod165}{DoStatement}\\
+~
+ &
+\centering {\textbar} &
+\hyperlink{prod166}{ForStatement}\\
+\raggedleft \hypertarget{prod164}{}WhileStatement &
+\centering ::= &
+{\textless}WHILE{\textgreater} {\textquotedbl}({\textquotedbl} \hyperlink{prod98}{Expression}
+{\textquotedbl}){\textquotedbl} \hyperlink{prod66}{Statement}\\
+\raggedleft \hypertarget{prod165}{}DoStatement &
+\centering ::= &
+{\textless}DO{\textgreater} \hyperlink{prod66}{Statement} {\textless}WHILE{\textgreater} {\textquotedbl}({\textquotedbl}
+\hyperlink{prod98}{Expression} {\textquotedbl}){\textquotedbl} {\textquotedbl};{\textquotedbl}\\
+\raggedleft \hypertarget{prod166}{}ForStatement &
+\centering ::= &
+{\textless}FOR{\textgreater} {\textquotedbl}({\textquotedbl} ( \hyperlink{prod98}{Expression} )?
+{\textquotedbl};{\textquotedbl} ( \hyperlink{prod98}{Expression} )? {\textquotedbl};{\textquotedbl} (
+\hyperlink{prod98}{Expression} )? {\textquotedbl}){\textquotedbl} \hyperlink{prod66}{Statement}\\
+\raggedleft \hypertarget{prod71}{}JumpStatement &
+\centering ::= &
+\hyperlink{prod167}{GotoStatement}\\
+~
+ &
+\centering {\textbar} &
+\hyperlink{prod168}{ContinueStatement}\\
+~
+ &
+\centering {\textbar} &
+\hyperlink{prod169}{BreakStatement}\\
+~
+ &
+\centering {\textbar} &
+\hyperlink{prod170}{ReturnStatement}\\
+\raggedleft \hypertarget{prod167}{}GotoStatement &
+\centering ::= &
+{\textless}GOTO{\textgreater} {\textless}IDENTIFIER{\textgreater} {\textquotedbl};{\textquotedbl}\\
+\raggedleft \hypertarget{prod168}{}ContinueStatement &
+\centering ::= &
+{\textless}CONTINUE{\textgreater} {\textquotedbl};{\textquotedbl}\\
+\raggedleft \hypertarget{prod169}{}BreakStatement &
+\centering ::= &
+{\textless}BREAK{\textgreater} {\textquotedbl};{\textquotedbl}\\
+\raggedleft \hypertarget{prod170}{}ReturnStatement &
+\centering ::= &
+{\textless}RETURN{\textgreater} ( \hyperlink{prod98}{Expression} )? {\textquotedbl};{\textquotedbl}\\
+\raggedleft \hypertarget{prod98}{}Expression &
+\centering ::= &
+\hyperlink{prod56}{AssignmentExpression} ( {\textquotedbl},{\textquotedbl} \hyperlink{prod56}{AssignmentExpression} )*\\
+\raggedleft \hypertarget{prod56}{}AssignmentExpression &
+\centering ::= &
+\hyperlink{prod171}{NonConditionalExpression}\\
+~
+ &
+\centering {\textbar} &
+\hyperlink{prod172}{ConditionalExpression}\\
+\raggedleft \hypertarget{prod171}{}NonConditionalExpression &
+\centering ::= &
+\hyperlink{prod173}{UnaryExpression} \hyperlink{prod174}{AssignmentOperator} \hyperlink{prod56}{AssignmentExpression}\\
+\raggedleft \hypertarget{prod174}{}AssignmentOperator &
+\centering ::= &
+{\textquotedbl}={\textquotedbl} {\textbar} {\textquotedbl}*={\textquotedbl} {\textbar} {\textquotedbl}/={\textquotedbl} {\textbar} {\textquotedbl}\%={\textquotedbl} {\textbar} {\textquotedbl}+={\textquotedbl} {\textbar} {\textquotedbl}-={\textquotedbl} {\textbar} {\textquotedbl}{\textless}{\textless}={\textquotedbl} {\textbar} {\textquotedbl}{\textgreater}{\textgreater}={\textquotedbl} {\textbar} {\textquotedbl}\&={\textquotedbl} {\textbar} {\textquotedbl}\^{}={\textquotedbl} {\textbar} {\textquotedbl}{\textbar}={\textquotedbl}\\
+\raggedleft \hypertarget{prod172}{}ConditionalExpression &
+\centering ::= &
+\hyperlink{prod175}{LogicalORExpression} ( {\textquotedbl}?{\textquotedbl} \hyperlink{prod98}{Expression}
+{\textquotedbl}:{\textquotedbl} \hyperlink{prod172}{ConditionalExpression} )?\\
+\raggedleft \hypertarget{prod35}{}ConstantExpression &
+\centering ::= &
+\hyperlink{prod172}{ConditionalExpression}\\
+\raggedleft \hypertarget{prod175}{}LogicalORExpression &
+\centering ::= &
+\hyperlink{prod176}{LogicalANDExpression} ( {\textquotedbl}{\textbar}{\textbar}{\textquotedbl}
+\hyperlink{prod175}{LogicalORExpression} )?\\
+\raggedleft \hypertarget{prod176}{}LogicalANDExpression &
+\centering ::= &
+\hyperlink{prod177}{InclusiveORExpression} ( {\textquotedbl}\&\&{\textquotedbl}
+\hyperlink{prod176}{LogicalANDExpression} )?\\
+\raggedleft \hypertarget{prod177}{}InclusiveORExpression &
+\centering ::= &
+\hyperlink{prod178}{ExclusiveORExpression} ( {\textquotedbl}{\textbar}{\textquotedbl}
+\hyperlink{prod177}{InclusiveORExpression} )?\\
+\raggedleft \hypertarget{prod178}{}ExclusiveORExpression &
+\centering ::= &
+\hyperlink{prod179}{ANDExpression} ( {\textquotedbl}\^{}{\textquotedbl} \hyperlink{prod178}{ExclusiveORExpression} )?\\
+\raggedleft \hypertarget{prod179}{}ANDExpression &
+\centering ::= &
+\hyperlink{prod180}{EqualityExpression} ( {\textquotedbl}\&{\textquotedbl} \hyperlink{prod179}{ANDExpression} )?\\
+\raggedleft \hypertarget{prod180}{}EqualityExpression &
+\centering ::= &
+\hyperlink{prod181}{RelationalExpression} ( \hyperlink{prod182}{EqualOptionalExpression} )?\\
+\raggedleft \hypertarget{prod182}{}EqualOptionalExpression &
+\centering ::= &
+\hyperlink{prod183}{EqualExpression}\\
+~
+ &
+\centering {\textbar} &
+\hyperlink{prod184}{NonEqualExpression}\\
+\raggedleft \hypertarget{prod183}{}EqualExpression &
+\centering ::= &
+{\textquotedbl}=={\textquotedbl} \hyperlink{prod180}{EqualityExpression}\\
+\raggedleft \hypertarget{prod184}{}NonEqualExpression &
+\centering ::= &
+{\textquotedbl}!={\textquotedbl} \hyperlink{prod180}{EqualityExpression}\\
+\raggedleft \hypertarget{prod181}{}RelationalExpression &
+\centering ::= &
+\hyperlink{prod185}{ShiftExpression} ( \hyperlink{prod186}{RelationalOptionalExpression} )?\\
+\raggedleft \hypertarget{prod186}{}RelationalOptionalExpression &
+\centering ::= &
+\hyperlink{prod187}{RelationalLTExpression}\\
+~
+ &
+\centering {\textbar} &
+\hyperlink{prod188}{RelationalGTExpression}\\
+~
+ &
+\centering {\textbar} &
+\hyperlink{prod189}{RelationalLEExpression}\\
+~
+ &
+\centering {\textbar} &
+\hyperlink{prod190}{RelationalGEExpression}\\
+\raggedleft \hypertarget{prod187}{}RelationalLTExpression &
+\centering ::= &
+{\textquotedbl}{\textless}{\textquotedbl} \hyperlink{prod181}{RelationalExpression}\\
+\raggedleft \hypertarget{prod188}{}RelationalGTExpression &
+\centering ::= &
+{\textquotedbl}{\textgreater}{\textquotedbl} \hyperlink{prod181}{RelationalExpression}\\
+\raggedleft \hypertarget{prod189}{}RelationalLEExpression &
+\centering ::= &
+{\textquotedbl}{\textless}={\textquotedbl} \hyperlink{prod181}{RelationalExpression}\\
+\raggedleft \hypertarget{prod190}{}RelationalGEExpression &
+\centering ::= &
+{\textquotedbl}{\textgreater}={\textquotedbl} \hyperlink{prod181}{RelationalExpression}\\
+\raggedleft \hypertarget{prod185}{}ShiftExpression &
+\centering ::= &
+\hyperlink{prod134}{AdditiveExpression} ( \hyperlink{prod191}{ShiftOptionalExpression} )?\\
+\raggedleft \hypertarget{prod191}{}ShiftOptionalExpression &
+\centering ::= &
+\hyperlink{prod192}{ShiftLeftExpression}\\
+~
+ &
+\centering {\textbar} &
+\hyperlink{prod193}{ShiftRightExpression}\\
+\raggedleft \hypertarget{prod192}{}ShiftLeftExpression &
+\centering ::= &
+{\textquotedbl}{\textgreater}{\textgreater}{\textquotedbl} \hyperlink{prod185}{ShiftExpression}\\
+\raggedleft \hypertarget{prod193}{}ShiftRightExpression &
+\centering ::= &
+{\textquotedbl}{\textless}{\textless}{\textquotedbl} \hyperlink{prod185}{ShiftExpression}\\
+\raggedleft \hypertarget{prod134}{}AdditiveExpression &
+\centering ::= &
+\hyperlink{prod135}{MultiplicativeExpression} ( \hyperlink{prod194}{AdditiveOptionalExpression} )?\\
+\raggedleft \hypertarget{prod194}{}AdditiveOptionalExpression &
+\centering ::= &
+\hyperlink{prod195}{AdditivePlusExpression}\\
+~
+ &
+\centering {\textbar} &
+\hyperlink{prod196}{AdditiveMinusExpression}\\
+\raggedleft \hypertarget{prod195}{}AdditivePlusExpression &
+\centering ::= &
+{\textquotedbl}+{\textquotedbl} \hyperlink{prod134}{AdditiveExpression}\\
+\raggedleft \hypertarget{prod196}{}AdditiveMinusExpression &
+\centering ::= &
+{\textquotedbl}-{\textquotedbl} \hyperlink{prod134}{AdditiveExpression}\\
+\raggedleft \hypertarget{prod135}{}MultiplicativeExpression &
+\centering ::= &
+\hyperlink{prod197}{CastExpression} ( \hyperlink{prod198}{MultiplicativeOptionalExpression} )?\\
+\raggedleft \hypertarget{prod198}{}MultiplicativeOptionalExpression &
+\centering ::= &
+\hyperlink{prod199}{MultiplicativeMultiExpression}\\
+~
+ &
+\centering {\textbar} &
+\hyperlink{prod200}{MultiplicativeDivExpression}\\
+~
+ &
+\centering {\textbar} &
+\hyperlink{prod201}{MultiplicativeModExpression}\\
+\raggedleft \hypertarget{prod199}{}MultiplicativeMultiExpression &
+\centering ::= &
+{\textquotedbl}*{\textquotedbl} \hyperlink{prod135}{MultiplicativeExpression}\\
+\raggedleft \hypertarget{prod200}{}MultiplicativeDivExpression &
+\centering ::= &
+{\textquotedbl}/{\textquotedbl} \hyperlink{prod135}{MultiplicativeExpression}\\
+\raggedleft \hypertarget{prod201}{}MultiplicativeModExpression &
+\centering ::= &
+{\textquotedbl}\%{\textquotedbl} \hyperlink{prod135}{MultiplicativeExpression}\\
+\raggedleft \hypertarget{prod197}{}CastExpression &
+\centering ::= &
+\hyperlink{prod202}{CastExpressionTyped}\\
+~
+ &
+\centering {\textbar} &
+\hyperlink{prod173}{UnaryExpression}\\
+\raggedleft \hypertarget{prod202}{}CastExpressionTyped &
+\centering ::= &
+{\textquotedbl}({\textquotedbl} \hyperlink{prod59}{TypeName} {\textquotedbl}){\textquotedbl}
+\hyperlink{prod197}{CastExpression}\\
+\raggedleft \hypertarget{prod173}{}UnaryExpression &
+\centering ::= &
+\hyperlink{prod203}{UnaryExpressionPreIncrement}\\
+~
+ &
+\centering {\textbar} &
+\hyperlink{prod204}{UnaryExpressionPreDecrement}\\
+~
+ &
+\centering {\textbar} &
+\hyperlink{prod205}{UnarySizeofExpression}\\
+~
+ &
+\centering {\textbar} &
+\hyperlink{prod206}{UnaryCastExpression}\\
+~
+ &
+\centering {\textbar} &
+\hyperlink{prod207}{PostfixExpression}\\
+\raggedleft \hypertarget{prod203}{}UnaryExpressionPreIncrement &
+\centering ::= &
+{\textquotedbl}++{\textquotedbl} \hyperlink{prod173}{UnaryExpression}\\
+\raggedleft \hypertarget{prod204}{}UnaryExpressionPreDecrement &
+\centering ::= &
+{\textquotedbl}-{}-{\textquotedbl} \hyperlink{prod173}{UnaryExpression}\\
+\raggedleft \hypertarget{prod206}{}UnaryCastExpression &
+\centering ::= &
+\hyperlink{prod208}{UnaryOperator} \hyperlink{prod197}{CastExpression}\\
+\raggedleft \hypertarget{prod205}{}UnarySizeofExpression &
+\centering ::= &
+\hyperlink{prod209}{SizeofTypeName}\\
+~
+ &
+\centering {\textbar} &
+\hyperlink{prod210}{SizeofUnaryExpression}\\
+\raggedleft \hypertarget{prod210}{}SizeofUnaryExpression &
+\centering ::= &
+{\textless}SIZEOF{\textgreater} \hyperlink{prod173}{UnaryExpression}\\
+\raggedleft \hypertarget{prod209}{}SizeofTypeName &
+\centering ::= &
+{\textless}SIZEOF{\textgreater} {\textquotedbl}({\textquotedbl} \hyperlink{prod59}{TypeName}
+{\textquotedbl}){\textquotedbl}\\
+\raggedleft \hypertarget{prod208}{}UnaryOperator &
+\centering ::= &
+{\textquotedbl}\&{\textquotedbl} {\textbar} {\textquotedbl}*{\textquotedbl} {\textbar} {\textquotedbl}+{\textquotedbl} {\textbar} {\textquotedbl}-{\textquotedbl} {\textbar} {\textquotedbl}\~{}{\textquotedbl} {\textbar} {\textquotedbl}!{\textquotedbl}\\
+\raggedleft \hypertarget{prod207}{}PostfixExpression &
+\centering ::= &
+\hyperlink{prod211}{PrimaryExpression} \hyperlink{prod212}{PostfixOperationsList}\\
+\raggedleft \hypertarget{prod212}{}PostfixOperationsList &
+\centering ::= &
+( \hyperlink{prod213}{APostixOperation} )*\\
+\raggedleft \hypertarget{prod213}{}APostixOperation &
+\centering ::= &
+\hyperlink{prod214}{BracketExpression}\\
+~
+ &
+\centering {\textbar} &
+\hyperlink{prod215}{ArgumentList}\\
+~
+ &
+\centering {\textbar} &
+\hyperlink{prod216}{DotId}\\
+~
+ &
+\centering {\textbar} &
+\hyperlink{prod217}{ArrowId}\\
+~
+ &
+\centering {\textbar} &
+\hyperlink{prod218}{PlusPlus}\\
+~
+ &
+\centering {\textbar} &
+\hyperlink{prod219}{MinusMinus}\\
+\raggedleft \hypertarget{prod218}{}PlusPlus &
+\centering ::= &
+{\textquotedbl}++{\textquotedbl}\\
+\raggedleft \hypertarget{prod219}{}MinusMinus &
+\centering ::= &
+{\textquotedbl}-{}-{\textquotedbl}\\
+\raggedleft \hypertarget{prod214}{}BracketExpression &
+\centering ::= &
+{\textquotedbl}[{\textquotedbl} \hyperlink{prod98}{Expression} {\textquotedbl}]{\textquotedbl}\\
+\raggedleft \hypertarget{prod215}{}ArgumentList &
+\centering ::= &
+{\textquotedbl}({\textquotedbl} ( \hyperlink{prod157}{ExpressionList} )? {\textquotedbl}){\textquotedbl}\\
+\raggedleft \hypertarget{prod216}{}DotId &
+\centering ::= &
+{\textquotedbl}.{\textquotedbl} {\textless}IDENTIFIER{\textgreater}\\
+\raggedleft \hypertarget{prod217}{}ArrowId &
+\centering ::= &
+{\textquotedbl}-{\textgreater}{\textquotedbl} {\textless}IDENTIFIER{\textgreater}\\
+\raggedleft \hypertarget{prod211}{}PrimaryExpression &
+\centering ::= &
+{\textless}IDENTIFIER{\textgreater}\\
+~
+ &
+\centering {\textbar} &
+\hyperlink{prod220}{Constant}\\
+~
+ &
+\centering {\textbar} &
+\hyperlink{prod221}{ExpressionClosed}\\
+\raggedleft \hypertarget{prod221}{}ExpressionClosed &
+\centering ::= &
+{\textquotedbl}({\textquotedbl} \hyperlink{prod98}{Expression} {\textquotedbl}){\textquotedbl}\\
+\raggedleft \hypertarget{prod157}{}ExpressionList &
+\centering ::= &
+\hyperlink{prod56}{AssignmentExpression} ( {\textquotedbl},{\textquotedbl} \hyperlink{prod56}{AssignmentExpression} )*\\
+\raggedleft \hypertarget{prod220}{}Constant &
+\centering ::= &
+{\textless}INTEGER\_LITERAL{\textgreater} {\textbar} {\textless}FLOATING\_POINT\_LITERAL{\textgreater} {\textbar} {\textless}CHARACTER\_LITERAL{\textgreater} {\textbar} ( {\textless}STRING\_LITERAL{\textgreater} )+\\
+\raggedleft BeginNode &
+~
+ &
+~
+\\
+\raggedleft EndNode &
+~
+ &
+~
+\\
+\raggedleft DummyFlushDirective &
+~
+ &
+~
+\\
+\raggedleft SimplePrimaryExpression &
+~
+ &
+~
+\\
+\raggedleft \hypertarget{prod227}{}CallStatement &
+~
+ &
+~
+\\
+\raggedleft PreCallNode &
+~
+ &
+~
+\\
+\raggedleft PostCallNode &
+~
+ &
+~
+\\
+\end{supertabular}
+\end{center}
+%\end{flushleft}
+
+\bigskip
+\end{document}

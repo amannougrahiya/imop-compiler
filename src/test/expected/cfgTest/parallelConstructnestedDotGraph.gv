@@ -1,0 +1,47 @@
+digraph graph1917555614 {
+	compound=true;
+	edge[color=blue];
+	subgraph cluster1871362568 {
+		compound=true;
+		style=dotted;
+		label="main()";
+		node2146540595[label="B_FuDe", shape="triangle"];
+		node1387511555[label="E_FuDe", shape="invtriangle"];
+		subgraph cluster2093613480 {
+			compound=true;
+			style=dotted;
+			label="CompoundStatement";
+			node1177206467[label="B_CoSt", shape="triangle"];
+			node902406705[label="E_CoSt", shape="invtriangle"];
+			node2051889196[label="int x = 5;"];
+			subgraph cluster1445384588 {
+				compound=true;
+				style=dotted;
+				label="ParallelConstruct";
+				node1172943149[label="B_PaCo", shape="triangle"];
+				node1036606347[label="E_PaCo", shape="invtriangle"];
+				subgraph cluster760604710 {
+					compound=true;
+					style=dotted;
+					label="CompoundStatement";
+					node1293940401[label="B_CoSt", shape="triangle"];
+					node1173837542[label="E_CoSt", shape="invtriangle"];
+					node848644304[label="int localX;"];
+					node805536380[label="localX = x;"];
+				}
+			}
+			node43729075[label="x = 10;"];
+		}
+	}
+	node2146540595 -> node1177206467[tailport=s, headport=n, weight=8, lhead=cluster2093613480];
+	node1177206467 -> node2051889196[tailport=s, headport=n, weight=8];
+	node2051889196 -> node1172943149[lhead=cluster1445384588, weight=8, tailport=s, headport=n];
+	node1172943149 -> node1293940401[tailport=s, headport=n, weight=8, lhead=cluster760604710];
+	node1293940401 -> node848644304[tailport=s, headport=n, weight=8];
+	node848644304 -> node805536380[weight=8, tailport=s, headport=n];
+	node805536380 -> node1173837542[weight=8, tailport=s, headport=n];
+	node1173837542 -> node1036606347[tailport=s, headport=n, weight=8, ltail=cluster760604710];
+	node1036606347 -> node43729075[tailport=s, headport=n, weight=8, ltail=cluster1445384588];
+	node43729075 -> node902406705[weight=8, tailport=s, headport=n];
+	node902406705 -> node1387511555[tailport=s, headport=n, weight=8, ltail=cluster2093613480];
+}
