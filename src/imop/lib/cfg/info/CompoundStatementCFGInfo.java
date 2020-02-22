@@ -62,7 +62,6 @@ import imop.lib.util.CellSet;
 import imop.lib.util.Misc;
 import imop.parser.FrontEnd;
 import imop.parser.Program;
-import javafx.geometry.Side;
 
 public class CompoundStatementCFGInfo extends CFGInfo {
 
