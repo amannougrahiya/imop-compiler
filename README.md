@@ -3,6 +3,7 @@
 ***
 #### About
 This is the public-release beta version of IMOP. This document explains how to setup and use IMOP.
+For a quick tutorial on IMOP, as presented at ACM CGO 2020, please visit IMOP's webpage at [bit.ly/imop-cgo20](https://bit.ly/imop-cgo20), where you can also find two tech-reports explaining the details of IMOP.
 
 #### Dependencies
 - Java SE 8 (or higher)
