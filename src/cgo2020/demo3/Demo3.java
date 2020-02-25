@@ -6,7 +6,7 @@
  * The above notice shall be included in all copies or substantial
  * portions of this file.
  */
-package cgo20.demo3;
+package cgo2020.demo3;
 
 import imop.ast.node.external.FunctionDefinition;
 import imop.ast.node.internal.CallStatement;
@@ -16,27 +16,22 @@ import imop.parser.Program;
 public class Demo3 {
 
 	public static void main(String[] args) {
-		args = new String[]{"-f", "runner/cgo-eg/example.c", "-nru"}; 
+		args = new String[] { "-f", "runner/cgo-eg/example.c", "-nru" };
 		Program.parseNormalizeInput(args);
+
 		for (FunctionDefinition func : Program.getRoot().getInfo().getAllFunctionDefinitions()) {
-			/*
-			 * TODO: Print all call-sites present lexically present within
-			 * "func".
-			 */
-			/*
-			 * TODO: Print all call-sites in the program that may have "func"
-			 */
 			for (CallStatement callStmt : Misc.getInheritedEnclosee(func, CallStatement.class)) {
-				/*
-				 * TODO: For callStmt:
-				 * (i) print its target function(s), and
-				 * (ii) print all its arguments.
-				 */
+				System.out.println(callStmt);
 			}
-			/*
-			 * TODO: Check if "func" is a recursive method.
-			 */
+			System.out.println(func.getInfo().getCallersOfThis());
+			for (CallStatement callStmt : Misc.getInheritedEnclosee(func, CallStatement.class)) {
+				System.out.println(callStmt.getInfo().getCalledDefinitions());
+				System.out.print(callStmt.getPreCallNode().getArgumentList());
+			}
+			System.out.println("Recursive?" + (func.getInfo().isRecursive() ? "Yes" : "No"));
 		}
+		System.exit(0);
+
 	}
 
 }

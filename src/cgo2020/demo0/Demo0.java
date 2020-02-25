@@ -6,7 +6,7 @@
  * The above notice shall be included in all copies or substantial
  * portions of this file.
  */
-package cgo20.demo0;
+package cgo2020.demo0;
 
 import imop.parser.Program;
 

@@ -6,29 +6,29 @@
  * The above notice shall be included in all copies or substantial
  * portions of this file.
  */
-package cgo20.demo6;
+package cgo2020.demo2;
 
-import imop.ast.node.external.DoStatement;
+import imop.ast.node.external.IfStatement;
 import imop.ast.node.external.WhileStatement;
 import imop.lib.util.Misc;
 import imop.parser.Program;
 
-public class Demo6 {
+public class Demo2 {
 
 	public static void main(String[] args) {
 		args = new String[]{"-f", "runner/cgo-eg/example.c", "-nru"}; 
 		Program.parseNormalizeInput(args);
+
 		for (WhileStatement whileStmt : Misc.getInheritedEnclosee(Program.getRoot(), WhileStatement.class)) {
-			/*
-			 * TODO: Write a pass to perform loop unrolling for while loops.
-			 */
+			System.out.println(whileStmt.getInfo().getCFGInfo().getPredicate());
+			System.out.println(whileStmt.getInfo().getCFGInfo().getBody());
 		}
-		for (DoStatement doStmt : Misc.getInheritedEnclosee(Program.getRoot(), DoStatement.class)) {
-			/*
-			 * Write a pass that translates a do-while loop to a while loop.
-			 * (Assume that no jump statements exist in the body.)
-			 */
+		for (IfStatement ifStmt : Misc.getInheritedEnclosee(Program.getRoot(), IfStatement.class)) {
+			if (!ifStmt.getInfo().getCFGInfo().hasElseBody()) {
+				System.out.println(ifStmt.getInfo().getCFGInfo().getSuccessors());
+			}
 		}
+		System.exit(0);
 	}
 
 }

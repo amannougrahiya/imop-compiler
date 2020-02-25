@@ -6,7 +6,7 @@
  * The above notice shall be included in all copies or substantial
  * portions of this file.
  */
-package cgo20;
+package cgo2020.demo9;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -19,12 +19,14 @@ import imop.lib.analysis.mhp.BeginPhasePoint;
 import imop.lib.analysis.mhp.Phase;
 import imop.lib.cfg.info.CompoundStatementCFGInfo;
 import imop.lib.util.CellSet;
+import imop.lib.util.DumpSnapshot;
 import imop.lib.util.Misc;
 import imop.parser.Program;
 
-public class MainProject {
+public class Demo9 {
 
 	public static void main(String[] args) {
+		args = new String[]{"-f", "runner/cgo-eg/example.c", "-nru"}; 
 		Program.parseNormalizeInput(args);
 		/*
 		 * Check if a barrier-directive is required to preserve
@@ -39,6 +41,8 @@ public class MainProject {
 		 * program.
 		 */
 		demo9();
+		DumpSnapshot.dumpRoot("final");
+		System.out.println(Program.getRoot());
 	}
 	
 	public static void demo9() {
