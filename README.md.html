@@ -3,73 +3,78 @@
 <h5 class="code-line" data-line-start=1 data-line-end=2 ><a id="PACE_Lab_Department_of_Computer_Science_and_Engineering_IIT_Madras_India_1"></a>PACE Lab, Department of Computer Science and Engineering, IIT Madras, India</h5>
 <hr>
 <h4 class="code-line" data-line-start=3 data-line-end=4 ><a id="About_3"></a>About</h4>
-<p class="has-line-data" data-line-start="4" data-line-end="5">This is the public-release beta version of IMOP. This document explains how to setup and use IMOP.</p>
-<h4 class="code-line" data-line-start=6 data-line-end=7 ><a id="Dependencies_6"></a>Dependencies</h4>
+<p class="has-line-data" data-line-start="4" data-line-end="6">This is the public-release beta version of IMOP. This document explains how to setup and use IMOP.<br>
+For a quick tutorial on IMOP, as presented at ACM CGO 2020, please visit IMOP’s webpage at <a href="https://bit.ly/imop-cgo20">bit.ly/imop-cgo20</a>, where you can also find two tech-reports explaining the details of IMOP.</p>
+<h4 class="code-line" data-line-start=7 data-line-end=8 ><a id="Dependencies_7"></a>Dependencies</h4>
 <ul>
-<li class="has-line-data" data-line-start="7" data-line-end="8">Java SE 8 (or higher)</li>
-<li class="has-line-data" data-line-start="8" data-line-end="9">Apache Ant™ version 1.9.* (or higher)</li>
-<li class="has-line-data" data-line-start="9" data-line-end="11">The Z3 Theorem Prover (<em>see below</em>)</li>
+<li class="has-line-data" data-line-start="8" data-line-end="9">Java SE 8 (or higher)</li>
+<li class="has-line-data" data-line-start="9" data-line-end="10">Apache Ant™ version 1.9.* (or higher)</li>
+<li class="has-line-data" data-line-start="10" data-line-end="12">The Z3 Theorem Prover (<em>see below</em>)</li>
 </ul>
-<h4 class="code-line" data-line-start=11 data-line-end=12 ><a id="Setting_up_Z3_Solver_11"></a>Setting up Z3 Solver</h4>
-<p class="has-line-data" data-line-start="12" data-line-end="15">In order to use SAT solver modules (like the one used for performing array-dependence checks to enable field-sensitivity), we need to install the Z3 solver (<em>build it with <code>--java</code> switch to enable Java bindings</em>). Instructions for the same can be found <a href="https://github.com/Z3Prover/z3#z3-bindings">here</a>.<br>
+<h4 class="code-line" data-line-start=12 data-line-end=13 ><a id="Setting_up_Z3_Solver_12"></a>Setting up Z3 Solver</h4>
+<p class="has-line-data" data-line-start="13" data-line-end="16">In order to use SAT solver modules (like the one used for performing array-dependence checks to enable field-sensitivity), we need to install the Z3 solver (<em>build it with <code>--java</code> switch to enable Java bindings</em>). Instructions for the same can be found <a href="https://github.com/Z3Prover/z3#z3-bindings">here</a>.<br>
 For quick reference, the installations instructions are reiterated below:<br>
 <em>Note that the script <code>mk_make.py</code> can also take <code>--prefix=&lt;install-path&gt;</code> option to enable local installation of Z3.</em></p>
-<pre><code class="has-line-data" data-line-start="16" data-line-end="23">git clone https://github.com/Z3Prover/z3.git
+<pre><code class="has-line-data" data-line-start="17" data-line-end="24">git clone https://github.com/Z3Prover/z3.git
 cd z3
 python scripts/mk_make.py --java
 cd build
 make    
 make install
 </code></pre>
-<p class="has-line-data" data-line-start="23" data-line-end="25">Note that the build process may take about 30-40 minutes on an Intel Core™ i7 with 16 GB RAM.<br>
+<p class="has-line-data" data-line-start="24" data-line-end="26">Note that the build process may take about 30-40 minutes on an Intel Core™ i7 with 16 GB RAM.<br>
 After successful installation of Z3, set the environment variable <code>Z3HOME</code> to point to the <code>z3</code> folder; this variable is used by the scripts in <code>runner</code> folder, which are used to execute IMOP on input OpenMP C programs.</p>
-<p class="has-line-data" data-line-start="26" data-line-end="27">Since IMOP may rely on certain native libraries created during the build of Z3, we need to specify the path to those libraries to the <code>java</code> runtime while using IMOP. There are two options for achieving the same:</p>
+<p class="has-line-data" data-line-start="27" data-line-end="28">Since IMOP may rely on certain native libraries created during the build of Z3, we need to specify the path to those libraries to the <code>java</code> runtime while using IMOP. There are two options for achieving the same:</p>
 <ol>
-<li class="has-line-data" data-line-start="27" data-line-end="29">Set the library-path property as <code>-Djava.library.path=&lt;install-path&gt;/build</code> during invocation of the JRE (<code>java</code>).<br>
+<li class="has-line-data" data-line-start="28" data-line-end="30">Set the library-path property as <code>-Djava.library.path=&lt;install-path&gt;/build</code> during invocation of the JRE (<code>java</code>).<br>
 <strong>OR</strong></li>
-<li class="has-line-data" data-line-start="29" data-line-end="31">Alternatively, update the <code>PATH</code> environment variable, by adding the following suffix: <code>&lt;install-path&gt;/build</code>.</li>
+<li class="has-line-data" data-line-start="30" data-line-end="32">Alternatively, update the <code>PATH</code> environment variable, by adding the following suffix: <code>&lt;install-path&gt;/build</code>.</li>
 </ol>
-<h4 class="code-line" data-line-start=31 data-line-end=32 ><a id="Setting_up_IMOP_31"></a>Setting up IMOP</h4>
-<p class="has-line-data" data-line-start="33" data-line-end="34">Following are the simple steps to build and set up IMOP.</p>
-<pre><code class="has-line-data" data-line-start="35" data-line-end="40">git clone https://github.com/amannougrahiya/imop-compiler.git
+<h4 class="code-line" data-line-start=32 data-line-end=33 ><a id="Setting_up_IMOP_32"></a>Setting up IMOP</h4>
+<p class="has-line-data" data-line-start="34" data-line-end="35">Following are the simple steps to build and set up IMOP.</p>
+<pre><code class="has-line-data" data-line-start="36" data-line-end="41">git clone https://github.com/amannougrahiya/imop-compiler.git
 cd imop-compiler
 ant clean
 ant
 </code></pre>
-<p class="has-line-data" data-line-start="40" data-line-end="41">After the build process is complete, set the environment variable <code>IMOPHOME</code> to point to the <code>imop-compiler</code> folder; this is used by the scripts in <code>runner</code>.</p>
-<p class="has-line-data" data-line-start="42" data-line-end="44">Note that for the purpose of compilation, the ant-script automatically adds <code>third-party-tools/com.microsoft.z3.jar</code> to classpath.<br>
+<p class="has-line-data" data-line-start="41" data-line-end="42">After the build process is complete, set the environment variable <code>IMOPHOME</code> to point to the <code>imop-compiler</code> folder; this is used by the scripts in <code>runner</code>.</p>
+<p class="has-line-data" data-line-start="43" data-line-end="45">Note that for the purpose of compilation, the ant-script automatically adds <code>third-party-tools/com.microsoft.z3.jar</code> to classpath.<br>
 These commands should compile the project and generate the class files in <code>bin</code> folder.</p>
-<h4 class="code-line" data-line-start=45 data-line-end=46 ><a id="Testing_IMOP_via_commandline_interface_45"></a>Testing IMOP via command-line interface</h4>
-<p class="has-line-data" data-line-start="46" data-line-end="48">Two sample scripts to run IMOP on a set of input OpenMP C programs can be found in the <code>imop-compiler/runner</code> folder. One of the scripts, <code>pre-and-post.sh</code> is used to execute <code>imop.Main</code> twice – first in <em>prepass</em> mode, and then in <em>postpass</em> mode – on all the <code>*.c</code> files available in a folder provided as the first argument to the script.<br>
+<h4 class="code-line" data-line-start=46 data-line-end=47 ><a id="Testing_IMOP_via_commandline_interface_46"></a>Testing IMOP via command-line interface</h4>
+<p class="has-line-data" data-line-start="47" data-line-end="49">Two sample scripts to run IMOP on a set of input OpenMP C programs can be found in the <code>imop-compiler/runner</code> folder. One of the scripts, <code>pre-and-post.sh</code> is used to execute <code>imop.Main</code> twice – first in <em>prepass</em> mode, and then in <em>postpass</em> mode – on all the <code>*.c</code> files available in a folder provided as the first argument to the script.<br>
 Whereas, the other script, <code>post-pass-only.sh</code>, is used to execute <code>imop.Main</code> on all the <code>*.i</code> (already-prepassed) files, in postpass mode, from the folder provided as the first argument to the script.</p>
-<p class="has-line-data" data-line-start="49" data-line-end="51">The error-output (STDERR) of each invocation of these scripts is saved in the folder <code>/tmp</code> (and then dumped to the screen), whereas the STDOUT directly gets printed on the screen. All the output files representing the output program(s), are created at the folder <code>imop-compiler/output-dump</code>.<br>
+<p class="has-line-data" data-line-start="50" data-line-end="52">The error-output (STDERR) of each invocation of these scripts is saved in the folder <code>/tmp</code> (and then dumped to the screen), whereas the STDOUT directly gets printed on the screen. All the output files representing the output program(s), are created at the folder <code>imop-compiler/output-dump</code>.<br>
 Note that these scripts already set the <code>-cp</code> and <code>-Djava.library.path</code> properties while invoking <code>java</code> on <code>imop.Main</code>. For invoking <code>java</code> manually on a single <code>*.c</code> or <code>*.i</code> file, one can use the invocation syntax provided within these scripts. Kindly refer to the scripts for more detail.</p>
-<p class="has-line-data" data-line-start="52" data-line-end="53"><em>Important: Note that a folder named <code>output-dump</code> will be created in <code>imop-compiler</code> by IMOP, if not already present – this folder is used by default to save all the output-program (or intermediate-program) files that are dumped by IMOP during its run.</em></p>
-<h4 class="code-line" data-line-start=54 data-line-end=55 ><a id="Using_IMOP_in_Eclipse_IDE_Optional_but_recommended_54"></a>Using IMOP in Eclipse IDE <em>(Optional, but recommended)</em></h4>
-<p class="has-line-data" data-line-start="55" data-line-end="56">Following are the steps to set up the project in Eclipse.</p>
+<p class="has-line-data" data-line-start="53" data-line-end="54"><em>Important: Note that a folder named <code>output-dump</code> will be created in <code>imop-compiler</code> by IMOP, if not already present – this folder is used by default to save all the output-program (or intermediate-program) files that are dumped by IMOP during its run.</em></p>
+<h4 class="code-line" data-line-start=55 data-line-end=56 ><a id="Using_IMOP_in_Eclipse_IDE_Optional_but_recommended_55"></a>Using IMOP in Eclipse IDE <em>(Optional, but recommended)</em></h4>
+<p class="has-line-data" data-line-start="56" data-line-end="57">Following are the steps to set up the project in Eclipse.</p>
 <ol>
-<li class="has-line-data" data-line-start="56" data-line-end="57">Create a <em>New Java Project</em> in Eclipse, on top of the same location where IMOP’s repository has been cloned. Let’s assume that the name of this project is <code>imop-compiler</code>.</li>
-<li class="has-line-data" data-line-start="57" data-line-end="65">Perform the following changes in the <em>Properties</em> of the project (Right-click on the project’s name in the <em>Package Explore</em>, and select <em>Properties</em>):
+<li class="has-line-data" data-line-start="57" data-line-end="58">Create a <em>New Java Project</em> in Eclipse, on top of the same location where IMOP’s repository has been cloned. Let’s assume that the name of this project is <code>imop-compiler</code>.</li>
+<li class="has-line-data" data-line-start="58" data-line-end="71">Perform the following changes in the <em>Properties</em> of the project (Right-click on the project’s name in the <em>Package Explore</em>, and select <em>Properties</em>):
 <ul>
-<li class="has-line-data" data-line-start="58" data-line-end="59">In <em>Java Build Path</em> --&gt; <em>Libraries</em> --&gt; <em>Add JARs</em>, select all the JARs present at <code>imop-compiler/third-party-tools</code>.</li>
-<li class="has-line-data" data-line-start="59" data-line-end="65">Next, we need to set up a default run-configuration, say <em>Main</em>.<br>
+<li class="has-line-data" data-line-start="59" data-line-end="60">In <em>Java Build Path</em> --&gt; <em>Libraries</em> --&gt; <em>Add JARs</em>, select all the JARs present at <code>imop-compiler/third-party-tools</code>.</li>
+<li class="has-line-data" data-line-start="60" data-line-end="65">In <em>Java Build Path</em> --&gt; <em>Source</em> --&gt; <em>Excluded</em> --&gt; <em>Edit</em>, add the following source paths for exclusion:<pre><code class="has-line-data" data-line-start="62" data-line-end="65">imop/lib/test
+imop/projects/
+</code></pre>
+</li>
+<li class="has-line-data" data-line-start="65" data-line-end="71">Next, we need to set up a default run-configuration, say <em>Main</em>.<br>
 If a default configuration doesn’t already exist, create one using <em>Run/Debug Settings</em> --&gt; <em>New…</em> --&gt; <em>Java Application</em> --&gt; <em>Edit Configuration</em>. The <em>Name</em> field can be set as <em>Main</em> (or any other name of your choice). Set <code>imop.Main</code> as the <em>Main class</em>.<br>
 In our default configuration, we need to make the following changes:
 <ul>
-<li class="has-line-data" data-line-start="62" data-line-end="63">In <em>Arguments</em> --&gt; <em>Working Directory</em>, select <em>Other</em>, and set it as <code>${workspace_loc:imop-compiler/bin}</code>.</li>
-<li class="has-line-data" data-line-start="63" data-line-end="65">In <em>Arguments</em> --&gt; <em>VM Arguments</em>, add the following: <code>-ea -Xms512M -Xmx42048M</code> (Feel free to use smaller values for smaller projects.)</li>
+<li class="has-line-data" data-line-start="68" data-line-end="69">In <em>Arguments</em> --&gt; <em>Working Directory</em>, select <em>Other</em>, and set it as <code>${workspace_loc:imop-compiler/bin}</code>.</li>
+<li class="has-line-data" data-line-start="69" data-line-end="71">In <em>Arguments</em> --&gt; <em>VM Arguments</em>, add the following: <code>-ea -Xms512M -Xmx42048M</code> (Feel free to use smaller values for smaller projects.)</li>
 </ul>
 </li>
 </ul>
 </li>
 </ol>
-<h4 class="code-line" data-line-start=65 data-line-end=66 ><a id="Testing_IMOP_via_Eclipse_65"></a>Testing IMOP via Eclipse</h4>
-<p class="has-line-data" data-line-start="66" data-line-end="68">All our sample client codes are written in <code>imop.Main</code>. In <code>Main.main()</code>, parsing and some pre-processing of the input file is done via a call to <code>Program.parseNormalizeInput(args)</code>, where <code>args</code> are the command-line arguments received by <code>main()</code>.<br>
+<h4 class="code-line" data-line-start=71 data-line-end=72 ><a id="Testing_IMOP_via_Eclipse_71"></a>Testing IMOP via Eclipse</h4>
+<p class="has-line-data" data-line-start="72" data-line-end="74">All our sample client codes are written in <code>imop.Main</code>. In <code>Main.main()</code>, parsing and some pre-processing of the input file is done via a call to <code>Program.parseNormalizeInput(args)</code>, where <code>args</code> are the command-line arguments received by <code>main()</code>.<br>
 If we are running our project from within Eclipse, and provide no command-line arguments explicitly (by setting them in the Run/Debug configurations, for example), then IMOP will assume that the file-path string is the one that is returned by <code>Program.defaultCommandLineArguments()</code>. This method also sets the values for various global flags, which are used whenever we are running the project from within the Eclipse IDE (i.e., when no command-line arguments are provided). An explanation of these flags can be found in <strong>Section 1</strong> of the “Part B: Code Review Document”. Further explanation about the method <code>Program.parseAndNormalize(args)</code> can be found in <strong>Section 2</strong> of the same document.</p>
-<p class="has-line-data" data-line-start="69" data-line-end="70">There are various methods in <code>Main.main()</code> that are used to test different components of the proposed optimizations. For more information, kindly check their respective documentations/notes.</p>
-<h4 class="code-line" data-line-start=71 data-line-end=72 ><a id="Verifying_the_output_program_71"></a>Verifying the output program</h4>
-<p class="has-line-data" data-line-start="72" data-line-end="73">For small- and medium-sized programs, the output programs can be manually compared with the original/intermediate state of input program. In case of NPB benchmarks, we test the correctness of an output file by pasting it to the appropriate location within <code>imop-compiler/NPB3.0-omp-C-master</code>, after renaming it to the required <code>*.c</code> file, making it, and then executing it.</p>
-<p class="has-line-data" data-line-start="74" data-line-end="75">Note that all intermediate and final output files are generated at <code>imop-compiler/output-dump</code>.</p>
+<p class="has-line-data" data-line-start="75" data-line-end="76">There are various methods in <code>Main.main()</code> that are used to test different components of the proposed optimizations. For more information, kindly check their respective documentations/notes.</p>
+<h4 class="code-line" data-line-start=77 data-line-end=78 ><a id="Verifying_the_output_program_77"></a>Verifying the output program</h4>
+<p class="has-line-data" data-line-start="78" data-line-end="79">For small- and medium-sized programs, the output programs can be manually compared with the original/intermediate state of input program. In case of NPB benchmarks, we test the correctness of an output file by pasting it to the appropriate location within <code>imop-compiler/NPB3.0-omp-C-master</code>, after renaming it to the required <code>*.c</code> file, making it, and then executing it.</p>
+<p class="has-line-data" data-line-start="80" data-line-end="81">Note that all intermediate and final output files are generated at <code>imop-compiler/output-dump</code>.</p>
 <hr>
 <hr>
 
