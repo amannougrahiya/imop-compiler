@@ -58,6 +58,11 @@ Following are the steps to set up the project in Eclipse.
 1. Create a *New Java Project* in Eclipse, on top of the same location where IMOP's repository has been cloned. Let's assume that the name of this project is `imop-compiler`.
 2. Perform the following changes in the *Properties* of the project (Right-click on the project's name in the *Package Explore*, and select *Properties*):
     * In *Java Build Path* --> *Libraries* --> *Add JARs*, select all the JARs present at `imop-compiler/third-party-tools`.
+    * In *Java Build Path* --> *Source* --> *Excluded* --> *Edit*, add the following source paths for exclusion:
+        ```
+        imop/lib/test
+        imop/projects/
+        ```
     * Next, we need to set up a default run-configuration, say *Main*.
     If a default configuration doesn't already exist, create one using *Run/Debug Settings* --> *New...* --> *Java Application* --> *Edit Configuration*. The *Name* field can be set as *Main* (or any other name of your choice). Set `imop.Main` as the *Main class*.
     In our default configuration, we need to make the following changes:
@@ -79,3 +84,4 @@ Note that all intermediate and final output files are generated at `imop-compile
 
 ***
 ***
+
