@@ -349,6 +349,7 @@ public class Program {
 		//		filePath = ("../tests/quake.i");
 		//		filePath = ("../tests/sequoia/amgmk.i");
 		//		filePath = ("../tests/sequoia/clomp.i");
+		filePath = ("../tests/insert.i");
 		//		filePath = ("../tests/minebench/kmeans.i");
 		//		filePath = ("../src/imop/lib/testcases/allKnown.c");
 		//		filePath = ("../output-dump/imop_output.i");

@@ -1432,6 +1432,8 @@ public class InsertImmediateSuccessor {
 				return sideEffectList;
 			}
 
+			ForStatementCFGInfo forInfo = link.enclosingNonLeafNode.getInfo().getCFGInfo();
+			forInfo.removeStepExpression();
 			Node copiedTarget = Builder.getCopiedTarget(targetNode);
 			Statement stepStmt = FrontEnd.parseAndNormalize(link.childNode + ";", Statement.class);
 			Node firstPred = predList.get(0);
@@ -1476,6 +1478,7 @@ public class InsertImmediateSuccessor {
 					sideEffectList.addAll(InsertImmediatePredecessor.insert(pred, copiedTarget));
 				} else {
 					assert (pred.getParent() == body);
+					stepStmt = FrontEnd.parseAndNormalize(link.childNode + ";", Statement.class);
 					if (Misc.collidesFreelyWith(stepStmt, body)) {
 						Statement newStmt = FrontEnd.parseAndNormalize("{}", Statement.class);
 						CompoundStatement compStmt = (CompoundStatement) Misc.getCFGNodeFor(newStmt);
