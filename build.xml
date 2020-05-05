@@ -11,9 +11,10 @@
     <property name="source" value="1.8"/>
     <path id="imop-compiler.classpath">
         <pathelement location="bin"/>
+        <pathelement location="third-party-tools/com.microsoft.z3.jar"/>
+        <pathelement location="third-party-tools/jtb132.jar"/>
         <pathelement location="third-party-tools/junit.jar"/>
         <pathelement location="third-party-tools/org.hamcrest.core_1.3.0.v201303031735.jar"/>
-        <pathelement location="third-party-tools/com.microsoft.z3.jar"/>
     </path>
     <target name="init">
         <mkdir dir="bin"/>

@@ -9,6 +9,12 @@
 package imop.lib.getter;
 
 import imop.ast.node.external.NodeToken;
+import imop.ast.node.internal.BeginNode;
+import imop.ast.node.internal.CallStatement;
+import imop.ast.node.internal.EndNode;
+import imop.ast.node.internal.PostCallNode;
+import imop.ast.node.internal.PreCallNode;
+import imop.ast.node.internal.SimplePrimaryExpression;
 import imop.baseVisitor.DepthFirstVisitor;
 
 /**
@@ -28,5 +34,39 @@ public class LineNumGetter extends DepthFirstVisitor {
 			foundFirst = true;
 		}
 		return;
+	}
+
+	@Override
+	public void visit(CallStatement n) {
+		lineNum = n.getLineNum();
+		columnNum = n.getColumnName();
+		return;
+	}
+
+	@Override
+	public void visit(PreCallNode n) {
+		n.getParent().accept(this);
+	}
+
+	@Override
+	public void visit(PostCallNode n) {
+		n.getParent().accept(this);
+	}
+
+	@Override
+	public void visit(SimplePrimaryExpression n) {
+		if (n.isAConstant()) {
+			n.getConstant().accept(this);
+		} else if (n.isAnIdentifier()) {
+			n.getIdentifier().accept(this);
+		}
+	}
+
+	@Override
+	public void visit(BeginNode n) {
+	}
+
+	@Override
+	public void visit(EndNode n) {
 	}
 }

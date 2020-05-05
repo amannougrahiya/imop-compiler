@@ -475,7 +475,7 @@ public class Program {
 	 */
 	public static void resetGlobalStaticFields() {
 		System.err.println("\n*** NOTE: Resetting (almost) all the static fields...\n");
-		Program.invalidLineNum = Program.invalidColumnNum = false;
+		Program.invalidLineNum = Program.invalidColumnNum = true;
 		Program.cellsThatMayPointToSymbols = null;
 		Program.postOrderValid = false;
 		Program.addressTakenSymbols = null;

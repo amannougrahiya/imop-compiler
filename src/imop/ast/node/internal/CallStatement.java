@@ -15,6 +15,7 @@ import imop.ast.node.external.NodeToken;
 import imop.ast.node.external.Statement;
 import imop.lib.cfg.CFGGenerator;
 import imop.lib.getter.CallStatementGetter;
+import imop.lib.util.Misc;
 
 /**
  * This class represents either a FunctionCall or a MessageSend.
@@ -105,6 +106,14 @@ public class CallStatement extends Statement {
 		} else {
 			return false;
 		}
+	}
+	
+	public int getLineNum() {
+		return Misc.getLineNum(this.functionDesignatorNode);
+	}
+	
+	public int getColumnName() {
+		return Misc.getColumnNum(this.functionDesignatorNode);
 	}
 
 	/**
