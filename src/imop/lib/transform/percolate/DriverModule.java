@@ -105,27 +105,27 @@ public class DriverModule {
 			DumpSnapshot.dumpPointsTo("merged-rem" + Program.updateCategory);
 			DumpSnapshot.dumpPhases("merged-rem" + Program.mhpUpdateCategory);
 		}
-		// TODO: Uncomment starting this.
-		//		FunctionDefinition mainFunc = Program.getRoot().getInfo().getMainFunction();
-		//		FunctionInliner.inline(mainFunc);
-		//		if (dumpIntermediate) {
-		//			DumpSnapshot.dumpRoot("merged-rem-inlined" + Program.mhpUpdateCategory);
-		//			DumpSnapshot.dumpPointsTo("merged-rem-inlined" + Program.updateCategory);
-		//			DumpSnapshot.dumpPhases("merged-rem-inlined" + Program.mhpUpdateCategory);
-		//		}
-		//		ParallelConstructExpander.mergeParallelRegions(Program.getRoot());
-		//		if (dumpIntermediate) {
-		//			DumpSnapshot.dumpRoot("merged-rem-inlined-merged" + Program.mhpUpdateCategory);
-		//			DumpSnapshot.dumpPointsTo("merged-rem-inlined-merged" + Program.updateCategory);
-		//			DumpSnapshot.dumpPhases("merged-rem-inlined-merged" + Program.mhpUpdateCategory);
-		//		}
-		//		//				Program.getRoot().getInfo().removeExtraScopes();
-		//		RedundantSynchronizationRemoval.removeBarriers(Program.getRoot());
-		//		//		RedundantSynchronizationRemoval.removeBarriersFromAllParConsWithin(Program.getRoot());
-		//		if (dumpIntermediate) {
-		//			DumpSnapshot.dumpRoot("merged-rem-inlined-merged-rem" + Program.mhpUpdateCategory);
-		//		}
-		// TODO: Uncomment till here.
+		//		 TODO: Uncomment starting this.
+		FunctionDefinition mainFunc = Program.getRoot().getInfo().getMainFunction();
+		FunctionInliner.inline(mainFunc);
+		if (dumpIntermediate) {
+			DumpSnapshot.dumpRoot("merged-rem-inlined" + Program.mhpUpdateCategory);
+			DumpSnapshot.dumpPointsTo("merged-rem-inlined" + Program.updateCategory);
+			DumpSnapshot.dumpPhases("merged-rem-inlined" + Program.mhpUpdateCategory);
+		}
+		ParallelConstructExpander.mergeParallelRegions(Program.getRoot());
+		if (dumpIntermediate) {
+			DumpSnapshot.dumpRoot("merged-rem-inlined-merged" + Program.mhpUpdateCategory);
+			DumpSnapshot.dumpPointsTo("merged-rem-inlined-merged" + Program.updateCategory);
+			DumpSnapshot.dumpPhases("merged-rem-inlined-merged" + Program.mhpUpdateCategory);
+		}
+		//				Program.getRoot().getInfo().removeExtraScopes();
+		RedundantSynchronizationRemoval.removeBarriers(Program.getRoot());
+		//		RedundantSynchronizationRemoval.removeBarriersFromAllParConsWithin(Program.getRoot());
+		if (dumpIntermediate) {
+			DumpSnapshot.dumpRoot("merged-rem-inlined-merged-rem" + Program.mhpUpdateCategory);
+		}
+		//		 TODO: Uncomment till here.
 		double totTime = 0.0;
 		double incMHPTime = 0.0;
 		double incIDFATime = 0.0;
@@ -193,8 +193,14 @@ public class DriverModule {
 		}
 		DecimalFormat df2 = Program.df2;
 		System.out.println(Program.fileName + " " + Program.updateCategory + " " + df2.format(totTime) + " "
-				+ df2.format(incMHPTime) + " " + df2.format(incIDFATime) + " " + incMHPTriggers + " " + incIDFATriggers + " "
-				+ finalIncNodes + " " + tarjanCount + " " + df2.format(sccTime));
+				+ df2.format(incMHPTime) + " " + df2.format(incIDFATime) + " " + incMHPTriggers + " " + incIDFATriggers
+				+ " " + finalIncNodes + " " + tarjanCount + " " + df2.format(sccTime));
+		String finalStrTrace = "";
+		for (String str : Misc.uniqueTraces) {
+			finalStrTrace += str + "\n";
+		}
+		System.out.println(finalStrTrace);
+		DumpSnapshot.printToFile(finalStrTrace, Program.fileName + "stabilization-trace", true);
 		System.exit(0);
 	}
 

@@ -8,6 +8,7 @@
  */
 package imop.lib.cfg.link.autoupdater;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.ConcurrentModificationException;
 import java.util.HashSet;
@@ -88,6 +89,8 @@ public class AutomatedUpdater {
 		Program.invalidateReversePostorder();
 		CFGInfo.isSCCStale = true;
 		ConstraintsGenerator.reinitInductionSet();
+		if (Misc.isCalledFromMethod("clientAutoUpdate")) {
+		}
 	}
 
 	public static int hasBeenOtimized = 0;

@@ -151,11 +151,12 @@ public class Main {
 		//		demo8();
 		//		demo9();
 		//		demo11();
-		System.exit(0);
-		DumpSnapshot.dumpRoot("Hello");
+		//		System.exit(0);
+		//		DumpSnapshot.dumpRoot("Hello");
 		//		ConcurrencyAnalysis.printBarrierTrees();
 		//		ConcurrencyAnalysis.verifyForMVEs();
 		//		ConcurrencyAnalysis.performMHPByYuan();
+		//		System.exit(0);
 
 		//		FunctionDefinition funcDef = Program.getRoot().getInfo().getMainFunction();
 		//		Statement oldStmt = funcDef.getInfo().getStatementWithLabel("j");

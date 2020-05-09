@@ -82,7 +82,7 @@ public class Program {
 	public static boolean printDFDs = true;
 	public static boolean printRWinDFDs = false;
 	public static boolean dumpIntermediateStates = true; // Decides whether intermediate states of the program should be dumped. 
-	public static boolean printNoFiles = false;
+	public static boolean printNoFiles = true;
 	public static UpdateCategory updateCategory;
 	public static UpdateCategory mhpUpdateCategory;
 	/**
@@ -166,8 +166,8 @@ public class Program {
 		Program.basePointsTo = true;
 		Program.memoizeAccesses = 0;
 		Program.preciseDFDEdges = false;
-		Program.updateCategory = UpdateCategory.LZFF; // Default is LZINC.
-		Program.mhpUpdateCategory = UpdateCategory.LZFF; // Default is LZINC.
+		Program.updateCategory = UpdateCategory.LZINC; // Default is LZINC.
+		Program.mhpUpdateCategory = UpdateCategory.LZINC; // Default is LZINC.
 
 		String filePath = "";
 		filePath = ("../tests/classB-preproc/bt-b.i"); // SVE-all: 29s. 
@@ -186,7 +186,7 @@ public class Program {
 		//		filePath = ("../tests/npb-post/ft3-0.i"); // SVE-all: 3.73s.
 		//		filePath = ("../tests/npb-post/is3-0.i"); // SVE-all: 0.69 
 		filePath = ("../tests/npb-post/lu3-0.i"); // SVE-all: 16.26s.
-		//		filePath = ("../tests/npb-post/mg3-0.i"); // SVE-all: 9.88s;
+		filePath = ("../tests/npb-post/mg3-0.i"); // SVE-all: 9.88s;
 		//		filePath = ("../tests/npb-post/sp3-0.i"); // SVE-all: 23s. 
 
 		//		filePath = ("../tests/npb/bt3-0.i"); // SVE-all: 29s. 
@@ -349,7 +349,7 @@ public class Program {
 		//		filePath = ("../tests/quake.i");
 		//		filePath = ("../tests/sequoia/amgmk.i");
 		//		filePath = ("../tests/sequoia/clomp.i");
-		filePath = ("../tests/insert.i");
+		//		filePath = ("../tests/insert.i");
 		//		filePath = ("../tests/minebench/kmeans.i");
 		//		filePath = ("../src/imop/lib/testcases/allKnown.c");
 		//		filePath = ("../output-dump/imop_output.i");

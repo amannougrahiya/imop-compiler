@@ -658,6 +658,20 @@ public class DumpSnapshot {
 		}
 	}
 
+	public static void printToFile(String str, String fileName, boolean b) {
+		String fs = System.getProperty("file.separator");
+		String filePath = Program.class.getProtectionDomain().getCodeSource().getLocation().getFile();
+		fileName = filePath + ".." + fs + "output-dump" + fs + fileName;
+		BufferedWriter bw = Misc.getBufferedWriter(fileName);
+		try {
+			bw.write(str);
+			bw.append(System.getProperty("line.separator"));
+			bw.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
 	public static void dumpNestedCFG(Node root, String fileName) {
 		if (Program.printNoFiles) {
 			return;

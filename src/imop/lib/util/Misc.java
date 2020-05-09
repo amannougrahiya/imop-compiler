@@ -151,7 +151,8 @@ import imop.parser.Program;
  *
  */
 public class Misc {
-
+	public static Set<String> uniqueTraces = new HashSet<>(); 
+	
 	Misc() {
 	}
 
@@ -162,7 +163,30 @@ public class Misc {
 		Misc.cfgNodes.clear();
 		Misc.nonCFGNodes.clear();
 	}
-
+	
+	/**
+	 * Checks if the call-stack contains a frame for the method with given name.
+	 * @param methodName
+	 * 	name of the method to be searched for in the current call-stack.
+	 * @return
+	 * 	{@code true}, if a method with the given method name is present in the call-stack.
+	 */
+	public static boolean isCalledFromMethod(String methodName) {
+		if (methodName == null) {
+			return false;
+		}
+		Set<String> strSet = new HashSet<>();
+		for (StackTraceElement st : Thread.currentThread().getStackTrace()) {
+			strSet.add(st.getFileName()+"."+ st.getMethodName() + ":" + st.getLineNumber() + ";");
+			if (methodName.equals(st.getMethodName())) {
+				Misc.uniqueTraces.addAll(strSet);
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	
 	public static boolean changePerformed(List<SideEffect> sideEffects) {
 		if (sideEffects == null) {
 			assert (false);
