@@ -41,6 +41,7 @@ import imop.lib.cg.CallSite;
 import imop.lib.getter.InitFunctionName;
 import imop.lib.util.CellSet;
 import imop.lib.util.Misc;
+import imop.lib.util.ProfileSS;
 import imop.parser.Program;
 
 /**
@@ -313,6 +314,7 @@ public class FunctionDefinitionInfo extends NodeInfo {
 	}
 
 	public HashMap<String, Symbol> getSymbolTable() {
+		ProfileSS.addChangePoint(ProfileSS.symSet);
 		if (symbolTable == null) {
 			populateSymbolTable();
 		}
@@ -410,6 +412,7 @@ public class FunctionDefinitionInfo extends NodeInfo {
 	 * @return
 	 */
 	public Set<CallStatement> getCallersOfThis() {
+		ProfileSS.addChangePoint(ProfileSS.cgSet);
 		Set<CallStatement> possibleSites = new HashSet<>();
 		for (CallStatement callSite : Program.getRoot().getInfo().getLexicallyEnclosedCallStatements()) {
 			for (FunctionDefinition funcDef : callSite.getInfo().getCalledDefinitions()) {

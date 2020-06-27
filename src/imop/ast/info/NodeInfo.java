@@ -119,6 +119,7 @@ import imop.lib.util.CollectorVisitor;
 import imop.lib.util.DumpSnapshot;
 import imop.lib.util.ExtensibleCellMap;
 import imop.lib.util.Misc;
+import imop.lib.util.ProfileSS;
 import imop.parser.FrontEnd;
 import imop.parser.Program;
 import imop.parser.Program.UpdateCategory;
@@ -607,6 +608,7 @@ public class NodeInfo implements Cloneable {
 	 * @return
 	 */
 	public FlowFact getIN(AnalysisName analysisName) {
+		ProfileSS.addChangePoint(ProfileSS.ptaSet);
 		checkFirstRun(analysisName);
 		/*
 		 * Step 1: Get the analysis. If the analysis is INVALID, then mark it to
@@ -736,6 +738,7 @@ public class NodeInfo implements Cloneable {
 	 * @return
 	 */
 	public FlowFact getOUT(AnalysisName analysisName) {
+		ProfileSS.addChangePoint(ProfileSS.ptaSet);
 		checkFirstRun(analysisName);
 		/*
 		 * Step 1: Get the analysis. If the analysis is INVALID, then mark it to

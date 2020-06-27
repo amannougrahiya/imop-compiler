@@ -39,6 +39,7 @@ import imop.lib.analysis.mhp.yuan.BarrierTreeConstructor;
 import imop.lib.cfg.info.ParallelConstructCFGInfo;
 import imop.lib.util.CellSet;
 import imop.lib.util.Misc;
+import imop.lib.util.ProfileSS;
 
 public class ParallelConstructInfo extends OmpConstructInfo {
 	private List<Phase> allPhaseList;
@@ -142,6 +143,7 @@ public class ParallelConstructInfo extends OmpConstructInfo {
 	}
 
 	public List<Phase> getAllPhaseList() {
+		ProfileSS.addChangePoint(ProfileSS.phSet);
 		return allPhaseList;
 	}
 

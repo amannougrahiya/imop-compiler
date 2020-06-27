@@ -41,6 +41,7 @@ import imop.lib.transform.updater.NodeReplacer;
 import imop.lib.util.CellCollection;
 import imop.lib.util.CellSet;
 import imop.lib.util.Misc;
+import imop.lib.util.ProfileSS;
 import imop.parser.FrontEnd;
 import imop.parser.Program;
 
@@ -357,6 +358,7 @@ public class CompoundStatementInfo extends StatementInfo {
 	}
 
 	public HashMap<String, Symbol> getSymbolTable() {
+		ProfileSS.addChangePoint(ProfileSS.symSet);
 		if (symbolTable == null) {
 			populateSymbolTable();
 		}
@@ -364,6 +366,7 @@ public class CompoundStatementInfo extends StatementInfo {
 	}
 
 	public HashMap<String, Typedef> getTypedefTable() {
+		ProfileSS.addChangePoint(ProfileSS.symSet);
 		if (typedefTable == null) {
 			populateSymbolTable();
 		}
@@ -371,6 +374,7 @@ public class CompoundStatementInfo extends StatementInfo {
 	}
 
 	public HashMap<String, Type> getTypeTable() {
+		ProfileSS.addChangePoint(ProfileSS.symSet);
 		if (typeTable == null) {
 			populateSymbolTable();
 		}

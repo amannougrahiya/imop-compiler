@@ -32,6 +32,7 @@ import imop.lib.cfg.info.CFGInfo;
 import imop.lib.cfg.link.autoupdater.AutomatedUpdater;
 import imop.lib.getter.SwitchRelevantStatementsGetter;
 import imop.lib.util.Misc;
+import imop.lib.util.ProfileSS;
 import imop.parser.Program;
 import imop.parser.Program.UpdateCategory;
 
@@ -52,6 +53,7 @@ public class StatementInfo extends NodeInfo {
 	 *         list of labels that annotate the owner node directly.
 	 */
 	public List<Label> getLabelAnnotations() {
+		ProfileSS.addChangePoint(ProfileSS.labSet);
 		if (this.getNode() instanceof OmpConstruct || this.getNode() instanceof OmpDirective) {
 			return new ArrayList<>();
 		}
@@ -74,6 +76,7 @@ public class StatementInfo extends NodeInfo {
 	 * @param newLabel
 	 */
 	public void initAddLabelAnnotation(Label newLabel) {
+		ProfileSS.addChangePoint(ProfileSS.labSet);
 		if (this.getNode() instanceof OmpConstruct || this.getNode() instanceof OmpDirective) {
 			Misc.exitDueToError("Cannot add the label " + newLabel + " to an OpenMP construct/directive.");
 		}
@@ -120,6 +123,7 @@ public class StatementInfo extends NodeInfo {
 	 * @param newLabel
 	 */
 	public void addLabelAnnotation(int index, Label newLabel) {
+		ProfileSS.addChangePoint(ProfileSS.labSet);
 		if (this.getNode() instanceof OmpConstruct || this.getNode() instanceof OmpDirective) {
 			Misc.exitDueToError("Cannot add the label " + newLabel + " to an OpenMP construct/directive.");
 		}
@@ -223,6 +227,7 @@ public class StatementInfo extends NodeInfo {
 	 *         true, if the label was removed.
 	 */
 	public boolean removeSimpleLabelAnnotation(String string) {
+		ProfileSS.addChangePoint(ProfileSS.labSet);
 		if (this.getNode() instanceof OmpConstruct || this.getNode() instanceof OmpDirective) {
 			return false;
 		}
@@ -472,6 +477,7 @@ public class StatementInfo extends NodeInfo {
 	 *         true if the label was removed.
 	 */
 	public boolean removeLabelAnnotation(Label oldLabel) {
+		ProfileSS.addChangePoint(ProfileSS.labSet);
 		if (this.getNode() instanceof OmpConstruct || this.getNode() instanceof OmpDirective) {
 			return false;
 		}
@@ -783,6 +789,7 @@ public class StatementInfo extends NodeInfo {
 	 * Clears all the label annotations from the owner statement.
 	 */
 	public void clearLabelAnnotations() {
+		ProfileSS.addChangePoint(ProfileSS.labSet);
 		if (this.getNode() instanceof OmpConstruct || this.getNode() instanceof OmpDirective) {
 			return;
 		}
@@ -805,6 +812,7 @@ public class StatementInfo extends NodeInfo {
 	 * @return
 	 */
 	public boolean hasLabelAnnotations() {
+		ProfileSS.addChangePoint(ProfileSS.labSet);
 		if (this.getNode() instanceof OmpConstruct || this.getNode() instanceof OmpDirective) {
 			return false;
 		}
@@ -827,6 +835,7 @@ public class StatementInfo extends NodeInfo {
 	 */
 	public boolean containsLabel(String string) {
 		//		if (!Misc.isCFGNode(this.getNode())) 
+		ProfileSS.addChangePoint(ProfileSS.labSet);
 		if (this.getNode() instanceof OmpConstruct || this.getNode() instanceof OmpDirective) {
 			return false;
 		}

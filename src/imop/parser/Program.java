@@ -81,8 +81,8 @@ public class Program {
 	public static boolean printSideEffects = true; // Prints side-effects as comments on annotated nodes.
 	public static boolean printDFDs = true;
 	public static boolean printRWinDFDs = false;
-	public static boolean dumpIntermediateStates = true; // Decides whether intermediate states of the program should be dumped. 
-	public static boolean printNoFiles = true;
+	public static boolean dumpIntermediateStates = false; // Decides whether intermediate states of the program should be dumped. 
+	public static boolean printNoFiles = false;
 	public static UpdateCategory updateCategory;
 	public static UpdateCategory mhpUpdateCategory;
 	/**
@@ -175,29 +175,19 @@ public class Program {
 		//		filePath = ("../tests/classB-preproc/ep-b.i"); // SVE-all: 0.55s 
 		//		filePath = ("../tests/classB-preproc/ft-b.i"); // SVE-all: 3.73s.
 		//		filePath = ("../tests/classB-preproc/is-b.i"); // SVE-all: 0.69 
-		filePath = ("../tests/classB-preproc/lu-b.i"); // SVE-all: 16.26s.
+		//		filePath = ("../tests/classB-preproc/lu-b.i"); // SVE-all: 16.26s.
 		//		filePath = ("../tests/large-preproc/mg-c.i"); // SVE-all: 9.88s;
 		//		filePath = ("../tests/classB-preproc/sp-b.i"); // SVE-all: 23s. 
 
 		//		filePath = ("../output-dump/ft-bimop_output_LZINC.i"); // SVE-all: 29s. 
 		//		filePath = ("../tests/npb-post/bt3-0.i"); // SVE-all: 29s. 
-		//		filePath = ("../tests/npb-post/cg3-0.i"); // SVE-all: 2.50s.
+		filePath = ("../tests/npb-post/cg3-0.i"); // SVE-all: 2.50s.
 		//		filePath = ("../tests/npb-post/ep3-0.i"); // SVE-all: 0.55s 
 		//		filePath = ("../tests/npb-post/ft3-0.i"); // SVE-all: 3.73s.
 		//		filePath = ("../tests/npb-post/is3-0.i"); // SVE-all: 0.69 
-		filePath = ("../tests/npb-post/lu3-0.i"); // SVE-all: 16.26s.
-		filePath = ("../tests/npb-post/mg3-0.i"); // SVE-all: 9.88s;
+		//		filePath = ("../tests/npb-post/lu3-0.i"); // SVE-all: 16.26s.
+		//		filePath = ("../tests/npb-post/mg3-0.i"); // SVE-all: 9.88s;
 		//		filePath = ("../tests/npb-post/sp3-0.i"); // SVE-all: 23s. 
-
-		//		filePath = ("../tests/npb/bt3-0.i"); // SVE-all: 29s. 
-		//		filePath = ("../tests/npb/cg3-0.i"); // SVE-all: 2.50s.
-		//		filePath = ("../tests/npb/ep3-0.i"); // SVE-all: 0.55s 
-		//		filePath = ("../tests/npb/ft3-0.i"); // SVE-all: 3.73s.
-		//		filePath = ("../tests/npb/is3-0.i"); // SVE-all: 0.69 
-		//		filePath = ("../tests/npb/lu3-0.i"); // SVE-all: 16.26s.
-		//		filePath = ("../tests/luA.i"); // SVE-all: 16.26s.
-		//		filePath = ("../tests/npb/mg3-0.i"); // SVE-all: 9.88s;
-		//		filePath = ("../tests/npb/sp3-0.i"); // SVE-all: 23s. 
 
 		//		filePath = "../output-dump/imop_useful.i";
 		//		filePath = ("../src/imop/lib/testcases/cfgTests/singleLooping.c");
@@ -310,7 +300,7 @@ public class Program {
 		//		filePath = ("../tests/auto-normalize.c");
 		//		filePath = ("../tests/simplify.c");
 		//		filePath = ("../tests/enforcer.c");
-		//		filePath = ("../tests/en.c");
+		//		filePath = ("../tests/en.c")i;
 		//		filePath = ("../tests/internal.c");
 		//		filePath = ("../tests/cfg-rem.c");
 		//		filePath = ("../tests/predicate.c");
@@ -349,6 +339,10 @@ public class Program {
 		//		filePath = ("../tests/quake.i");
 		//		filePath = ("../tests/sequoia/amgmk.i");
 		//		filePath = ("../tests/sequoia/clomp.i");
+
+		//		filePath = ("../tests/fsu/md_openmp.i");
+		//		filePath = ("../tests/parboil/lbm.i");
+
 		//		filePath = ("../tests/insert.i");
 		//		filePath = ("../tests/minebench/kmeans.i");
 		//		filePath = ("../src/imop/lib/testcases/allKnown.c");

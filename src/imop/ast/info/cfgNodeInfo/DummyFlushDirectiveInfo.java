@@ -26,6 +26,7 @@ import imop.lib.cfg.link.autoupdater.AutomatedUpdater;
 import imop.lib.cfg.parallel.InterTaskEdge;
 import imop.lib.util.CellSet;
 import imop.lib.util.Misc;
+import imop.lib.util.ProfileSS;
 import imop.parser.Program;
 import imop.parser.Program.UpdateCategory;
 
@@ -109,6 +110,7 @@ public class DummyFlushDirectiveInfo extends FlushDirectiveInfo {
 	}
 
 	public Set<InterTaskEdge> getStaleIncomingInterTaskEdges() {
+		ProfileSS.addChangePoint(ProfileSS.iteSet);
 		if (incomingInterTaskEdges == null) {
 			incomingInterTaskEdges = new HashSet<>();
 		}
@@ -116,6 +118,7 @@ public class DummyFlushDirectiveInfo extends FlushDirectiveInfo {
 	}
 
 	public Set<InterTaskEdge> getIncomingInterTaskEdges() {
+		ProfileSS.addChangePoint(ProfileSS.iteSet);
 		if (incomingInterTaskEdges == null) {
 			incomingInterTaskEdges = new HashSet<>();
 		}
@@ -136,6 +139,7 @@ public class DummyFlushDirectiveInfo extends FlushDirectiveInfo {
 	}
 
 	public Set<InterTaskEdge> getStaleOutgoingInterTaskEdges() {
+		ProfileSS.addChangePoint(ProfileSS.iteSet);
 		if (outgoingInterTaskEdges == null) {
 			outgoingInterTaskEdges = new HashSet<>();
 		}
@@ -143,6 +147,7 @@ public class DummyFlushDirectiveInfo extends FlushDirectiveInfo {
 	}
 
 	public Set<InterTaskEdge> getOutgoingInterTaskEdges() {
+		ProfileSS.addChangePoint(ProfileSS.iteSet);
 		if (outgoingInterTaskEdges == null) {
 			outgoingInterTaskEdges = new HashSet<>();
 		}

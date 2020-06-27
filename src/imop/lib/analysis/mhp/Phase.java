@@ -27,6 +27,7 @@ import imop.lib.analysis.solver.FieldSensitivity;
 import imop.lib.cfg.link.autoupdater.AutomatedUpdater;
 import imop.lib.util.CellSet;
 import imop.lib.util.Misc;
+import imop.lib.util.ProfileSS;
 import imop.parser.Program;
 import imop.parser.Program.UpdateCategory;
 
@@ -663,6 +664,7 @@ public class Phase {
 	}
 
 	public Set<Node> getNodeSet() {
+		ProfileSS.addChangePoint(ProfileSS.phSet);
 		if (Program.mhpUpdateCategory == UpdateCategory.EGFF || Program.mhpUpdateCategory == UpdateCategory.EGINC) {
 			return this.nodeSet;
 		} else if (Program.mhpUpdateCategory == UpdateCategory.LZFF) {
@@ -677,6 +679,7 @@ public class Phase {
 	}
 
 	public Set<Node> getStaleNodeSet() {
+		ProfileSS.addChangePoint(ProfileSS.phSet);
 		return this.nodeSet;
 	}
 
@@ -713,6 +716,7 @@ public class Phase {
 	}
 
 	public Phase getSuccPhase() {
+		ProfileSS.addChangePoint(ProfileSS.phSet);
 		if (Program.mhpUpdateCategory == UpdateCategory.EGFF || Program.mhpUpdateCategory == UpdateCategory.EGINC) {
 			return this.succPhase;
 		} else if (Program.mhpUpdateCategory == UpdateCategory.LZFF) {
@@ -727,6 +731,7 @@ public class Phase {
 	}
 
 	public List<Phase> getPredPhases() {
+		ProfileSS.addChangePoint(ProfileSS.phSet);
 		if (Program.mhpUpdateCategory == UpdateCategory.EGFF || Program.mhpUpdateCategory == UpdateCategory.EGINC) {
 			return this.predPhases;
 		} else if (Program.mhpUpdateCategory == UpdateCategory.LZFF) {

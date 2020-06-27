@@ -26,6 +26,7 @@ import imop.lib.cfg.info.CallStatementCFGInfo;
 import imop.lib.util.CellList;
 import imop.lib.util.ImmutableCellSet;
 import imop.lib.util.Misc;
+import imop.lib.util.ProfileSS;
 
 public class CallStatementInfo extends StatementInfo {
 	/**
@@ -115,6 +116,7 @@ public class CallStatementInfo extends StatementInfo {
 	 * @return
 	 */
 	public List<FunctionDefinition> getCalledDefinitions() {
+		ProfileSS.addChangePoint(ProfileSS.cgSet);
 		if (this.calledDefinitions == null) {
 			this.calledDefinitions = new ArrayList<>();
 			if (this.isACallByFunctionPointer()) {
@@ -161,6 +163,7 @@ public class CallStatementInfo extends StatementInfo {
 	 * @return
 	 */
 	public CellList getCalledSymbols() {
+		ProfileSS.addChangePoint(ProfileSS.cgSet);
 		if (this.calledFunctions == null) {
 			this.calledFunctions = new CellList();
 			Cell funcDesig = this.getFunctionDesignator();

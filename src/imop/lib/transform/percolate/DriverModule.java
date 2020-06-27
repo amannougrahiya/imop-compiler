@@ -74,6 +74,7 @@ import imop.lib.util.CellSet;
 import imop.lib.util.CollectorVisitor;
 import imop.lib.util.DumpSnapshot;
 import imop.lib.util.Misc;
+import imop.lib.util.ProfileSS;
 import imop.lib.util.TraversalOrderObtainer;
 import imop.parser.FrontEnd;
 import imop.parser.Program;
@@ -92,6 +93,7 @@ public class DriverModule {
 		Program.sveSensitive = SVEDimension.SVE_INSENSITIVE; // Note: We keep SVE-sensitivity disabled for this client.
 		ParallelConstructExpander.mergeParallelRegions(Program.getRoot());
 		Program.getRoot().getInfo().removeUnusedElements();
+		ProfileSS.nextCP();
 		if (dumpIntermediate) {
 			DumpSnapshot.dumpRoot("merged" + Program.updateCategory);
 			DumpSnapshot.dumpPointsTo("merged" + Program.updateCategory);
@@ -195,12 +197,6 @@ public class DriverModule {
 		System.out.println(Program.fileName + " " + Program.updateCategory + " " + df2.format(totTime) + " "
 				+ df2.format(incMHPTime) + " " + df2.format(incIDFATime) + " " + incMHPTriggers + " " + incIDFATriggers
 				+ " " + finalIncNodes + " " + tarjanCount + " " + df2.format(sccTime));
-		String finalStrTrace = "";
-		for (String str : Misc.uniqueTraces) {
-			finalStrTrace += str + "\n";
-		}
-		System.out.println(finalStrTrace);
-		DumpSnapshot.printToFile(finalStrTrace, Program.fileName + "stabilization-trace", true);
 		System.exit(0);
 	}
 
@@ -209,25 +205,52 @@ public class DriverModule {
 		if (wasSVE == SVEDimension.SVE_SENSITIVE) {
 			Program.sveSensitive = SVEDimension.SVE_INSENSITIVE;
 		}
+		boolean dumpIntermediate = Program.dumpIntermediateStates;
+
 		ParallelConstructExpander.mergeParallelRegions(Program.getRoot());
 		Program.getRoot().getInfo().removeUnusedElements();
+		ProfileSS.nextCP();
+		if (dumpIntermediate) {
+			DumpSnapshot.dumpRoot("merged" + Program.updateCategory);
+			DumpSnapshot.dumpPointsTo("merged" + Program.updateCategory);
+			DumpSnapshot.dumpPhases("merged" + Program.mhpUpdateCategory);
+		}
 		//	OLD CODE: BasicTransform.removeUnusedFunctions(Program.getRoot());
 		RedundantSynchronizationRemoval.removeBarriers(Program.getRoot());
-		DumpSnapshot.dumpRoot("merged");
+		//		RedundantSynchronizationRemoval.removeBarriersFromAllParConsWithin(Program.getRoot());
+		if (dumpIntermediate) {
+			DumpSnapshot.dumpRoot("merged-rem" + Program.updateCategory);
+			DumpSnapshot.dumpPointsTo("merged-rem" + Program.updateCategory);
+			DumpSnapshot.dumpPhases("merged-rem" + Program.mhpUpdateCategory);
+		}
+		//		 TODO: Uncomment starting this.
 		FunctionDefinition mainFunc = Program.getRoot().getInfo().getMainFunction();
 		FunctionInliner.inline(mainFunc);
-		// TODO: Remove the next line.
-		System.err.println("Time spent in inlining: " + FunctionInliner.inliningTimer / (1e9 * 1.0) + "s.");
-		DumpSnapshot.dumpRoot("inlined");
+		if (dumpIntermediate) {
+			DumpSnapshot.dumpRoot("merged-rem-inlined" + Program.mhpUpdateCategory);
+			DumpSnapshot.dumpPointsTo("merged-rem-inlined" + Program.updateCategory);
+			DumpSnapshot.dumpPhases("merged-rem-inlined" + Program.mhpUpdateCategory);
+		}
 		ParallelConstructExpander.mergeParallelRegions(Program.getRoot());
-		Program.getRoot().getInfo().removeExtraScopes();
+		if (dumpIntermediate) {
+			DumpSnapshot.dumpRoot("merged-rem-inlined-merged" + Program.mhpUpdateCategory);
+			DumpSnapshot.dumpPointsTo("merged-rem-inlined-merged" + Program.updateCategory);
+			DumpSnapshot.dumpPhases("merged-rem-inlined-merged" + Program.mhpUpdateCategory);
+		}
+		//				Program.getRoot().getInfo().removeExtraScopes();
 		RedundantSynchronizationRemoval.removeBarriers(Program.getRoot());
-		DumpSnapshot.dumpRoot("merged-inlined");
+		//		RedundantSynchronizationRemoval.removeBarriersFromAllParConsWithin(Program.getRoot());
+		//		if (dumpIntermediate) {
+		double totTime = (System.nanoTime() - Main.totalTime) / (1.0 * 1e9);
+		System.err.println("TOTAL TIME (including disk I/O time): " + totTime + "s.");
+		DumpSnapshot.dumpRoot("merged-rem-inlined-merged-rem" + Program.mhpUpdateCategory);
+		//		}
 		if (wasSVE == SVEDimension.SVE_SENSITIVE) {
 			Program.sveSensitive = SVEDimension.SVE_SENSITIVE;
 		}
 		//		change();
-		DriverModule.optimizeBarriers(); // This method does not return;
+		//		DriverModule.optimizeBarriers(); // This method does not return;
+		System.exit(0);
 	}
 
 	private static void change() {

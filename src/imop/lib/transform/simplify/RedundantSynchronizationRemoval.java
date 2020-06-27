@@ -30,6 +30,7 @@ import imop.lib.transform.updater.NodeRemover;
 import imop.lib.util.CellSet;
 import imop.lib.util.DumpSnapshot;
 import imop.lib.util.Misc;
+import imop.lib.util.ProfileSS;
 import imop.parser.Program;
 
 public class RedundantSynchronizationRemoval {
@@ -146,8 +147,10 @@ public class RedundantSynchronizationRemoval {
 				//				FlushDirective flush = FrontEnd.parseAlone("#pragma omp flush", FlushDirective.class);
 				//				csCFGInfo.addElement(index, flush);
 				csCFGInfo.removeElement(barrier);
+				ProfileSS.nextCP();
 				//				Phase.removeUnreachablePhases(); // Newly added code.
 				removeBarriers(root);
+				ProfileSS.nextCP();
 				return;
 			}
 		}

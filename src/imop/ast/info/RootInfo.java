@@ -42,6 +42,7 @@ import imop.lib.util.CellCollection;
 import imop.lib.util.CellList;
 import imop.lib.util.CellSet;
 import imop.lib.util.Misc;
+import imop.lib.util.ProfileSS;
 import imop.parser.Program;
 
 public class RootInfo extends NodeInfo {
@@ -369,6 +370,7 @@ public class RootInfo extends NodeInfo {
 	}
 
 	public HashMap<String, Symbol> getSymbolTable() {
+		ProfileSS.addChangePoint(ProfileSS.symSet);
 		if (symbolTable == null) {
 			populateSymbolTable();
 		}
@@ -376,6 +378,7 @@ public class RootInfo extends NodeInfo {
 	}
 
 	public HashMap<String, Typedef> getTypedefTable() {
+		ProfileSS.addChangePoint(ProfileSS.symSet);
 		if (typedefTable == null) {
 			populateSymbolTable();
 		}
@@ -383,6 +386,7 @@ public class RootInfo extends NodeInfo {
 	}
 
 	public HashMap<String, Symbol> getThreadPrivateList() {
+		ProfileSS.addChangePoint(ProfileSS.symSet);
 		if (threadPrivateList == null) {
 			populateThreadPrivateList();
 		}

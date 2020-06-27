@@ -23,6 +23,7 @@ import imop.lib.cfg.link.autoupdater.AutomatedUpdater;
 import imop.lib.cfg.parallel.DataFlowGraph;
 import imop.lib.cfg.parallel.InterTaskEdge;
 import imop.lib.util.Misc;
+import imop.lib.util.ProfileSS;
 import imop.parser.Program;
 import imop.parser.Program.UpdateCategory;
 
@@ -62,15 +63,18 @@ public class NodePhaseInfo {
 	}
 
 	public NodePhaseInfo(Node node) {
+		ProfileSS.addChangePoint(ProfileSS.phSet);
 		assert (Misc.isCFGLeafNode(node));
 		this.node = node;
 	}
 
 	public Set<Phase> getStalePhaseSet() {
+		ProfileSS.addChangePoint(ProfileSS.phSet);
 		return this.phaseSet;
 	}
 
 	public Set<Phase> getPhaseSet() {
+		ProfileSS.addChangePoint(ProfileSS.phSet);
 		if (Program.mhpUpdateCategory == UpdateCategory.EGFF || Program.mhpUpdateCategory == UpdateCategory.EGINC) {
 			return this.phaseSet;
 		} else if (Program.mhpUpdateCategory == UpdateCategory.LZFF) {

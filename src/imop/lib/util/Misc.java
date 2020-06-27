@@ -151,8 +151,8 @@ import imop.parser.Program;
  *
  */
 public class Misc {
-	public static Set<String> uniqueTraces = new HashSet<>(); 
-	
+	public static Set<String> uniqueTraces = new HashSet<>();
+
 	Misc() {
 	}
 
@@ -163,13 +163,16 @@ public class Misc {
 		Misc.cfgNodes.clear();
 		Misc.nonCFGNodes.clear();
 	}
-	
+
 	/**
 	 * Checks if the call-stack contains a frame for the method with given name.
+	 * 
 	 * @param methodName
-	 * 	name of the method to be searched for in the current call-stack.
+	 *            name of the method to be searched for in the current
+	 *            call-stack.
 	 * @return
-	 * 	{@code true}, if a method with the given method name is present in the call-stack.
+	 *         {@code true}, if a method with the given method name is present
+	 *         in the call-stack.
 	 */
 	public static boolean isCalledFromMethod(String methodName) {
 		if (methodName == null) {
@@ -177,7 +180,7 @@ public class Misc {
 		}
 		Set<String> strSet = new HashSet<>();
 		for (StackTraceElement st : Thread.currentThread().getStackTrace()) {
-			strSet.add(st.getFileName()+"."+ st.getMethodName() + ":" + st.getLineNumber() + ";");
+			strSet.add(st.getFileName() + "." + st.getMethodName() + ":" + st.getLineNumber() + ";");
 			if (methodName.equals(st.getMethodName())) {
 				Misc.uniqueTraces.addAll(strSet);
 				return true;
@@ -185,8 +188,7 @@ public class Misc {
 		}
 		return false;
 	}
-	
-	
+
 	public static boolean changePerformed(List<SideEffect> sideEffects) {
 		if (sideEffects == null) {
 			assert (false);
@@ -371,8 +373,6 @@ public class Misc {
 					parConstruct);
 		}
 	}
-
-	
 
 	// NOTE: The function written below is quite too inefficient. Kindly search
 	// for the efficient version elsewhere.
@@ -789,7 +789,7 @@ public class Misc {
 	//		}
 	//		return null;
 	//	}
-	
+
 	public static List<String> obtainVarNames(VariableList vL) {
 		List<String> ids = new ArrayList<>();
 		ids.add(vL.getF0().getTokenImage().trim());
@@ -1900,8 +1900,6 @@ public class Misc {
 	//		}
 	//		return null;
 	//	}
-
-	
 
 	//	/**
 	//	 * Performs usual arithmetic conversion on type <code>one</code> and
@@ -3349,7 +3347,7 @@ public class Misc {
 		if (node == null) {
 			return null;
 		}
-	
+
 		Node scopeChoice = node;
 		while (scopeChoice != null) {
 			if (scopeChoice instanceof TranslationUnit) {
@@ -3370,31 +3368,31 @@ public class Misc {
 		 * In case if node is disconnected from the AST, we should look into at
 		 * least the TranslationUnit of the input.
 		 */
-	
+
 		HashMap<String, Typedef> typedefTable = Program.getRoot().getInfo().getTypedefTable();
 		if (typedefTable.containsKey(name)) {
 			return typedefTable.get(name);
 		}
-	
+
 		/*
 		 * Search in the built-in libraries now.
 		 */
-	
+
 		typedefTable = FrontEnd.getMacBuiltins().getInfo().getTypedefTable();
 		if (typedefTable.containsKey(name)) {
 			return typedefTable.get(name);
 		}
-	
+
 		typedefTable = FrontEnd.getK2Builtins().getInfo().getTypedefTable();
 		if (typedefTable.containsKey(name)) {
 			return typedefTable.get(name);
 		}
-	
+
 		typedefTable = FrontEnd.getOtherBuiltins().getInfo().getTypedefTable();
 		if (typedefTable.containsKey(name)) {
 			return typedefTable.get(name);
 		}
-	
+
 		return null;
 	}
 
@@ -3411,7 +3409,7 @@ public class Misc {
 		if (node == null) {
 			return null;
 		}
-	
+
 		Node scopeChoice = node;
 		/*
 		 * If this flag remains set after the succeeding while loop, then it
@@ -3439,7 +3437,7 @@ public class Misc {
 			scopeChoice = scopeChoice.getParent();
 			//			scopeChoice = (Node) Misc.getEnclosingBlock(scopeChoice);
 		}
-	
+
 		/*
 		 * If we have reached this point, then it implies that the symbol wasn't
 		 * found.
@@ -3457,7 +3455,7 @@ public class Misc {
 				return symbolTable.get(name);
 			}
 		}
-	
+
 		/*
 		 * Search in the built-in libraries now.
 		 */

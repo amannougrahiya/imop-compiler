@@ -135,11 +135,12 @@ import imop.parser.Program;
 @SuppressWarnings("unused")
 public class Main {
 
-	public static long totalTime = 0;
+	public static long totalTime;
 
 	public static void main(String[] args) throws FileNotFoundException, InterruptedException {
 		//		Thread.sleep(7000);
 		totalTime = System.nanoTime();
+
 		Program.parseNormalizeInput(args);
 		//		demo1("L1");
 		//		demo2();
@@ -183,7 +184,9 @@ public class Main {
 		//		dumpAccessibleCells("");
 		//		dumpLoopHeadersOnSTDOUT();
 		// ********* Those methods that never return.*********
-		DriverModule.clientAutoUpdate();
+		DriverModule.mergeParRegs();
+		//		DriverModule.clientAutoUpdate();
+		//		DriverModule.optimizeBarriers();
 		//		Main.testNodeShifting();
 		//		Main.testNormalization();
 		//		Misc.extractSVEPragmas();
@@ -230,8 +233,6 @@ public class Main {
 		//		testBarrierCounterInstrumentation();
 		//		testFencePercolation();
 		//		removeBarriers();
-		DriverModule.mergeParRegs();
-		//		DriverModule.optimizeBarriers();
 
 		// ********* End of those methods that never return. *********
 		System.exit(0);
@@ -2526,6 +2527,24 @@ public class Main {
 				}
 			}
 		}
+		System.exit(0);
+	}
+
+	private static void testLists() {
+		totalTime = System.nanoTime();
+		List<Integer> list = Arrays.asList(new Integer[(int) 5e7]);
+		System.out.println("Time taken to construct: " + (System.nanoTime() - totalTime) / 1e9);
+		totalTime = System.nanoTime();
+		for (int i = 0; i < 5e7; i++) {
+			list.set(i, 100);
+		}
+		System.out.println("Time taken to insert: " + (System.nanoTime() - totalTime) / 1e9);
+		totalTime = System.nanoTime();
+		list = new ArrayList<Integer>();
+		for (int i = 0; i < 5e7; i++) {
+			list.add(i);
+		}
+		System.out.println("Time taken to construct and add: " + (System.nanoTime() - totalTime) / 1e9);
 		System.exit(0);
 	}
 

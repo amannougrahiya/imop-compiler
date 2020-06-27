@@ -44,6 +44,7 @@ import imop.lib.getter.AllCFGNodeGetter;
 import imop.lib.util.CellSet;
 import imop.lib.util.CollectorVisitor;
 import imop.lib.util.Misc;
+import imop.lib.util.ProfileSS;
 import imop.parser.Program;
 
 public class CFGInfo {
@@ -199,6 +200,7 @@ public class CFGInfo {
 	 *         (Note: an empty list is returned for {@link EndNode}.)
 	 */
 	public List<Node> getSuccBlocks() {
+		ProfileSS.addChangePoint(ProfileSS.cfgSet);
 		if (succBlocks == null) {
 			succBlocks = new ArrayList<>();
 		}
@@ -217,6 +219,7 @@ public class CFGInfo {
 	 *         (Note: an empty list is returned for {@link BeginNode}.)
 	 */
 	public List<Node> getPredBlocks() {
+		ProfileSS.addChangePoint(ProfileSS.cfgSet);
 		if (predBlocks == null) {
 			predBlocks = new ArrayList<>();
 		}
@@ -1640,6 +1643,7 @@ public class CFGInfo {
 	}
 
 	public NestedCFG getNestedCFG() {
+		ProfileSS.addChangePoint(ProfileSS.cfgSet);
 		if (nestedCFG == null) {
 			nestedCFG = new NestedCFG(getOwner());
 		}
