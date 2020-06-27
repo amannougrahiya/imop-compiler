@@ -2662,7 +2662,6 @@ public class Main {
 		List<CriticalNode> getPredNodes() {
 			return predNodes;
 		}
-
 		List<CriticalNode> getSuccNodes() {
 			return succNodes;
 		}
