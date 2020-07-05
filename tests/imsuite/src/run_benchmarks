@@ -1,0 +1,55 @@
+#!/usr/bin/env bash
+
+set -e
+
+grep -q "LOG_LEVEL 0" config.h
+if [ $? != 0 ]; then
+    echo "error: LOG_LEVEL not set to 0"
+    exit 1
+fi
+
+declare -A input
+
+input[bellman_ford]=bfsBellman
+input[bfs_dijkstra]=bfsDijkstra
+input[byzantine]=byzantine
+input[leader_elect_dp]=leader_elect_dp
+input[leader_elect_hs]=leader_elect_hs
+input[leader_elect_lcr]=leader_elect_lcr
+input[kcommittee]=kcommitte
+input[dominating_set]=dominatingSet
+input[mis]=mis
+input[mst]=mst
+input[vertex_coloring]=vertexColoring
+
+cmake .
+make
+
+mkdir -p ../output
+
+for problem in "${!input[@]}"; do
+    input_name="${input[$problem]}"
+    for input_filename in ../input/input${input_name}*; do
+        iterations=10
+        while true; do
+            /usr/bin/time -f '%e %x %P' ./${problem} - ${input_filename} ${iterations} 2>/tmp/time_output 1>/tmp/ops_output
+            runtime=$(cut -d ' ' -f 1 /tmp/time_output)
+
+            if (( $(awk 'BEGIN { print ("'$runtime'" >= "3") }') )); then
+                break;
+            fi
+
+            iterations=$(($iterations*2))
+        done
+
+        opssec=$(cat /tmp/ops_output)
+        percent=$(cut -d ' ' -f 3 /tmp/time_output)
+        retcode=$(cut -d ' ' -f 2 /tmp/time_output)
+        runtime=$(cut -d ' ' -f 1 /tmp/time_output)
+        printf "%s %s %s %s\n" "${problem}" "${input_filename}" "${opssec}" "${percent}"
+
+        if [ $retcode -ne 0 ]; then
+            printf "${problem}: ${input_filename}"
+        fi
+    done
+done | tee ../output_times

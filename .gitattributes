@@ -1,1 +1,5 @@
 *.i linguist-language=C
+tests/* linguist-vendored
+third-party-tools/* linguist-vendored
+NPB3.0-omp-C-master/* linguist-vendored
+*.gv linguist-generated
