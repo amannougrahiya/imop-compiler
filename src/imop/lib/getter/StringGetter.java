@@ -165,7 +165,6 @@ public class StringGetter {
 			str.append(res);
 			return;
 		}
-
 	}
 
 	private static class RenamingStringGetter extends InternalStringGetter {

@@ -2,7 +2,7 @@
  * Copyright (c) 2019 Aman Nougrahiya, V Krishna Nandivada, IIT Madras.
  * This file is a part of the project IMOP, licensed under the MIT license.
  * See LICENSE.md for the full text of the license.
- * 
+ *
  * The above notice shall be included in all copies or substantial
  * portions of this file.
  */
@@ -68,7 +68,7 @@ public class AutomatedUpdater {
 	 * This updater is used as a target for various automated updater for
 	 * addition and removal
 	 * of node {@code n} from its CFG.
-	 * 
+	 *
 	 * @author aman
 	 *
 	 */
@@ -89,8 +89,6 @@ public class AutomatedUpdater {
 		Program.invalidateReversePostorder();
 		CFGInfo.isSCCStale = true;
 		ConstraintsGenerator.reinitInductionSet();
-		if (Misc.isCalledFromMethod("clientAutoUpdate")) {
-		}
 	}
 
 	public static int hasBeenOtimized = 0;
@@ -155,7 +153,7 @@ public class AutomatedUpdater {
 	 * the points-to IN and OUT flow-facts of all the leaf nodes within
 	 * {@code affectedNode} to be same as that of the meet of OUT of
 	 * predecessors of the entry point of the node.
-	 * 
+	 *
 	 * @param affectedNode
 	 *            a node that has been added, to the program.
 	 */
@@ -210,7 +208,7 @@ public class AutomatedUpdater {
 	/**
 	 * Given a node that has to be removed from the program, this method
 	 * sets the points-to instability flag, if required.
-	 * 
+	 *
 	 * @param affectedNode
 	 *            a node that has to be removed from the program.
 	 */
@@ -254,7 +252,7 @@ public class AutomatedUpdater {
 	/**
 	 * Invokes the driver method that performs automated updates for insertion
 	 * of the node {@code insertedNode}.
-	 * 
+	 *
 	 * @param insertedNode
 	 *            a newly inserted node.
 	 */
@@ -266,7 +264,7 @@ public class AutomatedUpdater {
 	/**
 	 * Invokes the driver module that performs automated updates for removal of
 	 * the node {@code removedNode}.
-	 * 
+	 *
 	 * @param removedNode
 	 *            node that has to be removed.
 	 */
@@ -279,7 +277,7 @@ public class AutomatedUpdater {
 	 * Driver function that performs call-backs of various update methods
 	 * specified in the {@code interSet}, after a node {@code node} has been
 	 * inserted in or removed from the CFG.
-	 * 
+	 *
 	 * @param node
 	 *            newly inserted, or to be removed, node.
 	 * @param interSet
@@ -297,7 +295,7 @@ public class AutomatedUpdater {
 	 * This methods sets the invalidation flags for the appropriate read/write
 	 * sets of appropriate dummy-flushes when {@code oldNode} has been removed
 	 * from a certain position in the CFG.
-	 * 
+	 *
 	 * @param oldNode
 	 *            a node that has to be removed from a certain point in the CFG.
 	 *            Note that this method should be called before the node has
@@ -360,7 +358,7 @@ public class AutomatedUpdater {
 	 * This method sets the invalidation flags for the appropriate read/write
 	 * sets of appropriate dummy-flushes when {@code newNode} has been inserted
 	 * at certain position in the CFG.
-	 * 
+	 *
 	 * @param newNode
 	 *            a node that has been inserted at a certain point in the CFG.
 	 */
@@ -445,7 +443,7 @@ public class AutomatedUpdater {
 	 * invalidates the written-before symbol set of first encountered
 	 * DummyFlushes
 	 * on all paths.
-	 * 
+	 *
 	 * @param nodeSet
 	 *            nodes starting which the invalidation traversal has to begin.
 	 */
@@ -475,7 +473,7 @@ public class AutomatedUpdater {
 	 * This method traverses backward in the inter-procedural CFG, and
 	 * invalidates the read-after symbol set of first encountered DummyFlushes
 	 * on all paths.
-	 * 
+	 *
 	 * @param nodeSet
 	 *            nodes starting which the invalidation traversal has to begin.
 	 */
@@ -508,7 +506,7 @@ public class AutomatedUpdater {
 	 * <br>
 	 * Note that this method should be called while the label to be removed or
 	 * added are present in the {@code node}.
-	 * 
+	 *
 	 * @param node
 	 *            node to be processed.
 	 */
@@ -565,7 +563,7 @@ public class AutomatedUpdater {
 	/**
 	 * Updates the set of call statements present in various non-leaf nodes that
 	 * would lexically enclose {@code node} after its insertion in the CFG.
-	 * 
+	 *
 	 * @param node
 	 *            newly inserted node.
 	 */
@@ -594,7 +592,7 @@ public class AutomatedUpdater {
 
 	/**
 	 * Updates the accessible symbol sets for all lexically enclosing scopes.
-	 * 
+	 *
 	 * @param node
 	 *            node that has to be removed.
 	 */
@@ -613,7 +611,7 @@ public class AutomatedUpdater {
 	/**
 	 * Updates the set of call statements present in various non-leaf nodes that
 	 * enclose {@code node} before it gets removed from the CFG.
-	 * 
+	 *
 	 * @param node
 	 *            node that has to be removed.
 	 */
@@ -644,7 +642,7 @@ public class AutomatedUpdater {
 	 * analyses, starting with {@code newNode}. Note that this method is called
 	 * after {code newNode} has been inserted in the CFG, and after all the
 	 * inter- and intra-procedural edge updates have been taken care of.
-	 * 
+	 *
 	 * @param newNode
 	 *            newly inserted node, starting which various analyses have to
 	 *            rerun.
@@ -691,7 +689,7 @@ public class AutomatedUpdater {
 	/**
 	 * Updates flow-fact information for various forward analyses, by rerunning
 	 * the analyses on the set of nodes in {@code nodeSet}.
-	 * 
+	 *
 	 * @param nodeSet
 	 *            set of nodes starting which forward analyses have to be rerun.
 	 */
@@ -767,7 +765,7 @@ public class AutomatedUpdater {
 	/**
 	 * Updates flow-fact information for various backward analyses, by rerunning
 	 * the analyses on the set of nodes in {@code nodeSet}.
-	 * 
+	 *
 	 * @param nodeSet
 	 *            set of nodes starting which backward analyses have to be
 	 *            rerun.
@@ -824,7 +822,7 @@ public class AutomatedUpdater {
 	 * <i>Note that this method should be called before {@code oldNode}
 	 * has already been removed. However, the reruns should start after the
 	 * actual removal.</i>
-	 * 
+	 *
 	 * @param oldNode
 	 *            node that has to be removed from the CFG (while the node is
 	 *            still connected to the CFG).
@@ -874,7 +872,7 @@ public class AutomatedUpdater {
 	 * Returns a set of nodes that lie in those paths which will not be
 	 * reachable anymore after removal of the {@code oldNode}, when traversing
 	 * in the forward direction.
-	 * 
+	 *
 	 * @param oldNode
 	 *            node of interest.
 	 * @return
@@ -931,7 +929,7 @@ public class AutomatedUpdater {
 	 * <i>Note that this method should be called before {@code oldNode}
 	 * has already been removed. However, the reruns should start after the
 	 * actual removal.</i>
-	 * 
+	 *
 	 * @param oldNode
 	 *            node that has to be removed from the CFG. (However, which is
 	 *            still connected.)
@@ -981,7 +979,7 @@ public class AutomatedUpdater {
 	 * Returns a set of nodes that lie in those paths which will not be
 	 * reachable anymore after removal of the {@code oldNode}, when traversing
 	 * in the backward direction.
-	 * 
+	 *
 	 * @param oldNode
 	 *            node of interest.
 	 * @return
@@ -1037,7 +1035,7 @@ public class AutomatedUpdater {
 	 * This method models the affect of addition of an already existing label in
 	 * {@code node} to {@code node}. This is used while inserting {@code node}
 	 * or any of its ancestors at a new place in CFG.
-	 * 
+	 *
 	 * @param node
 	 */
 	public static void modelAdditionOfLabels(Node node) {
@@ -1057,7 +1055,7 @@ public class AutomatedUpdater {
 	 * removing the label) from {@code node}, and its nested components.
 	 * It is used before removing {@code node} from its current position in the
 	 * CFG.
-	 * 
+	 *
 	 * @param node
 	 */
 	public static void modelRemovalOfLabels(Node node) {
@@ -1075,7 +1073,7 @@ public class AutomatedUpdater {
 	/**
 	 * This method automatically updates the symbol table, typedef table, and
 	 * type tables upon addition of the node {@code node}.
-	 * 
+	 *
 	 * @param node
 	 *            CFG node that has to been added to a new location.
 	 */
@@ -1094,7 +1092,7 @@ public class AutomatedUpdater {
 	/**
 	 * This method automatically updates the symbol table, typedef table, and
 	 * type tables upon removal of the node {@code node}.
-	 * 
+	 *
 	 * @param node
 	 *            CFG node that has to be removed.
 	 */
@@ -1118,7 +1116,7 @@ public class AutomatedUpdater {
 	 * Furthermore, if the set of input phases for any leaf CFG node lexically
 	 * enclosed within the given node is empty, then this method invokes
 	 * {@link NodePhaseInfo#rememberCurrentPhases()} on such leaf nodes.
-	 * 
+	 *
 	 * @param addedNode
 	 */
 	public static void performInitOfMHPUponAddition(Node addedNode) {
@@ -1147,7 +1145,7 @@ public class AutomatedUpdater {
 	 * done,
 	 * to model the effect of addition of {@code node}
 	 * If successful, it returns {@code true}.
-	 * 
+	 *
 	 * @param node
 	 *            the node that has been added to the program, for which MHP
 	 *            information needs to be stabilized.
@@ -1207,7 +1205,7 @@ public class AutomatedUpdater {
 	 * done,
 	 * to model the effect of addition of {@code node}
 	 * If successful, it returns {@code true}.
-	 * 
+	 *
 	 * @param node
 	 *            the node that has been added to the program, for which MHP
 	 *            information needs to be stabilized.
@@ -1252,7 +1250,7 @@ public class AutomatedUpdater {
 	 * <br>
 	 * Note that {@code node} has already been inserted in its specific location
 	 * in the CFG.
-	 * 
+	 *
 	 * @param node
 	 *            node that has been inserted at a location in the CFG.
 	 */
@@ -1313,7 +1311,7 @@ public class AutomatedUpdater {
 	 * updates have been done.
 	 * Note that {@code BeginPhasePoint#setInvalidFlag()} is already called by
 	 * this method, and need not be called again by the callee.
-	 * 
+	 *
 	 * @param node
 	 *            node that has to be removed from the CFG.
 	 * @return
@@ -1366,7 +1364,7 @@ public class AutomatedUpdater {
 	 * points in {@code bppSet}.
 	 * <br>
 	 * Note that this method is called on the modified state of the CFG.
-	 * 
+	 *
 	 * @param bppSet
 	 *            set of begin-phase points whose sets have been changed due to
 	 *            removal of certain nodes.
@@ -1395,7 +1393,7 @@ public class AutomatedUpdater {
 	 * Given a set of nodes, starting which the CFG paths may change, this
 	 * method calls changes to phase and inter-task edge information for
 	 * appropriate BeginPhasePoints.
-	 * 
+	 *
 	 * @param nodeSet
 	 *            set of nodes starting which the CFG paths may change.
 	 */
@@ -1430,7 +1428,7 @@ public class AutomatedUpdater {
 	/**
 	 * Remove any caching of co-existence data for {@code element} node (and its
 	 * successors), if {@code element} is a {@link BarrierDirective}.
-	 * 
+	 *
 	 * @param element
 	 *            a node that has to be removed from its position in the AST.
 	 */

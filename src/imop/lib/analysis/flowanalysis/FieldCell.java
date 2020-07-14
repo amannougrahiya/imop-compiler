@@ -37,7 +37,9 @@ public class FieldCell extends Cell {
 
 	@Override
 	public ImmutableCellSet getPointsTo(Node node) {
-		return new ImmutableCellSet(this.deprecated_getPointsTo(node));
+		CellSet pointsToSet = new CellSet();
+		pointsToSet.add(this); // Note the difference here, as compared to an AddressCell.
+		return new ImmutableCellSet(pointsToSet);
 	}
 
 	@Override

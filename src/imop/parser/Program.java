@@ -2,7 +2,7 @@
  * Copyright (c) 2019 Aman Nougrahiya, V Krishna Nandivada, IIT Madras.
  * This file is a part of the project IMOP, licensed under the MIT license.
  * See LICENSE.md for the full text of the license.
- * 
+ *
  * The above notice shall be included in all copies or substantial
  * portions of this file.
  */
@@ -81,7 +81,7 @@ public class Program {
 	public static boolean printSideEffects = true; // Prints side-effects as comments on annotated nodes.
 	public static boolean printDFDs = true;
 	public static boolean printRWinDFDs = false;
-	public static boolean dumpIntermediateStates = false; // Decides whether intermediate states of the program should be dumped. 
+	public static boolean dumpIntermediateStates = false; // Decides whether intermediate states of the program should be dumped.
 	public static boolean printNoFiles = false;
 	public static UpdateCategory updateCategory;
 	public static UpdateCategory mhpUpdateCategory;
@@ -146,7 +146,7 @@ public class Program {
 	 * Sets the various defaults for global flags (and filenames), which will be
 	 * used in the absence of any command-line arguments.
 	 * Also, this method sets/resets some other flags to their initial state.
-	 * 
+	 *
 	 * @return
 	 *         a string representing the path of the input file.
 	 */
@@ -170,24 +170,24 @@ public class Program {
 		Program.mhpUpdateCategory = UpdateCategory.LZINC; // Default is LZINC.
 
 		String filePath = "";
-		filePath = ("../tests/classB-preproc/bt-b.i"); // SVE-all: 29s. 
+		filePath = ("../tests/classB-preproc/bt-b.i"); // SVE-all: 29s.
 		//		filePath = ("../tests/classB-preproc/cg-b.i"); // SVE-all: 2.50s.
-		//		filePath = ("../tests/classB-preproc/ep-b.i"); // SVE-all: 0.55s 
+		//		filePath = ("../tests/classB-preproc/ep-b.i"); // SVE-all: 0.55s
 		//		filePath = ("../tests/classB-preproc/ft-b.i"); // SVE-all: 3.73s.
-		//		filePath = ("../tests/classB-preproc/is-b.i"); // SVE-all: 0.69 
+		//		filePath = ("../tests/classB-preproc/is-b.i"); // SVE-all: 0.69
 		//		filePath = ("../tests/classB-preproc/lu-b.i"); // SVE-all: 16.26s.
 		//		filePath = ("../tests/large-preproc/mg-c.i"); // SVE-all: 9.88s;
-		//		filePath = ("../tests/classB-preproc/sp-b.i"); // SVE-all: 23s. 
+		//		filePath = ("../tests/classB-preproc/sp-b.i"); // SVE-all: 23s.
 
-		//		filePath = ("../output-dump/ft-bimop_output_LZINC.i"); // SVE-all: 29s. 
-		//		filePath = ("../tests/npb-post/bt3-0.i"); // SVE-all: 29s. 
-		filePath = ("../tests/npb-post/cg3-0.i"); // SVE-all: 2.50s.
-		//		filePath = ("../tests/npb-post/ep3-0.i"); // SVE-all: 0.55s 
+		//		filePath = ("../output-dump/ft-bimop_output_LZINC.i"); // SVE-all: 29s.
+		filePath = ("../tests/npb-post/bt3-0.i"); // SVE-all: 29s.
+		//		filePath = ("../tests/npb-post/cg3-0.i"); // SVE-all: 2.50s.
+		//		filePath = ("../tests/npb-post/ep3-0.i"); // SVE-all: 0.55s
 		//		filePath = ("../tests/npb-post/ft3-0.i"); // SVE-all: 3.73s.
-		//		filePath = ("../tests/npb-post/is3-0.i"); // SVE-all: 0.69 
+		//		filePath = ("../tests/npb-post/is3-0.i"); // SVE-all: 0.69
 		//		filePath = ("../tests/npb-post/lu3-0.i"); // SVE-all: 16.26s.
 		//		filePath = ("../tests/npb-post/mg3-0.i"); // SVE-all: 9.88s;
-		//		filePath = ("../tests/npb-post/sp3-0.i"); // SVE-all: 23s. 
+		//		filePath = ("../tests/npb-post/sp3-0.i"); // SVE-all: 23s.
 
 		//		filePath = "../output-dump/imop_useful.i";
 		//		filePath = ("../src/imop/lib/testcases/cfgTests/singleLooping.c");
@@ -324,13 +324,12 @@ public class Program {
 		//		filePath = ("../tests/poisson_openmp-while-merged.i");
 		//		filePath = ("../tests/output.i");
 		//		filePath = ("../tests/ocean/k2Input.i");
-		//		filePath = ("../tests/for-func.i"); 
-		//		filePath = ("../tests/null-final.i"); 
+		//		filePath = ("../tests/for-func.i");
+		//		filePath = ("../tests/null-final.i");
 		//		filePath = ("../tests/if-func.c");
 		//		filePath = ("../tests/type-long.c");
 		//		filePath = ("../tests/structDef.c");
 		//		filePath = ("../tests/struct-issue.c");
-		//		filePath = ("../tests/fft.i");
 		//		filePath = ("../tests/atomic-test.c");
 		//		filePath = ("../tests/ocean/kinst-k2input.i");
 		//		filePath = ("../tests/dijkstra_openmp.i");
@@ -339,12 +338,11 @@ public class Program {
 		//		filePath = ("../tests/quake.i");
 		//		filePath = ("../tests/sequoia/amgmk.i");
 		//		filePath = ("../tests/sequoia/clomp.i");
-
 		//		filePath = ("../tests/fsu/md_openmp.i");
 		//		filePath = ("../tests/parboil/lbm.i");
-
 		//		filePath = ("../tests/insert.i");
 		//		filePath = ("../tests/minebench/kmeans.i");
+		//		filePath = ("../tests/barr-opt-tests/adi.i");
 		//		filePath = ("../src/imop/lib/testcases/allKnown.c");
 		//		filePath = ("../output-dump/imop_output.i");
 		return filePath;
@@ -358,7 +356,7 @@ public class Program {
 	 * After setting of the flags, this method transfers the control the
 	 * {@link FrontEnd#parseAndNormalize(java.io.InputStream)} which parses the
 	 * input file.
-	 * 
+	 *
 	 * @param args
 	 */
 	public static void parseNormalizeInput(String[] args) {
@@ -580,7 +578,7 @@ public class Program {
 	/**
 	 * Obtain a read-only list which represents a reverse postordering on the
 	 * leaves of the program.
-	 * 
+	 *
 	 * @return
 	 *         list representing reverse postordering on the leaves of the
 	 *         program.
@@ -614,7 +612,7 @@ public class Program {
 	/**
 	 * Obtain a read-only list which represents a reverse postordering on the
 	 * leaves of the program.
-	 * 
+	 *
 	 * @return
 	 *         list representing reverse postordering on the leaves of the
 	 *         program.
@@ -680,7 +678,7 @@ public class Program {
 
 	/**
 	 * Obtain a set of all those cells that may point to a symbol.
-	 * 
+	 *
 	 * @return
 	 *         set of all those cells that may point to a symbol.
 	 */

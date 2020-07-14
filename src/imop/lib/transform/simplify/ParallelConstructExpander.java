@@ -2,7 +2,7 @@
  * Copyright (c) 2019 Aman Nougrahiya, V Krishna Nandivada, IIT Madras.
  * This file is a part of the project IMOP, licensed under the MIT license.
  * See LICENSE.md for the full text of the license.
- * 
+ *
  * The above notice shall be included in all copies or substantial
  * portions of this file.
  */
@@ -83,52 +83,48 @@ public class ParallelConstructExpander {
 	private static int counter = 0;
 
 	public static void mergeParallelRegions(Node node) {
-		List<ParallelConstruct> parConsList = Misc.getExactPostOrderEnclosee(node, ParallelConstruct.class);
 		if (!node.getInfo().isConnectedToProgram()) {
+			Misc.warnDueToLackOfFeature("Cannot invoke merging of parallel regions within a disconnected node.", node);
 			return;
 		}
-		boolean changed = false;
-		for (ParallelConstruct parCons : parConsList) {
-			//			System.out.println(parCons);
-			/*
-			 * New code below.
-			 * Now, we do not expand a parallel construct unless it is present
-			 * within a serial loop (directly, or via any of the callers of the
-			 * method to which it belongs).
-			 */
-			if (!parCons.getInfo().getCFGNestingNonLeafNodes().stream().anyMatch(
-					e -> (e instanceof ForStatement || e instanceof DoStatement || e instanceof WhileStatement))) {
-				continue;
-			}
-			/*
-			 * New code above.
-			 */
+		outer: do {
+			List<ParallelConstruct> parConsList = Misc.getExactPostOrderEnclosee(node, ParallelConstruct.class);
+			boolean changed = false;
+			for (ParallelConstruct parCons : parConsList) {
+				//			System.out.println(parCons);
+				/*
+				 * New code below.
+				 * Now, we do not expand a parallel construct unless it is
+				 * present
+				 * within a serial loop (directly, or via any of the callers of
+				 * the
+				 * method to which it belongs).
+				 */
+				if (!parCons.getInfo().getCFGNestingNonLeafNodes().stream()
+						.anyMatch(e -> (e instanceof IterationStatement))) {
+					continue;
+				}
+				/*
+				 * New code above.
+				 */
 
-			changed = expandParRegion(parCons);
-			//			ProfileSS.nextCP();
-			if (changed) {
-				parCons.getInfo().removeExtraScopes();
-				//				ProfileSS.nextCP();
+				changed = expandParRegion(parCons);
+				if (changed) {
+					parCons.getInfo().removeExtraScopes();
+				}
+				changed |= interchangeUp(parCons);
+				if (changed) {
+					continue outer;
+				}
 			}
-			changed |= interchangeUp(parCons);
-			//			ProfileSS.nextCP();
-			//			DumpSnapshot.dumpRoot("parEM" + counter++ + Program.updateCategory);
-			if (changed) {
-				//				System.out.println("Yes it did change.");
-				mergeParallelRegions(node);
-				//				ProfileSS.nextCP();
-				return;
-			}
-		}
+			break;
+		} while (true);
 	}
 
 	public static boolean expandParRegion(ParallelConstruct parCons) {
 		Node enclosingNonLeaf = Misc.getEnclosingCFGNonLeafNode(parCons);
-		if (!(enclosingNonLeaf instanceof CompoundStatement)) {
-			Misc.exitDueToError("The input is not in normalized form! Found a parallel-construct as a body of a "
-					+ enclosingNonLeaf.getClass().getSimpleName());
-			return false;
-		}
+		assert (enclosingNonLeaf instanceof CompoundStatement) : "The input is not in normalized form! Found a parallel-construct as a body of a "
+				+ enclosingNonLeaf.getClass().getSimpleName();
 		CompoundStatement scope = (CompoundStatement) enclosingNonLeaf;
 		int indexOfPar = scope.getInfo().getCFGInfo().getElementList().indexOf(parCons);
 		int lineNum = Misc.getLineNum(parCons);
@@ -587,7 +583,7 @@ public class ParallelConstructExpander {
 	/**
 	 * Checks if a symbol, or any of its elements (in case of stack arrays) are
 	 * being written anywhere in the parallel construct.
-	 * 
+	 *
 	 * @param sym
 	 *            a symbol to be tested.
 	 * @param parCons
@@ -622,7 +618,7 @@ public class ParallelConstructExpander {
 	/**
 	 * Check if the symbol {@code sym} is used by only the master thread in
 	 * parCons.
-	 * 
+	 *
 	 * @param sym
 	 *            a symbol that needs to be tested.
 	 * @param parCons
@@ -723,7 +719,7 @@ public class ParallelConstructExpander {
 	/**
 	 * Interchanges a parallel construct with enclosing loops and selection
 	 * statements, if appropriate.
-	 * 
+	 *
 	 * @param parCons
 	 * @return
 	 *         true, if the interchange happened.
@@ -1152,7 +1148,7 @@ public class ParallelConstructExpander {
 					//						InsertImmediatePredecessor.insertAggressive(whileStmt, predSimpleDecl);
 					//						Statement tempVal = FrontEnd.parseAndNormalize(predSimpleName + " = " + predicate +";", Statement.class);
 					//						InsertImmediatePredecessor.insertAggressive(predicate, tempVal);
-					//						
+					//
 					//						Expression newPred = FrontEnd.parseAndNormalize(predSimpleName, Expression.class);
 					//						whileStmt.getInfo().getCFGInfo().setPredicate(newPred);
 					//						return true;
@@ -1773,7 +1769,7 @@ public class ParallelConstructExpander {
 		List<OmpClause> thisClauses = parConsAbove.getInfo().getOmpClauseList();
 		List<OmpClause> nextClauses = parConsBelow.getInfo().getOmpClauseList();
 
-		// If either of the parallel constructs contain any IfClause, NumThreadsClause, 
+		// If either of the parallel constructs contain any IfClause, NumThreadsClause,
 		// or any other unhandled clause, then skip the merger.
 		for (OmpClause thisClause : thisClauses) {
 			if (thisClause instanceof IfClause || thisClause instanceof NumThreadsClause
@@ -1885,7 +1881,7 @@ public class ParallelConstructExpander {
 
 	/**
 	 * Merges two consecutive parallel constructs into one, if possible.
-	 * 
+	 *
 	 * @param parConsAbove
 	 *            first parallel construct.
 	 * @param parConsBelow
@@ -1898,7 +1894,7 @@ public class ParallelConstructExpander {
 		List<OmpClause> thisClauses = parConsAbove.getInfo().getOmpClauseList();
 		List<OmpClause> nextClauses = parConsBelow.getInfo().getOmpClauseList();
 
-		// If either of the parallel constructs contain any IfClause, NumThreadsClause, 
+		// If either of the parallel constructs contain any IfClause, NumThreadsClause,
 		// or any other unhandled clause, then skip the merger.
 		for (OmpClause thisClause : thisClauses) {
 			if (thisClause instanceof IfClause || thisClause instanceof NumThreadsClause
@@ -2028,7 +2024,7 @@ public class ParallelConstructExpander {
 		List<OmpClause> thisClauses = parConsAbove.getInfo().getOmpClauseList();
 		List<OmpClause> nextClauses = parConsBelow.getInfo().getOmpClauseList();
 
-		// If either of the parallel constructs contain any IfClause, NumThreadsClause, 
+		// If either of the parallel constructs contain any IfClause, NumThreadsClause,
 		// or any other unhandled clause, then skip the merger.
 		for (OmpClause thisClause : thisClauses) {
 			if (thisClause instanceof IfClause || thisClause instanceof NumThreadsClause

@@ -2,7 +2,7 @@
 // * Copyright (c) 2019 Aman Nougrahiya, V Krishna Nandivada, IIT Madras.
  * This file is a part of the project IMOP, licensed under the MIT license.
  * See LICENSE.md for the full text of the license.
- * 
+ *
  * The above notice shall be included in all copies or substantial
  * portions of this file.
  */
@@ -85,6 +85,76 @@ public class DriverModule {
 
 	public static void resetStaticFields() {
 		DriverModule.counter = 0;
+	}
+
+	public static void mergeParRegs() {
+		SVEDimension wasSVE = Program.sveSensitive;
+		if (wasSVE == SVEDimension.SVE_SENSITIVE) {
+			Program.sveSensitive = SVEDimension.SVE_INSENSITIVE;
+		}
+		boolean dumpIntermediate = Program.dumpIntermediateStates;
+		
+		double mprTime = System.nanoTime();
+		ParallelConstructExpander.mergeParallelRegions(Program.getRoot());
+		double totTime = (System.nanoTime() - Main.totalTime) / (1.0 * 1e9);
+		Program.getRoot().getInfo().removeUnusedElements();
+
+		ProfileSS.nextCP();
+		if (dumpIntermediate) {
+			DumpSnapshot.dumpRoot("merged" + Program.updateCategory);
+			DumpSnapshot.dumpPointsTo("merged" + Program.updateCategory);
+			DumpSnapshot.dumpPhases("merged" + Program.mhpUpdateCategory);
+		}
+		RedundantSynchronizationRemoval.removeBarriers(Program.getRoot());
+		//		RedundantSynchronizationRemoval.removeBarriersFromAllParConsWithin(Program.getRoot());
+		if (dumpIntermediate) {
+			DumpSnapshot.dumpRoot("merged-rem" + Program.updateCategory);
+			DumpSnapshot.dumpPointsTo("merged-rem" + Program.updateCategory);
+			DumpSnapshot.dumpPhases("merged-rem" + Program.mhpUpdateCategory);
+		}
+		double timerLocal = System.nanoTime();
+		FunctionDefinition mainFunc = Program.getRoot().getInfo().getMainFunction();
+		System.err.println("Starting with function inlining..");
+		FunctionInliner.inline(mainFunc);
+		System.err.println("Inlining successful.");
+		System.err.println("Time spent in function inlining: " + (System.nanoTime() - timerLocal)/1e9);
+		Program.getRoot().getInfo().removeUnusedElements();
+
+		if (dumpIntermediate) {
+			DumpSnapshot.dumpRoot("merged-rem-inlined" + Program.mhpUpdateCategory);
+			DumpSnapshot.dumpPointsTo("merged-rem-inlined" + Program.updateCategory);
+			DumpSnapshot.dumpPhases("merged-rem-inlined" + Program.mhpUpdateCategory);
+		}
+
+		timerLocal = System.nanoTime();
+		ParallelConstructExpander.mergeParallelRegions(Program.getRoot());
+		if (dumpIntermediate) {
+			DumpSnapshot.dumpRoot("merged-rem-inlined-merged" + Program.mhpUpdateCategory);
+			DumpSnapshot.dumpPointsTo("merged-rem-inlined-merged" + Program.updateCategory);
+			DumpSnapshot.dumpPhases("merged-rem-inlined-merged" + Program.mhpUpdateCategory);
+		}
+		//				Program.getRoot().getInfo().removeExtraScopes();
+		RedundantSynchronizationRemoval.removeBarriers(Program.getRoot());
+
+		System.err.println("Time spent in expansion and barrier removal: " + (System.nanoTime() - timerLocal)/1e9);
+		DumpSnapshot.dumpRoot("merged-rem-inlined-merged-rem" + Program.mhpUpdateCategory);
+		totTime = (System.nanoTime() - Main.totalTime) / (1.0 * 1e9);
+		System.err.println("MPR Time: " + (System.nanoTime() - mprTime)/1e9);
+		System.err.println("TOTAL TIME (including disk I/O time): " + totTime + "s.");
+		System.exit(0);
+		//		RedundantSynchronizationRemoval.removeBarriersFromAllParConsWithin(Program.getRoot());
+		//		if (dumpIntermediate) {
+		//double
+		totTime = (System.nanoTime() - Main.totalTime) / (1.0 * 1e9);
+		System.err.println("TOTAL TIME (including disk I/O time): " + totTime + "s.");
+		DumpSnapshot.dumpRoot("merged-rem-inlined-merged-rem" + Program.mhpUpdateCategory);
+		//		}
+		if (wasSVE == SVEDimension.SVE_SENSITIVE) {
+			Program.sveSensitive = SVEDimension.SVE_SENSITIVE;
+		}
+		//		change();
+		//		DriverModule.optimizeBarriers(); // This method does not return;
+		System.exit(0);
 	}
 
 	public static void clientAutoUpdate() {
@@ -200,59 +270,6 @@ public class DriverModule {
 		System.exit(0);
 	}
 
-	public static void mergeParRegs() {
-		SVEDimension wasSVE = Program.sveSensitive;
-		if (wasSVE == SVEDimension.SVE_SENSITIVE) {
-			Program.sveSensitive = SVEDimension.SVE_INSENSITIVE;
-		}
-		boolean dumpIntermediate = Program.dumpIntermediateStates;
-
-		ParallelConstructExpander.mergeParallelRegions(Program.getRoot());
-		Program.getRoot().getInfo().removeUnusedElements();
-		ProfileSS.nextCP();
-		if (dumpIntermediate) {
-			DumpSnapshot.dumpRoot("merged" + Program.updateCategory);
-			DumpSnapshot.dumpPointsTo("merged" + Program.updateCategory);
-			DumpSnapshot.dumpPhases("merged" + Program.mhpUpdateCategory);
-		}
-		//	OLD CODE: BasicTransform.removeUnusedFunctions(Program.getRoot());
-		RedundantSynchronizationRemoval.removeBarriers(Program.getRoot());
-		//		RedundantSynchronizationRemoval.removeBarriersFromAllParConsWithin(Program.getRoot());
-		if (dumpIntermediate) {
-			DumpSnapshot.dumpRoot("merged-rem" + Program.updateCategory);
-			DumpSnapshot.dumpPointsTo("merged-rem" + Program.updateCategory);
-			DumpSnapshot.dumpPhases("merged-rem" + Program.mhpUpdateCategory);
-		}
-		//		 TODO: Uncomment starting this.
-		FunctionDefinition mainFunc = Program.getRoot().getInfo().getMainFunction();
-		FunctionInliner.inline(mainFunc);
-		if (dumpIntermediate) {
-			DumpSnapshot.dumpRoot("merged-rem-inlined" + Program.mhpUpdateCategory);
-			DumpSnapshot.dumpPointsTo("merged-rem-inlined" + Program.updateCategory);
-			DumpSnapshot.dumpPhases("merged-rem-inlined" + Program.mhpUpdateCategory);
-		}
-		ParallelConstructExpander.mergeParallelRegions(Program.getRoot());
-		if (dumpIntermediate) {
-			DumpSnapshot.dumpRoot("merged-rem-inlined-merged" + Program.mhpUpdateCategory);
-			DumpSnapshot.dumpPointsTo("merged-rem-inlined-merged" + Program.updateCategory);
-			DumpSnapshot.dumpPhases("merged-rem-inlined-merged" + Program.mhpUpdateCategory);
-		}
-		//				Program.getRoot().getInfo().removeExtraScopes();
-		RedundantSynchronizationRemoval.removeBarriers(Program.getRoot());
-		//		RedundantSynchronizationRemoval.removeBarriersFromAllParConsWithin(Program.getRoot());
-		//		if (dumpIntermediate) {
-		double totTime = (System.nanoTime() - Main.totalTime) / (1.0 * 1e9);
-		System.err.println("TOTAL TIME (including disk I/O time): " + totTime + "s.");
-		DumpSnapshot.dumpRoot("merged-rem-inlined-merged-rem" + Program.mhpUpdateCategory);
-		//		}
-		if (wasSVE == SVEDimension.SVE_SENSITIVE) {
-			Program.sveSensitive = SVEDimension.SVE_SENSITIVE;
-		}
-		//		change();
-		//		DriverModule.optimizeBarriers(); // This method does not return;
-		System.exit(0);
-	}
-
 	private static void change() {
 		System.err.println("Number of times IDFA update were triggered -- ");
 		for (FlowAnalysis<?> analysis : FlowAnalysis.getAllAnalyses().values()) {
@@ -344,7 +361,7 @@ public class DriverModule {
 	/**
 	 * Performs synchronization optimizations on various loop statements in the
 	 * input program, if required.
-	 * 
+	 *
 	 * @param root
 	 *            root of the AST of the input program.
 	 */
@@ -385,7 +402,7 @@ public class DriverModule {
 	 * translations are performed in a way that guarantees consistency of
 	 * various data-structures that represent the semantics of the input
 	 * program.
-	 * 
+	 *
 	 * @param itStmt
 	 *            iteration-statement (a {@link WhileStatement}, a
 	 *            {@link ForStatement}, or a {@link DoStatement}), on which we
@@ -551,7 +568,7 @@ public class DriverModule {
 
 	/**
 	 * Obtain the maximum size of swap-chain present anywhere within encloser.
-	 * 
+	 *
 	 * @param encloser
 	 *            enclosing node, within which the length of swap-chain, if any,
 	 *            has to be found.
@@ -611,7 +628,7 @@ public class DriverModule {
 	 * Note: We skip those clean writes which write to a symbol of complicated
 	 * type that does not overload "=" operator (e.g., arrays, functions,
 	 * etc.).
-	 * 
+	 *
 	 * @param itContents
 	 *            contents of a loop.
 	 * @param borderPhases
@@ -672,7 +689,7 @@ public class DriverModule {
 	 * This method starts at the {@code borderNode}, and tries to remove an
 	 * anti-edge across it, by renaming shared variables, if required,
 	 * up till exit points from this new copy of the original iteration body.
-	 * 
+	 *
 	 * @param itStmt
 	 *            iteration-statement that has recently been added with a new
 	 *            copy of original iteration.
@@ -969,7 +986,7 @@ public class DriverModule {
 
 	/**
 	 * Obtain the current border node for the given iteration-statement.
-	 * 
+	 *
 	 * @param itStmt
 	 * @return
 	 */
@@ -994,7 +1011,7 @@ public class DriverModule {
 	 * Note that this method places a special label marker: "__imopLoopBorder",
 	 * which can be used to extract the loop border. Care should be taken to
 	 * remove this label after border extraction.
-	 * 
+	 *
 	 * @param itStmt
 	 * @param origBody
 	 * @param environmentUpdate
@@ -1123,7 +1140,7 @@ public class DriverModule {
 	 * This method performs copy elimination on each node in the parent block of
 	 * {@code itStmt}, followed by dead code removal, in an attempt to reduce
 	 * the shared dependences.
-	 * 
+	 *
 	 * @param itStmt
 	 *            loop from within whose parent copy elimination has to be
 	 *            performed.
@@ -1187,7 +1204,7 @@ public class DriverModule {
 	/**
 	 * To obtain the maximum number of abstract phases that one execution of
 	 * this loop may observe.
-	 * 
+	 *
 	 * @param itStmt
 	 *            loop to be tested.
 	 * @return
@@ -1303,7 +1320,7 @@ public class DriverModule {
 	/**
 	 * Obtains all those phases that either start in this loop, or enter through
 	 * the BeginNode and end in this loop.
-	 * 
+	 *
 	 * @param itStmt
 	 *            loop to be processed.
 	 * @return
@@ -1358,10 +1375,10 @@ public class DriverModule {
 	private static boolean mayDistortEnvironment(CellSet cells, Set<Node> frontiers, IterationStatement itStmt,
 			Node aboveNode, Node belowNode) {
 		//		Set<Node> itContents = itStmt.getInfo().getCFGInfo().getIntraTaskCFGLeafContents();
-		//		
+		//
 		//		aboveNode = Misc.getCFGNodeFor(aboveNode);
 		//		belowNode = Misc.getCFGNodeFor(belowNode);
-		//	
+		//
 		//		if (aboveNode.getInfo().isControlConfined()) {
 		//			return false;
 		//		}
@@ -1406,7 +1423,7 @@ public class DriverModule {
 	/**
 	 * Checks if there is any anti-dependence across the back-edge of
 	 * {@code itStmt}, for a shared variable.
-	 * 
+	 *
 	 * @param itStmt
 	 *            loop that needs to be tested.
 	 * @return
