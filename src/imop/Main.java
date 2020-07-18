@@ -140,8 +140,8 @@ public class Main {
 	public static void main(String[] args) throws FileNotFoundException, InterruptedException {
 		//		Thread.sleep(7000);
 		totalTime = System.nanoTime();
-
 		Program.parseNormalizeInput(args);
+
 		//		demo1("L1");
 		//		demo2();
 		//		demo3();
@@ -184,8 +184,8 @@ public class Main {
 		//		dumpAccessibleCells("");
 		//		dumpLoopHeadersOnSTDOUT();
 		// ********* Those methods that never return.*********
-		DriverModule.mergeParRegs();
-		//		DriverModule.clientAutoUpdate();
+		//		DriverModule.mergeParRegs();
+		DriverModule.clientAutoUpdate();
 		//		DriverModule.optimizeBarriers();
 		//		Main.testNodeShifting();
 		//		Main.testNormalization();
@@ -2662,6 +2662,7 @@ public class Main {
 		List<CriticalNode> getPredNodes() {
 			return predNodes;
 		}
+
 		List<CriticalNode> getSuccNodes() {
 			return succNodes;
 		}

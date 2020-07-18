@@ -549,6 +549,12 @@ public abstract class InterThreadForwardCellularAnalysis<F extends CellularDataF
 			return;
 		}
 		this.autoUpdateTriggerCounter++;
+		// Use the commented code below when attempting to count the list per trigger.
+		// We also need to uncomment the increment to localCount in debugRecursion, when counting.
+		//		if (localCount != -1) {
+		//			localList.add(localCount);
+		//		}
+		//		localCount = 0;
 		long localTimer = System.nanoTime();
 
 		/*

@@ -93,7 +93,7 @@ public class DriverModule {
 			Program.sveSensitive = SVEDimension.SVE_INSENSITIVE;
 		}
 		boolean dumpIntermediate = Program.dumpIntermediateStates;
-		
+
 		double mprTime = System.nanoTime();
 		ParallelConstructExpander.mergeParallelRegions(Program.getRoot());
 		double totTime = (System.nanoTime() - Main.totalTime) / (1.0 * 1e9);
@@ -117,7 +117,7 @@ public class DriverModule {
 		System.err.println("Starting with function inlining..");
 		FunctionInliner.inline(mainFunc);
 		System.err.println("Inlining successful.");
-		System.err.println("Time spent in function inlining: " + (System.nanoTime() - timerLocal)/1e9);
+		System.err.println("Time spent in function inlining: " + (System.nanoTime() - timerLocal) / 1e9);
 		Program.getRoot().getInfo().removeUnusedElements();
 
 		if (dumpIntermediate) {
@@ -136,10 +136,10 @@ public class DriverModule {
 		//				Program.getRoot().getInfo().removeExtraScopes();
 		RedundantSynchronizationRemoval.removeBarriers(Program.getRoot());
 
-		System.err.println("Time spent in expansion and barrier removal: " + (System.nanoTime() - timerLocal)/1e9);
+		System.err.println("Time spent in expansion and barrier removal: " + (System.nanoTime() - timerLocal) / 1e9);
 		DumpSnapshot.dumpRoot("merged-rem-inlined-merged-rem" + Program.mhpUpdateCategory);
 		totTime = (System.nanoTime() - Main.totalTime) / (1.0 * 1e9);
-		System.err.println("MPR Time: " + (System.nanoTime() - mprTime)/1e9);
+		System.err.println("MPR Time: " + (System.nanoTime() - mprTime) / 1e9);
 		System.err.println("TOTAL TIME (including disk I/O time): " + totTime + "s.");
 		System.exit(0);
 		//		RedundantSynchronizationRemoval.removeBarriersFromAllParConsWithin(Program.getRoot());
@@ -206,11 +206,13 @@ public class DriverModule {
 		long finalIncNodes = 0;
 		long tarjanCount = 0;
 		double sccTime = 0.0;
+		//		List<Long> triggerSizeCountList = null;
 		System.err.println("Number of times IDFA update were triggered -- ");
 		for (FlowAnalysis<?> analysis : FlowAnalysis.getAllAnalyses().values()) {
 			System.err.println("\t For " + analysis.getAnalysisName() + ": " + analysis.autoUpdateTriggerCounter);
 			if (analysis.getAnalysisName() == AnalysisName.POINTSTO) {
 				incIDFATriggers = analysis.autoUpdateTriggerCounter;
+				//				triggerSizeCountList = analysis.localList;
 			}
 		}
 		System.err.println("Total number of times nodes were processed during automated IDFA update -- ");
@@ -267,6 +269,9 @@ public class DriverModule {
 		System.out.println(Program.fileName + " " + Program.updateCategory + " " + df2.format(totTime) + " "
 				+ df2.format(incMHPTime) + " " + df2.format(incIDFATime) + " " + incMHPTriggers + " " + incIDFATriggers
 				+ " " + finalIncNodes + " " + tarjanCount + " " + df2.format(sccTime));
+		System.err
+				.println("Number of times PTA would have had to run in semi-eager mode: " + ProfileSS.flagSwitchCount);
+		//		System.err.println("Trigger count: " + triggerSizeCountList);
 		System.exit(0);
 	}
 

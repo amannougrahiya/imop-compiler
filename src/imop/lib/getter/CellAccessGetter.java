@@ -1907,7 +1907,7 @@ public class CellAccessGetter {
 				return n.getF0().accept(this);
 			} else {
 				CellList lhOp = n.getF0().accept(this);
-				addReads(n, n.getF0().accept(this));
+				addReads(n, lhOp);
 				Type lhType = Type.getType(n.getF0());
 				CellList rhOp = n.getF1().getNode().accept(this);
 				boolean isLeftBase = lhType instanceof PointerType || lhType instanceof ArrayType;

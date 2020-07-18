@@ -339,6 +339,8 @@ public abstract class FlowAnalysis<F extends FlowAnalysis.FlowFact> extends GJDe
 	protected ReversePostOrderWorkList workList = new ReversePostOrderWorkList();
 
 	public long nodesProcessed = 0;
+	//	public long localCount = -1;
+	//	public List<Long> localList = new ArrayList<>();
 
 	public HashMap<Node, Integer> tempMap = new HashMap<>();
 
@@ -355,7 +357,7 @@ public abstract class FlowAnalysis<F extends FlowAnalysis.FlowFact> extends GJDe
 	protected Set<Node> processedInThisUpdate = new HashSet<>();
 	protected Set<Node> yetToBeFinalized = new HashSet<>();
 	protected HashMap<Node, Set<Node>> reachablePredecessorsOfSeeds = new HashMap<>();
-	
+
 	/**
 	 * Depending upon the nature of the analysis, this method should implement
 	 * the code that invokes appropriate methods to run the flow analysis, given
@@ -492,6 +494,7 @@ public abstract class FlowAnalysis<F extends FlowAnalysis.FlowFact> extends GJDe
 	 */
 	protected final void debugRecursion(Node node) {
 		nodesProcessed++;
+		//		localCount++;
 		Integer nodeProcessCount = tempMap.get(node);
 		if (nodeProcessCount == null) {
 			tempMap.put(node, 1);

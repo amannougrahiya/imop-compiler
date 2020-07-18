@@ -343,8 +343,13 @@ public class Program {
 		//		filePath = ("../tests/insert.i");
 		//		filePath = ("../tests/minebench/kmeans.i");
 		//		filePath = ("../tests/barr-opt-tests/adi.i");
+		//		filePath = ("../tests/barr-opt-tests/amgmk.i");
+		//		filePath = ("../tests/barr-opt-tests/clomp.i");
+		//		filePath = ("../tests/barr-opt-tests/stream.i");
+		//		filePath = ("../tests/barr-opt-tests/quake.i");
 		//		filePath = ("../src/imop/lib/testcases/allKnown.c");
 		//		filePath = ("../output-dump/imop_output.i");
+		filePath = ("../tests/temp5.c");
 		return filePath;
 	}
 

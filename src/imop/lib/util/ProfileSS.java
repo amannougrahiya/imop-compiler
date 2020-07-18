@@ -24,12 +24,17 @@ public class ProfileSS {
 	public static Set<Integer> phSet = new HashSet<>();
 	public static int currentCP = -1;
 	
+	private static boolean flagRaised = false;
+	public static int flagSwitchCount = 0;
+	
+	
 	/**
 	 * This method is placed immediately after a change-point, and is used to update currentCP.
 	 */
 	public static void nextCP() {
 		StackTraceElement st = Thread.currentThread().getStackTrace()[2];
 		currentCP = st.getLineNumber() - 1;
+		flagRaised = true;
 	}
 	
 	/**
@@ -38,6 +43,12 @@ public class ProfileSS {
 	 */
 	public static void addChangePoint(Set<Integer> set) {
 		set.add(currentCP);
+		if (set == ptaSet) {
+			if (flagRaised) {
+				flagRaised = false;
+				flagSwitchCount++;
+			}
+		}
 	}
 
 }
