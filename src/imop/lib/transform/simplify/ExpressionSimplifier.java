@@ -62,6 +62,8 @@ import imop.parser.FrontEnd;
  * <li>Ensures that user-defined types (structs/unions/enums) are declared
  * and used in different declarations.
  * </li>
+ * <li>Replace {@code foo(void)} with {@code foo()} in all FunctionDefinition
+ * nodes.</li>
  * </ul>
  * 
  * @author aman
