@@ -612,6 +612,7 @@ public class RootInfo extends NodeInfo {
 					ElementsOfTranslation elemOfTranslation = Misc.getEnclosingNode(extDecl,
 							ElementsOfTranslation.class);
 					baseNode.getF0().removeNode(elemOfTranslation);
+					Program.getRoot().getInfo().removeFunctionFromList(fd);
 					deletedAny = true;
 				}
 			}
@@ -683,4 +684,13 @@ public class RootInfo extends NodeInfo {
 		this.allFunctionDefinitions.add(newFunc);
 	}
 
+	/**
+	 * Removes a function from the cached list of functions.
+	 * 
+	 * @param oldFunc
+	 *            an old function to be removed.
+	 */
+	public void removeFunctionFromList(FunctionDefinition oldFunc) {
+		this.allFunctionDefinitions.remove(oldFunc);
+	}
 }

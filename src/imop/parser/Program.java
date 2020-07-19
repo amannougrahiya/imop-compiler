@@ -294,7 +294,7 @@ public class Program {
 		//		filePath = ("../tests/test-mhp.c");
 		//		filePath = ("../tests/testZ3.c");
 		//		filePath = ("../tests/ocean/input.i");
-		//		filePath = ("../tests/cs6868-ocean/ocean6868.i");
+		filePath = ("../tests/cs6868-ocean/ocean6868.i");
 		//		filePath = ("../tests/sea.i");
 		//		filePath = ("../tests/testocean.c");
 		//		filePath = ("../tests/auto-normalize.c");
@@ -349,7 +349,6 @@ public class Program {
 		//		filePath = ("../tests/barr-opt-tests/quake.i");
 		//		filePath = ("../src/imop/lib/testcases/allKnown.c");
 		//		filePath = ("../output-dump/imop_output.i");
-		filePath = ("../tests/temp5.c");
 		return filePath;
 	}
 

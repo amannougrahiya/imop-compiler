@@ -30,6 +30,7 @@ import imop.lib.util.Misc;
 import imop.parser.CParserConstants;
 import imop.parser.FrontEnd;
 import imop.parser.Program;
+import sun.swing.StringUIClientPropertyKey;
 
 /**
  * Obtain String representation of the code corresponding to the current state
@@ -164,6 +165,66 @@ public class StringGetter {
 			n.setColumnNum(columnNum);
 			str.append(res);
 			return;
+		}
+
+		@Override
+		public void visit(CallStatement n) {
+			printCommentorsAndPragmas(n.getPreCallNode());
+			printCommentorsAndPragmas(n.getPostCallNode());
+			NodeToken fdn = n.getFunctionDesignatorNode();
+			if (fdn != null) {
+				fdn.setLineNum(lineCounter);
+				fdn.setColumnNum(0);
+			}
+		}
+
+		@Override
+		protected void printCommentorsAndPragmas(Node n) {
+			if (n == null) {
+				return;
+			}
+			n = Misc.getCFGNodeFor(n);
+			/*
+			 * Print all imop pragma annotations before the comments.
+			 */
+			if (this.withPragma) {
+				for (PragmaImop annotation : n.getInfo().getPragmaAnnotations()) {
+					str.append(annotation.toString());
+					lineCounter += 2;
+				}
+			}
+
+			/*
+			 * Print comments.
+			 */
+			for (Commentor commentor : this.commentorList) {
+				String content = commentor.getString(n);
+				if (content.isEmpty()) {
+					continue;
+				}
+
+				StringBuilder fancy = new StringBuilder();
+				fancy.append(System.getProperty("line.separator"));
+				for (int tabCount = 0; tabCount < tabs; tabCount++) {
+					for (int i = 0; i < 4; i++) {
+						fancy.append(' ');
+					}
+				}
+				for (int i = 0; i < content.length(); i++) {
+					if (content.charAt(i) == '\n') {
+						lineCounter++;
+					}
+				}
+				content = content.replaceAll("\n", fancy.toString());
+				content = content.trim();
+				content = content.replace("/*", "//");
+				content = content.replace("*/", "//");
+				this.startNewline();
+				str.append("/*");
+				str.append(content);
+				str.append("*/");
+				this.startNewline();
+			}
 		}
 	}
 
@@ -846,6 +907,7 @@ public class StringGetter {
 
 			// Note: No idea why do we need the next if statement.
 			if (res.equals("\t")) {
+				System.out.println("Found it!");
 				return;
 			}
 
@@ -3193,7 +3255,9 @@ public class StringGetter {
 		 */
 		@Override
 		public void visit(AssignmentOperator n) {
-			str.append(" " + ((NodeToken) n.getF0().getChoice()).getTokenImage() + " ");
+			str.append(" ");
+			((NodeToken) n.getF0().getChoice()).accept(this);
+			str.append(" ");
 		}
 
 		/**
@@ -3315,7 +3379,9 @@ public class StringGetter {
 		 */
 		@Override
 		public void visit(EqualExpression n) {
-			str.append(" " + n.getF0().getTokenImage() + " ");
+			str.append(" ");
+			n.getF0().accept(this);
+			str.append(" ");
 			n.getF1().accept(this);
 		}
 
@@ -3325,7 +3391,10 @@ public class StringGetter {
 		 */
 		@Override
 		public void visit(NonEqualExpression n) {
-			str.append(" " + n.getF0().getTokenImage() + " ");
+			str.append(" ");
+			n.getF0().accept(this);
+			str.append(" ");
+
 			n.getF1().accept(this);
 		}
 
@@ -3356,7 +3425,9 @@ public class StringGetter {
 		 */
 		@Override
 		public void visit(RelationalLTExpression n) {
-			str.append(" " + n.getF0().getTokenImage() + " ");
+			str.append(" ");
+			n.getF0().accept(this);
+			str.append(" ");
 			n.getF1().accept(this);
 		}
 
@@ -3366,7 +3437,9 @@ public class StringGetter {
 		 */
 		@Override
 		public void visit(RelationalGTExpression n) {
-			str.append(" " + n.getF0().getTokenImage() + " ");
+			str.append(" ");
+			n.getF0().accept(this);
+			str.append(" ");
 			n.getF1().accept(this);
 		}
 
@@ -3376,7 +3449,9 @@ public class StringGetter {
 		 */
 		@Override
 		public void visit(RelationalLEExpression n) {
-			str.append(" " + n.getF0().getTokenImage() + " ");
+			str.append(" ");
+			n.getF0().accept(this);
+			str.append(" ");
 			n.getF1().accept(this);
 		}
 
@@ -3386,7 +3461,9 @@ public class StringGetter {
 		 */
 		@Override
 		public void visit(RelationalGEExpression n) {
-			str.append(" " + n.getF0().getTokenImage() + " ");
+			str.append(" ");
+			n.getF0().accept(this);
+			str.append(" ");
 			n.getF1().accept(this);
 		}
 
@@ -3415,7 +3492,9 @@ public class StringGetter {
 		 */
 		@Override
 		public void visit(ShiftLeftExpression n) {
-			str.append(" " + n.getF0().getTokenImage() + " ");
+			str.append(" ");
+			n.getF0().accept(this);
+			str.append(" ");
 			n.getF1().accept(this);
 		}
 
@@ -3425,7 +3504,9 @@ public class StringGetter {
 		 */
 		@Override
 		public void visit(ShiftRightExpression n) {
-			str.append(" " + n.getF0().getTokenImage() + " ");
+			str.append(" ");
+			n.getF0().accept(this);
+			str.append(" ");
 			n.getF1().accept(this);
 		}
 
@@ -3454,7 +3535,9 @@ public class StringGetter {
 		 */
 		@Override
 		public void visit(AdditivePlusExpression n) {
-			str.append(" " + n.getF0().getTokenImage() + " ");
+			str.append(" ");
+			n.getF0().accept(this);
+			str.append(" ");
 			n.getF1().accept(this);
 		}
 
@@ -3464,7 +3547,9 @@ public class StringGetter {
 		 */
 		@Override
 		public void visit(AdditiveMinusExpression n) {
-			str.append(" " + n.getF0().getTokenImage() + " ");
+			str.append(" ");
+			n.getF0().accept(this);
+			str.append(" ");
 			n.getF1().accept(this);
 		}
 
@@ -3494,7 +3579,9 @@ public class StringGetter {
 		 */
 		@Override
 		public void visit(MultiplicativeMultiExpression n) {
-			str.append(" " + n.getF0().getTokenImage() + " ");
+			str.append(" ");
+			n.getF0().accept(this);
+			str.append(" ");
 			n.getF1().accept(this);
 		}
 
@@ -3504,7 +3591,9 @@ public class StringGetter {
 		 */
 		@Override
 		public void visit(MultiplicativeDivExpression n) {
-			str.append(" " + n.getF0().getTokenImage() + " ");
+			str.append(" ");
+			n.getF0().accept(this);
+			str.append(" ");
 			n.getF1().accept(this);
 		}
 
@@ -3514,7 +3603,9 @@ public class StringGetter {
 		 */
 		@Override
 		public void visit(MultiplicativeModExpression n) {
-			str.append(" " + n.getF0().getTokenImage() + " ");
+			str.append(" ");
+			n.getF0().accept(this);
+			str.append(" ");
 			n.getF1().accept(this);
 		}
 
@@ -3535,9 +3626,10 @@ public class StringGetter {
 		 */
 		@Override
 		public void visit(CastExpressionTyped n) {
-			str.append(n.getF0().getTokenImage());
+			n.getF0().accept(this);
 			n.getF1().accept(this);
-			str.append(n.getF2().getTokenImage() + " ");
+			n.getF2().accept(this);
+			str.append(" ");
 			n.getF3().accept(this);
 		}
 
@@ -3559,7 +3651,7 @@ public class StringGetter {
 		 */
 		@Override
 		public void visit(UnaryExpressionPreIncrement n) {
-			str.append(n.getF0().getTokenImage());
+			n.getF0().accept(this);
 			n.getF1().accept(this);
 		}
 
@@ -3569,7 +3661,7 @@ public class StringGetter {
 		 */
 		@Override
 		public void visit(UnaryExpressionPreDecrement n) {
-			str.append(n.getF0().getTokenImage());
+			n.getF0().accept(this);
 			n.getF1().accept(this);
 		}
 
@@ -3598,7 +3690,8 @@ public class StringGetter {
 		 */
 		@Override
 		public void visit(SizeofUnaryExpression n) {
-			str.append(n.getF0().getTokenImage() + " ");
+			n.getF0().accept(this);
+			str.append(" ");
 			n.getF1().accept(this);
 		}
 
@@ -3610,10 +3703,10 @@ public class StringGetter {
 		 */
 		@Override
 		public void visit(SizeofTypeName n) {
-			str.append(n.getF0().getTokenImage());
-			str.append(n.getF1().getTokenImage());
+			n.getF0().accept(this);
+			n.getF1().accept(this);
 			n.getF2().accept(this);
-			str.append(n.getF3().getTokenImage());
+			n.getF3().accept(this);
 		}
 
 		/**
@@ -3626,7 +3719,7 @@ public class StringGetter {
 		 */
 		@Override
 		public void visit(UnaryOperator n) {
-			str.append(((NodeToken) n.getF0().getChoice()).getTokenImage());
+			((NodeToken) n.getF0().getChoice()).accept(this);
 		}
 
 		/**
@@ -3667,7 +3760,7 @@ public class StringGetter {
 		 */
 		@Override
 		public void visit(PlusPlus n) {
-			str.append(n.getF0().getTokenImage());
+			n.getF0().accept(this);
 		}
 
 		/**
@@ -3675,7 +3768,7 @@ public class StringGetter {
 		 */
 		@Override
 		public void visit(MinusMinus n) {
-			str.append(n.getF0().getTokenImage());
+			n.getF0().accept(this);
 		}
 
 		/**
@@ -3709,7 +3802,7 @@ public class StringGetter {
 		@Override
 		public void visit(DotId n) {
 			str.append(".");
-			str.append(n.getF1().getTokenImage());
+			n.getF1().accept(this);
 		}
 
 		/**
@@ -3719,7 +3812,7 @@ public class StringGetter {
 		@Override
 		public void visit(ArrowId n) {
 			str.append("->");
-			str.append(n.getF1().getTokenImage());
+			n.getF1().accept(this);
 		}
 
 		/**
@@ -3730,7 +3823,7 @@ public class StringGetter {
 		@Override
 		public void visit(PrimaryExpression n) {
 			if (n.getF0().getChoice() instanceof NodeToken) {
-				str.append(((NodeToken) n.getF0().getChoice()).getTokenImage());
+				((NodeToken) n.getF0().getChoice()).accept(this);
 			} else {
 				n.getF0().accept(this);
 			}
@@ -3771,11 +3864,11 @@ public class StringGetter {
 		@Override
 		public void visit(Constant n) {
 			if (n.getF0().getChoice() instanceof NodeToken) {
-				str.append(((NodeToken) n.getF0().getChoice()).getTokenImage());
+				((NodeToken) n.getF0().getChoice()).accept(this);
 			} else {
 				List<Node> strList = ((NodeList) n.getF0().getChoice()).getNodes();
 				for (Node strNode : strList) {
-					str.append(((NodeToken) strNode).getTokenImage());
+					((NodeToken) strNode).accept(this);
 					if (strNode != strList.get(strList.size() - 1)) {
 						str.append(' ');
 					}
@@ -3838,7 +3931,11 @@ public class StringGetter {
 
 		@Override
 		public void visit(SimplePrimaryExpression n) {
-			str.append(n.getString());
+			if (n.isAnIdentifier()) {
+				n.getIdentifier().accept(this);
+			} else {
+				n.getConstant().accept(this);
+			}
 		}
 
 		protected void printLabels(Node n) {
