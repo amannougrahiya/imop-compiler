@@ -297,13 +297,37 @@ public class ExpressionSimplifier extends GJNoArguDepthFirstProcess<ExpressionSi
 	public SimplificationString visit(FunctionDefinition n) {
 		SimplificationString ret = new SimplificationString();
 		ret.setReplacementString(new StringBuilder(n.getF0().getInfo().getString() + " "));
-		ret.getReplacementString().append(n.getF1().getInfo().getString() + " ");
+		ret.getReplacementString().append(this.getVoidFixedString(n.getF1()));
 		ret.getReplacementString().append(n.getF2().getInfo().getString() + " ");
 		SimplificationString compSS = n.getF3().accept(this);
 		assert (compSS.hasNoTempDeclarations());
 		assert (compSS.hasPrelude() == 0);
 		ret.getReplacementString().append(compSS.getReplacementString());
 		return ret;
+	}
+
+	/**
+	 * Return the string-builder for this Declarator, while taking care of the
+	 * special case "x(void)", which gets converted to "x()". This function
+	 * should be updated later to handle the generic cases.
+	 * 
+	 * @param decl
+	 * @return
+	 */
+	private String getVoidFixedString(Declarator decl) {
+		String retStr = decl + " ";
+		if (Misc.getInheritedEnclosee(decl, Declarator.class).size() != 1) {
+			return retStr;
+		}
+		List<Node> decOpList = decl.getF1().getF1().getF0().getNodes();
+		if (decOpList.size() != 1
+				|| !(((ADeclaratorOp) decOpList.get(0)).getF0().getChoice() instanceof ParameterTypeListClosed)) {
+			return retStr;
+		}
+		if (decOpList.get(0).toString().trim().equals("(void )")) {
+			retStr = (decl.getF0().present() ? (decl.getF0() + " ") : "") + decl.getF1().getF0() + " ()" + " ";
+		}
+		return retStr;
 	}
 
 	/**

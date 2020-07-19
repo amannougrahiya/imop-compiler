@@ -142,14 +142,6 @@ public class Main {
 		totalTime = System.nanoTime();
 		Program.parseNormalizeInput(args);
 
-		for (FunctionDefinition fd : Program.getRoot().getInfo().getAllFunctionDefinitions()) {
-			for (Node node : fd.getInfo().getCFGInfo().getLexicalCFGLeafContents()) {
-				if (!node.getInfo().getAccesses().isEmpty()) {
-					System.out.println(node + " is at line #" + Misc.getLineNum(node));
-				}
-			}
-		}
-		System.exit(0);
 		//		demo1("L1");
 		//		demo2();
 		//		demo3();

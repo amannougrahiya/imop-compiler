@@ -349,6 +349,7 @@ public class Program {
 		//		filePath = ("../tests/barr-opt-tests/quake.i");
 		//		filePath = ("../src/imop/lib/testcases/allKnown.c");
 		//		filePath = ("../output-dump/imop_output.i");
+		filePath = ("../tests/a.c");
 		return filePath;
 	}
 
