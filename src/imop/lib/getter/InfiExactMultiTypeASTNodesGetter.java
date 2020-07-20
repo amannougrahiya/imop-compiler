@@ -11,8 +11,10 @@ package imop.lib.getter;
 import java.util.HashSet;
 import java.util.Set;
 
+import imop.ast.node.external.Expression;
 import imop.ast.node.external.Node;
 import imop.baseVisitor.DepthFirstProcess;
+import imop.lib.util.Misc.TraverseExpressions;
 
 /**
  * Populates the set astContents with all the internal AST nodes of any of the
@@ -28,9 +30,21 @@ import imop.baseVisitor.DepthFirstProcess;
 public class InfiExactMultiTypeASTNodesGetter extends DepthFirstProcess {
 	public Set<Node> astContents = new HashSet<>();
 	Set<Integer> astTypeIds;
+	private TraverseExpressions traverseExpressions;
 
-	public InfiExactMultiTypeASTNodesGetter(Set<Integer> astTypeIds) {
-		this.astTypeIds = astTypeIds;
+	public InfiExactMultiTypeASTNodesGetter(Set<Integer> searchCodeSet, TraverseExpressions traverseExpressions) {
+		this.astTypeIds = searchCodeSet;
+		this.traverseExpressions = traverseExpressions;
+		boolean found = false;
+		for (int i : searchCodeSet) {
+			if (i % 3 != 0) {
+				found = true;
+				break;
+			}
+		}
+		if (!found) {
+			this.traverseExpressions = TraverseExpressions.DONT_TRAVERSE_EXPRESSIONS;
+		}
 	}
 
 	@Override
@@ -38,5 +52,20 @@ public class InfiExactMultiTypeASTNodesGetter extends DepthFirstProcess {
 		if (astTypeIds.contains(n.getClassId())) {
 			astContents.add(n);
 		}
+	}
+
+	/**
+	 * f0 ::= AssignmentExpression()
+	 * f1 ::= ( "," AssignmentExpression() )*
+	 */
+	@Override
+	public void visit(Expression n) {
+		if (traverseExpressions == TraverseExpressions.DONT_TRAVERSE_EXPRESSIONS) {
+			return;
+		}
+		initProcess(n);
+		n.getExpF0().accept(this);
+		n.getExpF1().accept(this);
+		endProcess(n);
 	}
 }

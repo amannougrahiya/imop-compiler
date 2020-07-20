@@ -11,8 +11,10 @@ package imop.lib.getter;
 import java.util.HashSet;
 import java.util.Set;
 
+import imop.ast.node.external.Expression;
 import imop.ast.node.external.Node;
 import imop.baseVisitor.DepthFirstProcess;
+import imop.lib.util.Misc.TraverseExpressions;
 
 /**
  * Populates the set astContents with all the internal AST nodes of type
@@ -26,9 +28,14 @@ import imop.baseVisitor.DepthFirstProcess;
 public class InfiExactASTNodesGetter<T extends Node> extends DepthFirstProcess {
 	public Set<T> astContents = new HashSet<>();
 	private final int searchId;
+	private TraverseExpressions traverseExpressions;
 
-	public InfiExactASTNodesGetter(int searchCode) {
+	public InfiExactASTNodesGetter(int searchCode, TraverseExpressions traverseExpressions) {
 		this.searchId = searchCode;
+		this.traverseExpressions = traverseExpressions;
+		if (searchCode % 3 == 0) {
+			this.traverseExpressions = TraverseExpressions.DONT_TRAVERSE_EXPRESSIONS;
+		}
 	}
 
 	@SuppressWarnings("unchecked")
@@ -37,5 +44,20 @@ public class InfiExactASTNodesGetter<T extends Node> extends DepthFirstProcess {
 		if (n.getClassId() == searchId) {
 			astContents.add((T) n);
 		}
+	}
+
+	/**
+	 * f0 ::= AssignmentExpression()
+	 * f1 ::= ( "," AssignmentExpression() )*
+	 */
+	@Override
+	public void visit(Expression n) {
+		if (traverseExpressions == TraverseExpressions.DONT_TRAVERSE_EXPRESSIONS) {
+			return;
+		}
+		initProcess(n);
+		n.getExpF0().accept(this);
+		n.getExpF1().accept(this);
+		endProcess(n);
 	}
 }
