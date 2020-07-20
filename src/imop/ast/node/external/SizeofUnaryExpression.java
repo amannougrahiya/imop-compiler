@@ -18,6 +18,13 @@ package imop.ast.node.external;
  * f1 ::= UnaryExpression()
  */
 public class SizeofUnaryExpression extends Expression {
+	{
+		classId = 1306;
+	}
+
+	public SizeofUnaryExpression() {
+	}
+
 	/**
 	 * 
 	 */

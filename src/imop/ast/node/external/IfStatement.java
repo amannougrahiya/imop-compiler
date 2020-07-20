@@ -24,6 +24,13 @@ import imop.ast.info.cfgNodeInfo.IfStatementInfo;
  * f5 ::= ( <ELSE> Statement() )?
  */
 public class IfStatement extends SelectionStatement {
+	{
+		classId = 64011;
+	}
+
+	public IfStatement() {
+	}
+
 	/**
 	 * 
 	 */

@@ -21,7 +21,7 @@ public class NodeUpdated extends SideEffect {
 
 	public NodeUpdated(Node affectedNode, String updateMessage) {
 		super(affectedNode);
-		this.updateMessage  = updateMessage;
+		this.updateMessage = updateMessage;
 		if (Program.printSideEffects && updateMessage != null && !updateMessage.isEmpty()) {
 			this.affectedNode.getInfo().getComments().add(updateMessage);
 		}

@@ -20,6 +20,13 @@ package imop.ast.node.external;
  * | ( <STRING_LITERAL> )+
  */
 public class Constant extends Expression {
+	{
+		classId = 2858;
+	}
+
+	public Constant() {
+	}
+
 	/**
 	 * 
 	 */

@@ -20,6 +20,13 @@ package imop.ast.node.external;
  * | ThreadPrivateDirective()
  */
 public class ExternalDeclaration extends Node {
+	{
+		classId = 607;
+	}
+
+	public ExternalDeclaration() {
+	}
+
 	/**
 	 * 
 	 */

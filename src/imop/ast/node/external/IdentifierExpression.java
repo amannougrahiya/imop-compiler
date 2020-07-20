@@ -9,6 +9,12 @@
 package imop.ast.node.external;
 
 public class IdentifierExpression extends Expression {
+	{
+		classId = 1658;
+	}
+
+	public IdentifierExpression() {
+	}
 
 	/**
 	 * 

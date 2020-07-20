@@ -18,6 +18,13 @@ package imop.ast.node.external;
  * f1 ::= ( "," <IDENTIFIER> )*
  */
 public class OldParameterList extends Node {
+	{
+		classId = 487;
+	}
+
+	public OldParameterList() {
+	}
+
 	/**
 	 * 
 	 */

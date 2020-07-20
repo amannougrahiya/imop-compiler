@@ -19,6 +19,13 @@ package imop.ast.node.external;
  * | OldParameterListClosed()
  */
 public class ADeclaratorOp extends Node {
+	{
+		classId = 139;
+	}
+
+	public ADeclaratorOp() {
+	}
+
 	/**
 	 * 
 	 */

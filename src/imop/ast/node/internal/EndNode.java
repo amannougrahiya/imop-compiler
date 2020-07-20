@@ -17,6 +17,14 @@ import imop.baseVisitor.Visitor;
 import imop.lib.cfg.NestedCFG;
 
 public class EndNode extends Node {
+	{
+		classId = 1523;
+	}
+
+	public EndNode() {
+		ownerNestedCFG = null;
+	}
+
 	/**
 	 * 
 	 */

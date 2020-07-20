@@ -22,6 +22,13 @@ import imop.ast.info.cfgNodeInfo.OmpForConditionInfo;
  * | OmpForGECondition()
  */
 public class OmpForCondition extends Node {
+	{
+		classId = 349;
+	}
+
+	public OmpForCondition() {
+	}
+
 	/**
 	 * 
 	 */

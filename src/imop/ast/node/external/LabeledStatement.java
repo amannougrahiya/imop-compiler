@@ -19,6 +19,10 @@ package imop.ast.node.external;
  * | DefaultLabeledStatement()
  */
 public class LabeledStatement extends Statement {
+	{
+		classId = 33;
+	}
+
 	/**
 	 * 
 	 */

@@ -20,6 +20,13 @@ package imop.ast.node.external;
  * f3 ::= "}"
  */
 public class SectionsScope extends Node {
+	{
+		classId = 997;
+	}
+
+	public SectionsScope() {
+	}
+
 	/**
 	 * 
 	 */

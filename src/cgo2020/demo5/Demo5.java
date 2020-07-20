@@ -8,7 +8,6 @@
  */
 package cgo2020.demo5;
 
-import imop.Main;
 import imop.ast.node.external.ExpressionStatement;
 import imop.ast.node.external.FunctionDefinition;
 import imop.ast.node.external.Statement;
@@ -29,19 +28,22 @@ public class Demo5 {
 	public static void demo5ab() {
 		for (FunctionDefinition func : Program.getRoot().getInfo().getAllFunctionDefinitions()) {
 			Statement stmt = func.getInfo().getStatementWithLabel("thisStmt");
-			if (stmt == null)
+			if (stmt == null) {
 				continue;
+			}
 			for (Cell c : stmt.getInfo().getAccesses()) {
-				if (!(c instanceof Symbol))
+				if (!(c instanceof Symbol)) {
 					continue;
+				}
 				System.out.println(((Symbol) c).getName());
 			}
 		}
 		for (FunctionDefinition func : Program.getRoot().getInfo().getAllFunctionDefinitions()) {
 			for (ExpressionStatement node : Misc.getInheritedEnclosee(func, ExpressionStatement.class)) {
 				for (Cell c : node.getInfo().getWrites()) {
-					if (!(c instanceof Symbol))
+					if (!(c instanceof Symbol)) {
 						continue;
+					}
 					Symbol sym = (Symbol) c;
 					if (sym.getName().equals("thisVar")) {
 						System.out.println(node);

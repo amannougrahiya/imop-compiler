@@ -26,6 +26,14 @@ import imop.lib.util.CellSet;
 import imop.lib.util.CollectorVisitor;
 
 public class DummyFlushDirective extends FlushDirective {
+	{
+		classId = 1622463;
+	}
+
+	public DummyFlushDirective() {
+		dummyFlushType = null;
+	}
+
 	private static final long serialVersionUID = 1L;
 	private List<String> idSet;
 	private final DummyFlushType dummyFlushType;

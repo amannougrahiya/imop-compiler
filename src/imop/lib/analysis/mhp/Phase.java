@@ -9,7 +9,6 @@
 package imop.lib.analysis.mhp;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -48,7 +47,7 @@ public class Phase {
 	private static int counter = 0;
 	private static Set<Phase> stalePhases = new HashSet<>();
 	public static long stabilizationTime = 0;
-	
+
 	/**
 	 * This constructor populates the following sets of this node:
 	 * <ul>
@@ -1098,6 +1097,7 @@ public class Phase {
 	 * @return
 	 * @deprecated
 	 */
+	@Deprecated
 	public Set<Node> deprecated_getStableNodeSet() {
 		BeginPhasePoint.deprecated_stabilizeStaleBeginPhasePoints();
 		return this.getNodeSet();

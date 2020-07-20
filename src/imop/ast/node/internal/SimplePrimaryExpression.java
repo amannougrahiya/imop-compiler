@@ -13,6 +13,15 @@ import imop.ast.node.external.Expression;
 import imop.ast.node.external.NodeToken;
 
 public class SimplePrimaryExpression extends Expression {
+	{
+		classId = 1318;
+	}
+
+	public SimplePrimaryExpression() {
+		anIdentifier = null;
+		aConstant = null;
+	}
+
 	/**
 	 * 
 	 */

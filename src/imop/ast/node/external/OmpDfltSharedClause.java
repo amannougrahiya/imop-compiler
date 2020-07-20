@@ -23,6 +23,9 @@ import imop.ast.node.internal.OmpClause;
  * f3 ::= ")"
  */
 public class OmpDfltSharedClause extends OmpClause {
+	{
+		classId *= 401;
+	}
 	/**
 	 * 
 	 */

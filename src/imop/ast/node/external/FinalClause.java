@@ -24,6 +24,13 @@ import imop.parser.CParserConstants;
  * f3 ::= ")"
  */
 public class FinalClause extends OmpClause {
+	{
+		classId *= 461;
+	}
+
+	public FinalClause() {
+	}
+
 	/**
 	 * 
 	 */

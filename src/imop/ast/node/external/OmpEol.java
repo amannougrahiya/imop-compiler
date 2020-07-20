@@ -18,6 +18,13 @@ package imop.ast.node.external;
  * | <OMP_NL>
  */
 public class OmpEol extends Node {
+	{
+		classId = 347;
+	}
+
+	public OmpEol() {
+	}
+
 	/**
 	 * 
 	 */

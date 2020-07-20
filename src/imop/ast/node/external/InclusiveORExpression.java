@@ -18,6 +18,13 @@ package imop.ast.node.external;
  * f1 ::= ( "|" InclusiveORExpression() )?
  */
 public class InclusiveORExpression extends Expression {
+	{
+		classId = 1654;
+	}
+
+	public InclusiveORExpression() {
+	}
+
 	/**
 	 * 
 	 */

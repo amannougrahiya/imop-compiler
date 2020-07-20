@@ -18,6 +18,13 @@ package imop.ast.node.external;
  * f1 ::= <IDENTIFIER>
  */
 public class ArrowId extends Node {
+	{
+		classId = 103;
+	}
+
+	public ArrowId() {
+	}
+
 	/**
 	 * 
 	 */

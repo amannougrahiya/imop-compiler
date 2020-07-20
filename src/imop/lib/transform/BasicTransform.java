@@ -13,7 +13,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Vector;
 
-import imop.ast.info.cfgNodeInfo.DeclarationInfo;
 import imop.ast.node.external.BarrierDirective;
 import imop.ast.node.external.CompoundStatement;
 import imop.ast.node.external.CompoundStatementElement;

@@ -20,6 +20,10 @@ import java.util.List;
  * Represents a grammar list, e.g. ( A )+
  */
 public class NodeList extends NodeListClass {
+	{
+		classId = 282943;
+	}
+
 	/**
 	 * 
 	 */

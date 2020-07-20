@@ -21,6 +21,13 @@ import imop.ast.info.cfgNodeInfo.ReturnStatementInfo;
  * f2 ::= ";"
  */
 public class ReturnStatement extends JumpStatement {
+	{
+		classId = 18543;
+	}
+
+	public ReturnStatement() {
+	}
+
 	/**
 	 * 
 	 */

@@ -8,7 +8,6 @@
  */
 package imop.lib.transform.simplify;
 
-import imop.ast.info.cfgNodeInfo.DeclarationInfo;
 import imop.ast.node.external.ADeclaratorOp;
 import imop.ast.node.external.Declaration;
 import imop.ast.node.external.DeclarationList;

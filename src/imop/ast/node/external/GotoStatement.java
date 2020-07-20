@@ -21,6 +21,13 @@ import imop.ast.info.cfgNodeInfo.GotoStatementInfo;
  * f2 ::= ";"
  */
 public class GotoStatement extends JumpStatement {
+	{
+		classId = 18627;
+	}
+
+	public GotoStatement() {
+	}
+
 	/**
 	 * 
 	 */

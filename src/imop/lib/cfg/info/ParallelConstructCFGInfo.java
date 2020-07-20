@@ -69,9 +69,9 @@ public class ParallelConstructCFGInfo extends CFGInfo {
 		clauseList.getF0().addNode(newClauseWrapper);
 		AutomatedUpdater.invalidateSymbolsInNode(newClauseWrapper);
 		updateCFGForIfClauseAddition(ifClause);
-		
+
 		ifClause = Normalization.normalizeLeafNodes(ifClause, new ArrayList<>());
-		
+
 		Program.invalidColumnNum = true;
 		AutomatedUpdater.updateInformationForAddition(ifClause);
 		//		AutomatedUpdater.invalidateSymbolsInNode(newClauseWrapper);// Added, so that any changes from points-to may be reflected here.
@@ -141,9 +141,9 @@ public class ParallelConstructCFGInfo extends CFGInfo {
 		clauseList.getF0().addNode(newClauseWrapper);
 		AutomatedUpdater.invalidateSymbolsInNode(newClauseWrapper);
 		updateCFGForNumThreadsClauseAddition(numThreadsClause);
-		
+
 		numThreadsClause = Normalization.normalizeLeafNodes(numThreadsClause, new ArrayList<>());
-		
+
 		Program.invalidColumnNum = true;
 		AutomatedUpdater.updateInformationForAddition(numThreadsClause);
 		//		AutomatedUpdater.invalidateSymbolsInNode(newClauseWrapper);// Added, so that any changes from points-to may be reflected here.
@@ -222,17 +222,18 @@ public class ParallelConstructCFGInfo extends CFGInfo {
 			return sideEffectList;
 		}
 		AutomatedUpdater.flushCaches();
-		
+
 		List<SideEffect> splitSE = SplitCombinedConstructs.splitCombinedConstructForTheStatement(stmt);
 		if (!splitSE.isEmpty()) {
 			NodeUpdated nodeUpdatedSE = (NodeUpdated) splitSE.get(0);
 			// Note: Here we reparse the parallel construct so that we can perform other normalizations within it.
-			ParallelConstruct splitParCons = FrontEnd.parseAndNormalize(nodeUpdatedSE.affectedNode.toString(), ParallelConstruct.class);
+			ParallelConstruct splitParCons = FrontEnd.parseAndNormalize(nodeUpdatedSE.affectedNode.toString(),
+					ParallelConstruct.class);
 			sideEffectList.add(new NodeUpdated(splitParCons, nodeUpdatedSE.getUpdateMessage()));
 			sideEffectList.addAll(this.setBody(splitParCons));
 			return sideEffectList;
 		}
-		
+
 		if (!(stmt.getStmtF0().getChoice() instanceof CompoundStatement)) {
 			Statement outSt = FrontEnd.parseAlone("{}", Statement.class);
 			CompoundStatement compStmt = (CompoundStatement) Misc.getCFGNodeFor(outSt);
@@ -260,9 +261,9 @@ public class ParallelConstructCFGInfo extends CFGInfo {
 		AutomatedUpdater.invalidateSymbolsInNode(owner.getParConsF2());
 		AutomatedUpdater.invalidateSymbolsInNode(stmt);
 		updateCFGForBodyAddition(stmt);
-		
+
 		stmt = Normalization.normalizeLeafNodes(stmt, sideEffectList);
-		
+
 		//		this.getOwner().accept(new CompoundStatementEnforcer());// COMMENTED RECENTLY.
 		Program.invalidColumnNum = Program.invalidLineNum = true;
 		AutomatedUpdater.updatePhaseAndInterTaskEdgesUponRemoval(affectedBeginPhasePoints);

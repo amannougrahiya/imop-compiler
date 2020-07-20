@@ -19,6 +19,13 @@ package imop.ast.node.external;
  * f2 ::= "]"
  */
 public class BracketExpression extends Node {
+	{
+		classId = 59;
+	}
+
+	public BracketExpression() {
+	}
+
 	/**
 	 * 
 	 */

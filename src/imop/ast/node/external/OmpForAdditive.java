@@ -21,6 +21,13 @@ package imop.ast.node.external;
  * f4 ::= AdditiveExpression()
  */
 public class OmpForAdditive extends OmpForReinitExpression {
+	{
+		classId = 77837;
+	}
+
+	public OmpForAdditive() {
+	}
+
 	/**
 	 * 
 	 */

@@ -8,9 +8,8 @@
  */
 package imop.lib.transform.updater.sideeffect;
 
-import imop.parser.Program;
-import imop.ast.node.external.Declaration;
 import imop.ast.node.external.Node;
+import imop.parser.Program;
 
 public class InitializationSimplified extends IndexIncremented {
 

@@ -31,9 +31,9 @@ public abstract class BTNode {
 	public abstract Integer getFixedLength();
 
 	public abstract boolean isWellMatched();
-	
+
 	public abstract void populateBTPairs(ParallelConstruct parCons);
-	
+
 	protected static void match(BTNode t1, BTNode t2, Stack<BTNode> leftStack, Stack<BTNode> rightStack,
 			ParallelConstruct parCons, boolean up) {
 		if (t1 == null || t2 == null) {
@@ -141,6 +141,7 @@ public abstract class BTNode {
 		}
 	}
 
+	@Override
 	public String toString() {
 		return this.getString(0);
 	}

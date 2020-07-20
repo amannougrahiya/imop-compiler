@@ -18,6 +18,10 @@ package imop.ast.node.external;
  * f1 ::= ( RelationalOptionalExpression() )?
  */
 public class RelationalExpression extends Expression {
+	{
+		classId = 1466;
+	}
+
 	/**
 	 * 
 	 */

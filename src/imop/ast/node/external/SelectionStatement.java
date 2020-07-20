@@ -18,6 +18,10 @@ package imop.ast.node.external;
  * | SwitchStatement()
  */
 public class SelectionStatement extends Statement {
+	{
+		classId = 57;
+	}
+
 	/**
 	 * 
 	 */

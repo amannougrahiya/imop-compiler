@@ -18,6 +18,13 @@ package imop.ast.node.external;
  * f1 ::= EqualityExpression()
  */
 public class EqualExpression extends Expression {
+	{
+		classId = 2846;
+	}
+
+	public EqualExpression() {
+	}
+
 	/**
 	 * 
 	 */

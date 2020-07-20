@@ -10,7 +10,6 @@ package imop.ast.info;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -76,12 +75,11 @@ import imop.lib.analysis.flowanalysis.dataflow.DataDependenceForward.DataDepende
 import imop.lib.analysis.flowanalysis.dataflow.HeapValidityAnalysis;
 import imop.lib.analysis.flowanalysis.dataflow.LivenessAnalysis;
 import imop.lib.analysis.flowanalysis.dataflow.NodeSet;
-import imop.lib.analysis.flowanalysis.dataflow.PointsToAnalysis;
 import imop.lib.analysis.flowanalysis.dataflow.ReachingDefinitionAnalysis;
 import imop.lib.analysis.flowanalysis.dataflow.ReachingDefinitionAnalysis.ReachingDefinitionFlowMap;
-import imop.lib.analysis.flowanalysis.generic.FlowAnalysis.FlowFact;
 import imop.lib.analysis.flowanalysis.generic.AnalysisName;
 import imop.lib.analysis.flowanalysis.generic.FlowAnalysis;
+import imop.lib.analysis.flowanalysis.generic.FlowAnalysis.FlowFact;
 import imop.lib.analysis.mhp.BeginPhasePoint;
 import imop.lib.analysis.mhp.NodePhaseInfo;
 import imop.lib.analysis.mhp.OldLock;
@@ -3418,7 +3416,7 @@ public class NodeInfo implements Cloneable {
 		// TODO: Optimize all call-sites of this method.
 		// We can create the information required in a bottom-up manner, when it comes to scopes.
 		Set<Scopeable> retSet = new HashSet<>();
-		Set<Class<?>> classSet = new HashSet<>();
+		Set<Class<? extends Node>> classSet = new HashSet<>();
 		classSet.add(TranslationUnit.class);
 		classSet.add(FunctionDefinition.class);
 		classSet.add(CompoundStatement.class);

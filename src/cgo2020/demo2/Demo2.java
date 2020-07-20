@@ -16,7 +16,7 @@ import imop.parser.Program;
 public class Demo2 {
 
 	public static void main(String[] args) {
-		args = new String[]{"-f", "runner/cgo-eg/example.c", "-nru"}; 
+		args = new String[] { "-f", "runner/cgo-eg/example.c", "-nru" };
 		Program.parseNormalizeInput(args);
 
 		for (WhileStatement whileStmt : Misc.getInheritedEnclosee(Program.getRoot(), WhileStatement.class)) {

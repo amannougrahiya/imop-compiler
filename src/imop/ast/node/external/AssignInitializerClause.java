@@ -22,6 +22,13 @@ package imop.ast.node.external;
  * f5 ::= ")"
  */
 public class AssignInitializerClause extends Node {
+	{
+		classId = 83;
+	}
+
+	public AssignInitializerClause() {
+	}
+
 	/**
 	 * 
 	 */

@@ -19,6 +19,13 @@ package imop.ast.node.external;
  * f2 ::= Expression()
  */
 public class OmpForLTCondition extends Node {
+	{
+		classId = 283;
+	}
+
+	public OmpForLTCondition() {
+	}
+
 	/**
 	 * 
 	 */

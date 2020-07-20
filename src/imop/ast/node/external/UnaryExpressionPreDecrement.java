@@ -18,6 +18,13 @@ package imop.ast.node.external;
  * f1 ::= UnaryExpression()
  */
 public class UnaryExpressionPreDecrement extends Expression {
+	{
+		classId = 1262;
+	}
+
+	public UnaryExpressionPreDecrement() {
+	}
+
 	/**
 	 * 
 	 */

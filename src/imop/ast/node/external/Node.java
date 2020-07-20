@@ -13,6 +13,8 @@
 package imop.ast.node.external;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -29,12 +31,21 @@ public abstract class Node implements java.io.Serializable, DFable {
 	 * 
 	 */
 	private static final long serialVersionUID = -58300488119959833L;
+	public static final Set<Integer> superClassIds = new HashSet<>(
+			Arrays.asList(new Integer[] { 2, 3, 541, 467, 281, 1466, 15, 21, 33, 39, 51, 57, 1479, 897 }));
 	private Node parent;
 	protected NodeInfo info;
 	private int nodeId = -1;
 	private static int counter = 0;
 
 	private static List<Node> allLeafCFGNodes = new ArrayList<>();
+
+	// Should throw a divide-by-zero error, if a certain class doesn't provide correct value for this field.
+	public int classId = 0;
+
+	public final int getClassId() {
+		return classId;
+	}
 
 	protected Node() {
 		if (Misc.isCFGLeafNode(this)) {
@@ -137,12 +148,12 @@ public abstract class Node implements java.io.Serializable, DFable {
 	public Set<DFable> getDataFlowSuccessors() {
 		return this.getInfo().getCFGInfo().getDataFlowSuccessors();
 	}
-	
+
 	@Override
 	public void setReversePostOrder(int i) {
 		this.getInfo().setReversePostOrderId(i);
 	}
-	
+
 	@Override
 	public int getReversePostOrder() {
 		return this.getInfo().getReversePostOrder();

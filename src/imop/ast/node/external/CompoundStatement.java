@@ -25,6 +25,13 @@ import imop.lib.analysis.typeSystem.Type;
  * f2 ::= "}"
  */
 public class CompoundStatement extends Statement implements Scopeable {
+	{
+		classId = 2901;
+	}
+
+	public CompoundStatement() {
+	}
+
 	/**
 	 * 
 	 */

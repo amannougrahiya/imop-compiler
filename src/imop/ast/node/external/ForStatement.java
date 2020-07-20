@@ -27,6 +27,13 @@ import imop.ast.info.cfgNodeInfo.ForStatementInfo;
  * f8 ::= Statement()
  */
 public class ForStatement extends IterationStatement {
+	{
+		classId = 14055;
+	}
+
+	public ForStatement() {
+	}
+
 	/**
 	 * 
 	 */

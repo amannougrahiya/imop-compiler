@@ -18,6 +18,13 @@ package imop.ast.node.external;
  * f1 ::= ( "=" ConstantExpression() )?
  */
 public class Enumerator extends Node {
+	{
+		classId = 1543;
+	}
+
+	public Enumerator() {
+	}
+
 	/**
 	 * 
 	 */

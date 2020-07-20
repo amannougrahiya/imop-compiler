@@ -66,7 +66,6 @@ import imop.lib.analysis.flowanalysis.generic.AnalysisDimension.ContextDimension
 import imop.lib.analysis.flowanalysis.generic.AnalysisDimension.FieldDimension;
 import imop.lib.analysis.flowanalysis.generic.AnalysisDimension.FlowDimension;
 import imop.lib.analysis.flowanalysis.generic.AnalysisDimension.PathDimension;
-import imop.lib.cfg.link.autoupdater.AutomatedUpdater;
 import imop.lib.cg.CallStack;
 import imop.lib.cg.NodeWithStack;
 import imop.lib.util.CellSet;

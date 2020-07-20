@@ -87,12 +87,13 @@ public class WhileStatementCFGInfo extends CFGInfo {
 			return sideEffectList;
 		}
 		AutomatedUpdater.flushCaches();
-		
+
 		List<SideEffect> splitSE = SplitCombinedConstructs.splitCombinedConstructForTheStatement(stmt);
 		if (!splitSE.isEmpty()) {
 			NodeUpdated nodeUpdatedSE = (NodeUpdated) splitSE.get(0);
 			// Note: Here we reparse the parallel construct so that we can perform other normalizations within it.
-			ParallelConstruct splitParCons = FrontEnd.parseAndNormalize(nodeUpdatedSE.affectedNode.toString(), ParallelConstruct.class);
+			ParallelConstruct splitParCons = FrontEnd.parseAndNormalize(nodeUpdatedSE.affectedNode.toString(),
+					ParallelConstruct.class);
 			sideEffectList.add(new NodeUpdated(splitParCons, nodeUpdatedSE.getUpdateMessage()));
 			sideEffectList.addAll(this.setBody(splitParCons));
 			return sideEffectList;

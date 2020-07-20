@@ -22,6 +22,13 @@ package imop.ast.node.external;
  * | "!"
  */
 public class UnaryOperator extends Node {
+	{
+		classId = 1297;
+	}
+
+	public UnaryOperator() {
+	}
+
 	/**
 	 * 
 	 */

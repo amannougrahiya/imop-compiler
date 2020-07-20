@@ -13,6 +13,9 @@ import imop.ast.node.external.Expression;
 import imop.ast.node.external.NodeListOptional;
 
 public class Predicate extends Expression {
+	{
+		classId = 1486;
+	}
 
 	private static final long serialVersionUID = 8340364194156243476L;
 

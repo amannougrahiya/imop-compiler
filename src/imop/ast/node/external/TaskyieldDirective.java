@@ -21,6 +21,13 @@ import imop.ast.info.cfgNodeInfo.TaskyieldDirectiveInfo;
  * f2 ::= OmpEol()
  */
 public class TaskyieldDirective extends OmpDirective {
+	{
+		classId = 56559;
+	}
+
+	public TaskyieldDirective() {
+	}
+
 	/**
 	 * 
 	 */

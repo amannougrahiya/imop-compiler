@@ -20,6 +20,10 @@ import java.util.List;
  * Represents an optional grammar list, e.g. ( A )*
  */
 public class NodeListOptional extends NodeListClass {
+	{
+		classId = 281861;
+	}
+
 	/**
 	 * 
 	 */

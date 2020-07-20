@@ -18,6 +18,13 @@ package imop.ast.node.external;
  * | "(" Declarator() ")"
  */
 public class IdentifierOrDeclarator extends Node {
+	{
+		classId = 587;
+	}
+
+	public IdentifierOrDeclarator() {
+	}
+
 	/**
 	 * 
 	 */

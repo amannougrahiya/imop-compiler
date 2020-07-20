@@ -19,6 +19,13 @@ package imop.ast.node.external;
  * f2 ::= ")"
  */
 public class RegionPhrase extends Node {
+	{
+		classId = 1013;
+	}
+
+	public RegionPhrase() {
+	}
+
 	/**
 	 * 
 	 */

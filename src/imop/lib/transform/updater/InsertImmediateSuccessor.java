@@ -986,8 +986,8 @@ public class InsertImmediateSuccessor {
 					}
 					return sideEffectList;
 				} else {
-					sideEffectList.addAll(InsertImmediateSuccessor.insert(
-							successorBody.getInfo().getCFGInfo().getNestedCFG().getBegin(), targetNode));
+					sideEffectList.addAll(InsertImmediateSuccessor
+							.insert(successorBody.getInfo().getCFGInfo().getNestedCFG().getBegin(), targetNode));
 					if (!Misc.changePerformed(sideEffectList)) {
 						sideEffectList.add(new SyntacticConstraint(link.childNode, ""));
 						return sideEffectList;
@@ -1029,10 +1029,8 @@ public class InsertImmediateSuccessor {
 			IfStatementCFGInfo ifStmtInfo = link.enclosingNonLeafNode.getInfo().getCFGInfo();
 			CompoundStatement thenBody = (CompoundStatement) ifStmtInfo.getThenBody();
 			if (!thenBody.getInfo().getCFGInfo().isEndReachable()) {
-				String str = 
-						"Cannot insert a node immediately after the then-body of an IfStatement, since the end is not reachable.";
-				Misc.warnDueToLackOfFeature(str,
-						null);
+				String str = "Cannot insert a node immediately after the then-body of an IfStatement, since the end is not reachable.";
+				Misc.warnDueToLackOfFeature(str, null);
 				sideEffectList.add(new SyntacticConstraint(link.childNode, str));
 				return sideEffectList;
 			}
@@ -1058,10 +1056,8 @@ public class InsertImmediateSuccessor {
 			CompoundStatement elseBody = (CompoundStatement) ifStmtInfo.getElseBody();
 			assert (elseBody != null);
 			if (!elseBody.getInfo().getCFGInfo().isEndReachable()) {
-				String str = 
-						"Cannot insert a node immediately after the else-body of an IfStatement, since the end is not reachable.";
-				Misc.warnDueToLackOfFeature(str,
-						null);
+				String str = "Cannot insert a node immediately after the else-body of an IfStatement, since the end is not reachable.";
+				Misc.warnDueToLackOfFeature(str, null);
 				sideEffectList.add(new SyntacticConstraint(link.childNode, str));
 				return sideEffectList;
 			}
@@ -1140,10 +1136,8 @@ public class InsertImmediateSuccessor {
 			SwitchStatementCFGInfo switchStmtInfo = link.enclosingNonLeafNode.getInfo().getCFGInfo();
 			CompoundStatement body = (CompoundStatement) switchStmtInfo.getBody();
 			if (!body.getInfo().getCFGInfo().isEndReachable()) {
-				String str = 
-						"Cannot insert a node immediately after the body of a SwitchStatement since its end is not reachable.";
-				Misc.warnDueToLackOfFeature(str,
-						null);
+				String str = "Cannot insert a node immediately after the body of a SwitchStatement since its end is not reachable.";
+				Misc.warnDueToLackOfFeature(str, null);
 				sideEffectList.add(new SyntacticConstraint(link.childNode, str));
 				return sideEffectList;
 			}
@@ -1195,8 +1189,8 @@ public class InsertImmediateSuccessor {
 				} else {
 					WhileStatementCFGInfo whileCFGInfo = link.enclosingNonLeafNode.getInfo().getCFGInfo();
 					CompoundStatement body = (CompoundStatement) whileCFGInfo.getBody();
-					return InsertImmediateSuccessor
-							.insert(body.getInfo().getCFGInfo().getNestedCFG().getBegin(), targetNode);
+					return InsertImmediateSuccessor.insert(body.getInfo().getCFGInfo().getNestedCFG().getBegin(),
+							targetNode);
 				}
 			}
 		}
@@ -1545,8 +1539,7 @@ public class InsertImmediateSuccessor {
 		public List<SideEffect> visit(CallPreLink link) {
 			List<SideEffect> sideEffectList = new ArrayList<>();
 			String str = "Cannot insert a node immediately after the preCallNode of a CallStatement.";
-			Misc.warnDueToLackOfFeature(str,
-					null);
+			Misc.warnDueToLackOfFeature(str, null);
 			sideEffectList.add(new SyntacticConstraint(link.childNode, str));
 			return sideEffectList;
 		}
@@ -1605,8 +1598,7 @@ public class InsertImmediateSuccessor {
 		public List<SideEffect> visit(FunctionBodyLink link) {
 			List<SideEffect> sideEffectList = new ArrayList<>();
 			String str = "Cannot insert a node immediately after the function body, in Simple mode.";
-			Misc.warnDueToLackOfFeature(str,
-					null);
+			Misc.warnDueToLackOfFeature(str, null);
 			sideEffectList.add(new SyntacticConstraint(link.childNode, str));
 			return sideEffectList;
 		}
@@ -1615,8 +1607,7 @@ public class InsertImmediateSuccessor {
 		public List<SideEffect> visit(FunctionEndLink link) {
 			List<SideEffect> sideEffectList = new ArrayList<>();
 			String str = "Cannot insert a node immediately after the function body, in Simple mode.";
-			Misc.warnDueToLackOfFeature(str,
-					null);
+			Misc.warnDueToLackOfFeature(str, null);
 			sideEffectList.add(new SyntacticConstraint(link.childNode, str));
 			return sideEffectList;
 		}
@@ -1668,10 +1659,8 @@ public class InsertImmediateSuccessor {
 		@Override
 		public List<SideEffect> visit(ParallelBodyLink link) {
 			List<SideEffect> sideEffectList = new ArrayList<>();
-			String str = 
-					"Cannot insert a node immediately after the body of a parallel construct, in the Simple mode.";
-			Misc.warnDueToLackOfFeature(str,
-					null);
+			String str = "Cannot insert a node immediately after the body of a parallel construct, in the Simple mode.";
+			Misc.warnDueToLackOfFeature(str, null);
 			sideEffectList.add(new SyntacticConstraint(link.childNode, str));
 			return sideEffectList;
 		}
@@ -1684,10 +1673,8 @@ public class InsertImmediateSuccessor {
 		@Override
 		public List<SideEffect> visit(OmpForBeginLink link) {
 			List<SideEffect> sideEffectList = new ArrayList<>();
-			String str = 
-					"Cannot insert a node immediately after the BeginNode of a parallel for construct, in the Simple mode.";
-			Misc.warnDueToLackOfFeature(str,
-					null);
+			String str = "Cannot insert a node immediately after the BeginNode of a parallel for construct, in the Simple mode.";
+			Misc.warnDueToLackOfFeature(str, null);
 			sideEffectList.add(new SyntacticConstraint(link.childNode, str));
 			return sideEffectList;
 		}
@@ -1695,10 +1682,8 @@ public class InsertImmediateSuccessor {
 		@Override
 		public List<SideEffect> visit(OmpForInitLink link) {
 			List<SideEffect> sideEffectList = new ArrayList<>();
-			String str = 
-					"Cannot insert a node immediately after the initialization expression of a parallel for construct, in the Simple mode.";
-			Misc.warnDueToLackOfFeature(str,
-					null);
+			String str = "Cannot insert a node immediately after the initialization expression of a parallel for construct, in the Simple mode.";
+			Misc.warnDueToLackOfFeature(str, null);
 			sideEffectList.add(new SyntacticConstraint(link.childNode, str));
 			return sideEffectList;
 		}
@@ -1720,10 +1705,8 @@ public class InsertImmediateSuccessor {
 		@Override
 		public List<SideEffect> visit(OmpForStepLink link) {
 			List<SideEffect> sideEffectList = new ArrayList<>();
-			String str = 
-					"Cannot insert a node immediately after the update expression of a parallel for construct, in the Simple mode.";
-			Misc.warnDueToLackOfFeature(str,
-					null);
+			String str = "Cannot insert a node immediately after the update expression of a parallel for construct, in the Simple mode.";
+			Misc.warnDueToLackOfFeature(str, null);
 			sideEffectList.add(new SyntacticConstraint(link.childNode, str));
 			return sideEffectList;
 		}
@@ -1731,10 +1714,8 @@ public class InsertImmediateSuccessor {
 		@Override
 		public List<SideEffect> visit(OmpForBodyLink link) {
 			List<SideEffect> sideEffectList = new ArrayList<>();
-			String str = 
-					"Cannot insert a node immediately after the body of a parallel for construct, in the Simple mode.";
-			Misc.warnDueToLackOfFeature(str,
-					null);
+			String str = "Cannot insert a node immediately after the body of a parallel for construct, in the Simple mode.";
+			Misc.warnDueToLackOfFeature(str, null);
 			sideEffectList.add(new SyntacticConstraint(link.childNode, str));
 			return sideEffectList;
 		}
@@ -1759,10 +1740,8 @@ public class InsertImmediateSuccessor {
 		@Override
 		public List<SideEffect> visit(SectionsSectionBodyLink link) {
 			List<SideEffect> sideEffectList = new ArrayList<>();
-			String str = 
-					"Cannot insert a node immediately after a Section of a Sections construct, in the Simple mode.";
-			Misc.warnDueToLackOfFeature(str,
-					null);
+			String str = "Cannot insert a node immediately after a Section of a Sections construct, in the Simple mode.";
+			Misc.warnDueToLackOfFeature(str, null);
 			sideEffectList.add(new SyntacticConstraint(link.childNode, str));
 			return sideEffectList;
 		}
@@ -1782,8 +1761,7 @@ public class InsertImmediateSuccessor {
 		@Override
 		public List<SideEffect> visit(SingleBodyLink link) {
 			List<SideEffect> sideEffectList = new ArrayList<>();
-			String str = 
-					"Cannot insert a node immediately after the body of a Single construct, in the Simple mode.";
+			String str = "Cannot insert a node immediately after the body of a Single construct, in the Simple mode.";
 			Misc.warnDueToLackOfFeature(str, null);
 			sideEffectList.add(new SyntacticConstraint(link.childNode, str));
 			return sideEffectList;
@@ -1827,8 +1805,7 @@ public class InsertImmediateSuccessor {
 		@Override
 		public List<SideEffect> visit(TaskBodyLink link) {
 			List<SideEffect> sideEffectList = new ArrayList<>();
-			String str = 
-					"Cannot insert a node immediately after the body of a task construct, in the Simple mode.";
+			String str = "Cannot insert a node immediately after the body of a task construct, in the Simple mode.";
 			Misc.warnDueToLackOfFeature(str, null);
 			sideEffectList.add(new SyntacticConstraint(link.childNode, str));
 			return sideEffectList;
@@ -1849,8 +1826,7 @@ public class InsertImmediateSuccessor {
 		@Override
 		public List<SideEffect> visit(MasterBodyLink link) {
 			List<SideEffect> sideEffectList = new ArrayList<>();
-			String str = 
-					"Cannot insert a node immediately after the body of a master construct, in the Simple mode.";
+			String str = "Cannot insert a node immediately after the body of a master construct, in the Simple mode.";
 			Misc.warnDueToLackOfFeature(str, null);
 			sideEffectList.add(new SyntacticConstraint(link.childNode, str));
 			return sideEffectList;
@@ -1871,10 +1847,8 @@ public class InsertImmediateSuccessor {
 		@Override
 		public List<SideEffect> visit(CriticalBodyLink link) {
 			List<SideEffect> sideEffectList = new ArrayList<>();
-			String str = 
-					"Cannot insert a node immediately after the body of a critical construct, in the Simple mode.";
-			Misc.warnDueToLackOfFeature(str,
-					null);
+			String str = "Cannot insert a node immediately after the body of a critical construct, in the Simple mode.";
+			Misc.warnDueToLackOfFeature(str, null);
 			sideEffectList.add(new SyntacticConstraint(link.childNode, str));
 			return sideEffectList;
 		}
@@ -1917,10 +1891,8 @@ public class InsertImmediateSuccessor {
 		@Override
 		public List<SideEffect> visit(OrderedBodyLink link) {
 			List<SideEffect> sideEffectList = new ArrayList<>();
-			String str = 
-					"Cannot insert a node immediately after the body of an ordered construct, in the Simple mode.";
-			Misc.warnDueToLackOfFeature(str,
-					null);
+			String str = "Cannot insert a node immediately after the body of an ordered construct, in the Simple mode.";
+			Misc.warnDueToLackOfFeature(str, null);
 			sideEffectList.add(new SyntacticConstraint(link.childNode, str));
 			return sideEffectList;
 		}
@@ -1953,8 +1925,7 @@ public class InsertImmediateSuccessor {
 					Expression retExp = retStmtInfo.getReturnExpression();
 					if (retExp != null) {
 						String str = "Cannot insert a node immediately after a return with expresison.";
-						Misc.warnDueToLackOfFeature(str,
-								null);
+						Misc.warnDueToLackOfFeature(str, null);
 						sideEffectList.add(new SyntacticConstraint(link.childNode, str));
 						return sideEffectList;
 					}
@@ -1980,10 +1951,8 @@ public class InsertImmediateSuccessor {
 		@Override
 		public List<SideEffect> visit(IfBeginLink link) {
 			List<SideEffect> sideEffectList = new ArrayList<>();
-			String str = 
-					"Cannot insert a node immediately after the BeginNode of an if-statement, in the Simple mode.";
-			Misc.warnDueToLackOfFeature(str,
-					null);
+			String str = "Cannot insert a node immediately after the BeginNode of an if-statement, in the Simple mode.";
+			Misc.warnDueToLackOfFeature(str, null);
 			sideEffectList.add(new SyntacticConstraint(link.childNode, str));
 			return sideEffectList;
 		}
@@ -2029,8 +1998,7 @@ public class InsertImmediateSuccessor {
 		public List<SideEffect> visit(SwitchBeginLink link) {
 			List<SideEffect> sideEffectList = new ArrayList<>();
 			String str = "Cannot insert a node immediately after the BeginNode of a SwitchStatement";
-			Misc.warnDueToLackOfFeature(str,
-					null);
+			Misc.warnDueToLackOfFeature(str, null);
 			sideEffectList.add(new SyntacticConstraint(link.childNode, str));
 			return sideEffectList;
 		}
@@ -2055,10 +2023,8 @@ public class InsertImmediateSuccessor {
 		@Override
 		public List<SideEffect> visit(WhileBeginLink link) {
 			List<SideEffect> sideEffectList = new ArrayList<>();
-			String str = 
-					"Cannot insert a node immediately after the BeginNode of a while statement, in the Simple mode.";
-			Misc.warnDueToLackOfFeature(str,
-					null);
+			String str = "Cannot insert a node immediately after the BeginNode of a while statement, in the Simple mode.";
+			Misc.warnDueToLackOfFeature(str, null);
 			sideEffectList.add(new SyntacticConstraint(link.childNode, str));
 			return sideEffectList;
 		}
@@ -2079,8 +2045,7 @@ public class InsertImmediateSuccessor {
 		@Override
 		public List<SideEffect> visit(WhileBodyLink link) {
 			List<SideEffect> sideEffectList = new ArrayList<>();
-			String str = 
-					"Cannot insert a node immediately after the body of a while statement, in the Simple mode.";
+			String str = "Cannot insert a node immediately after the body of a while statement, in the Simple mode.";
 			Misc.warnDueToLackOfFeature(str, null);
 			sideEffectList.add(new SyntacticConstraint(link.childNode, str));
 			return sideEffectList;
@@ -2116,8 +2081,7 @@ public class InsertImmediateSuccessor {
 		@Override
 		public List<SideEffect> visit(DoBodyLink link) {
 			List<SideEffect> sideEffectList = new ArrayList<>();
-			String str = 
-					"Cannot insert a node immediately after the body of a do-statement, in the Simple mode.";
+			String str = "Cannot insert a node immediately after the body of a do-statement, in the Simple mode.";
 			Misc.warnDueToLackOfFeature(str, null);
 			sideEffectList.add(new SyntacticConstraint(link.childNode, str));
 			return sideEffectList;
@@ -2131,10 +2095,8 @@ public class InsertImmediateSuccessor {
 		@Override
 		public List<SideEffect> visit(ForBeginLink link) {
 			List<SideEffect> sideEffectList = new ArrayList<>();
-			String str = 
-					"Cannot insert a node immediately after the BeginNode of a for statement, in the Simple mode.";
-			Misc.warnDueToLackOfFeature(str,
-					null);
+			String str = "Cannot insert a node immediately after the BeginNode of a for statement, in the Simple mode.";
+			Misc.warnDueToLackOfFeature(str, null);
 			sideEffectList.add(new SyntacticConstraint(link.childNode, str));
 			return sideEffectList;
 		}
@@ -2142,10 +2104,8 @@ public class InsertImmediateSuccessor {
 		@Override
 		public List<SideEffect> visit(ForInitLink link) {
 			List<SideEffect> sideEffectList = new ArrayList<>();
-			String str = 
-					"Cannot insert a node immediately after the init-expression of a for statement, in the Simple mode.";
-			Misc.warnDueToLackOfFeature(str,
-					null);
+			String str = "Cannot insert a node immediately after the init-expression of a for statement, in the Simple mode.";
+			Misc.warnDueToLackOfFeature(str, null);
 			sideEffectList.add(new SyntacticConstraint(link.childNode, str));
 			return sideEffectList;
 		}
@@ -2167,10 +2127,8 @@ public class InsertImmediateSuccessor {
 		@Override
 		public List<SideEffect> visit(ForStepLink link) {
 			List<SideEffect> sideEffectList = new ArrayList<>();
-			String str = 
-					"Cannot insert a node immediately after the step-expression of a for statement, in the Simple mode.";
-			Misc.warnDueToLackOfFeature(str,
-					null);
+			String str = "Cannot insert a node immediately after the step-expression of a for statement, in the Simple mode.";
+			Misc.warnDueToLackOfFeature(str, null);
 			sideEffectList.add(new SyntacticConstraint(link.childNode, str));
 			return sideEffectList;
 		}
@@ -2178,8 +2136,7 @@ public class InsertImmediateSuccessor {
 		@Override
 		public List<SideEffect> visit(ForBodyLink link) {
 			List<SideEffect> sideEffectList = new ArrayList<>();
-			String str = 
-					"Cannot insert a node immediately after the body of a for statement, in the Simple mode.";
+			String str = "Cannot insert a node immediately after the body of a for statement, in the Simple mode.";
 			Misc.warnDueToLackOfFeature(str, null);
 			sideEffectList.add(new SyntacticConstraint(link.childNode, str));
 			return sideEffectList;
@@ -2193,10 +2150,8 @@ public class InsertImmediateSuccessor {
 		@Override
 		public List<SideEffect> visit(CallBeginLink link) {
 			List<SideEffect> sideEffectList = new ArrayList<>();
-			String str = 
-					"Cannot insert a node immediately after the begin node of a call statement, in the Simple mode.";
-			Misc.warnDueToLackOfFeature(str,
-					null);
+			String str = "Cannot insert a node immediately after the begin node of a call statement, in the Simple mode.";
+			Misc.warnDueToLackOfFeature(str, null);
 			sideEffectList.add(new SyntacticConstraint(link.childNode, str));
 			return sideEffectList;
 		}
@@ -2204,10 +2159,8 @@ public class InsertImmediateSuccessor {
 		@Override
 		public List<SideEffect> visit(CallPreLink link) {
 			List<SideEffect> sideEffectList = new ArrayList<>();
-			String str = 
-					"Cannot insert a node immediately after the preCallNode of a call statement, in the Simple mode.";
-			Misc.warnDueToLackOfFeature(str,
-					null);
+			String str = "Cannot insert a node immediately after the preCallNode of a call statement, in the Simple mode.";
+			Misc.warnDueToLackOfFeature(str, null);
 			sideEffectList.add(new SyntacticConstraint(link.childNode, str));
 			return sideEffectList;
 		}
@@ -2215,10 +2168,8 @@ public class InsertImmediateSuccessor {
 		@Override
 		public List<SideEffect> visit(CallPostLink link) {
 			List<SideEffect> sideEffectList = new ArrayList<>();
-			String str = 
-					"Cannot insert a node immediately after the postCallNode of a call statement, in the Simple mode.";
-			Misc.warnDueToLackOfFeature(str,
-					null);
+			String str = "Cannot insert a node immediately after the postCallNode of a call statement, in the Simple mode.";
+			Misc.warnDueToLackOfFeature(str, null);
 			sideEffectList.add(new SyntacticConstraint(link.childNode, str));
 			return sideEffectList;
 		}
@@ -2232,8 +2183,7 @@ public class InsertImmediateSuccessor {
 		public List<SideEffect> visit(GotoLink link) {
 			List<SideEffect> sideEffectList = new ArrayList<>();
 			String str = "Cannot insert a node immediately after a goto statement, in the Simple mode.";
-			Misc.warnDueToLackOfFeature(str,
-					null);
+			Misc.warnDueToLackOfFeature(str, null);
 			sideEffectList.add(new SyntacticConstraint(link.childNode, str));
 			return sideEffectList;
 		}
@@ -2242,8 +2192,7 @@ public class InsertImmediateSuccessor {
 		public List<SideEffect> visit(BreakLink link) {
 			List<SideEffect> sideEffectList = new ArrayList<>();
 			String str = "Cannot insert a node immediately after a break statement, in the Simple mode.";
-			Misc.warnDueToLackOfFeature(str,
-					null);
+			Misc.warnDueToLackOfFeature(str, null);
 			sideEffectList.add(new SyntacticConstraint(link.childNode, str));
 			return sideEffectList;
 		}
@@ -2251,8 +2200,7 @@ public class InsertImmediateSuccessor {
 		@Override
 		public List<SideEffect> visit(ContinueLink link) {
 			List<SideEffect> sideEffectList = new ArrayList<>();
-			String str = 
-					"Cannot insert a node immediately after a continue statement, in the Simple mode.";
+			String str = "Cannot insert a node immediately after a continue statement, in the Simple mode.";
 			Misc.warnDueToLackOfFeature(str, null);
 			sideEffectList.add(new SyntacticConstraint(link.childNode, str));
 			return sideEffectList;
@@ -2261,8 +2209,7 @@ public class InsertImmediateSuccessor {
 		@Override
 		public List<SideEffect> visit(ReturnLink link) {
 			List<SideEffect> sideEffectList = new ArrayList<>();
-			String str = 
-					"Cannot insert a node immediately after a return statement, in the Simple mode.";
+			String str = "Cannot insert a node immediately after a return statement, in the Simple mode.";
 			Misc.warnDueToLackOfFeature(str, null);
 			sideEffectList.add(new SyntacticConstraint(link.childNode, str));
 			return sideEffectList;

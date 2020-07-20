@@ -18,6 +18,13 @@ package imop.ast.node.external;
  * f1 ::= ( ":" ConstantExpression() )?
  */
 public class StructDeclaratorWithDeclarator extends Node {
+	{
+		classId = 1213;
+	}
+
+	public StructDeclaratorWithDeclarator() {
+	}
+
 	/**
 	 * 
 	 */

@@ -18,6 +18,13 @@ package imop.ast.node.external;
  * | ArrayInitializer()
  */
 public class Initializer extends Expression {
+	{
+		classId = 1646;
+	}
+
+	public Initializer() {
+	}
+
 	/**
 	 * 
 	 */

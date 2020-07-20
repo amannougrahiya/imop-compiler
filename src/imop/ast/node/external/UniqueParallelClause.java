@@ -18,6 +18,13 @@ package imop.ast.node.external;
  * | NumThreadsClause()
  */
 public class UniqueParallelClause extends Node {
+	{
+		classId = 1319;
+	}
+
+	public UniqueParallelClause() {
+	}
+
 	/**
 	 * 
 	 */

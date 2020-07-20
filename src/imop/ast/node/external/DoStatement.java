@@ -25,6 +25,13 @@ import imop.ast.info.cfgNodeInfo.DoStatementInfo;
  * f6 ::= ";"
  */
 public class DoStatement extends IterationStatement {
+	{
+		classId = 14115;
+	}
+
+	public DoStatement() {
+	}
+
 	/**
 	 * 
 	 */

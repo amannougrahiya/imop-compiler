@@ -17,6 +17,10 @@ package imop.ast.node.external;
  * f0 ::= "--"
  */
 public class MinusMinus extends Node {
+	{
+		classId = 557;
+	}
+
 	/**
 	 * 
 	 */

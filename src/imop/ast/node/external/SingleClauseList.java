@@ -17,6 +17,13 @@ package imop.ast.node.external;
  * f0 ::= ( ASingleClause() )*
  */
 public class SingleClauseList extends Node {
+	{
+		classId = 991;
+	}
+
+	public SingleClauseList() {
+	}
+
 	/**
 	 * 
 	 */

@@ -18,7 +18,6 @@ import imop.ast.node.external.Statement;
 import imop.lib.analysis.mhp.BeginPhasePoint;
 import imop.lib.cfg.NestedCFG;
 import imop.lib.cfg.link.autoupdater.AutomatedUpdater;
-import imop.lib.transform.simplify.Normalization;
 import imop.lib.transform.updater.NodeRemover;
 import imop.lib.util.Misc;
 import imop.parser.Program;

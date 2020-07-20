@@ -24,6 +24,16 @@ import imop.lib.util.Misc;
  *
  */
 public class CallStatement extends Statement {
+	{
+		classId = 2913;
+	}
+
+	public CallStatement() {
+		functionDesignatorNode = null;
+		preCallNode = null;
+		postCallNode = null;
+	}
+
 	private static final long serialVersionUID = 4208276186550815164L;
 
 	private final NodeToken functionDesignatorNode;
@@ -107,11 +117,11 @@ public class CallStatement extends Statement {
 			return false;
 		}
 	}
-	
+
 	public int getLineNum() {
 		return Misc.getLineNum(this.functionDesignatorNode);
 	}
-	
+
 	public int getColumnName() {
 		return Misc.getColumnNum(this.functionDesignatorNode);
 	}

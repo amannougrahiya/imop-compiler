@@ -20,7 +20,7 @@ import imop.parser.Program;
 public class Demo6 {
 
 	public static void main(String[] args) {
-		args = new String[]{"-f", "runner/cgo-eg/example.c", "-nru"}; 
+		args = new String[] { "-f", "runner/cgo-eg/example.c", "-nru" };
 		Program.parseNormalizeInput(args);
 		demo6A();
 		demo6B();
@@ -37,7 +37,7 @@ public class Demo6 {
 			NodeReplacer.replaceNodes(whileStmt, newWhileStmt);
 		}
 		Program.getRoot().getInfo().removeExtraScopes();
-		
+
 	}
 
 	public static void demo6B() {

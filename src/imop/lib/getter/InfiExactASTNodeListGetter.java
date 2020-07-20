@@ -15,28 +15,28 @@ import imop.ast.node.external.Node;
 import imop.baseVisitor.DepthFirstProcess;
 
 /**
- * Populates the field astContents with all the internal AST nodes of any of the
- * types
- * present in {@code astTypeList} within the visited node, inclusively.
- * Note: This version uses Reflections.
+ * Populates the list astContents with all the internal AST nodes of the type
+ * corresponding to {@code searchCode}.
+ * Note: This version is costlier than the one that captures nodes directly in
+ * the appropriate visitors.
  * In case if a separate AST-node specific getter exists for this use, prefer it
  * over this.
  * 
  * @param <T>
  */
 
-public class InfiInheritedSingleASTNodeTypeListGetter<T extends Node> extends DepthFirstProcess {
+public class InfiExactASTNodeListGetter<T extends Node> extends DepthFirstProcess {
 	public List<T> astContents = new LinkedList<>();
-	private Class<T> astType;
+	private final int searchCode;
 
-	public InfiInheritedSingleASTNodeTypeListGetter(Class<T> astType) {
-		this.astType = astType;
+	public InfiExactASTNodeListGetter(int searchCode) {
+		this.searchCode = searchCode;
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public void initProcess(Node n) {
-		if (astType.isInstance(n)) {
+	public void endProcess(Node n) {
+		if (n.getClassId() == searchCode) {
 			astContents.add((T) n);
 		}
 	}

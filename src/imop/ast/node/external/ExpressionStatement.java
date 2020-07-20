@@ -22,6 +22,10 @@ import imop.lib.getter.CallStatementGetter;
  * f1 ::= ";"
  */
 public class ExpressionStatement extends Statement {
+	{
+		classId = 2859;
+	}
+
 	/**
 	 * 
 	 */
@@ -30,7 +34,7 @@ public class ExpressionStatement extends Statement {
 	private NodeToken f1;
 
 	// To be used by the factory methods of this class.
-	protected ExpressionStatement() {
+	public ExpressionStatement() {
 	}
 
 	/**

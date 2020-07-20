@@ -18,6 +18,13 @@ package imop.ast.node.external;
  * f1 ::= ( "||" LogicalORExpression() )?
  */
 public class LogicalORExpression extends Expression {
+	{
+		classId = 1622;
+	}
+
+	public LogicalORExpression() {
+	}
+
 	/**
 	 * 
 	 */

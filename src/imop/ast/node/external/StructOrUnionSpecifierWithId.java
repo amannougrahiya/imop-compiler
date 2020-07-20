@@ -18,6 +18,13 @@ package imop.ast.node.external;
  * f1 ::= <IDENTIFIER>
  */
 public class StructOrUnionSpecifierWithId extends Node {
+	{
+		classId = 1229;
+	}
+
+	public StructOrUnionSpecifierWithId() {
+	}
+
 	/**
 	 * 
 	 */

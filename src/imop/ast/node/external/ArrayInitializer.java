@@ -20,6 +20,13 @@ package imop.ast.node.external;
  * f3 ::= "}"
  */
 public class ArrayInitializer extends Node {
+	{
+		classId = 107;
+	}
+
+	public ArrayInitializer() {
+	}
+
 	/**
 	 * 
 	 */

@@ -15,7 +15,6 @@ import imop.ast.info.NodeInfo;
 import imop.ast.node.external.BarrierDirective;
 import imop.ast.node.external.FunctionDefinition;
 import imop.ast.node.external.Node;
-import imop.ast.node.internal.BeginNode;
 import imop.ast.node.internal.EndNode;
 import imop.lib.analysis.CoExistenceChecker;
 import imop.lib.analysis.flowanalysis.generic.AnalysisDimension.SVEDimension;

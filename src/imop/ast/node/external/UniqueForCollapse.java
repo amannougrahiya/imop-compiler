@@ -20,6 +20,13 @@ package imop.ast.node.external;
  * f3 ::= ")"
  */
 public class UniqueForCollapse extends Node {
+	{
+		classId = 1303;
+	}
+
+	public UniqueForCollapse() {
+	}
+
 	/**
 	 * 
 	 */

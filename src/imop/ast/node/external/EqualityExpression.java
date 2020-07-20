@@ -18,6 +18,13 @@ package imop.ast.node.external;
  * f1 ::= ( EqualOptionalExpression() )?
  */
 public class EqualityExpression extends Expression {
+	{
+		classId = 2818;
+	}
+
+	public EqualityExpression() {
+	}
+
 	/**
 	 * 
 	 */

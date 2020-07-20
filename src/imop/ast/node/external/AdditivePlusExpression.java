@@ -18,6 +18,13 @@ package imop.ast.node.external;
  * f1 ::= AdditiveExpression()
  */
 public class AdditivePlusExpression extends Expression {
+	{
+		classId = 2918;
+	}
+
+	public AdditivePlusExpression() {
+	}
+
 	/**
 	 * 
 	 */

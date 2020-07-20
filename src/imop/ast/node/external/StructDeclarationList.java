@@ -17,6 +17,13 @@ package imop.ast.node.external;
  * f0 ::= ( StructDeclaration() )+
  */
 public class StructDeclarationList extends Node {
+	{
+		classId = 1181;
+	}
+
+	public StructDeclarationList() {
+	}
+
 	/**
 	 * 
 	 */

@@ -34,7 +34,7 @@ public class ForConstructInfo extends OmpConstructInfo {
 	public ForConstructInfo(Node owner) {
 		super(owner);
 	}
-	
+
 	public void addNowaitClause() {
 		NowaitClause clause = FrontEnd.parseAndNormalize("nowait", NowaitClause.class);
 		if (this.hasNowaitClause()) {
@@ -44,7 +44,7 @@ public class ForConstructInfo extends OmpConstructInfo {
 		AUniqueForOrDataOrNowaitClause wrapper = new AUniqueForOrDataOrNowaitClause(new NodeChoice(clause));
 		forCons.getF1().getF1().getF0().addNode(wrapper);
 	}
-	
+
 	@Override
 	public ForConstructCFGInfo getCFGInfo() {
 		if (cfgInfo == null) {

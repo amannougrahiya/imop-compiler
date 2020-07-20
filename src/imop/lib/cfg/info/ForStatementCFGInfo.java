@@ -56,9 +56,9 @@ public class ForStatementCFGInfo extends CFGInfo {
 		owner.setF2(nodeOptional);
 		AutomatedUpdater.invalidateSymbolsInNode(nodeOptional);
 		updateCFGForInitExpressionAddition(e1);
-		
+
 		e1 = Normalization.normalizeLeafNodes(e1, new ArrayList<>());
-		
+
 		Program.invalidColumnNum = true;
 		AutomatedUpdater.updateInformationForAddition(e1);
 		//		AutomatedUpdater.invalidateSymbolsInNode(nodeOptional);// Added, so that any changes from points-to may be reflected here.
@@ -201,17 +201,18 @@ public class ForStatementCFGInfo extends CFGInfo {
 			return sideEffectList;
 		}
 		AutomatedUpdater.flushCaches();
-		
+
 		List<SideEffect> splitSE = SplitCombinedConstructs.splitCombinedConstructForTheStatement(stmt);
 		if (!splitSE.isEmpty()) {
 			NodeUpdated nodeUpdatedSE = (NodeUpdated) splitSE.get(0);
 			// Note: Here we reparse the parallel construct so that we can perform other normalizations within it.
-			ParallelConstruct splitParCons = FrontEnd.parseAndNormalize(nodeUpdatedSE.affectedNode.toString(), ParallelConstruct.class);
+			ParallelConstruct splitParCons = FrontEnd.parseAndNormalize(nodeUpdatedSE.affectedNode.toString(),
+					ParallelConstruct.class);
 			sideEffectList.add(new NodeUpdated(splitParCons, nodeUpdatedSE.getUpdateMessage()));
 			sideEffectList.addAll(this.setBody(splitParCons));
 			return sideEffectList;
 		}
-		
+
 		if (!(stmt.getStmtF0().getChoice() instanceof CompoundStatement)) {
 			Statement outSt = FrontEnd.parseAlone("{}", Statement.class);
 			CompoundStatement compStmt = (CompoundStatement) Misc.getCFGNodeFor(outSt);

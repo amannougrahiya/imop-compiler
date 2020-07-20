@@ -17,6 +17,13 @@ package imop.ast.node.external;
  * f0 ::= ( Declaration() )+
  */
 public class DeclarationList extends Node {
+	{
+		classId = 41;
+	}
+
+	public DeclarationList() {
+	}
+
 	/**
 	 * 
 	 */

@@ -10,7 +10,6 @@ package imop.lib.transform.simplify;
 
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import imop.ast.node.external.BarrierDirective;

@@ -24,7 +24,6 @@ import imop.ast.node.external.Declaration;
 import imop.ast.node.external.GotoStatement;
 import imop.ast.node.external.Node;
 import imop.ast.node.external.Statement;
-import imop.ast.node.external.TranslationUnit;
 import imop.ast.node.internal.Scopeable;
 import imop.lib.analysis.flowanalysis.Cell;
 import imop.lib.analysis.flowanalysis.Symbol;

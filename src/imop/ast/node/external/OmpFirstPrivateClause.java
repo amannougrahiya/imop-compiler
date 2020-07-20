@@ -23,7 +23,15 @@ import imop.ast.node.internal.OmpClause;
  * f3 ::= ")"
  */
 public class OmpFirstPrivateClause extends OmpClause {
+	{
+		classId *= 433;
+	}
+
+	public OmpFirstPrivateClause() {
+	}
+
 	/**
+	 * public class() {}
 	 * 
 	 */
 	private static final long serialVersionUID = 5920904770225506161L;

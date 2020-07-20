@@ -18,6 +18,13 @@ package imop.ast.node.external;
  * | UnaryExpression()
  */
 public class CastExpression extends Expression {
+	{
+		classId = 2894;
+	}
+
+	public CastExpression() {
+	}
+
 	/**
 	 * 
 	 */

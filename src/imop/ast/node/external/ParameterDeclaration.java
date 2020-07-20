@@ -20,6 +20,13 @@ import imop.ast.info.cfgNodeInfo.ParameterDeclarationInfo;
  * f1 ::= ParameterAbstraction()
  */
 public class ParameterDeclaration extends Node {
+	{
+		classId = 251;
+	}
+
+	public ParameterDeclaration() {
+	}
+
 	/**
 	 * 
 	 */

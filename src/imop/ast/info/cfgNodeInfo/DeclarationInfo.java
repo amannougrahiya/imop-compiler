@@ -14,7 +14,6 @@ import java.util.List;
 import imop.ast.info.NodeInfo;
 import imop.ast.node.external.ADeclarationSpecifier;
 import imop.ast.node.external.Declaration;
-import imop.ast.node.external.DeclarationSpecifiers;
 import imop.ast.node.external.Declarator;
 import imop.ast.node.external.EnumSpecifier;
 import imop.ast.node.external.EnumSpecifierWithList;

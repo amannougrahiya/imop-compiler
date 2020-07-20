@@ -18,6 +18,13 @@ package imop.ast.node.external;
  * | <UNION>
  */
 public class StructOrUnion extends Node {
+	{
+		classId = 1217;
+	}
+
+	public StructOrUnion() {
+	}
+
 	/**
 	 * 
 	 */

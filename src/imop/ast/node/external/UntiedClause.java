@@ -19,6 +19,9 @@ import imop.ast.node.internal.OmpClause;
  * f0 ::= <UNTIED>
  */
 public class UntiedClause extends OmpClause {
+	{
+		classId *= 353;
+	}
 	/**
 	 * 
 	 */

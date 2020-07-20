@@ -20,6 +20,13 @@ import imop.ast.info.cfgNodeInfo.UnknownCppInfo;
  * f1 ::= <UNKNOWN_CPP>
  */
 public class UnknownCpp extends Statement {
+	{
+		classId = 3453;
+	}
+
+	public UnknownCpp() {
+	}
+
 	/**
 	 * 
 	 */

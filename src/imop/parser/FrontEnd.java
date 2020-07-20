@@ -34,7 +34,6 @@ import imop.lib.analysis.flowanalysis.FreeVariable;
 import imop.lib.analysis.flowanalysis.HeapCell;
 import imop.lib.analysis.flowanalysis.Symbol;
 import imop.lib.analysis.flowanalysis.dataflow.PointsToAnalysis;
-import imop.lib.analysis.flowanalysis.dataflow.ReachingDefinitionAnalysis;
 import imop.lib.analysis.mhp.MHPAnalyzer;
 import imop.lib.analysis.typeSystem.Type;
 import imop.lib.builder.Builder;

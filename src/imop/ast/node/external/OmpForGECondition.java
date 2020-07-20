@@ -19,6 +19,13 @@ package imop.ast.node.external;
  * f2 ::= Expression()
  */
 public class OmpForGECondition extends Node {
+	{
+		classId = 337;
+	}
+
+	public OmpForGECondition() {
+	}
+
 	/**
 	 * 
 	 */

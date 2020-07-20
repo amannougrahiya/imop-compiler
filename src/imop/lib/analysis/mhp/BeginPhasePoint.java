@@ -11,7 +11,6 @@ package imop.lib.analysis.mhp;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.Vector;
 
 import imop.ast.node.external.BarrierDirective;
 import imop.ast.node.external.Node;
@@ -19,11 +18,9 @@ import imop.ast.node.external.ParallelConstruct;
 import imop.ast.node.internal.BeginNode;
 import imop.ast.node.internal.EndNode;
 import imop.lib.cfg.link.autoupdater.AutomatedUpdater;
-import imop.lib.cfg.link.autoupdater.AutomatedUpdater.AutoUpdateFlag;
 import imop.lib.cg.CallStack;
 import imop.lib.cg.NodeWithStack;
 import imop.lib.util.CollectorVisitor;
-import imop.lib.util.DumpSnapshot;
 import imop.lib.util.Misc;
 import imop.parser.Program;
 import imop.parser.Program.UpdateCategory;
@@ -317,6 +314,7 @@ public class BeginPhasePoint extends PhasePoint {
 	 * 
 	 * @deprecated
 	 */
+	@Deprecated
 	public static void deprecated_stabilizeStaleBeginPhasePoints() {
 		assert (false);
 		if (BeginPhasePoint.getStaleBeginPhasePoints().isEmpty()) {
@@ -704,6 +702,7 @@ public class BeginPhasePoint extends PhasePoint {
 	 * @return
 	 * @deprecated
 	 */
+	@Deprecated
 	public Set<EndPhasePoint> deprecated_getStableNextBarriers() {
 		BeginPhasePoint.deprecated_stabilizeStaleBeginPhasePoints();
 		return this.getInternalNextBarriers();
@@ -714,6 +713,7 @@ public class BeginPhasePoint extends PhasePoint {
 	 * @return
 	 * @deprecated
 	 */
+	@Deprecated
 	public Set<Phase> deprecated_getStablePhases() {
 		BeginPhasePoint.deprecated_stabilizeStaleBeginPhasePoints();
 		Phase.deprecated_stabilizePhases();
@@ -724,6 +724,7 @@ public class BeginPhasePoint extends PhasePoint {
 	 * @deprecated
 	 * @return
 	 */
+	@Deprecated
 	public Set<Node> deprecated_getStableReachables() {
 		BeginPhasePoint.deprecated_stabilizeStaleBeginPhasePoints();
 		Set<Node> reachables = this.getInternalReachables();

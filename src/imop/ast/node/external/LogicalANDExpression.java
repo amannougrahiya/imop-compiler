@@ -18,6 +18,13 @@ package imop.ast.node.external;
  * f1 ::= ( "&&" LogicalANDExpression() )?
  */
 public class LogicalANDExpression extends Expression {
+	{
+		classId = 1642;
+	}
+
+	public LogicalANDExpression() {
+	}
+
 	/**
 	 * 
 	 */

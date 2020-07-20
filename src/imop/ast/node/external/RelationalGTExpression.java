@@ -18,6 +18,13 @@ package imop.ast.node.external;
  * f1 ::= RelationalExpression()
  */
 public class RelationalGTExpression extends RelationalExpression {
+	{
+		classId = 1054054;
+	}
+
+	public RelationalGTExpression() {
+	}
+
 	/**
 	 * 
 	 */

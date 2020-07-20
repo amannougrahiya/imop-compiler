@@ -544,8 +544,7 @@ public class LoopInstructionsRescheduler {
 				if (thisPhase == null) {
 					break;
 				}
-				if (!thisPhase.getEndPoints().parallelStream()
-						.anyMatch(n -> internalNodes.contains(n.getNode()))) {
+				if (!thisPhase.getEndPoints().parallelStream().anyMatch(n -> internalNodes.contains(n.getNode()))) {
 					// Elements of this phase are not part of the loop.
 					break;
 				}

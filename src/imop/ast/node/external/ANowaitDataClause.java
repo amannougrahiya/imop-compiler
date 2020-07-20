@@ -18,6 +18,13 @@ package imop.ast.node.external;
  * | DataClause()
  */
 public class ANowaitDataClause extends Node {
+	{
+		classId = 131;
+	}
+
+	public ANowaitDataClause() {
+	}
+
 	/**
 	 * 
 	 */

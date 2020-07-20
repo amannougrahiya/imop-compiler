@@ -24,6 +24,13 @@ package imop.ast.node.external;
  * f7 ::= ")"
  */
 public class OmpForHeader extends Node {
+	{
+		classId = 311;
+	}
+
+	public OmpForHeader() {
+	}
+
 	/**
 	 * 
 	 */

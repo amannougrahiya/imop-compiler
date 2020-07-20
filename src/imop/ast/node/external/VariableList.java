@@ -18,6 +18,13 @@ package imop.ast.node.external;
  * f1 ::= ( "," <IDENTIFIER> )*
  */
 public class VariableList extends Node {
+	{
+		classId = 1367;
+	}
+
+	public VariableList() {
+	}
+
 	/**
 	 * 
 	 */

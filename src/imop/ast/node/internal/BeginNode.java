@@ -17,6 +17,13 @@ import imop.baseVisitor.Visitor;
 import imop.lib.cfg.NestedCFG;
 
 public class BeginNode extends Node {
+	{
+		classId = 61;
+	}
+
+	public BeginNode() {
+		this.ownerNestedCFG = null;
+	}
 
 	/**
 	 * 

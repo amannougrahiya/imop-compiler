@@ -100,7 +100,6 @@ import imop.lib.transform.updater.NodeRemover.LabelShiftingMode;
 import imop.lib.transform.updater.sideeffect.IndexDecremented;
 import imop.lib.transform.updater.sideeffect.IndexIncremented;
 import imop.lib.transform.updater.sideeffect.MissingCFGParent;
-import imop.lib.transform.updater.sideeffect.RemovedDFDPredecessor;
 import imop.lib.transform.updater.sideeffect.SideEffect;
 import imop.lib.transform.updater.sideeffect.SyntacticConstraint;
 import imop.lib.util.Misc;
@@ -146,8 +145,7 @@ public class NodeReplacer {
 		@Override
 		public List<SideEffect> visit(FunctionParameterLink link) {
 			List<SideEffect> sideEffects = new ArrayList<>();
-			String str = 
-					"Cannot replace the ParameterDeclaration of a FunctionDefinition. This is a TODO.";
+			String str = "Cannot replace the ParameterDeclaration of a FunctionDefinition. This is a TODO.";
 			Misc.warnDueToLackOfFeature(str, null);
 			sideEffects.add(new SyntacticConstraint(link.childNode, str));
 			return sideEffects;

@@ -19,6 +19,13 @@ import java.util.List;
  * implement.
  */
 public abstract class NodeListClass extends Node {
+	{
+		classId = 541;
+	}
+
+	public NodeListClass() {
+	}
+
 	/**
 	 * 
 	 */

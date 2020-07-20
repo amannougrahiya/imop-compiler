@@ -22,6 +22,13 @@ import imop.ast.info.cfgNodeInfo.OrderedConstructInfo;
  * f3 ::= Statement()
  */
 public class OrderedConstruct extends OmpConstruct {
+	{
+		classId = 40287;
+	}
+
+	public OrderedConstruct() {
+	}
+
 	/**
 	 * 
 	 */

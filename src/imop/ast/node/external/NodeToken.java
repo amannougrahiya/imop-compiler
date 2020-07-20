@@ -20,6 +20,13 @@ import imop.parser.Program;
  * is used, also contains a Vector of preceding special tokens.
  */
 public class NodeToken extends Node {
+	{
+		classId = 499;
+	}
+
+	public NodeToken() {
+	}
+
 	/**
 	 * 
 	 */

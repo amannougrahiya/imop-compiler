@@ -23,6 +23,13 @@ import imop.ast.info.cfgNodeInfo.CriticalConstructInfo;
  * f4 ::= Statement()
  */
 public class CriticalConstruct extends OmpConstruct {
+	{
+		classId = 60411;
+	}
+
+	public CriticalConstruct() {
+	}
+
 	/**
 	 * 
 	 */

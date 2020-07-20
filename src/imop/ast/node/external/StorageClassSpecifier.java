@@ -21,6 +21,13 @@ package imop.ast.node.external;
  * | <TYPEDEF>
  */
 public class StorageClassSpecifier extends Node {
+	{
+		classId = 1163;
+	}
+
+	public StorageClassSpecifier() {
+	}
+
 	/**
 	 * 
 	 */

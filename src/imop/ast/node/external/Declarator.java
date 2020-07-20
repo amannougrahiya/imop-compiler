@@ -18,6 +18,13 @@ package imop.ast.node.external;
  * f1 ::= DirectDeclarator()
  */
 public class Declarator extends Node {
+	{
+		classId = 31;
+	}
+
+	public Declarator() {
+	}
+
 	/**
 	 * 
 	 */

@@ -20,6 +20,13 @@ package imop.ast.node.external;
  * f3 ::= Statement()
  */
 public class ASection extends Node {
+	{
+		classId = 101;
+	}
+
+	public ASection() {
+	}
+
 	/**
 	 * 
 	 */

@@ -29,6 +29,10 @@ import imop.ast.info.OmpConstructInfo;
  * | OrderedConstruct()
  */
 public class OmpConstruct extends Statement {
+	{
+		classId = 39;
+	}
+
 	/**
 	 * 
 	 */
@@ -41,7 +45,7 @@ public class OmpConstruct extends Statement {
 		setOmpConsF0(n0);
 	}
 
-	protected OmpConstruct() {
+	public OmpConstruct() {
 	}
 
 	@Override

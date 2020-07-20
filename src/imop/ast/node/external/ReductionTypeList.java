@@ -17,6 +17,13 @@ package imop.ast.node.external;
  * f0 ::= ( TypeSpecifier() )*
  */
 public class ReductionTypeList extends Node {
+	{
+		classId = 1019;
+	}
+
+	public ReductionTypeList() {
+	}
+
 	/**
 	 * 
 	 */

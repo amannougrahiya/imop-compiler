@@ -23,6 +23,10 @@ import imop.lib.cfg.info.ParallelConstructCFGInfo;
  * f2 ::= Statement()
  */
 public class ParallelConstruct extends OmpConstruct {
+	{
+		classId = 897;
+	}
+
 	/**
 	 * 
 	 */

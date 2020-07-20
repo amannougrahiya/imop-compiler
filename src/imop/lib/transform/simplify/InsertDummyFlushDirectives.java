@@ -38,43 +38,36 @@ public class InsertDummyFlushDirectives {
 		for (Node node : root.getInfo().getCFGInfo().getLexicalCFGContents()) {
 			if (node instanceof FlushDirective && !(node instanceof DummyFlushDirective)) {
 				if (!hasPredDFD(node, DummyFlushType.FLUSH_START)) {
-					InsertImmediatePredecessor.insert(node,
-							new DummyFlushDirective(DummyFlushType.FLUSH_START));
+					InsertImmediatePredecessor.insert(node, new DummyFlushDirective(DummyFlushType.FLUSH_START));
 					//				InsertImmediateSuccessor.insertImmediateSuccessor(node,
 					//						new DummyFlushDirective(DummyFlushType.FLUSH_END));
 				}
 			} else if (node instanceof BarrierDirective) {
 				if (!hasPredDFD(node, DummyFlushType.BARRIER_START)) {
-					InsertImmediatePredecessor.insert(node,
-							new DummyFlushDirective(DummyFlushType.BARRIER_START));
+					InsertImmediatePredecessor.insert(node, new DummyFlushDirective(DummyFlushType.BARRIER_START));
 					//				InsertImmediateSuccessor.insertImmediateSuccessor(node,
 					//						new DummyFlushDirective(DummyFlushType.BARRIER_END));
 				}
 			} else if (node instanceof AtomicConstruct) {
 				if (!hasPredDFD(node, DummyFlushType.ATOMIC_START)) {
-					InsertImmediatePredecessor.insert(node,
-							new DummyFlushDirective(DummyFlushType.ATOMIC_START));
+					InsertImmediatePredecessor.insert(node, new DummyFlushDirective(DummyFlushType.ATOMIC_START));
 				}
 				if (!hasSuccDFD(node, DummyFlushType.ATOMIC_END)) {
 					InsertImmediateSuccessor.insert(node, new DummyFlushDirective(DummyFlushType.ATOMIC_END));
 				}
 			} else if (node instanceof CriticalConstruct) {
 				if (!hasPredDFD(node, DummyFlushType.CRITICAL_START)) {
-					InsertImmediatePredecessor.insert(node,
-							new DummyFlushDirective(DummyFlushType.CRITICAL_START));
+					InsertImmediatePredecessor.insert(node, new DummyFlushDirective(DummyFlushType.CRITICAL_START));
 				}
 				if (!hasSuccDFD(node, DummyFlushType.CRITICAL_END)) {
-					InsertImmediateSuccessor.insert(node,
-							new DummyFlushDirective(DummyFlushType.CRITICAL_END));
+					InsertImmediateSuccessor.insert(node, new DummyFlushDirective(DummyFlushType.CRITICAL_END));
 				}
 			} else if (node instanceof OrderedConstruct) {
 				if (!hasPredDFD(node, DummyFlushType.ORDERED_START)) {
-					InsertImmediatePredecessor.insert(node,
-							new DummyFlushDirective(DummyFlushType.ORDERED_START));
+					InsertImmediatePredecessor.insert(node, new DummyFlushDirective(DummyFlushType.ORDERED_START));
 				}
 				if (!hasSuccDFD(node, DummyFlushType.ORDERED_END)) {
-					InsertImmediateSuccessor.insert(node,
-							new DummyFlushDirective(DummyFlushType.ORDERED_END));
+					InsertImmediateSuccessor.insert(node, new DummyFlushDirective(DummyFlushType.ORDERED_END));
 				}
 			} else if (node instanceof CallStatement) {
 				CallStatement callStmt = (CallStatement) node;
@@ -84,32 +77,27 @@ public class InsertDummyFlushDirectives {
 								new DummyFlushDirective(DummyFlushType.LOCK_MODIFY_START));
 					}
 					if (!hasSuccDFD(node, DummyFlushType.LOCK_MODIFY_END)) {
-						InsertImmediateSuccessor.insert(node,
-								new DummyFlushDirective(DummyFlushType.LOCK_MODIFY_END));
+						InsertImmediateSuccessor.insert(node, new DummyFlushDirective(DummyFlushType.LOCK_MODIFY_END));
 					}
 				} else if (callStmt.getInfo().isALockWriteRoutine()) {
 					if (!hasSuccDFD(node, DummyFlushType.LOCK_WRITE_END)) {
-						InsertImmediateSuccessor.insert(node,
-								new DummyFlushDirective(DummyFlushType.LOCK_WRITE_END));
+						InsertImmediateSuccessor.insert(node, new DummyFlushDirective(DummyFlushType.LOCK_WRITE_END));
 					}
 				}
 			} else if (node instanceof TaskConstruct) {
 				if (!hasPredDFD(node, DummyFlushType.TASK_START)) {
-					InsertImmediatePredecessor.insert(node,
-							new DummyFlushDirective(DummyFlushType.TASK_START));
+					InsertImmediatePredecessor.insert(node, new DummyFlushDirective(DummyFlushType.TASK_START));
 				}
 				if (!hasSuccDFD(node, DummyFlushType.TASK_END)) {
 					InsertImmediateSuccessor.insert(node, new DummyFlushDirective(DummyFlushType.TASK_END));
 				}
 			} else if (node instanceof TaskyieldDirective) {
 				if (!hasPredDFD(node, DummyFlushType.TASKYIELD_START)) {
-					InsertImmediatePredecessor.insert(node,
-							new DummyFlushDirective(DummyFlushType.TASKYIELD_START));
+					InsertImmediatePredecessor.insert(node, new DummyFlushDirective(DummyFlushType.TASKYIELD_START));
 				}
 			} else if (node instanceof TaskwaitDirective) {
 				if (!hasPredDFD(node, DummyFlushType.TASKWAIT_START)) {
-					InsertImmediatePredecessor.insert(node,
-							new DummyFlushDirective(DummyFlushType.TASKWAIT_START));
+					InsertImmediatePredecessor.insert(node, new DummyFlushDirective(DummyFlushType.TASKWAIT_START));
 				}
 			}
 		}

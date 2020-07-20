@@ -22,6 +22,13 @@ import imop.baseVisitor.Visitor;
  * | UniqueTaskClause()
  */
 public class TaskClause extends Node {
+	{
+		classId = 1237;
+	}
+
+	public TaskClause() {
+	}
+
 	private static final long serialVersionUID = -5500536050886043823L;
 	private NodeChoice f0;
 

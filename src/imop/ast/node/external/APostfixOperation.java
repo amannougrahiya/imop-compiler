@@ -22,6 +22,13 @@ package imop.ast.node.external;
  * | MinusMinus()
  */
 public class APostfixOperation extends Node {
+	{
+		classId = 127;
+	}
+
+	public APostfixOperation() {
+	}
+
 	/**
 	 * 
 	 */

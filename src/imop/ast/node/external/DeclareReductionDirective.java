@@ -28,6 +28,13 @@ package imop.ast.node.external;
  * f11 ::= OmpEol()
  */
 public class DeclareReductionDirective extends Node {
+	{
+		classId = 1039;
+	}
+
+	public DeclareReductionDirective() {
+	}
+
 	/**
 	 * 
 	 */

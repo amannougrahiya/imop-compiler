@@ -18,6 +18,13 @@ package imop.ast.node.external;
  * f1 ::= ( "," Enumerator() )*
  */
 public class EnumeratorList extends Node {
+	{
+		classId = 1511;
+	}
+
+	public EnumeratorList() {
+	}
+
 	/**
 	 * 
 	 */

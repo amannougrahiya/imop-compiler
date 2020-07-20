@@ -21,6 +21,13 @@ package imop.ast.node.external;
  * f4 ::= <IDENTIFIER>
  */
 public class OmpForMultiplicative extends OmpForReinitExpression {
+	{
+		classId = 76151;
+	}
+
+	public OmpForMultiplicative() {
+	}
+
 	/**
 	 * 
 	 */

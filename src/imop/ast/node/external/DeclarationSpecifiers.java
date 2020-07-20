@@ -17,6 +17,13 @@ package imop.ast.node.external;
  * f0 ::= ( ADeclarationSpecifier() )+
  */
 public class DeclarationSpecifiers extends Node {
+	{
+		classId = 37;
+	}
+
+	public DeclarationSpecifiers() {
+	}
+
 	/**
 	 * 
 	 */

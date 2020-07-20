@@ -20,6 +20,10 @@ import imop.ast.info.cfgNodeInfo.ContinueStatementInfo;
  * f1 ::= ";"
  */
 public class ContinueStatement extends JumpStatement {
+	{
+		classId = 19047;
+	}
+
 	/**
 	 * 
 	 */

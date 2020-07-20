@@ -17,6 +17,13 @@ package imop.ast.node.external;
  * f0 ::= ( ANowaitDataClause() )*
  */
 public class NowaitDataClauseList extends Node {
+	{
+		classId = 491;
+	}
+
+	public NowaitDataClauseList() {
+	}
+
 	/**
 	 * 
 	 */

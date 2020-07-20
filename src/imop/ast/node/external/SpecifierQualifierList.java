@@ -17,6 +17,13 @@ package imop.ast.node.external;
  * f0 ::= ( ASpecifierQualifier() )+
  */
 public class SpecifierQualifierList extends Node {
+	{
+		classId = 983;
+	}
+
+	public SpecifierQualifierList() {
+	}
+
 	/**
 	 * 
 	 */

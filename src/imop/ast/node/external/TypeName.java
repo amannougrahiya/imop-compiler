@@ -18,6 +18,13 @@ package imop.ast.node.external;
  * f1 ::= ( AbstractDeclarator() )?
  */
 public class TypeName extends Node {
+	{
+		classId = 1279;
+	}
+
+	public TypeName() {
+	}
+
 	/**
 	 * 
 	 */

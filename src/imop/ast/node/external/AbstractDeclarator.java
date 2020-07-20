@@ -18,6 +18,13 @@ package imop.ast.node.external;
  * | DirectAbstractDeclarator()
  */
 public class AbstractDeclarator extends Node {
+	{
+		classId = 1487;
+	}
+
+	public AbstractDeclarator() {
+	}
+
 	/**
 	 * 
 	 */

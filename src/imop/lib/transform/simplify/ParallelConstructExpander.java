@@ -72,11 +72,8 @@ import imop.lib.transform.updater.NodeReplacer;
 import imop.lib.transform.updater.sideeffect.SyntacticConstraint;
 import imop.lib.util.CellList;
 import imop.lib.util.CellSet;
-import imop.lib.util.DumpSnapshot;
 import imop.lib.util.Misc;
-import imop.lib.util.ProfileSS;
 import imop.parser.FrontEnd;
-import imop.parser.Program;
 
 public class ParallelConstructExpander {
 
@@ -88,7 +85,7 @@ public class ParallelConstructExpander {
 			return;
 		}
 		outer: do {
-			List<ParallelConstruct> parConsList = Misc.getExactPostOrderEnclosee(node, ParallelConstruct.class);
+			List<ParallelConstruct> parConsList = Misc.getExactEncloseeList(node, ParallelConstruct.class);
 			boolean changed = false;
 			for (ParallelConstruct parCons : parConsList) {
 				//			System.out.println(parCons);

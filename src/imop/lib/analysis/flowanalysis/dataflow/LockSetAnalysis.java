@@ -21,10 +21,10 @@ import imop.ast.node.internal.PreCallNode;
 import imop.ast.node.internal.SimplePrimaryExpression;
 import imop.lib.analysis.flowanalysis.Cell;
 import imop.lib.analysis.flowanalysis.Symbol;
-import imop.lib.analysis.flowanalysis.generic.FlowAnalysis.FlowFact;
 import imop.lib.analysis.flowanalysis.generic.AnalysisDimension;
 import imop.lib.analysis.flowanalysis.generic.AnalysisDimension.SVEDimension;
 import imop.lib.analysis.flowanalysis.generic.AnalysisName;
+import imop.lib.analysis.flowanalysis.generic.FlowAnalysis;
 import imop.lib.analysis.flowanalysis.generic.InterThreadForwardNonCellularAnalysis;
 import imop.lib.analysis.mhp.lock.AbstractLock;
 import imop.lib.analysis.mhp.lock.AtomicLock;
@@ -86,7 +86,7 @@ public class LockSetAnalysis extends InterThreadForwardNonCellularAnalysis<LockS
 	 * @author aman
 	 *
 	 */
-	public static class LockFlowFact extends FlowFact {
+	public static class LockFlowFact extends FlowAnalysis.FlowFact {
 		private LockMap lockMap;
 
 		public LockFlowFact(LockMap lockMap) {

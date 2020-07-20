@@ -18,6 +18,13 @@ package imop.ast.node.external;
  * f1 ::= ( "," AssignmentExpression() )*
  */
 public class ExpressionList extends Node {
+	{
+		classId = 613;
+	}
+
+	public ExpressionList() {
+	}
+
 	/**
 	 * 
 	 */

@@ -20,7 +20,10 @@ import imop.ast.node.external.Node;
  */
 public interface DFable {
 	public Set<DFable> getDataFlowPredecessors();
+
 	public Set<DFable> getDataFlowSuccessors();
+
 	public void setReversePostOrder(int i);
+
 	public int getReversePostOrder();
 }

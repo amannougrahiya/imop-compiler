@@ -18,6 +18,13 @@ package imop.ast.node.external;
  * f1 ::= ( "^" ExclusiveORExpression() )?
  */
 public class ExclusiveORExpression extends Expression {
+	{
+		classId = 2762;
+	}
+
+	public ExclusiveORExpression() {
+	}
+
 	/**
 	 * 
 	 */

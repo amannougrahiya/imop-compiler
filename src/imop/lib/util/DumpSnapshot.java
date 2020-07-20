@@ -42,7 +42,7 @@ import imop.lib.transform.updater.sideeffect.SideEffect;
 import imop.parser.Program;
 
 public class DumpSnapshot {
-	
+
 	public static void dumpAccessibleCells(String str) {
 		if (Program.printNoFiles) {
 			return;
@@ -350,7 +350,7 @@ public class DumpSnapshot {
 			return tempStr;
 		});
 		DumpSnapshot.printToFile(Program.getRoot(), Program.fileName + string + "-pointsTo.i", commetors);
-	
+
 	}
 
 	public static void dumpPredicates(String string) {
@@ -501,10 +501,10 @@ public class DumpSnapshot {
 
 	public static void dumpPhaseFlowGraph() {
 		for (ParallelConstruct parCons : Misc.getInheritedEnclosee(Program.getRoot(), ParallelConstruct.class)) {
-			
+
 		}
 	}
-	
+
 	/**
 	 * For debugging purposes This method dumps the parallelRegion hashCodes for
 	 * all the leaf CFG nodes
@@ -591,11 +591,11 @@ public class DumpSnapshot {
 				name = "simpleDotGraph.gv";
 				break;
 			}
-	
+
 			String fs = System.getProperty("file.separator");
 			String filePath = Program.class.getProtectionDomain().getCodeSource().getLocation().getFile();
 			fileName = filePath + ".." + fs + "output-dump" + fs + name;
-	
+
 			System.err.println("\tCreating the dot file at " + fileName);
 			File file = new File(fileName);
 			if (!file.exists()) {

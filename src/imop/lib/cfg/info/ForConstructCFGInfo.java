@@ -60,9 +60,9 @@ public class ForConstructCFGInfo extends CFGInfo {
 		AutomatedUpdater.invalidateSymbolsInNode(owner.getF2().getF2());
 		AutomatedUpdater.invalidateSymbolsInNode(initExpression);
 		updateCFGForOmpForInitExpressionAddition(initExpression);
-		
+
 		initExpression = Normalization.normalizeLeafNodes(initExpression, new ArrayList<>());
-		
+
 		Program.invalidColumnNum = true;
 		AutomatedUpdater.updatePhaseAndInterTaskEdgesUponRemoval(affectedBeginPhasePoints);
 		AutomatedUpdater.updateInformationForAddition(initExpression);
@@ -95,9 +95,9 @@ public class ForConstructCFGInfo extends CFGInfo {
 		AutomatedUpdater.invalidateSymbolsInNode(owner.getF2().getF4());
 		AutomatedUpdater.invalidateSymbolsInNode(forCondition);
 		updateCFGForOmpForConditionAddition(forCondition);
-		
+
 		forCondition = Normalization.normalizeLeafNodes(forCondition, new ArrayList<>());
-		
+
 		Program.invalidColumnNum = true;
 		AutomatedUpdater.updatePhaseAndInterTaskEdgesUponRemoval(affectedBeginPhasePoints);
 		AutomatedUpdater.updateInformationForAddition(forCondition);
@@ -130,9 +130,9 @@ public class ForConstructCFGInfo extends CFGInfo {
 		AutomatedUpdater.invalidateSymbolsInNode(owner.getF2().getF6());
 		AutomatedUpdater.invalidateSymbolsInNode(reinitExpression);
 		updateCFGForOmpForReinitExpressionAddition(reinitExpression);
-		
+
 		reinitExpression = Normalization.normalizeLeafNodes(reinitExpression, new ArrayList<>());
-		
+
 		Program.invalidColumnNum = true;
 		AutomatedUpdater.updatePhaseAndInterTaskEdgesUponRemoval(affectedBeginPhasePoints);
 		AutomatedUpdater.updateInformationForAddition(reinitExpression);
@@ -154,17 +154,18 @@ public class ForConstructCFGInfo extends CFGInfo {
 			return sideEffectList;
 		}
 		AutomatedUpdater.flushCaches();
-		
+
 		List<SideEffect> splitSE = SplitCombinedConstructs.splitCombinedConstructForTheStatement(stmt);
 		if (!splitSE.isEmpty()) {
 			NodeUpdated nodeUpdatedSE = (NodeUpdated) splitSE.get(0);
 			// Note: Here we reparse the parallel construct so that we can perform other normalizations within it.
-			ParallelConstruct splitParCons = FrontEnd.parseAndNormalize(nodeUpdatedSE.affectedNode.toString(), ParallelConstruct.class);
+			ParallelConstruct splitParCons = FrontEnd.parseAndNormalize(nodeUpdatedSE.affectedNode.toString(),
+					ParallelConstruct.class);
 			sideEffectList.add(new NodeUpdated(splitParCons, nodeUpdatedSE.getUpdateMessage()));
 			sideEffectList.addAll(this.setBody(splitParCons));
 			return sideEffectList;
 		}
-		
+
 		if (!(stmt.getStmtF0().getChoice() instanceof CompoundStatement)) {
 			Statement outSt = FrontEnd.parseAlone("{}", Statement.class);
 			CompoundStatement compStmt = (CompoundStatement) Misc.getCFGNodeFor(outSt);

@@ -20,6 +20,13 @@ package imop.ast.node.external;
  * f3 ::= ")"
  */
 public class SizeofTypeName extends Expression {
+	{
+		classId = 1294;
+	}
+
+	public SizeofTypeName() {
+	}
+
 	/**
 	 * 
 	 */

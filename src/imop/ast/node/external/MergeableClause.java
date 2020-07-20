@@ -19,6 +19,9 @@ import imop.ast.node.internal.OmpClause;
  * f0 ::= <MERGEABLE>
  */
 public class MergeableClause extends OmpClause {
+	{
+		classId *= 449;
+	}
 	/**
 	 * 
 	 */

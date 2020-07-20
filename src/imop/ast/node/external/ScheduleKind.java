@@ -20,6 +20,13 @@ package imop.ast.node.external;
  * | <RUNTIME>
  */
 public class ScheduleKind extends Node {
+	{
+		classId = 1009;
+	}
+
+	public ScheduleKind() {
+	}
+
 	/**
 	 * 
 	 */

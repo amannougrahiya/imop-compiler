@@ -18,6 +18,13 @@ package imop.ast.node.external;
  * | DataClause()
  */
 public class AUniqueParallelOrDataClause extends Node {
+	{
+		classId = 71;
+	}
+
+	public AUniqueParallelOrDataClause() {
+	}
+
 	/**
 	 * 
 	 */

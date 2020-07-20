@@ -23,11 +23,9 @@ import imop.lib.analysis.flowanalysis.Cell;
 import imop.lib.analysis.flowanalysis.Definition;
 import imop.lib.analysis.flowanalysis.ImmutableDefinitionSet;
 import imop.lib.analysis.flowanalysis.Symbol;
-import imop.lib.analysis.flowanalysis.generic.CellularDataFlowAnalysis.CellularFlowMap;
-import imop.lib.analysis.flowanalysis.generic.FlowAnalysis.FlowFact;
 import imop.lib.analysis.flowanalysis.generic.AnalysisDimension;
-import imop.lib.analysis.flowanalysis.generic.AnalysisDimension.SVEDimension;
 import imop.lib.analysis.flowanalysis.generic.AnalysisName;
+import imop.lib.analysis.flowanalysis.generic.CellularDataFlowAnalysis;
 import imop.lib.analysis.flowanalysis.generic.InterThreadForwardCellularAnalysis;
 import imop.lib.getter.AllDefinitionGetter;
 import imop.lib.util.CellSet;
@@ -42,7 +40,8 @@ public class ReachingDefinitionAnalysis
 		super(AnalysisName.REACHING_DEFINITION, new AnalysisDimension(Program.sveSensitivityOfIDFAEdges));
 	}
 
-	public static class ReachingDefinitionFlowMap extends CellularFlowMap<ImmutableDefinitionSet> {
+	public static class ReachingDefinitionFlowMap
+			extends CellularDataFlowAnalysis.CellularFlowMap<ImmutableDefinitionSet> {
 
 		public ReachingDefinitionFlowMap(ExtensibleCellMap<ImmutableDefinitionSet> flowMap) {
 			super(flowMap);

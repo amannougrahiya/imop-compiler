@@ -17,6 +17,13 @@ package imop.ast.node.external;
  * f0 ::= ConditionalExpression()
  */
 public class ConstantExpression extends Expression {
+	{
+		classId = 2854;
+	}
+
+	public ConstantExpression() {
+	}
+
 	/**
 	 * 
 	 */

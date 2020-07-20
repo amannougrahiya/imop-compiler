@@ -20,6 +20,10 @@ import imop.ast.info.cfgNodeInfo.BreakStatementInfo;
  * f1 ::= ";"
  */
 public class BreakStatement extends JumpStatement {
+	{
+		classId = 19131;
+	}
+
 	/**
 	 * 
 	 */

@@ -40,7 +40,7 @@ public class MainProject {
 		 */
 		demo9();
 	}
-	
+
 	public static void demo9() {
 		for (BarrierDirective barrier : Misc.getInheritedEncloseeList(Program.getRoot(), BarrierDirective.class)) {
 			Set<Phase> allPhaseSet = new HashSet<>();

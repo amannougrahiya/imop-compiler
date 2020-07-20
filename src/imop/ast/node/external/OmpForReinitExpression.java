@@ -27,6 +27,9 @@ import imop.ast.info.cfgNodeInfo.OmpForReinitExpressionInfo;
  * | OmpForMultiplicative()
  */
 public class OmpForReinitExpression extends Node {
+	{
+		classId = 281;
+	}
 	/**
 	 * 
 	 */

@@ -17,11 +17,12 @@ public class IndexIncremented extends PredecessorUpdated {
 		super(affectedNode);
 		this.baseNode = baseNode;
 	}
-	
+
 	/**
 	 * Returns the node relative to which the index has been incremented.
 	 * <br>
 	 * Note that the node could as well have been intended to be removed.
+	 * 
 	 * @return
 	 */
 	public Node getBaseNode() {

@@ -14,7 +14,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import imop.ast.info.cfgNodeInfo.DeclarationInfo;
 import imop.ast.node.external.ArrayInitializer;
 import imop.ast.node.external.CompoundStatement;
 import imop.ast.node.external.Declaration;

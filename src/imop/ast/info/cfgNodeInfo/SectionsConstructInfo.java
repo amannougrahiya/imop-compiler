@@ -22,6 +22,7 @@ public class SectionsConstructInfo extends OmpConstructInfo {
 	public SectionsConstructInfo(Node owner) {
 		super(owner);
 	}
+
 	public void addNowaitClause() {
 		NowaitClause clause = FrontEnd.parseAndNormalize("nowait", NowaitClause.class);
 		if (this.hasNowaitClause()) {

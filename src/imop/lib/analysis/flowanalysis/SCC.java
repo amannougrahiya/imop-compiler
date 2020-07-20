@@ -56,6 +56,7 @@ public class SCC implements DFable {
 		//		System.out.println("Creating an SCC of size " + this.nodes.size());
 	}
 
+	@Override
 	public int getReversePostOrder() {
 		//		Program.stabilizeReversePostOrderOfLeaves();
 		if (CFGInfo.isSCCStale) {
@@ -65,6 +66,7 @@ public class SCC implements DFable {
 		return reversePostOrderId;
 	}
 
+	@Override
 	public void setReversePostOrder(int reversePostOrderId) {
 		this.reversePostOrderId = reversePostOrderId;
 	}
@@ -77,7 +79,8 @@ public class SCC implements DFable {
 		if (entryNodes == null) {
 			entryNodes = new HashSet<>();
 			for (Node n : nodes) {
-				for (Node predOfN : n.getInfo().getCFGInfo().getInterTaskLeafPredecessorNodes(SVEDimension.SVE_INSENSITIVE)) {
+				for (Node predOfN : n.getInfo().getCFGInfo()
+						.getInterTaskLeafPredecessorNodes(SVEDimension.SVE_INSENSITIVE)) {
 					if (predOfN.getInfo().getCFGInfo().getSCC() != this) {
 						entryNodes.add(n);
 						break;
@@ -92,7 +95,8 @@ public class SCC implements DFable {
 		if (exitNodes == null) {
 			exitNodes = new HashSet<>();
 			for (Node n : nodes) {
-				for (Node succOfN : n.getInfo().getCFGInfo().getInterTaskLeafSuccessorNodes(SVEDimension.SVE_INSENSITIVE)) {
+				for (Node succOfN : n.getInfo().getCFGInfo()
+						.getInterTaskLeafSuccessorNodes(SVEDimension.SVE_INSENSITIVE)) {
 					if (succOfN.getInfo().getCFGInfo().getSCC() != this) {
 						exitNodes.add(n);
 						break;
@@ -103,11 +107,13 @@ public class SCC implements DFable {
 		return exitNodes;
 	}
 
+	@Override
 	public Set<DFable> getDataFlowPredecessors() {
 		if (this.dataFlowPredecessors == null) {
 			this.dataFlowPredecessors = new HashSet<>();
 			for (Node entryNode : this.getEntryNodes()) {
-				for (Node predOfEntry : entryNode.getInfo().getCFGInfo().getInterTaskLeafPredecessorNodes(SVEDimension.SVE_INSENSITIVE)) {
+				for (Node predOfEntry : entryNode.getInfo().getCFGInfo()
+						.getInterTaskLeafPredecessorNodes(SVEDimension.SVE_INSENSITIVE)) {
 					SCC predSCC = predOfEntry.getInfo().getCFGInfo().getSCC();
 					if (predSCC == null) {
 						this.dataFlowPredecessors.add(predOfEntry);
@@ -120,11 +126,13 @@ public class SCC implements DFable {
 		return this.dataFlowPredecessors;
 	}
 
+	@Override
 	public Set<DFable> getDataFlowSuccessors() {
 		if (this.dataFlowSuccessors == null) {
 			this.dataFlowSuccessors = new HashSet<>();
 			for (Node exitNode : this.getExitNodes()) {
-				for (Node succOfExit : exitNode.getInfo().getCFGInfo().getInterTaskLeafSuccessorNodes(SVEDimension.SVE_INSENSITIVE)) {
+				for (Node succOfExit : exitNode.getInfo().getCFGInfo()
+						.getInterTaskLeafSuccessorNodes(SVEDimension.SVE_INSENSITIVE)) {
 					SCC succSCC = succOfExit.getInfo().getCFGInfo().getSCC();
 					if (succSCC == null) {
 						this.dataFlowSuccessors.add(succOfExit);
@@ -156,7 +164,8 @@ public class SCC implements DFable {
 				return n.getInfo().getCFGInfo().getInterTaskLeafSuccessorNodes(SVEDimension.SVE_INSENSITIVE);
 			} else {
 				Set<Node> succList = new HashSet<>();
-				for (Node succ : n.getInfo().getCFGInfo().getInterTaskLeafSuccessorNodes(SVEDimension.SVE_INSENSITIVE)) {
+				for (Node succ : n.getInfo().getCFGInfo()
+						.getInterTaskLeafSuccessorNodes(SVEDimension.SVE_INSENSITIVE)) {
 					if (succ.getInfo().getCFGInfo().getSCC() == this) {
 						// Add only those successors which are within the same SCC.
 						succList.add(succ);
@@ -239,7 +248,7 @@ public class SCC implements DFable {
 		SCC.tarjanI++;
 		SCC.internalStack.push(v);
 		vInfo.setOnInternalStack(true);
-		
+
 		Set<Node> neighbours;
 		if (v instanceof BarrierDirective) {
 			neighbours = new HashSet<>(vInfo.getInterTaskLeafSuccessorNodes(SVEDimension.SVE_INSENSITIVE));

@@ -21,6 +21,10 @@ import imop.ast.info.IterationStatementInfo;
  * | ForStatement()
  */
 public class IterationStatement extends Statement {
+	{
+		classId = 15;
+	}
+
 	/**
 	 * 
 	 */
@@ -32,7 +36,7 @@ public class IterationStatement extends Statement {
 		setItStmtF0(n0);
 	}
 
-	protected IterationStatement() {
+	public IterationStatement() {
 	}
 
 	@Override

@@ -17,6 +17,13 @@ package imop.ast.node.external;
  * f0 ::= ( TypeQualifier() )+
  */
 public class TypeQualifierList extends Node {
+	{
+		classId = 1289;
+	}
+
+	public TypeQualifierList() {
+	}
+
 	/**
 	 * 
 	 */

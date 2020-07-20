@@ -20,6 +20,13 @@ package imop.ast.node.external;
  * | RelationalGEExpression()
  */
 public class RelationalOptionalExpression extends Expression {
+	{
+		classId = 1382;
+	}
+
+	public RelationalOptionalExpression() {
+	}
+
 	/**
 	 * 
 	 */

@@ -18,6 +18,13 @@ package imop.ast.node.external;
  * f1 ::= ( MultiplicativeOptionalExpression() )?
  */
 public class MultiplicativeExpression extends Expression {
+	{
+		classId = 1594;
+	}
+
+	public MultiplicativeExpression() {
+	}
+
 	/**
 	 * 
 	 */

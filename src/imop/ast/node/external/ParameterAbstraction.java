@@ -18,6 +18,13 @@ package imop.ast.node.external;
  * | AbstractOptionalDeclarator()
  */
 public class ParameterAbstraction extends Node {
+	{
+		classId = 257;
+	}
+
+	public ParameterAbstraction() {
+	}
+
 	/**
 	 * 
 	 */

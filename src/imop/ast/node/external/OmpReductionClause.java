@@ -25,6 +25,13 @@ import imop.ast.node.internal.OmpClause;
  * f5 ::= ")"
  */
 public class OmpReductionClause extends OmpClause {
+	{
+		classId *= 373;
+	}
+
+	public OmpReductionClause() {
+	}
+
 	/**
 	 * 
 	 */

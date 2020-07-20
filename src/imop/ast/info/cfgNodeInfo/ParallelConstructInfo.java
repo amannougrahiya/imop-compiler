@@ -35,7 +35,6 @@ import imop.lib.analysis.mhp.BeginPhasePoint;
 import imop.lib.analysis.mhp.Phase;
 import imop.lib.analysis.mhp.yuan.BTBarrierNode;
 import imop.lib.analysis.mhp.yuan.BTNode;
-import imop.lib.analysis.mhp.yuan.BarrierTreeConstructor;
 import imop.lib.cfg.info.ParallelConstructCFGInfo;
 import imop.lib.util.CellSet;
 import imop.lib.util.Misc;
@@ -78,7 +77,7 @@ public class ParallelConstructInfo extends OmpConstructInfo {
 	public void addBTPair(BTBarrierNode first, BTBarrierNode second) {
 		this.btPairs.add(new BTPair(first, second));
 	}
-	
+
 	public Set<BTPair> getBTPairs() {
 		return btPairs;
 	}

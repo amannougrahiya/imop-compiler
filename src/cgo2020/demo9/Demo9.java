@@ -26,7 +26,7 @@ import imop.parser.Program;
 public class Demo9 {
 
 	public static void main(String[] args) {
-		args = new String[]{"-f", "runner/cgo-eg/example.c", "-nru"}; 
+		args = new String[] { "-f", "runner/cgo-eg/example.c", "-nru" };
 		Program.parseNormalizeInput(args);
 		/*
 		 * Check if a barrier-directive is required to preserve
@@ -44,7 +44,7 @@ public class Demo9 {
 		DumpSnapshot.dumpRoot("final");
 		System.out.println(Program.getRoot());
 	}
-	
+
 	public static void demo9() {
 		for (BarrierDirective barrier : Misc.getInheritedEncloseeList(Program.getRoot(), BarrierDirective.class)) {
 			Set<Phase> allPhaseSet = new HashSet<>();

@@ -19,6 +19,13 @@ package imop.ast.node.external;
  * f2 ::= Expression()
  */
 public class OmpForGTCondition extends Node {
+	{
+		classId = 331;
+	}
+
+	public OmpForGTCondition() {
+	}
+
 	/**
 	 * 
 	 */

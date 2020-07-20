@@ -23,10 +23,10 @@ import imop.ast.node.external.ParameterDeclaration;
 import imop.ast.node.internal.BeginNode;
 import imop.ast.node.internal.EndNode;
 import imop.lib.analysis.flowanalysis.BranchEdge;
-import imop.lib.analysis.flowanalysis.generic.FlowAnalysis.FlowFact;
 import imop.lib.analysis.flowanalysis.generic.AnalysisDimension;
 import imop.lib.analysis.flowanalysis.generic.AnalysisDimension.SVEDimension;
 import imop.lib.analysis.flowanalysis.generic.AnalysisName;
+import imop.lib.analysis.flowanalysis.generic.FlowAnalysis;
 import imop.lib.analysis.flowanalysis.generic.IntraProceduralControlFlowAnalysis;
 import imop.lib.analysis.flowanalysis.generic.ReversePostOrderWorkList;
 import imop.lib.analysis.mhp.BeginPhasePoint;
@@ -43,7 +43,7 @@ public class PredicateAnalysis extends IntraProceduralControlFlowAnalysis<Predic
 		super(AnalysisName.PREDICATE_ANALYSIS, new AnalysisDimension(SVEDimension.SVE_INSENSITIVE));
 	}
 
-	public static class PredicateFlowFact extends FlowFact {
+	public static class PredicateFlowFact extends FlowAnalysis.FlowFact {
 
 		public ImmutableSet<ReversePath> controlPredicatePaths;
 		private static int maxNumberOfPaths = 0;

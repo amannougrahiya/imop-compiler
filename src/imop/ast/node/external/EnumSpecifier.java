@@ -20,6 +20,13 @@ import imop.lib.transform.simplify.StructUnionEnumTagger;
  * | EnumSpecifierWithId()
  */
 public class EnumSpecifier extends Node {
+	{
+		classId = 1499;
+	}
+
+	public EnumSpecifier() {
+	}
+
 	/**
 	 * 
 	 */

@@ -19,6 +19,13 @@ package imop.ast.node.external;
  * f2 ::= ")"
  */
 public class ArgumentList extends Node {
+	{
+		classId = 109;
+	}
+
+	public ArgumentList() {
+	}
+
 	/**
 	 * 
 	 */

@@ -16,7 +16,6 @@ import imop.ast.annotation.CaseLabel;
 import imop.ast.annotation.DefaultLabel;
 import imop.ast.annotation.Label;
 import imop.ast.annotation.SimpleLabel;
-import imop.ast.info.cfgNodeInfo.DeclarationInfo;
 import imop.ast.info.cfgNodeInfo.ParameterDeclarationInfo;
 import imop.ast.node.external.ADeclaratorOp;
 import imop.ast.node.external.CompoundStatement;

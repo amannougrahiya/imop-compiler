@@ -25,6 +25,13 @@ package imop.ast.node.external;
  * | "&&"
  */
 public class ReductionOp extends Node {
+	{
+		classId = 1021;
+	}
+
+	public ReductionOp() {
+	}
+
 	/**
 	 * 
 	 */

@@ -27,6 +27,13 @@ import imop.lib.transform.simplify.OldFunctionStyleRemover;
  * f3 ::= CompoundStatement()
  */
 public class FunctionDefinition extends Node implements Scopeable {
+	{
+		classId = 593;
+	}
+
+	public FunctionDefinition() {
+	}
+
 	/**
 	 * 
 	 */

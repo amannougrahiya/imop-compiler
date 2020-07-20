@@ -32,6 +32,10 @@ import imop.lib.transform.simplify.LabelRemover;
  * | UnknownCpp() )
  */
 public class Statement extends Node {
+	{
+		classId = 3;
+	}
+
 	/**
 	 * 
 	 */

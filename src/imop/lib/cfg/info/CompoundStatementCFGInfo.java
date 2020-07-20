@@ -48,8 +48,6 @@ import imop.lib.transform.simplify.SplitCombinedConstructs;
 import imop.lib.transform.updater.NodeRemover;
 import imop.lib.transform.updater.sideeffect.AddedDFDPredecessor;
 import imop.lib.transform.updater.sideeffect.AddedDFDSuccessor;
-import imop.lib.transform.updater.sideeffect.IndexDecremented;
-import imop.lib.transform.updater.sideeffect.IndexIncremented;
 import imop.lib.transform.updater.sideeffect.InitializationSimplified;
 import imop.lib.transform.updater.sideeffect.NamespaceCollisionOnAddition;
 import imop.lib.transform.updater.sideeffect.NamespaceCollisionOnRemoval;

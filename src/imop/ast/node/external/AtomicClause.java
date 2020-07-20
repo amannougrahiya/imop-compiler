@@ -22,6 +22,13 @@ import imop.ast.node.internal.OmpClause;
  * | <CAPTURE>
  */
 public class AtomicClause extends OmpClause {
+	{
+		classId *= 463;
+	}
+
+	public AtomicClause() {
+	}
+
 	/**
 	 * 
 	 */

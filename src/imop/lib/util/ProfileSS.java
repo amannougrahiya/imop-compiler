@@ -12,7 +12,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * Class that contains profiling info done for self-stabilization ease-of-use evaluations.
+ * Class that contains profiling info done for self-stabilization ease-of-use
+ * evaluations.
  */
 public class ProfileSS {
 	public static Set<Integer> ptaSet = new HashSet<>();
@@ -23,22 +24,23 @@ public class ProfileSS {
 	public static Set<Integer> labSet = new HashSet<>();
 	public static Set<Integer> phSet = new HashSet<>();
 	public static int currentCP = -1;
-	
+
 	private static boolean flagRaised = false;
 	public static int flagSwitchCount = 0;
-	
-	
+
 	/**
-	 * This method is placed immediately after a change-point, and is used to update currentCP.
+	 * This method is placed immediately after a change-point, and is used to
+	 * update currentCP.
 	 */
 	public static void nextCP() {
 		StackTraceElement st = Thread.currentThread().getStackTrace()[2];
 		currentCP = st.getLineNumber() - 1;
 		flagRaised = true;
 	}
-	
+
 	/**
 	 * This method adds the currentCP as an active CP to the given set.
+	 * 
 	 * @param set
 	 */
 	public static void addChangePoint(Set<Integer> set) {

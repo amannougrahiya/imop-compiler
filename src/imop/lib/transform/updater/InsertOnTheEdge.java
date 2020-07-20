@@ -801,8 +801,7 @@ public class InsertOnTheEdge {
 						elseBody.getInfo().getCFGInfo().addElement(targetNode);
 						breakingStmt.getInfo().getCFGInfo().setElseBody(elseBody);
 					}
-					sideEffectList.addAll(
-							InsertImmediatePredecessor.insert(doCFGInfo.getPredicate(), breakingStmt));
+					sideEffectList.addAll(InsertImmediatePredecessor.insert(doCFGInfo.getPredicate(), breakingStmt));
 
 					Expression newPred = FrontEnd.parseAndNormalize("1", Expression.class);
 					doCFGInfo.setPredicate(newPred);
@@ -811,7 +810,8 @@ public class InsertOnTheEdge {
 			} else if (destinationLink instanceof DoEndLink) {
 				if (doInfo.hasConstantPredicate()) {
 					if (doInfo.predicateIsConstantTrue()) {
-						String str = "The edge from predicate " + oldPred + " to EndNode of a certain do-while loop does not exist."
+						String str = "The edge from predicate " + oldPred
+								+ " to EndNode of a certain do-while loop does not exist."
 								+ "Cannot perform insertion on that edge.";
 						Misc.warnDueToLackOfFeature(str, null);
 						sideEffectList.add(new SyntacticConstraint(doInfo.getCFGInfo().getNestedCFG().getEnd(), str));
@@ -824,8 +824,7 @@ public class InsertOnTheEdge {
 							IfStatement.class);
 					CompoundStatement thenBody = (CompoundStatement) breakingStmt.getInfo().getCFGInfo().getThenBody();
 					thenBody.getInfo().getCFGInfo().addElement(0, targetNode);
-					sideEffectList.addAll(
-							InsertImmediatePredecessor.insert(doCFGInfo.getPredicate(), breakingStmt));
+					sideEffectList.addAll(InsertImmediatePredecessor.insert(doCFGInfo.getPredicate(), breakingStmt));
 
 					Expression newPred = FrontEnd.parseAndNormalize("1", Expression.class);
 					doCFGInfo.setPredicate(newPred);

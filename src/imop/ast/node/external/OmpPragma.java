@@ -19,6 +19,9 @@ package imop.ast.node.external;
  * f2 ::= <OMP>
  */
 public class OmpPragma extends Node {
+	{
+		classId = 211;
+	}
 	/**
 	 * 
 	 */

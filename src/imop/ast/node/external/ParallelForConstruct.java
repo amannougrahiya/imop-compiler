@@ -23,6 +23,13 @@ package imop.ast.node.external;
  * f6 ::= Statement()
  */
 public class ParallelForConstruct extends ParallelConstruct {
+	{
+		classId = 940953;
+	}
+
+	public ParallelForConstruct() {
+	}
+
 	/**
 	 * 
 	 */

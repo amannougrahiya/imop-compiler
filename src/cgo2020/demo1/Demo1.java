@@ -11,7 +11,6 @@ package cgo2020.demo1;
 import imop.ast.node.external.FunctionDefinition;
 import imop.ast.node.external.Statement;
 import imop.ast.node.external.WhileStatement;
-import imop.lib.util.DumpSnapshot;
 import imop.lib.util.Misc;
 import imop.parser.Program;
 
@@ -21,10 +20,10 @@ public class Demo1 {
 	 * Driver method for Demo #1.
 	 */
 	public static void main(String[] args) {
-		args = new String[]{"-f", "runner/cgo-eg/example.c", "-nru"}; 
+		args = new String[] { "-f", "runner/cgo-eg/example.c", "-nru" };
 		Program.parseNormalizeInput(args);
 		System.out.println(Program.getRoot());
-		
+
 		// Get statement with label "test"
 		for (FunctionDefinition func : Program.getRoot().getInfo().getAllFunctionDefinitions()) {
 			Statement stmt = func.getInfo().getStatementWithLabel("test");

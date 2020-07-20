@@ -17,6 +17,13 @@ package imop.ast.node.external;
  * f0 ::= ( AbstractDeclarator() )?
  */
 public class AbstractOptionalDeclarator extends Node {
+	{
+		classId = 151;
+	}
+
+	public AbstractOptionalDeclarator() {
+	}
+
 	/**
 	 * 
 	 */

@@ -18,6 +18,13 @@ package imop.ast.node.external;
  * f1 ::= RelationalExpression()
  */
 public class RelationalGEExpression extends RelationalExpression {
+	{
+		classId = 1065782;
+	}
+
+	public RelationalGEExpression() {
+	}
+
 	/**
 	 * 
 	 */

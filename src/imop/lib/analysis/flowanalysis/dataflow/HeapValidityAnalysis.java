@@ -16,10 +16,10 @@ import imop.ast.node.internal.SimplePrimaryExpression;
 import imop.lib.analysis.flowanalysis.Cell;
 import imop.lib.analysis.flowanalysis.HeapCell;
 import imop.lib.analysis.flowanalysis.Symbol;
-import imop.lib.analysis.flowanalysis.generic.FlowAnalysis.FlowFact;
 import imop.lib.analysis.flowanalysis.generic.AnalysisDimension;
 import imop.lib.analysis.flowanalysis.generic.AnalysisDimension.SVEDimension;
 import imop.lib.analysis.flowanalysis.generic.AnalysisName;
+import imop.lib.analysis.flowanalysis.generic.FlowAnalysis;
 import imop.lib.analysis.flowanalysis.generic.InterThreadForwardNonCellularAnalysis;
 import imop.lib.util.CellList;
 import imop.lib.util.CellSet;
@@ -27,7 +27,7 @@ import imop.lib.util.Misc;
 
 public class HeapValidityAnalysis extends InterThreadForwardNonCellularAnalysis<HeapValidityAnalysis.ValidityFlowFact> {
 
-	public static class ValidityFlowFact extends FlowFact {
+	public static class ValidityFlowFact extends FlowAnalysis.FlowFact {
 		public CellSet validHeapCells;
 
 		public ValidityFlowFact(CellSet validHeapCells) {

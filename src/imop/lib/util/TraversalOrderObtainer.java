@@ -22,7 +22,7 @@ public class TraversalOrderObtainer {
 	public static void resetStaticFields() {
 		TraversalOrderObtainer.orderGenerationTime = 0;
 	}
-	
+
 	/**
 	 * Starting with {@code entryNode}, using {@code neighbourGetter} as a
 	 * lambda to obtain the list of successors, this method returns a list that
@@ -69,8 +69,8 @@ public class TraversalOrderObtainer {
 		return retListInverted;
 	}
 
-	private static <T> void performPostOrder(T currentNode, NeighbourSetGetter<T> neighbourGetter,
-			final Set<T> graySet, final Set<T> blackSet, final List<T> printList) {
+	private static <T> void performPostOrder(T currentNode, NeighbourSetGetter<T> neighbourGetter, final Set<T> graySet,
+			final Set<T> blackSet, final List<T> printList) {
 		if (graySet.contains(currentNode)) {
 			return;
 		} else {

@@ -18,6 +18,13 @@ package imop.ast.node.external;
  * f1 ::= ( "," Initializer() )*
  */
 public class InitializerList extends Node {
+	{
+		classId = 563;
+	}
+
+	public InitializerList() {
+	}
+
 	/**
 	 * 
 	 */

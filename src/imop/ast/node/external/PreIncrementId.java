@@ -18,6 +18,13 @@ package imop.ast.node.external;
  * f1 ::= <IDENTIFIER>
  */
 public class PreIncrementId extends OmpForReinitExpression {
+	{
+		classId = 63787;
+	}
+
+	public PreIncrementId() {
+	}
+
 	/**
 	 * 
 	 */

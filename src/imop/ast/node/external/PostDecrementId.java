@@ -18,6 +18,13 @@ package imop.ast.node.external;
  * f1 ::= "--"
  */
 public class PostDecrementId extends Node {
+	{
+		classId = 173;
+	}
+
+	public PostDecrementId() {
+	}
+
 	/**
 	 * 
 	 */

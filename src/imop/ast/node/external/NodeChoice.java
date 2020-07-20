@@ -16,6 +16,13 @@ package imop.ast.node.external;
  * Represents a grammar choice, e.g. ( A | B )
  */
 public class NodeChoice extends Node {
+	{
+		classId = 547;
+	}
+
+	public NodeChoice() {
+	}
+
 	/**
 	 * 
 	 */

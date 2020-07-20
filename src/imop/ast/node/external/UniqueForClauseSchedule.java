@@ -21,6 +21,13 @@ package imop.ast.node.external;
  * f4 ::= ")"
  */
 public class UniqueForClauseSchedule extends Node {
+	{
+		classId = 1301;
+	}
+
+	public UniqueForClauseSchedule() {
+	}
+
 	/**
 	 * 
 	 */

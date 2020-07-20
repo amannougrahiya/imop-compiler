@@ -17,6 +17,13 @@ import imop.baseVisitor.GJVoidVisitor;
 import imop.baseVisitor.Visitor;
 
 public class PreCallNode extends Node {
+	{
+		classId = 163;
+	}
+
+	public PreCallNode() {
+		argumentList = null;
+	}
 
 	private static final long serialVersionUID = -7723480838912592935L;
 

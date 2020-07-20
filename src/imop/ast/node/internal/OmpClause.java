@@ -22,6 +22,13 @@ import imop.baseVisitor.Visitor;
  *
  */
 public abstract class OmpClause extends Node {
+	{
+		classId = 467;
+	}
+
+	public OmpClause() {
+	}
+
 	/**
 	 * 
 	 */

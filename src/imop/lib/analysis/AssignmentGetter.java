@@ -266,10 +266,11 @@ public class AssignmentGetter {
 				for (SimplePrimaryExpression spe : n.getArgumentList()) {
 					ParameterDeclaration param = paramList.get(index);
 					if (spe.isAConstant()) {
-						this.asssignmentList.add(new Assignment(ParameterDeclarationInfo.getRootParamNodeToken(param), spe.getConstant()));
+						this.asssignmentList.add(new Assignment(ParameterDeclarationInfo.getRootParamNodeToken(param),
+								spe.getConstant()));
 					} else if (spe.isAnIdentifier()) {
-						this.asssignmentList
-								.add(new Assignment(ParameterDeclarationInfo.getRootParamNodeToken(param), spe.getIdentifier()));
+						this.asssignmentList.add(new Assignment(ParameterDeclarationInfo.getRootParamNodeToken(param),
+								spe.getIdentifier()));
 					}
 					index++;
 				}

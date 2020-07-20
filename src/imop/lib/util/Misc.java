@@ -14,6 +14,8 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -63,6 +65,7 @@ import imop.ast.node.external.JumpStatement;
 import imop.ast.node.external.Node;
 import imop.ast.node.external.NodeChoice;
 import imop.ast.node.external.NodeList;
+import imop.ast.node.external.NodeListClass;
 import imop.ast.node.external.NodeListOptional;
 import imop.ast.node.external.NodeOptional;
 import imop.ast.node.external.NodeSequence;
@@ -120,18 +123,20 @@ import imop.lib.analysis.typeSystem.Typedef;
 import imop.lib.analysis.typeSystem.UnionType;
 import imop.lib.cfg.parallel.DataFlowGraph;
 import imop.lib.cg.CallSite;
+import imop.lib.getter.InfiExactASTNodeListGetter;
 import imop.lib.getter.InfiExactASTNodesGetter;
-import imop.lib.getter.InfiInheritedASTNodeListGetter;
+import imop.lib.getter.InfiExactMultiTypeASTNodeListGetter;
+import imop.lib.getter.InfiExactMultiTypeASTNodesGetter;
+import imop.lib.getter.InfiInheritedMultiASTNodesGetter;
 import imop.lib.getter.InfiInheritedASTNodesGetter;
-import imop.lib.getter.InfiInheritedSingleASTNodeTypeListGetter;
+import imop.lib.getter.InfiInheritedMultiASTNodeListGetter;
+import imop.lib.getter.InfiInheritedASTNodeListGetter;
 import imop.lib.getter.InternalCFGNodeGetter;
 import imop.lib.getter.IsACall;
 import imop.lib.getter.IsSimplePrimaryExpression;
 import imop.lib.getter.LineNumGetter;
 import imop.lib.getter.OmpClauseGetter;
 import imop.lib.getter.ParallelConstructGetter;
-import imop.lib.getter.PostOrderExactCollector;
-import imop.lib.getter.PostOrderInheritedCollector;
 import imop.lib.getter.StringGetter;
 import imop.lib.transform.BasicTransform;
 import imop.lib.transform.updater.InsertOnTheEdge.PivotPoint;
@@ -1365,141 +1370,461 @@ public class Misc {
 	}
 
 	/**
-	 * This method returns a HashSet of the nodes of type $astType$, present
-	 * within the node $n$ (inclusive).
+	 * Returns the classId corresponding to the given class type.
 	 * 
-	 * @param n
 	 * @param astType
+	 *            any type of Node.
 	 * @return
+	 *         classId corresponding to {@code astType}
 	 */
-	@SuppressWarnings("unchecked")
-	public static <T> Set<T> getInheritedEnclosee(Node n, Class<T> astType) {
-		if (n == null) {
-			return new HashSet<>();
+	private static int getClassId(Class<? extends Node> astType) {
+		int classId = -1;
+		try {
+			Method m = astType.getMethod("getClassId");
+			classId = (int) m.invoke(astType.getConstructor(new Class<?>[] {}).newInstance(new Object[] {}));
+		} catch (NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException
+				| IllegalArgumentException | InvocationTargetException e) {
+			if (astType == OmpClause.class) {
+				classId = 467;
+			} else if (astType == NodeListClass.class) {
+				classId = 541;
+			} else {
+				e.printStackTrace();
+				System.exit(0);
+			}
 		}
-		InfiInheritedASTNodesGetter nodeGetter = new InfiInheritedASTNodesGetter(astType);
-		n.accept(nodeGetter);
-		return (Set<T>) nodeGetter.astContents;
+		assert (classId >= 0);
+		return classId;
 	}
 
 	/**
-	 * This method returns a HashSet of the nodes of type $astType$, present
-	 * within the node $n$ (inclusive).
+	 * Returns the set of classIds for the given set of class types.
+	 * 
+	 * @param astTypeSet
+	 *            set of any types of Node.
+	 * @return
+	 *         set of classIds corresponding to the types in {@code astTypeSet}
+	 */
+	@SuppressWarnings("unchecked")
+	private static Set<Integer> getClassIds(Set<Class<? extends Node>> astTypeSet) {
+		Set<Integer> classIdSet = new HashSet<>();
+		for (Class<?> astType : astTypeSet) {
+			classIdSet.add(Misc.getClassId((Class<? extends Node>) astType));
+		}
+		return classIdSet;
+	}
+
+	/**
+	 * This method returns a pre-order list of nodes of type $astType$, present
+	 * within the AST of node $n$ (inclusive).
 	 * 
 	 * @param n
+	 *            node under which search needs to be performed
 	 * @param astType
+	 *            type of node whose assignable objects are to be searched for.
 	 * @return
+	 *         pre-order list of nodes under {@code n} that are of type
+	 *         {@code astType}.
+	 */
+	public static <T extends Node> List<T> getInheritedPostOrderEnclosee(Node n, Class<T> astType) {
+		return Misc.getInheritedEncloseeList(n, astType);
+	}
+
+	/**
+	 * This method returns a pre-order list of nodes of any of the types in
+	 * $astType$, present within the AST of node $n$ (inclusive).
+	 * 
+	 * @param n
+	 *            node under which search needs to be performed
+	 * @param astTypeSet
+	 *            set of type of nodes whose assignable objects are to be
+	 *            searched for.
+	 * @return
+	 *         pre-order list of nodes under {@code n} that are of any of the
+	 *         types in {@code astTypeSet}.
+	 */
+	public static List<Node> getInheritedPostOrderEnclosee(Node n, Set<Class<? extends Node>> astTypeSet) {
+		return Misc.getInheritedEncloseeList(n, astTypeSet);
+	}
+
+	/**
+	 * This method returns a pre-order list of nodes of exact-type $astType$,
+	 * present within the AST of node $n$ (inclusive).
+	 * 
+	 * @param n
+	 *            node under which search needs to be performed
+	 * @param astType
+	 *            exact-type of node whose assignable objects are to be searched
+	 *            for.
+	 * @return
+	 *         pre-order list of nodes under {@code n} that are of exact-type
+	 *         {@code astType}.
+	 */
+	public static <T extends Node> List<T> getExactPostOrderEnclosee(Node n, Class<T> astType) {
+		return Misc.getExactEncloseeList(n, astType);
+	}
+
+	/**
+	 * This method returns a pre-order list of nodes of any of the exact-types
+	 * in $astType$, present within the AST of node $n$ (inclusive).
+	 * 
+	 * @param n
+	 *            node under which search needs to be performed
+	 * @param astTypeSet
+	 *            set of exact-type of nodes whose assignable objects are to be
+	 *            searched for.
+	 * @return
+	 *         pre-order list of nodes under {@code n} that are of any of the
+	 *         exact-types in {@code astTypeSet}.
+	 */
+	public static List<Node> getExactPostOrderEnclosee(Node n, Set<Class<? extends Node>> astTypeSet) {
+		return Misc.getExactEncloseeList(n, astTypeSet);
+	}
+
+	/**
+	 * This method returns a set of nodes of type $astType$, present
+	 * within the AST of node $n$ (inclusive).
+	 * 
+	 * @param n
+	 *            node under which search needs to be performed
+	 * @param astType
+	 *            type of node whose assignable objects are to be searched for.
+	 * @return
+	 *         set of nodes under {@code n} that are of type {@code astType}.
+	 */
+	public static <T extends Node> Set<T> getInheritedEnclosee(Node n, Class<T> astType) {
+		if (n == null) {
+			return new HashSet<>();
+		}
+		return Misc.getInheritedEncloseeWithId(n, Misc.getClassId(astType));
+	}
+
+	/**
+	 * This method returns a set of nodes of type with given {@code classId},
+	 * present within the AST of node $n$ (inclusive).
+	 * 
+	 * @param n
+	 *            node under which search needs to be performed
+	 * @param classId
+	 *            type of node whose assignable objects are to be searched for.
+	 * @return
+	 *         set of nodes under {@code n} that are of type with given
+	 *         {@code classId}.
+	 */
+	public static <T extends Node> Set<T> getInheritedEncloseeWithId(Node n, int classId) {
+		if (n == null) {
+			return new HashSet<>();
+		}
+		if (Node.superClassIds.contains(classId)) {
+			InfiInheritedASTNodesGetter<T> nodeGetter = new InfiInheritedASTNodesGetter<>(classId);
+			n.accept(nodeGetter);
+			return nodeGetter.astContents;
+		} else {
+			return Misc.getExactEncloseeWithId(n, classId);
+		}
+	}
+
+	/**
+	 * This method returns a list of nodes of type $astType$, present
+	 * within the AST of node $n$ (inclusive).
+	 * 
+	 * @param n
+	 *            node under which search needs to be performed
+	 * @param astType
+	 *            type of node whose assignable objects are to be searched for.
+	 * @return
+	 *         list of nodes under {@code n} that are of type {@code astType}.
 	 */
 	public static <T extends Node> List<T> getInheritedEncloseeList(Node n, Class<T> astType) {
 		if (n == null) {
 			return new LinkedList<>();
 		}
-		InfiInheritedSingleASTNodeTypeListGetter<T> nodeGetter = new InfiInheritedSingleASTNodeTypeListGetter<>(
-				astType);
-		n.accept(nodeGetter);
-		return nodeGetter.astContents;
+		return Misc.getInheritedEncloseeListWithId(n, Misc.getClassId(astType));
 	}
 
 	/**
-	 * This method returns a HashSet of the nodes of any of the types from
-	 * $astType$,
-	 * present within the node $n$ (inclusively).
+	 * This method returns a list of nodes of type with given {@code classId},
+	 * present within the AST of node $n$ (inclusive).
 	 * 
 	 * @param n
+	 *            node under which search needs to be performed
+	 * @param classId
+	 *            type of node whose assignable objects are to be searched for.
+	 * @return
+	 *         list of nodes under {@code n} that are of type with given
+	 *         {@code classId}.
+	 */
+	public static <T extends Node> List<T> getInheritedEncloseeListWithId(Node n, int classId) {
+		if (n == null) {
+			return new LinkedList<>();
+		}
+		if (Node.superClassIds.contains(classId)) {
+			InfiInheritedASTNodeListGetter<T> nodeGetter = new InfiInheritedASTNodeListGetter<>(classId);
+			n.accept(nodeGetter);
+			return nodeGetter.astContents;
+		} else {
+			return Misc.getExactEncloseeListWithId(n, classId);
+		}
+	}
+
+	/**
+	 * This method returns a set of nodes of exact type $astType$, present
+	 * within the AST of node $n$ (inclusive).
+	 * 
+	 * @param n
+	 *            node under which search needs to be performed
 	 * @param astType
+	 *            exact type of node whose assignable objects are to be searched
+	 *            for.
 	 * @return
+	 *         set of nodes under {@code n} that are of exact type
+	 *         {@code astType}.
 	 */
-	public static <T extends Node> List<Node> getInheritedEncloseeList(Node n, Set<Class<T>> astType) {
-		if (n == null) {
-			return new LinkedList<>();
-		}
-		InfiInheritedASTNodeListGetter<?> nodeGetter = new InfiInheritedASTNodeListGetter<>(astType);
-		n.accept(nodeGetter);
-		return nodeGetter.astContents;
-	}
-
-	@SuppressWarnings("unchecked")
-	public static <T extends Node> List<T> getInheritedPostOrderEnclosee(Node n, Class<T> astType) {
-		if (n == null) {
-			return new LinkedList<>();
-		}
-		Set<Class<? extends Node>> classSet = new HashSet<>();
-		classSet.add(astType);
-		PostOrderInheritedCollector nodeGetter = new PostOrderInheritedCollector(classSet);
-		n.accept(nodeGetter);
-		List<T> retList = new LinkedList<>();
-		for (Node node : nodeGetter.nodesInPostOrder) {
-			retList.add((T) node);
-		}
-		return retList;
-	}
-
-	public static List<Node> getInheritedPostOrderEnclosee(Node n, Set<Class<? extends Node>> astType) {
-		if (n == null) {
-			return new LinkedList<>();
-		}
-		PostOrderInheritedCollector nodeGetter = new PostOrderInheritedCollector(astType);
-		n.accept(nodeGetter);
-		return nodeGetter.nodesInPostOrder;
-	}
-
-	/**
-	 * This method returns a set of nodes of exact-types from
-	 * {@code astTypeSet},
-	 * present within node $n$ (inclusively).
-	 * 
-	 * @param n
-	 * @param astTypeSet
-	 * @return
-	 */
-	public static Set<Node> getExactEnclosee(Node n, Set<Class<?>> astTypeSet) {
-		InfiExactASTNodesGetter nodeGetter = new InfiExactASTNodesGetter(astTypeSet);
-		n.accept(nodeGetter);
-		return nodeGetter.astContents;
-	}
-
-	/**
-	 * This method returns a HashSet of the nodes of exact-type astType, present
-	 * within the node $n$ (inclusive).
-	 * 
-	 * @param n
-	 * @param astType
-	 * @return
-	 */
-	@SuppressWarnings("unchecked")
-	public static <T> Set<T> getExactEnclosee(Node n, Class<T> astType) {
+	public static <T extends Node> Set<T> getExactEnclosee(Node n, Class<T> astType) {
 		if (n == null) {
 			return new HashSet<>();
 		}
-		long thisTimer = System.nanoTime();
-		InfiExactASTNodesGetter nodeGetter = new InfiExactASTNodesGetter(astType);
-		n.accept(nodeGetter);
-		return (Set<T>) nodeGetter.astContents;
+		return Misc.getExactEncloseeWithId(n, Misc.getClassId(astType));
 	}
 
-	@SuppressWarnings("unchecked")
-	public static <T extends Node> List<T> getExactPostOrderEnclosee(Node n, Class<T> astType) {
+	/**
+	 * This method returns a set of nodes of exact type with given
+	 * {@code classId}, present within the AST of node $n$ (inclusive).
+	 * 
+	 * @param n
+	 *            node under which search needs to be performed
+	 * @param classId
+	 *            exact type of node whose assignable objects are to be searched
+	 *            for.
+	 * @return
+	 *         set of nodes under {@code n} that are of exact type with given
+	 *         {@code classId}.
+	 */
+	public static <T extends Node> Set<T> getExactEncloseeWithId(Node n, int classId) {
+		if (n == null) {
+			return new HashSet<>();
+		}
+		InfiExactASTNodesGetter<T> nodeGetter = new InfiExactASTNodesGetter<>(classId);
+		n.accept(nodeGetter);
+		return nodeGetter.astContents;
+	}
+
+	/**
+	 * This method returns a list of nodes of exact type $astType$, present
+	 * within the AST of node $n$ (inclusive).
+	 * 
+	 * @param n
+	 *            node under which search needs to be performed
+	 * @param astType
+	 *            exact type of node whose assignable objects are to be searched
+	 *            for.
+	 * @return
+	 *         list of nodes under {@code n} that are of exact type
+	 *         {@code astType}.
+	 */
+	public static <T extends Node> List<T> getExactEncloseeList(Node n, Class<T> astType) {
 		if (n == null) {
 			return new LinkedList<>();
 		}
-		Set<Class<? extends Node>> classSet = new HashSet<>();
-		classSet.add(astType);
-		PostOrderExactCollector nodeGetter = new PostOrderExactCollector(classSet);
-		n.accept(nodeGetter);
-		List<T> retList = new LinkedList<>();
-		for (Node node : nodeGetter.nodesInPostOrder) {
-			retList.add((T) node);
-		}
-		return retList;
+		return Misc.getExactEncloseeListWithId(n, Misc.getClassId(astType));
 	}
 
-	public static List<Node> getExactPostOrderEnclosee(Node n, Set<Class<? extends Node>> astType) {
+	/**
+	 * This method returns a list of nodes of exact type with given
+	 * {@code classId}, present within the AST of node $n$ (inclusive).
+	 * 
+	 * @param n
+	 *            node under which search needs to be performed
+	 * @param classId
+	 *            exact type of node whose assignable objects are to be searched
+	 *            for.
+	 * @return
+	 *         list of nodes under {@code n} that are of exact type with given
+	 *         {@code classId}.
+	 */
+	public static <T extends Node> List<T> getExactEncloseeListWithId(Node n, int classId) {
 		if (n == null) {
 			return new LinkedList<>();
 		}
-		PostOrderExactCollector nodeGetter = new PostOrderExactCollector(astType);
+		InfiExactASTNodeListGetter<T> nodeGetter = new InfiExactASTNodeListGetter<>(classId);
 		n.accept(nodeGetter);
-		return nodeGetter.nodesInPostOrder;
+		return nodeGetter.astContents;
+	}
+
+	/**
+	 * This method returns a set of nodes of any of the types in $astType$,
+	 * present within the AST of node $n$ (inclusive).
+	 * 
+	 * @param n
+	 *            node under which search needs to be performed
+	 * @param astTypeSet
+	 *            set of type of nodes whose assignable objects are to be
+	 *            searched for.
+	 * @return
+	 *         set of nodes under {@code n} that are of any of the types in
+	 *         {@code astTypeSet}.
+	 */
+	public static Set<Node> getInheritedEnclosee(Node n, Set<Class<? extends Node>> astTypeSet) {
+		if (n == null) {
+			return new HashSet<>();
+		}
+		return Misc.getInheritedEncloseeWithId(n, Misc.getClassIds(astTypeSet));
+	}
+
+	/**
+	 * This method returns a set of nodes of any of the types with classId in
+	 * $classIds$, present within the AST of node $n$ (inclusive).
+	 * 
+	 * @param n
+	 *            node under which search needs to be performed
+	 * @param classIds
+	 *            set of classId of types whose assignable objects are to be
+	 *            searched for.
+	 * @return
+	 *         set of nodes under {@code n} that are of any of the types with
+	 *         classId in {@code classIds}.
+	 */
+	public static Set<Node> getInheritedEncloseeWithId(Node n, Set<Integer> classIds) {
+		if (n == null) {
+			return new HashSet<>();
+		}
+		if (Misc.doIntersect(Node.superClassIds, classIds)) {
+			InfiInheritedMultiASTNodesGetter nodeGetter = new InfiInheritedMultiASTNodesGetter(classIds);
+			n.accept(nodeGetter);
+			return nodeGetter.astContents;
+		} else {
+			return Misc.getExactEncloseeWithId(n, classIds);
+		}
+	}
+
+	/**
+	 * This method returns a list of nodes of any of the types in $astType$,
+	 * present within the AST of node $n$ (inclusive).
+	 * 
+	 * @param n
+	 *            node under which search needs to be performed
+	 * @param astTypeSet
+	 *            set of type of nodes whose assignable objects are to be
+	 *            searched for.
+	 * @return
+	 *         list of nodes under {@code n} that are of any of the types in
+	 *         {@code astTypeSet}.
+	 */
+	public static List<Node> getInheritedEncloseeList(Node n, Set<Class<? extends Node>> astTypeSet) {
+		if (n == null) {
+			return new LinkedList<>();
+		}
+		return Misc.getInheritedEncloseeListWithId(n, Misc.getClassIds(astTypeSet));
+	}
+
+	/**
+	 * This method returns a list of nodes of any of the types with classId in
+	 * $classIds$, present within the AST of node $n$ (inclusive).
+	 * 
+	 * @param n
+	 *            node under which search needs to be performed
+	 * @param classIds
+	 *            set of classId of types whose assignable objects are to be
+	 *            searched for.
+	 * @return
+	 *         list of nodes under {@code n} that are of any of the types with
+	 *         classId in {@code classIds}.
+	 */
+	public static List<Node> getInheritedEncloseeListWithId(Node n, Set<Integer> classIds) {
+		if (n == null) {
+			return new LinkedList<>();
+		}
+		if (Misc.doIntersect(Node.superClassIds, classIds)) {
+			InfiInheritedMultiASTNodeListGetter nodeGetter = new InfiInheritedMultiASTNodeListGetter(classIds);
+			n.accept(nodeGetter);
+			return nodeGetter.astContents;
+		} else {
+			return Misc.getExactEncloseeListWithId(n, classIds);
+		}
+	}
+
+	/**
+	 * This method returns a set of nodes of any of the exact-types in
+	 * $astType$, present within the AST of node $n$ (inclusive).
+	 * 
+	 * @param n
+	 *            node under which search needs to be performed
+	 * @param astTypeSet
+	 *            set of exact-type of nodes whose assignable objects are to be
+	 *            searched for.
+	 * @return
+	 *         set of nodes under {@code n} that are of any of the exact-types
+	 *         in {@code astTypeSet}.
+	 */
+	public static Set<Node> getExactEnclosee(Node n, Set<Class<? extends Node>> astTypeSet) {
+		if (n == null) {
+			return new HashSet<>();
+		}
+		return Misc.getExactEncloseeWithId(n, Misc.getClassIds(astTypeSet));
+	}
+
+	/**
+	 * This method returns a set of nodes of any of the exact-types with classId
+	 * in $classIds$, present within the AST of node $n$ (inclusive).
+	 * 
+	 * @param n
+	 *            node under which search needs to be performed
+	 * @param classIds
+	 *            set of classId of exact-types whose assignable objects are to
+	 *            be searched for.
+	 * @return
+	 *         set of nodes under {@code n} that are of any of the exact-types
+	 *         with classId in {@code classIds}.
+	 */
+	public static Set<Node> getExactEncloseeWithId(Node n, Set<Integer> classIds) {
+		if (n == null) {
+			return new HashSet<>();
+		}
+		InfiExactMultiTypeASTNodesGetter nodeGetter = new InfiExactMultiTypeASTNodesGetter(classIds);
+		n.accept(nodeGetter);
+		return nodeGetter.astContents;
+	}
+
+	/**
+	 * This method returns a list of nodes of any of the exact-types in
+	 * $astType$, present within the AST of node $n$ (inclusive).
+	 * 
+	 * @param n
+	 *            node under which search needs to be performed
+	 * @param astTypeSet
+	 *            set of exact-type of nodes whose assignable objects are to be
+	 *            searched for.
+	 * @return
+	 *         list of nodes under {@code n} that are of any of the exact-types
+	 *         in {@code astTypeSet}.
+	 */
+	public static List<Node> getExactEncloseeList(Node n, Set<Class<? extends Node>> astTypeSet) {
+		if (n == null) {
+			return new LinkedList<>();
+		}
+		return Misc.getExactEncloseeListWithId(n, Misc.getClassIds(astTypeSet));
+	}
+
+	/**
+	 * This method returns a list of nodes of any of the exact-types with
+	 * classId in $classIds$, present within the AST of node $n$ (inclusive).
+	 * 
+	 * @param n
+	 *            node under which search needs to be performed
+	 * @param classIds
+	 *            set of classId of exact-types whose assignable objects are to
+	 *            be searched for.
+	 * @return
+	 *         list of nodes under {@code n} that are of any of the exact-types
+	 *         with classId in {@code classIds}.
+	 */
+	public static List<Node> getExactEncloseeListWithId(Node n, Set<Integer> classIds) {
+		if (n == null) {
+			return new LinkedList<>();
+		}
+		InfiExactMultiTypeASTNodeListGetter nodeGetter = new InfiExactMultiTypeASTNodeListGetter(classIds);
+		n.accept(nodeGetter);
+		return nodeGetter.astContents;
 	}
 
 	/**

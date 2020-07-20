@@ -15,10 +15,10 @@ import imop.ast.node.external.FunctionDefinition;
 import imop.ast.node.external.Node;
 import imop.ast.node.external.ParameterDeclaration;
 import imop.ast.node.internal.SimplePrimaryExpression;
-import imop.lib.analysis.flowanalysis.generic.FlowAnalysis.FlowFact;
 import imop.lib.analysis.flowanalysis.generic.AnalysisDimension;
 import imop.lib.analysis.flowanalysis.generic.AnalysisDimension.SVEDimension;
 import imop.lib.analysis.flowanalysis.generic.AnalysisName;
+import imop.lib.analysis.flowanalysis.generic.FlowAnalysis;
 import imop.lib.analysis.flowanalysis.generic.InterProceduralControlFlowAnalysis;
 import imop.lib.util.CellSet;
 import imop.lib.util.ImmutableSet;
@@ -31,7 +31,7 @@ public class ImmutableDominanceAnalysis
 		super(analysisName, analysisDimension);
 	}
 
-	public static class DominatorFlowFact extends FlowFact {
+	public static class DominatorFlowFact extends FlowAnalysis.FlowFact {
 		public ImmutableSet<Node> dominators;
 
 		public DominatorFlowFact(ImmutableSet<Node> dominators) {

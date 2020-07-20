@@ -35,7 +35,6 @@ import imop.ast.node.external.SectionsConstruct;
 import imop.ast.node.external.Statement;
 import imop.ast.node.internal.OmpClause;
 import imop.lib.transform.BasicTransform;
-import imop.lib.transform.updater.NodeReplacer;
 import imop.lib.transform.updater.sideeffect.NodeUpdated;
 import imop.lib.transform.updater.sideeffect.SideEffect;
 import imop.lib.transform.updater.sideeffect.SyntacticConstraint;
@@ -74,6 +73,7 @@ public class SplitCombinedConstructs {
 
 	/**
 	 * Internal method, used by elementary transformations.
+	 * 
 	 * @param stmt
 	 * @return
 	 */
@@ -139,7 +139,8 @@ public class SplitCombinedConstructs {
 		parCons.setParConsF2(forConsStmtWrapper);
 		Statement forBodyStmtWrapper = Misc.getStatementWrapper(forBody);
 		forCons.setF3(forBodyStmtWrapper);
-		sideEffectList.add(new NodeUpdated(parCons, "This parallel construct was created upon splitting of a par-for construct."));
+		sideEffectList.add(
+				new NodeUpdated(parCons, "This parallel construct was created upon splitting of a par-for construct."));
 		return sideEffectList;
 	}
 
@@ -191,7 +192,8 @@ public class SplitCombinedConstructs {
 		Statement secConsStmtWrapper = Misc.getStatementWrapper(secCons);
 		parCons.setParConsF2(secConsStmtWrapper);
 		secCons.setF4(parSec.getF5());
-		sideEffectList.add(new NodeUpdated(parCons, "This parallel construct was created upon splitting of a par-sections construct."));
+		sideEffectList.add(new NodeUpdated(parCons,
+				"This parallel construct was created upon splitting of a par-sections construct."));
 		return sideEffectList;
 	}
 }

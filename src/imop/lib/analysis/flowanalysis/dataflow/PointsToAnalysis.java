@@ -56,11 +56,9 @@ import imop.lib.analysis.flowanalysis.Cell;
 import imop.lib.analysis.flowanalysis.FieldCell;
 import imop.lib.analysis.flowanalysis.HeapCell;
 import imop.lib.analysis.flowanalysis.Symbol;
-import imop.lib.analysis.flowanalysis.generic.CellularDataFlowAnalysis.CellularFlowMap;
-import imop.lib.analysis.flowanalysis.generic.FlowAnalysis.FlowFact;
 import imop.lib.analysis.flowanalysis.generic.AnalysisDimension;
-import imop.lib.analysis.flowanalysis.generic.AnalysisDimension.SVEDimension;
 import imop.lib.analysis.flowanalysis.generic.AnalysisName;
+import imop.lib.analysis.flowanalysis.generic.CellularDataFlowAnalysis;
 import imop.lib.analysis.flowanalysis.generic.InterThreadForwardCellularAnalysis;
 import imop.lib.analysis.typeSystem.ArrayType;
 import imop.lib.analysis.typeSystem.PointerType;
@@ -87,7 +85,7 @@ public class PointsToAnalysis extends InterThreadForwardCellularAnalysis<PointsT
 
 	public static PointsToGlobalState stateOfPointsTo = PointsToGlobalState.NOT_INIT;
 
-	public static class PointsToFlowMap extends CellularFlowMap<ImmutableCellSet> {
+	public static class PointsToFlowMap extends CellularDataFlowAnalysis.CellularFlowMap<ImmutableCellSet> {
 
 		public PointsToFlowMap(ExtensibleCellMap<ImmutableCellSet> flowMap) {
 			super(flowMap);

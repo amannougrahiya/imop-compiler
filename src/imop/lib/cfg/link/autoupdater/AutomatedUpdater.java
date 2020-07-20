@@ -8,7 +8,6 @@
  */
 package imop.lib.cfg.link.autoupdater;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.ConcurrentModificationException;
 import java.util.HashSet;
@@ -49,7 +48,6 @@ import imop.lib.cfg.info.CFGInfo;
 import imop.lib.cg.CallStack;
 import imop.lib.cg.NodeWithStack;
 import imop.lib.util.CollectorVisitor;
-import imop.lib.util.DumpSnapshot;
 import imop.lib.util.Misc;
 import imop.parser.Program;
 import imop.parser.Program.UpdateCategory;

@@ -18,6 +18,13 @@ package imop.ast.node.external;
  * f1 ::= ( "&" ANDExpression() )?
  */
 public class ANDExpression extends Expression {
+	{
+		classId = 2906;
+	}
+
+	public ANDExpression() {
+	}
+
 	/**
 	 * 
 	 */

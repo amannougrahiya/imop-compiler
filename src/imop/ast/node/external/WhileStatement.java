@@ -23,6 +23,13 @@ import imop.ast.info.cfgNodeInfo.WhileStatementInfo;
  * f4 ::= Statement()
  */
 public class WhileStatement extends IterationStatement {
+	{
+		classId = 13935;
+	}
+
+	public WhileStatement() {
+	}
+
 	/**
 	 * 
 	 */

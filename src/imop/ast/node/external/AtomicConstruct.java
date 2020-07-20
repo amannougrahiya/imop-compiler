@@ -24,6 +24,13 @@ import imop.ast.node.internal.CallStatement;
  * f4 ::= Statement()
  */
 public class AtomicConstruct extends OmpConstruct {
+	{
+		classId = 33267;
+	}
+
+	public AtomicConstruct() {
+	}
+
 	/**
 	 * 
 	 */

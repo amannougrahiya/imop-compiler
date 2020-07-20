@@ -21,6 +21,13 @@ import imop.ast.node.internal.OmpClause;
  * | UniqueForCollapse()
  */
 public class UniqueForClause extends OmpClause {
+	{
+		classId *= 359;
+	}
+
+	public UniqueForClause() {
+	}
+
 	/**
 	 * 
 	 */

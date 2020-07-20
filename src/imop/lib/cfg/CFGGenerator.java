@@ -523,8 +523,8 @@ public class CFGGenerator {
 			n.getF6().accept(this);
 			Misc.warnDueToLackOfFeature(
 					"Could not create CFG edges corresponding to the elements of a ParallelForConstruct. "
-					+ "This would be done while adding this node to the program using any of the elementary "
-					+ "transformations. Note that the CFG edges inside the body of this construct were created anyway.",
+							+ "This would be done while adding this node to the program using any of the elementary "
+							+ "transformations. Note that the CFG edges inside the body of this construct were created anyway.",
 					n);
 			//		boolean reach;
 			//		NestedCFG ncfg = n.getInfo().getCFGInfo().getNestedCFG(); // Obtain the NestedCFG "ncfg"
@@ -575,8 +575,8 @@ public class CFGGenerator {
 			n.getF5().accept(this);
 			Misc.warnDueToLackOfFeature(
 					"Could not create CFG edges corresponding to the elements of a ParallelSectionsConstruct. "
-					+ "This would be done while adding this node to the program using any of the elementary "
-					+ "transformations. Note that the CFG edges inside the body of this construct were created anyway.",
+							+ "This would be done while adding this node to the program using any of the elementary "
+							+ "transformations. Note that the CFG edges inside the body of this construct were created anyway.",
 					n);
 			//		NestedCFG ncfg = n.getInfo().getCFGInfo().getNestedCFG(); // Obtain the NestedCFG "ncfg"
 			//		for (Node secNode : n.f5.f2.nodes) { //For all the sections in the sections construct

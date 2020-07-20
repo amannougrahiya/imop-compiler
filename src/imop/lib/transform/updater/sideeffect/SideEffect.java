@@ -18,6 +18,7 @@ public abstract class SideEffect {
 		this.affectedNode = Misc.getCFGNodeFor(affectedNode);
 	}
 
+	@Override
 	public String toString() {
 		return "";
 	}

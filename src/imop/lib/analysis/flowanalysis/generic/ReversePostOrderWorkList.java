@@ -20,7 +20,6 @@ import java.util.Set;
 import imop.ast.node.external.BarrierDirective;
 import imop.ast.node.external.Node;
 import imop.ast.node.external.ParallelConstruct;
-import imop.ast.node.external.TranslationUnit;
 import imop.ast.node.internal.BeginNode;
 import imop.ast.node.internal.EndNode;
 import imop.lib.analysis.flowanalysis.DFable;

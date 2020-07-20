@@ -1355,9 +1355,8 @@ public class HigherLevelCFGTransformationTest {
 							FrontEnd.parseAndNormalize("if (x) {default: 10;}", IfStatement.class)));
 					sideEffectList.addAll(InsertImmediatePredecessor.insert(element,
 							FrontEnd.parseAndNormalize("switch (x) {default: 10; break;}", SwitchStatement.class)));
-					sideEffectList
-							.addAll(InsertImmediatePredecessor.insert(element, FrontEnd.parseAndNormalize(
-									"{int y; switch (y) {break;} if (1) {break;}}", CompoundStatement.class)));
+					sideEffectList.addAll(InsertImmediatePredecessor.insert(element, FrontEnd.parseAndNormalize(
+							"{int y; switch (y) {break;} if (1) {break;}}", CompoundStatement.class)));
 				}
 			}
 		}
@@ -1473,9 +1472,8 @@ public class HigherLevelCFGTransformationTest {
 			for (Node element : ownerNode.getInfo().getCFGInfo().getAllComponents()) {
 				CFGLink link = CFGLinkFinder.getCFGLinkFor(element);
 				if (link instanceof DoPredicateLink) {
-					sideEffectList
-							.addAll(InsertImmediatePredecessor.insert(element, FrontEnd.parseAndNormalize(
-									"{int y; switch (y) {break;} if (1) {break;}}", CompoundStatement.class)));
+					sideEffectList.addAll(InsertImmediatePredecessor.insert(element, FrontEnd.parseAndNormalize(
+							"{int y; switch (y) {break;} if (1) {break;}}", CompoundStatement.class)));
 				}
 			}
 		}
@@ -1492,9 +1490,8 @@ public class HigherLevelCFGTransformationTest {
 			for (Node element : ownerNode.getInfo().getCFGInfo().getAllComponents()) {
 				CFGLink link = CFGLinkFinder.getCFGLinkFor(element);
 				if (link instanceof DoPredicateLink) {
-					sideEffectList
-							.addAll(InsertImmediatePredecessor.insert(element, FrontEnd.parseAndNormalize(
-									"{int y; switch (y) {break;} if (1) {break;}}", CompoundStatement.class)));
+					sideEffectList.addAll(InsertImmediatePredecessor.insert(element, FrontEnd.parseAndNormalize(
+							"{int y; switch (y) {break;} if (1) {break;}}", CompoundStatement.class)));
 				}
 			}
 		}
@@ -1750,9 +1747,8 @@ public class HigherLevelCFGTransformationTest {
 			for (Node element : ownerNode.getInfo().getCFGInfo().getAllComponents()) {
 				CFGLink link = CFGLinkFinder.getCFGLinkFor(element);
 				if (link instanceof ForEndLink) {
-					sideEffectList
-							.addAll(InsertImmediatePredecessor.insert(element, FrontEnd.parseAndNormalize(
-									"{int y; switch (y) {break;} if (1) {break;}}", CompoundStatement.class)));
+					sideEffectList.addAll(InsertImmediatePredecessor.insert(element, FrontEnd.parseAndNormalize(
+							"{int y; switch (y) {break;} if (1) {break;}}", CompoundStatement.class)));
 				}
 			}
 		}
@@ -1940,9 +1936,8 @@ public class HigherLevelCFGTransformationTest {
 			for (Node element : ownerNode.getInfo().getCFGInfo().getAllComponents()) {
 				CFGLink link = CFGLinkFinder.getCFGLinkFor(element);
 				if (link instanceof ForInitLink) {
-					sideEffectList
-							.addAll(InsertImmediatePredecessor.insert(element, FrontEnd.parseAndNormalize(
-									"{int y; switch (y) {break;} if (1) {break;}}", CompoundStatement.class)));
+					sideEffectList.addAll(InsertImmediatePredecessor.insert(element, FrontEnd.parseAndNormalize(
+							"{int y; switch (y) {break;} if (1) {break;}}", CompoundStatement.class)));
 				}
 			}
 		}
@@ -2076,9 +2071,8 @@ public class HigherLevelCFGTransformationTest {
 			for (Node element : ownerNode.getInfo().getCFGInfo().getAllComponents()) {
 				CFGLink link = CFGLinkFinder.getCFGLinkFor(element);
 				if (link instanceof ForStepLink) {
-					sideEffectList
-							.addAll(InsertImmediatePredecessor.insert(element, FrontEnd.parseAndNormalize(
-									"{int y; switch (y) {break;} if (1) {break;}}", CompoundStatement.class)));
+					sideEffectList.addAll(InsertImmediatePredecessor.insert(element, FrontEnd.parseAndNormalize(
+							"{int y; switch (y) {break;} if (1) {break;}}", CompoundStatement.class)));
 				}
 			}
 		}
@@ -2156,65 +2150,65 @@ public class HigherLevelCFGTransformationTest {
 		String rootInput = Program.getRoot().toString();
 		for (ForStatement ownerNode : Misc.getInheritedEnclosee(Program.getRoot(), ForStatement.class)) {
 			if (ownerNode.getInfo().getCFGInfo().hasTerminationExpression()) {
-				sideEffectList.addAll(InsertImmediatePredecessor.insert(
-						ownerNode.getInfo().getCFGInfo().getTerminationExpression(),
-						FrontEnd.parseAndNormalize("x + 12345;", Statement.class)));
+				sideEffectList.addAll(
+						InsertImmediatePredecessor.insert(ownerNode.getInfo().getCFGInfo().getTerminationExpression(),
+								FrontEnd.parseAndNormalize("x + 12345;", Statement.class)));
 			}
 		}
 		for (ForStatement ownerNode : Misc.getInheritedEnclosee(Program.getRoot(), ForStatement.class)) {
 			if (ownerNode.getInfo().getCFGInfo().hasTerminationExpression()) {
-				sideEffectList.addAll(InsertImmediatePredecessor.insert(
-						ownerNode.getInfo().getCFGInfo().getTerminationExpression(),
-						FrontEnd.parseAndNormalize("case 2: while (x) {continue;}", Statement.class)));
+				sideEffectList.addAll(
+						InsertImmediatePredecessor.insert(ownerNode.getInfo().getCFGInfo().getTerminationExpression(),
+								FrontEnd.parseAndNormalize("case 2: while (x) {continue;}", Statement.class)));
 			}
 		}
 		for (ForStatement ownerNode : Misc.getInheritedEnclosee(Program.getRoot(), ForStatement.class)) {
 			if (ownerNode.getInfo().getCFGInfo().hasTerminationExpression()) {
-				sideEffectList.addAll(InsertImmediatePredecessor.insert(
-						ownerNode.getInfo().getCFGInfo().getTerminationExpression(),
-						FrontEnd.parseAndNormalize("while (x) {break;}", WhileStatement.class)));
+				sideEffectList.addAll(
+						InsertImmediatePredecessor.insert(ownerNode.getInfo().getCFGInfo().getTerminationExpression(),
+								FrontEnd.parseAndNormalize("while (x) {break;}", WhileStatement.class)));
 			}
 		}
 		for (ForStatement ownerNode : Misc.getInheritedEnclosee(Program.getRoot(), ForStatement.class)) {
 			if (ownerNode.getInfo().getCFGInfo().hasTerminationExpression()) {
-				sideEffectList.addAll(InsertImmediatePredecessor.insert(
-						ownerNode.getInfo().getCFGInfo().getTerminationExpression(),
-						FrontEnd.parseAndNormalize("if (x) {break;}", IfStatement.class)));
+				sideEffectList.addAll(
+						InsertImmediatePredecessor.insert(ownerNode.getInfo().getCFGInfo().getTerminationExpression(),
+								FrontEnd.parseAndNormalize("if (x) {break;}", IfStatement.class)));
 			}
 		}
 		for (ForStatement ownerNode : Misc.getInheritedEnclosee(Program.getRoot(), ForStatement.class)) {
 			if (ownerNode.getInfo().getCFGInfo().hasTerminationExpression()) {
-				sideEffectList.addAll(InsertImmediatePredecessor.insert(
-						ownerNode.getInfo().getCFGInfo().getTerminationExpression(),
-						FrontEnd.parseAndNormalize("if (x) {default: 10;}", IfStatement.class)));
+				sideEffectList.addAll(
+						InsertImmediatePredecessor.insert(ownerNode.getInfo().getCFGInfo().getTerminationExpression(),
+								FrontEnd.parseAndNormalize("if (x) {default: 10;}", IfStatement.class)));
 			}
 		}
 		for (ForStatement ownerNode : Misc.getInheritedEnclosee(Program.getRoot(), ForStatement.class)) {
 			if (ownerNode.getInfo().getCFGInfo().hasTerminationExpression()) {
-				sideEffectList.addAll(InsertImmediatePredecessor.insert(
-						ownerNode.getInfo().getCFGInfo().getTerminationExpression(),
-						FrontEnd.parseAndNormalize("switch (x) {default: 10; break;}", SwitchStatement.class)));
+				sideEffectList.addAll(
+						InsertImmediatePredecessor.insert(ownerNode.getInfo().getCFGInfo().getTerminationExpression(),
+								FrontEnd.parseAndNormalize("switch (x) {default: 10; break;}", SwitchStatement.class)));
 			}
 		}
 		for (ForStatement ownerNode : Misc.getInheritedEnclosee(Program.getRoot(), ForStatement.class)) {
 			if (ownerNode.getInfo().getCFGInfo().hasTerminationExpression()) {
-				sideEffectList.addAll(InsertImmediatePredecessor.insert(
-						ownerNode.getInfo().getCFGInfo().getTerminationExpression(), FrontEnd.parseAndNormalize(
+				sideEffectList.addAll(InsertImmediatePredecessor
+						.insert(ownerNode.getInfo().getCFGInfo().getTerminationExpression(), FrontEnd.parseAndNormalize(
 								"{int y; switch (y) {break;} if (1) {break;}}", CompoundStatement.class)));
 			}
 		}
 		for (ForStatement ownerNode : Misc.getInheritedEnclosee(Program.getRoot(), ForStatement.class)) {
 			if (ownerNode.getInfo().getCFGInfo().hasTerminationExpression()) {
-				sideEffectList.addAll(InsertImmediatePredecessor.insert(
-						ownerNode.getInfo().getCFGInfo().getTerminationExpression(),
-						FrontEnd.parseAndNormalize("if (x) {continue;}", Statement.class)));
+				sideEffectList.addAll(
+						InsertImmediatePredecessor.insert(ownerNode.getInfo().getCFGInfo().getTerminationExpression(),
+								FrontEnd.parseAndNormalize("if (x) {continue;}", Statement.class)));
 			}
 		}
 		for (ForStatement ownerNode : Misc.getInheritedEnclosee(Program.getRoot(), ForStatement.class)) {
 			if (ownerNode.getInfo().getCFGInfo().hasTerminationExpression()) {
-				sideEffectList.addAll(InsertImmediatePredecessor.insert(
-						ownerNode.getInfo().getCFGInfo().getTerminationExpression(),
-						FrontEnd.parseAndNormalize("x + 54321;", ExpressionStatement.class)));
+				sideEffectList.addAll(
+						InsertImmediatePredecessor.insert(ownerNode.getInfo().getCFGInfo().getTerminationExpression(),
+								FrontEnd.parseAndNormalize("x + 54321;", ExpressionStatement.class)));
 			}
 		}
 		DumpSnapshot.dumpRootOrError("outP", sideEffectList);
@@ -3241,9 +3235,8 @@ public class HigherLevelCFGTransformationTest {
 							FrontEnd.parseAndNormalize("while (x) {break;}", WhileStatement.class)));
 					sideEffectList.addAll(InsertImmediatePredecessor.insert(element,
 							FrontEnd.parseAndNormalize("if (x) {break;}", IfStatement.class)));
-					sideEffectList
-							.addAll(InsertImmediatePredecessor.insert(element, FrontEnd.parseAndNormalize(
-									"{int y; switch (y) {break;} if (1) {break;}}", CompoundStatement.class)));
+					sideEffectList.addAll(InsertImmediatePredecessor.insert(element, FrontEnd.parseAndNormalize(
+							"{int y; switch (y) {break;} if (1) {break;}}", CompoundStatement.class)));
 				}
 			}
 		}
@@ -4440,9 +4433,8 @@ public class HigherLevelCFGTransformationTest {
 			for (Node element : ownerNode.getInfo().getCFGInfo().getAllComponents()) {
 				CFGLink link = CFGLinkFinder.getCFGLinkFor(element);
 				if (link instanceof SwitchBodyLink) {
-					sideEffectList
-							.addAll(InsertImmediatePredecessor.insert(element, FrontEnd.parseAndNormalize(
-									"{int y; switch (y) {break;} if (1) {break;}}", CompoundStatement.class)));
+					sideEffectList.addAll(InsertImmediatePredecessor.insert(element, FrontEnd.parseAndNormalize(
+							"{int y; switch (y) {break;} if (1) {break;}}", CompoundStatement.class)));
 				}
 			}
 		}
@@ -4518,9 +4510,8 @@ public class HigherLevelCFGTransformationTest {
 							FrontEnd.parseAndNormalize("if (x) {default: 10;}", IfStatement.class)));
 					sideEffectList.addAll(InsertImmediatePredecessor.insert(element,
 							FrontEnd.parseAndNormalize("switch (x) {default: 10;}", SwitchStatement.class)));
-					sideEffectList
-							.addAll(InsertImmediatePredecessor.insert(element, FrontEnd.parseAndNormalize(
-									"{int y; switch (y) {break;} if (1) {break;}}", CompoundStatement.class)));
+					sideEffectList.addAll(InsertImmediatePredecessor.insert(element, FrontEnd.parseAndNormalize(
+							"{int y; switch (y) {break;} if (1) {break;}}", CompoundStatement.class)));
 				}
 			}
 		}
@@ -4653,9 +4644,8 @@ public class HigherLevelCFGTransformationTest {
 							FrontEnd.parseAndNormalize("if (x) {default: 10;}", IfStatement.class)));
 					sideEffectList.addAll(InsertImmediatePredecessor.insert(element,
 							FrontEnd.parseAndNormalize("switch (x) {default: 10;}", SwitchStatement.class)));
-					sideEffectList
-							.addAll(InsertImmediatePredecessor.insert(element, FrontEnd.parseAndNormalize(
-									"{int y; switch (y) {break;} if (1) {break;}}", CompoundStatement.class)));
+					sideEffectList.addAll(InsertImmediatePredecessor.insert(element, FrontEnd.parseAndNormalize(
+							"{int y; switch (y) {break;} if (1) {break;}}", CompoundStatement.class)));
 				}
 			}
 		}
@@ -5123,9 +5113,8 @@ public class HigherLevelCFGTransformationTest {
 							FrontEnd.parseAndNormalize("if (x) {default: 10;}", IfStatement.class)));
 					sideEffectList.addAll(InsertImmediatePredecessor.insert(element,
 							FrontEnd.parseAndNormalize("switch (x) {default: 10; break;}", SwitchStatement.class)));
-					sideEffectList
-							.addAll(InsertImmediatePredecessor.insert(element, FrontEnd.parseAndNormalize(
-									"{int y; switch (y) {break;} if (1) {break;}}", CompoundStatement.class)));
+					sideEffectList.addAll(InsertImmediatePredecessor.insert(element, FrontEnd.parseAndNormalize(
+							"{int y; switch (y) {break;} if (1) {break;}}", CompoundStatement.class)));
 				}
 			}
 		}
@@ -5201,9 +5190,8 @@ public class HigherLevelCFGTransformationTest {
 							FrontEnd.parseAndNormalize("if (x) {default: 10;}", IfStatement.class)));
 					sideEffectList.addAll(InsertImmediatePredecessor.insert(element,
 							FrontEnd.parseAndNormalize("switch (x) {default: 10; break;}", SwitchStatement.class)));
-					sideEffectList
-							.addAll(InsertImmediatePredecessor.insert(element, FrontEnd.parseAndNormalize(
-									"{int y; switch (y) {break;} if (1) {break;}}", CompoundStatement.class)));
+					sideEffectList.addAll(InsertImmediatePredecessor.insert(element, FrontEnd.parseAndNormalize(
+							"{int y; switch (y) {break;} if (1) {break;}}", CompoundStatement.class)));
 				}
 			}
 		}

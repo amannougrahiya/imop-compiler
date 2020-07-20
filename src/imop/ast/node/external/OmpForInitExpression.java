@@ -21,6 +21,13 @@ import imop.ast.info.cfgNodeInfo.OmpForInitExpressionInfo;
  * f2 ::= Expression()
  */
 public class OmpForInitExpression extends Node {
+	{
+		classId = 317;
+	}
+
+	public OmpForInitExpression() {
+	}
+
 	/**
 	 * 
 	 */

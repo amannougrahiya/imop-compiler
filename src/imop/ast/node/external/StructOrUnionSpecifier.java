@@ -20,6 +20,13 @@ import imop.lib.transform.simplify.StructUnionEnumTagger;
  * f0 ::= ( StructOrUnionSpecifierWithList() | StructOrUnionSpecifierWithId() )
  */
 public class StructOrUnionSpecifier extends Node {
+	{
+		classId = 1223;
+	}
+
+	public StructOrUnionSpecifier() {
+	}
+
 	/**
 	 * 
 	 */

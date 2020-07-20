@@ -21,6 +21,13 @@ import java.util.List;
  * optional list, or optional, e.g. ( A B )+ or [ C D E ]
  */
 public class NodeSequence extends NodeListClass {
+	{
+		classId = 275369;
+	}
+
+	public NodeSequence() {
+	}
+
 	/**
 	 * 
 	 */

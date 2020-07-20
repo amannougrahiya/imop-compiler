@@ -18,6 +18,13 @@ package imop.ast.node.external;
  * f1 ::= ( "?" Expression() ":" ConditionalExpression() )?
  */
 public class ConditionalExpression extends Expression {
+	{
+		classId = 2866;
+	}
+
+	public ConditionalExpression() {
+	}
+
 	/**
 	 * 
 	 */

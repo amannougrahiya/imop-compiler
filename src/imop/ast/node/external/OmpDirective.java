@@ -20,6 +20,10 @@ package imop.ast.node.external;
  * | FlushDirective()
  */
 public class OmpDirective extends Statement {
+	{
+		classId = 51;
+	}
+
 	/**
 	 * 
 	 */

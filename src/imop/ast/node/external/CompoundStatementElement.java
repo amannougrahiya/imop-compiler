@@ -18,6 +18,13 @@ package imop.ast.node.external;
  * | Statement()
  */
 public class CompoundStatementElement extends Node {
+	{
+		classId = 53;
+	}
+
+	public CompoundStatementElement() {
+	}
+
 	/**
 	 * 
 	 */

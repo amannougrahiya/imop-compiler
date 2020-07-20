@@ -19,6 +19,13 @@ package imop.ast.node.external;
  * f2 ::= AssignmentExpression()
  */
 public class NonConditionalExpression extends Expression {
+	{
+		classId = 1522;
+	}
+
+	public NonConditionalExpression() {
+	}
+
 	/**
 	 * 
 	 */

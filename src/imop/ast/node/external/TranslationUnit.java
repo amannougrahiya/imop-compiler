@@ -23,6 +23,13 @@ import imop.lib.analysis.typeSystem.Type;
  * f0 ::= ( ElementsOfTranslation() )+
  */
 public class TranslationUnit extends Node implements Scopeable {
+	{
+		classId = 1259;
+	}
+
+	public TranslationUnit() {
+	}
+
 	/**
 	 * 
 	 */

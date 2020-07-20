@@ -19,7 +19,6 @@ import java.util.Set;
 
 import imop.Main;
 import imop.ast.info.DataSharingAttribute;
-import imop.ast.node.external.AUniqueForOrDataOrNowaitClause;
 import imop.ast.node.external.BarrierDirective;
 import imop.ast.node.external.BreakStatement;
 import imop.ast.node.external.CompoundStatement;
@@ -43,11 +42,9 @@ import imop.lib.analysis.SVEChecker;
 import imop.lib.analysis.flowanalysis.Cell;
 import imop.lib.analysis.flowanalysis.SCC;
 import imop.lib.analysis.flowanalysis.Symbol;
-import imop.lib.analysis.flowanalysis.controlflow.ReversePath;
 import imop.lib.analysis.flowanalysis.generic.AnalysisDimension.SVEDimension;
 import imop.lib.analysis.flowanalysis.generic.AnalysisName;
 import imop.lib.analysis.flowanalysis.generic.FlowAnalysis;
-import imop.lib.analysis.flowanalysis.generic.ReversePostOrderWorkList;
 import imop.lib.analysis.mhp.BeginPhasePoint;
 import imop.lib.analysis.mhp.EndPhasePoint;
 import imop.lib.analysis.mhp.Phase;
@@ -61,7 +58,6 @@ import imop.lib.cfg.info.WhileStatementCFGInfo;
 import imop.lib.cfg.link.autoupdater.AutomatedUpdater;
 import imop.lib.cg.CallStack;
 import imop.lib.cg.NodeWithStack;
-import imop.lib.getter.PostOrderExactCollector;
 import imop.lib.transform.BasicTransform;
 import imop.lib.transform.CopyEliminator;
 import imop.lib.transform.simplify.DeclarationEscalator;
@@ -78,7 +74,6 @@ import imop.lib.util.ProfileSS;
 import imop.lib.util.TraversalOrderObtainer;
 import imop.parser.FrontEnd;
 import imop.parser.Program;
-import imop.parser.Program.UpdateCategory;
 
 public class DriverModule {
 	public static int counter = 0;
@@ -376,9 +371,7 @@ public class DriverModule {
 		iterationClasses.add(DoStatement.class);
 		iterationClasses.add(WhileStatement.class);
 		iterationClasses.add(ForStatement.class);
-		PostOrderExactCollector postOrderCollector = new PostOrderExactCollector(iterationClasses);
-		root.accept(postOrderCollector);
-		for (Node itStmtNode : postOrderCollector.nodesInPostOrder) {
+		for (Node itStmtNode : Misc.getExactPostOrderEnclosee(root, iterationClasses)) {
 			assert (!itStmtNode.getClass().getSimpleName().equals("IterationStatement"));
 			IterationStatement itStmt = (IterationStatement) itStmtNode;
 			int minPhaseCount = DriverModule.phaseCountPerExecution(itStmt);

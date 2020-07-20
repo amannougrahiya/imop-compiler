@@ -23,6 +23,13 @@ import imop.ast.info.cfgNodeInfo.SingleConstructInfo;
  * f4 ::= Statement()
  */
 public class SingleConstruct extends OmpConstruct {
+	{
+		classId = 41457;
+	}
+
+	public SingleConstruct() {
+	}
+
 	/**
 	 * 
 	 */

@@ -19,6 +19,9 @@ import imop.ast.node.internal.OmpClause;
  * f0 ::= <NOWAIT>
  */
 public class NowaitClause extends OmpClause {
+	{
+		classId *= 443;
+	}
 	/**
 	 * 
 	 */

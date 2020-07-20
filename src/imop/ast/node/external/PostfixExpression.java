@@ -18,6 +18,13 @@ package imop.ast.node.external;
  * f1 ::= PostfixOperationsList()
  */
 public class PostfixExpression extends Expression {
+	{
+		classId = 1502;
+	}
+
+	public PostfixExpression() {
+	}
+
 	/**
 	 * 
 	 */

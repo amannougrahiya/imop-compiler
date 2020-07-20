@@ -21,6 +21,13 @@ package imop.ast.node.external;
  * f4 ::= "}"
  */
 public class EnumSpecifierWithList extends Node {
+	{
+		classId = 1489;
+	}
+
+	public EnumSpecifierWithList() {
+	}
+
 	/**
 	 * 
 	 */

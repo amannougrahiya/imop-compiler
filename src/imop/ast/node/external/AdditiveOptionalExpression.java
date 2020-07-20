@@ -18,6 +18,13 @@ package imop.ast.node.external;
  * | AdditiveMinusExpression()
  */
 public class AdditiveOptionalExpression extends Expression {
+	{
+		classId = 2942;
+	}
+
+	public AdditiveOptionalExpression() {
+	}
+
 	/**
 	 * 
 	 */

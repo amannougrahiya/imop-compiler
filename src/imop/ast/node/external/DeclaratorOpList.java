@@ -17,6 +17,13 @@ package imop.ast.node.external;
  * f0 ::= ( ADeclaratorOp() )*
  */
 public class DeclaratorOpList extends Node {
+	{
+		classId = 1093;
+	}
+
+	public DeclaratorOpList() {
+	}
+
 	/**
 	 * 
 	 */

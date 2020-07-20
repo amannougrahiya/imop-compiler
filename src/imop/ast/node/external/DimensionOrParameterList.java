@@ -17,6 +17,13 @@ package imop.ast.node.external;
  * f0 ::= ( ADimensionOrParameter() )*
  */
 public class DimensionOrParameterList extends Node {
+	{
+		classId = 1117;
+	}
+
+	public DimensionOrParameterList() {
+	}
+
 	/**
 	 * 
 	 */

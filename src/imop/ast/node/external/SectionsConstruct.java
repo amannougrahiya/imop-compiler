@@ -23,6 +23,13 @@ import imop.ast.info.cfgNodeInfo.SectionsConstructInfo;
  * f4 ::= SectionsScope()
  */
 public class SectionsConstruct extends OmpConstruct {
+	{
+		classId = 41379;
+	}
+
+	public SectionsConstruct() {
+	}
+
 	/**
 	 * 
 	 */

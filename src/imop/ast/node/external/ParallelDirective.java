@@ -19,6 +19,13 @@ package imop.ast.node.external;
  * f2 ::= OmpEol()
  */
 public class ParallelDirective extends Node {
+	{
+		classId = 199;
+	}
+
+	public ParallelDirective() {
+	}
+
 	/**
 	 * 
 	 */

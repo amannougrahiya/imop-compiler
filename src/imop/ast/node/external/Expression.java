@@ -20,6 +20,10 @@ import imop.ast.info.cfgNodeInfo.ExpressionInfo;
  * f1 ::= ( "," AssignmentExpression() )*
  */
 public class Expression extends Node {
+	{
+		classId = 2;
+	}
+
 	/**
 	 * 
 	 */

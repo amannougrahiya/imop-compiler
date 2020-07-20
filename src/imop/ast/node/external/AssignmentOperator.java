@@ -27,6 +27,13 @@ package imop.ast.node.external;
  * | "|="
  */
 public class AssignmentOperator extends Node {
+	{
+		classId = 79;
+	}
+
+	public AssignmentOperator() {
+	}
+
 	/**
 	 * 
 	 */

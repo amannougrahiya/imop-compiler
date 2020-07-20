@@ -23,6 +23,13 @@ import imop.ast.info.cfgNodeInfo.SwitchStatementInfo;
  * f4 ::= Statement()
  */
 public class SwitchStatement extends SelectionStatement {
+	{
+		classId = 64353;
+	}
+
+	public SwitchStatement() {
+	}
+
 	/**
 	 * 
 	 */

@@ -18,6 +18,13 @@ package imop.ast.node.external;
  * | ArgumentInitializerClause()
  */
 public class InitializerClause extends Node {
+	{
+		classId = 569;
+	}
+
+	public InitializerClause() {
+	}
+
 	/**
 	 * 
 	 */

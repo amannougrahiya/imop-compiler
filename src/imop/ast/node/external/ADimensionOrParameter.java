@@ -18,6 +18,13 @@ package imop.ast.node.external;
  * | ParameterTypeListClosed()
  */
 public class ADimensionOrParameter extends Node {
+	{
+		classId = 137;
+	}
+
+	public ADimensionOrParameter() {
+	}
+
 	/**
 	 * 
 	 */

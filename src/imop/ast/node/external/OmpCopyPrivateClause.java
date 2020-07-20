@@ -23,6 +23,13 @@ import imop.ast.node.internal.OmpClause;
  * f3 ::= ")"
  */
 public class OmpCopyPrivateClause extends OmpClause {
+	{
+		classId *= 421;
+	}
+
+	public OmpCopyPrivateClause() {
+	}
+
 	/**
 	 * 
 	 */

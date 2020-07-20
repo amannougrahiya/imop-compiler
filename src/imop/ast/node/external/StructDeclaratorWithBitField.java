@@ -18,6 +18,13 @@ package imop.ast.node.external;
  * f1 ::= ConstantExpression()
  */
 public class StructDeclaratorWithBitField extends Node {
+	{
+		classId = 1201;
+	}
+
+	public StructDeclaratorWithBitField() {
+	}
+
 	/**
 	 * 
 	 */

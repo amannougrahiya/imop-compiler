@@ -18,6 +18,13 @@ package imop.ast.node.external;
  * f1 ::= ( "," InitDeclarator() )*
  */
 public class InitDeclaratorList extends Node {
+	{
+		classId = 571;
+	}
+
+	public InitDeclaratorList() {
+	}
+
 	/**
 	 * 
 	 */

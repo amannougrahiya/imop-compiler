@@ -21,6 +21,13 @@ import imop.ast.info.cfgNodeInfo.UnknownPragmaInfo;
  * f2 ::= <UNKNOWN_CPP>
  */
 public class UnknownPragma extends Statement {
+	{
+		classId = 3459;
+	}
+
+	public UnknownPragma() {
+	}
+
 	/**
 	 * 
 	 */

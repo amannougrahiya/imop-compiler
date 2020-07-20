@@ -30,7 +30,6 @@ import imop.lib.util.Misc;
 import imop.parser.CParserConstants;
 import imop.parser.FrontEnd;
 import imop.parser.Program;
-import sun.swing.StringUIClientPropertyKey;
 
 /**
  * Obtain String representation of the code corresponding to the current state

@@ -22,6 +22,13 @@ import imop.ast.info.cfgNodeInfo.MasterConstructInfo;
  * f3 ::= Statement()
  */
 public class MasterConstruct extends OmpConstruct {
+	{
+		classId = 40209;
+	}
+
+	public MasterConstruct() {
+	}
+
 	/**
 	 * 
 	 */

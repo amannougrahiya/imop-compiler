@@ -22,6 +22,10 @@ import imop.ast.info.cfgNodeInfo.FlushDirectiveInfo;
  * f3 ::= OmpEol()
  */
 public class FlushDirective extends OmpDirective {
+	{
+		classId = 1479;
+	}
+
 	/**
 	 * 
 	 */
@@ -35,7 +39,7 @@ public class FlushDirective extends OmpDirective {
 	 * This constructor is called when creating objects of type
 	 * DummyFlushDirective.
 	 */
-	protected FlushDirective() {
+	public FlushDirective() {
 
 	}
 

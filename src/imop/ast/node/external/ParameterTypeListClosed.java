@@ -19,6 +19,13 @@ package imop.ast.node.external;
  * f2 ::= ")"
  */
 public class ParameterTypeListClosed extends Node {
+	{
+		classId = 233;
+	}
+
+	public ParameterTypeListClosed() {
+	}
+
 	/**
 	 * 
 	 */

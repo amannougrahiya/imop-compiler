@@ -19,6 +19,13 @@ package imop.ast.node.external;
  * | UnknownPragma()
  */
 public class ElementsOfTranslation extends Node {
+	{
+		classId = 1531;
+	}
+
+	public ElementsOfTranslation() {
+	}
+
 	/**
 	 * 
 	 */

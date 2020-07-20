@@ -15,6 +15,9 @@ import imop.baseVisitor.GJVoidVisitor;
 import imop.baseVisitor.Visitor;
 
 public class PostCallNode extends Node {
+	{
+		classId = 239;
+	}
 
 	private static final long serialVersionUID = 2043636790041815339L;
 

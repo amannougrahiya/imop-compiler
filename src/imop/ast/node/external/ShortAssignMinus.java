@@ -19,6 +19,13 @@ package imop.ast.node.external;
  * f2 ::= Expression()
  */
 public class ShortAssignMinus extends OmpForReinitExpression {
+	{
+		classId = 62663;
+	}
+
+	public ShortAssignMinus() {
+	}
+
 	/**
 	 * 
 	 */

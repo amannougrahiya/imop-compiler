@@ -20,6 +20,10 @@ package imop.ast.node.external;
  * | ReturnStatement()
  */
 public class JumpStatement extends Statement {
+	{
+		classId = 21;
+	}
+
 	/**
 	 * 
 	 */

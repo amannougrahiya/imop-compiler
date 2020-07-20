@@ -18,6 +18,13 @@ package imop.ast.node.external;
  * f1 ::= "++"
  */
 public class PostIncrementId extends OmpForReinitExpression {
+	{
+		classId = 73903;
+	}
+
+	public PostIncrementId() {
+	}
+
 	/**
 	 * 
 	 */

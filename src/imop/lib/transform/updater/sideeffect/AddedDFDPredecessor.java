@@ -11,7 +11,7 @@ package imop.lib.transform.updater.sideeffect;
 import imop.ast.node.external.Node;
 
 public class AddedDFDPredecessor extends IndexIncremented {
-	
+
 	public AddedDFDPredecessor(Node affectedNode, Node baseNode) {
 		super(affectedNode, baseNode);
 	}

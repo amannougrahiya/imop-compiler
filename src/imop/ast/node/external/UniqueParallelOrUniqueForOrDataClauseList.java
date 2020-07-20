@@ -17,6 +17,13 @@ package imop.ast.node.external;
  * f0 ::= ( AUniqueParallelOrUniqueForOrDataClause() )*
  */
 public class UniqueParallelOrUniqueForOrDataClauseList extends Node {
+	{
+		classId = 1327;
+	}
+
+	public UniqueParallelOrUniqueForOrDataClauseList() {
+	}
+
 	/**
 	 * 
 	 */

@@ -24,9 +24,7 @@ import imop.ast.node.external.Node;
 import imop.ast.node.external.ParallelConstruct;
 import imop.ast.node.external.SwitchStatement;
 import imop.ast.node.external.WhileStatement;
-import imop.ast.node.internal.BeginNode;
 import imop.ast.node.internal.CallStatement;
-import imop.ast.node.internal.EndNode;
 import imop.baseVisitor.GJNoArguDepthFirstProcess;
 import imop.lib.util.Misc;
 
@@ -60,6 +58,7 @@ public class BarrierTreeConstructor {
 		 * f1 ::= ParallelDirective()
 		 * f2 ::= Statement()
 		 */
+		@Override
 		public BTNode visit(ParallelConstruct n) {
 			BTNode ret = null;
 			BTNode beginBT = new BTBarrierNode(n.getInfo().getCFGInfo().getNestedCFG().getBegin());
@@ -78,6 +77,7 @@ public class BarrierTreeConstructor {
 		 * f1 ::= <BARRIER>
 		 * f2 ::= OmpEol()
 		 */
+		@Override
 		public BTNode visit(BarrierDirective n) {
 			return new BTBarrierNode(n);
 		}
@@ -87,6 +87,7 @@ public class BarrierTreeConstructor {
 		 * f1 ::= ( CompoundStatementElement() )*
 		 * f2 ::= "}"
 		 */
+		@Override
 		public BTNode visit(CompoundStatement n) {
 			BTNode ret = null;
 			for (Node element : n.getInfo().getCFGInfo().getElementList()) {
@@ -114,6 +115,7 @@ public class BarrierTreeConstructor {
 		 * f4 ::= Statement()
 		 * f5 ::= ( <ELSE> Statement() )?
 		 */
+		@Override
 		public BTNode visit(IfStatement n) {
 			BTNode ret = null;
 			List<BTNode> options = new ArrayList<>();
@@ -135,6 +137,7 @@ public class BarrierTreeConstructor {
 		 * f3 ::= ")"
 		 * f4 ::= Statement()
 		 */
+		@Override
 		public BTNode visit(SwitchStatement n) {
 			BTNode _ret = null;
 			List<BTNode> options = new ArrayList<>();
@@ -178,6 +181,7 @@ public class BarrierTreeConstructor {
 		 * f3 ::= ")"
 		 * f4 ::= Statement()
 		 */
+		@Override
 		public BTNode visit(WhileStatement n) {
 			BTNode ret = null;
 			CompoundStatement body = (CompoundStatement) n.getInfo().getCFGInfo().getBody();
@@ -198,6 +202,7 @@ public class BarrierTreeConstructor {
 		 * f5 ::= ")"
 		 * f6 ::= ";"
 		 */
+		@Override
 		public BTNode visit(DoStatement n) {
 			BTNode ret = null;
 			CompoundStatement body = (CompoundStatement) n.getInfo().getCFGInfo().getBody();
@@ -220,6 +225,7 @@ public class BarrierTreeConstructor {
 		 * f7 ::= ")"
 		 * f8 ::= Statement()
 		 */
+		@Override
 		public BTNode visit(ForStatement n) {
 			BTNode ret = null;
 			CompoundStatement body = (CompoundStatement) n.getInfo().getCFGInfo().getBody();
@@ -237,6 +243,7 @@ public class BarrierTreeConstructor {
 		 * {@link FunctionDefinition}s that this call may correspond to; null,
 		 * if there are none.
 		 */
+		@Override
 		public BTNode visit(CallStatement n) {
 			List<FunctionDefinition> calledFuncList = n.getInfo().getCalledDefinitions();
 			if (calledFuncList.isEmpty()) {

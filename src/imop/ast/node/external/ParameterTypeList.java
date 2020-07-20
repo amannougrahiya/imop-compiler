@@ -18,6 +18,13 @@ package imop.ast.node.external;
  * f1 ::= ( "," "..." )?
  */
 public class ParameterTypeList extends Node {
+	{
+		classId = 191;
+	}
+
+	public ParameterTypeList() {
+	}
+
 	/**
 	 * 
 	 */

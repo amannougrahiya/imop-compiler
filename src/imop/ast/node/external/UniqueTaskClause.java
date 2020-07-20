@@ -20,6 +20,13 @@ package imop.ast.node.external;
  * | MergeableClause()
  */
 public class UniqueTaskClause extends Node {
+	{
+		classId = 1361;
+	}
+
+	public UniqueTaskClause() {
+	}
+
 	/**
 	 * 
 	 */

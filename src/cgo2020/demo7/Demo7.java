@@ -21,7 +21,7 @@ import imop.parser.Program;
 public class Demo7 {
 
 	public static void main(String[] args) {
-		args = new String[]{"-f", "runner/cgo-eg/example.c", "-nru"}; 
+		args = new String[] { "-f", "runner/cgo-eg/example.c", "-nru" };
 		Program.parseNormalizeInput(args);
 		/*
 		 * Write barrier: Write a pass that instruments a program such that
@@ -35,8 +35,9 @@ public class Demo7 {
 						continue;
 					}
 					Symbol sym = (Symbol) c;
-					if (!sym.getName().equals("thisVar"))
+					if (!sym.getName().equals("thisVar")) {
 						continue;
+					}
 					String newStr = "printf(\"About to write to thisVar.\");";
 					Statement newStmt = FrontEnd.parseAndNormalize(newStr, Statement.class);
 					InsertImmediatePredecessor.insert(node, newStmt);

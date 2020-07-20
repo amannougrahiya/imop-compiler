@@ -11,7 +11,6 @@ package imop.lib.analysis.solver;
 import java.util.ArrayList;
 import java.util.List;
 
-import imop.ast.info.cfgNodeInfo.DeclarationInfo;
 import imop.ast.node.external.ANDExpression;
 import imop.ast.node.external.APostfixOperation;
 import imop.ast.node.external.AdditiveExpression;

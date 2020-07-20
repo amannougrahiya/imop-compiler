@@ -15,9 +15,9 @@ import imop.ast.node.external.Node;
 import imop.ast.node.external.ParameterDeclaration;
 import imop.ast.node.internal.SimplePrimaryExpression;
 import imop.lib.analysis.flowanalysis.Cell;
-import imop.lib.analysis.flowanalysis.generic.FlowAnalysis.FlowFact;
 import imop.lib.analysis.flowanalysis.generic.AnalysisDimension;
 import imop.lib.analysis.flowanalysis.generic.AnalysisName;
+import imop.lib.analysis.flowanalysis.generic.FlowAnalysis;
 import imop.lib.analysis.flowanalysis.generic.InterThreadBackwardNonCellularAnalysis;
 import imop.lib.util.CellCollection;
 import imop.lib.util.CellSet;
@@ -26,7 +26,7 @@ import imop.parser.Program;
 
 public class LivenessAnalysis extends InterThreadBackwardNonCellularAnalysis<LivenessAnalysis.LivenessFlowFact> {
 
-	public static class LivenessFlowFact extends FlowFact {
+	public static class LivenessFlowFact extends FlowAnalysis.FlowFact {
 		public HashMap<Node, CellSet> livenessInfo = new HashMap<>();
 
 		@Override

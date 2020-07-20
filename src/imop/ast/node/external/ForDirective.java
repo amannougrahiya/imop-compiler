@@ -19,6 +19,13 @@ package imop.ast.node.external;
  * f2 ::= OmpEol()
  */
 public class ForDirective extends Node {
+	{
+		classId = 599;
+	}
+
+	public ForDirective() {
+	}
+
 	/**
 	 * 
 	 */

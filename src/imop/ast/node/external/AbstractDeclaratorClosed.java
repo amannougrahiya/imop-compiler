@@ -19,6 +19,13 @@ package imop.ast.node.external;
  * f2 ::= ")"
  */
 public class AbstractDeclaratorClosed extends Node {
+	{
+		classId = 977;
+	}
+
+	public AbstractDeclaratorClosed() {
+	}
+
 	/**
 	 * 
 	 */

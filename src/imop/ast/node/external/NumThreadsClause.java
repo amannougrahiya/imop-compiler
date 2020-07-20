@@ -23,6 +23,13 @@ import imop.ast.node.internal.OmpClause;
  * f3 ::= ")"
  */
 public class NumThreadsClause extends OmpClause {
+	{
+		classId *= 439;
+	}
+
+	public NumThreadsClause() {
+	}
+
 	/**
 	 * 
 	 */

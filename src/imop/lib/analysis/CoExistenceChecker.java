@@ -12,7 +12,6 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import imop.Main;
 import imop.ast.node.external.BarrierDirective;
 import imop.ast.node.external.Expression;
 import imop.ast.node.external.Node;

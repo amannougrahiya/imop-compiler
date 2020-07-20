@@ -19,6 +19,13 @@ package imop.ast.node.external;
  * f2 ::= ")"
  */
 public class FlushVars extends Node {
+	{
+		classId = 601;
+	}
+
+	public FlushVars() {
+	}
+
 	/**
 	 * 
 	 */

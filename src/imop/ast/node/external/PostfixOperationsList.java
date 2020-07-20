@@ -17,6 +17,13 @@ package imop.ast.node.external;
  * f0 ::= ( APostfixOperation() )*
  */
 public class PostfixOperationsList extends Node {
+	{
+		classId = 167;
+	}
+
+	public PostfixOperationsList() {
+	}
+
 	/**
 	 * 
 	 */

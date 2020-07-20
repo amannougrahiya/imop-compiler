@@ -19,9 +19,9 @@ import imop.ast.node.internal.SimplePrimaryExpression;
 import imop.lib.analysis.flowanalysis.Cell;
 import imop.lib.analysis.flowanalysis.HeapCell;
 import imop.lib.analysis.flowanalysis.Symbol;
-import imop.lib.analysis.flowanalysis.generic.FlowAnalysis.FlowFact;
 import imop.lib.analysis.flowanalysis.generic.AnalysisDimension;
 import imop.lib.analysis.flowanalysis.generic.AnalysisName;
+import imop.lib.analysis.flowanalysis.generic.FlowAnalysis;
 import imop.lib.analysis.flowanalysis.generic.InterThreadBackwardNonCellularAnalysis;
 import imop.lib.util.CellList;
 import imop.lib.util.CellMap;
@@ -31,7 +31,7 @@ import imop.parser.Program;
 public class DataDependenceBackward
 		extends InterThreadBackwardNonCellularAnalysis<DataDependenceBackward.DataDependenceBackwardFF> {
 
-	public static class DataDependenceBackwardFF extends FlowFact {
+	public static class DataDependenceBackwardFF extends FlowAnalysis.FlowFact {
 		public CellMap<NodeSet> writeDestinations;
 		public CellMap<NodeSet> readDestinations;
 

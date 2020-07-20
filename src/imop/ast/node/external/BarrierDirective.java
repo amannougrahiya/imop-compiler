@@ -21,6 +21,13 @@ import imop.ast.info.cfgNodeInfo.BarrierDirectiveInfo;
  * f2 ::= OmpEol()
  */
 public class BarrierDirective extends OmpDirective {
+	{
+		classId = 55641;
+	}
+
+	public BarrierDirective() {
+	}
+
 	/**
 	 * 
 	 */

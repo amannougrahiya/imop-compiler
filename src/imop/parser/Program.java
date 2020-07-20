@@ -28,14 +28,12 @@ import imop.ast.node.external.FunctionDefinition;
 import imop.ast.node.external.Node;
 import imop.ast.node.external.TranslationUnit;
 import imop.ast.node.external.UnknownCpp;
-import imop.ast.node.internal.BeginNode;
 import imop.lib.analysis.Assignment;
 import imop.lib.analysis.SVEChecker;
 import imop.lib.analysis.flowanalysis.AddressCell;
 import imop.lib.analysis.flowanalysis.Cell;
 import imop.lib.analysis.flowanalysis.DFable;
 import imop.lib.analysis.flowanalysis.HeapCell;
-import imop.lib.analysis.flowanalysis.SCC;
 import imop.lib.analysis.flowanalysis.Symbol;
 import imop.lib.analysis.flowanalysis.dataflow.PointsToAnalysis;
 import imop.lib.analysis.flowanalysis.dataflow.PointsToAnalysis.PointsToGlobalState;
@@ -294,7 +292,7 @@ public class Program {
 		//		filePath = ("../tests/test-mhp.c");
 		//		filePath = ("../tests/testZ3.c");
 		//		filePath = ("../tests/ocean/input.i");
-		filePath = ("../tests/cs6868-ocean/ocean6868.i");
+		//		filePath = ("../tests/cs6868-ocean/ocean6868.i");
 		//		filePath = ("../tests/sea.i");
 		//		filePath = ("../tests/testocean.c");
 		//		filePath = ("../tests/auto-normalize.c");
@@ -349,7 +347,7 @@ public class Program {
 		//		filePath = ("../tests/barr-opt-tests/quake.i");
 		//		filePath = ("../src/imop/lib/testcases/allKnown.c");
 		//		filePath = ("../output-dump/imop_output.i");
-		filePath = ("../tests/a.c");
+		//		filePath = ("../tests/a.c");
 		return filePath;
 	}
 

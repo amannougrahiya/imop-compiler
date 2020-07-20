@@ -22,6 +22,13 @@ package imop.ast.node.external;
  * f5 ::= OmpEol()
  */
 public class ThreadPrivateDirective extends Node {
+	{
+		classId = 1249;
+	}
+
+	public ThreadPrivateDirective() {
+	}
+
 	/**
 	 * 
 	 */

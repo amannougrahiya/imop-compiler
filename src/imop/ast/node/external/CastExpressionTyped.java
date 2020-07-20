@@ -20,6 +20,13 @@ package imop.ast.node.external;
  * f3 ::= CastExpression()
  */
 public class CastExpressionTyped extends Expression {
+	{
+		classId = 2878;
+	}
+
+	public CastExpressionTyped() {
+	}
+
 	/**
 	 * 
 	 */

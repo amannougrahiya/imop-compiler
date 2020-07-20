@@ -28,10 +28,9 @@ import imop.lib.analysis.Assignment;
 import imop.lib.analysis.AssignmentGetter;
 import imop.lib.analysis.flowanalysis.Cell;
 import imop.lib.analysis.flowanalysis.Symbol;
-import imop.lib.analysis.flowanalysis.generic.CellularDataFlowAnalysis.CellularFlowMap;
 import imop.lib.analysis.flowanalysis.generic.AnalysisDimension;
-import imop.lib.analysis.flowanalysis.generic.AnalysisDimension.SVEDimension;
 import imop.lib.analysis.flowanalysis.generic.AnalysisName;
+import imop.lib.analysis.flowanalysis.generic.CellularDataFlowAnalysis;
 import imop.lib.analysis.flowanalysis.generic.InterThreadForwardCellularAnalysis;
 import imop.lib.util.CellSet;
 import imop.lib.util.ExtensibleCellMap;
@@ -45,7 +44,7 @@ public class CopyPropagationAnalysis
 		super(AnalysisName.COPYPROPAGATION, new AnalysisDimension(Program.sveSensitivityOfIDFAEdges));
 	}
 
-	public static class CopyPropagationFlowMap extends CellularFlowMap<Cell> {
+	public static class CopyPropagationFlowMap extends CellularDataFlowAnalysis.CellularFlowMap<Cell> {
 
 		public CopyPropagationFlowMap(ExtensibleCellMap<Cell> flowMap) {
 			super(flowMap);

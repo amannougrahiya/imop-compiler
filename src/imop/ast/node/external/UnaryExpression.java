@@ -21,6 +21,13 @@ package imop.ast.node.external;
  * | PostfixExpression()
  */
 public class UnaryExpression extends Expression {
+	{
+		classId = 1282;
+	}
+
+	public UnaryExpression() {
+	}
+
 	/**
 	 * 
 	 */

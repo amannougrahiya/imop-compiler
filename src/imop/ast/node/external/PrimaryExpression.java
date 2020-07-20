@@ -19,6 +19,13 @@ package imop.ast.node.external;
  * | ExpressionClosed()
  */
 public class PrimaryExpression extends Expression {
+	{
+		classId = 1478;
+	}
+
+	public PrimaryExpression() {
+	}
+
 	/**
 	 * 
 	 */

@@ -19,6 +19,13 @@ package imop.ast.node.external;
  * | NowaitClause()
  */
 public class AUniqueForOrDataOrNowaitClause extends Node {
+	{
+		classId = 73;
+	}
+
+	public AUniqueForOrDataOrNowaitClause() {
+	}
+
 	/**
 	 * 
 	 */

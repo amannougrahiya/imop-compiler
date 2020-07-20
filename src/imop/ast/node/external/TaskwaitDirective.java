@@ -21,6 +21,13 @@ import imop.ast.info.cfgNodeInfo.TaskwaitDirectiveInfo;
  * f2 ::= OmpEol()
  */
 public class TaskwaitDirective extends OmpDirective {
+	{
+		classId = 56253;
+	}
+
+	public TaskwaitDirective() {
+	}
+
 	/**
 	 * 
 	 */

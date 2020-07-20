@@ -21,6 +21,13 @@ import imop.ast.info.cfgNodeInfo.DeclarationInfo;
  * f2 ::= ";"
  */
 public class Declaration extends Node {
+	{
+		classId = 43;
+	}
+
+	public Declaration() {
+	}
+
 	/**
 	 * 
 	 */

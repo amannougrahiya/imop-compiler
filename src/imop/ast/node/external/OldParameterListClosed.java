@@ -19,6 +19,13 @@ package imop.ast.node.external;
  * f2 ::= ")"
  */
 public class OldParameterListClosed extends Node {
+	{
+		classId = 479;
+	}
+
+	public OldParameterListClosed() {
+	}
+
 	/**
 	 * 
 	 */

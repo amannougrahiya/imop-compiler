@@ -18,6 +18,13 @@ package imop.ast.node.external;
  * f1 ::= <IDENTIFIER>
  */
 public class DotId extends Node {
+	{
+		classId = 919;
+	}
+
+	public DotId() {
+	}
+
 	/**
 	 * 
 	 */

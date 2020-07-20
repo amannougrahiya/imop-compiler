@@ -15,12 +15,10 @@ import java.util.Set;
 import imop.ast.annotation.IncompleteEdge;
 import imop.ast.annotation.IncompleteEdge.TypeOfIncompleteness;
 import imop.ast.annotation.Label;
-import imop.ast.info.cfgNodeInfo.DeclarationInfo;
 import imop.ast.node.external.CompoundStatement;
 import imop.ast.node.external.ContinueStatement;
 import imop.ast.node.external.CriticalConstruct;
 import imop.ast.node.external.Declaration;
-import imop.ast.node.external.Declarator;
 import imop.ast.node.external.DoStatement;
 import imop.ast.node.external.Expression;
 import imop.ast.node.external.FinalClause;
@@ -29,7 +27,6 @@ import imop.ast.node.external.ForStatement;
 import imop.ast.node.external.FunctionDefinition;
 import imop.ast.node.external.IfClause;
 import imop.ast.node.external.IfStatement;
-import imop.ast.node.external.Initializer;
 import imop.ast.node.external.MasterConstruct;
 import imop.ast.node.external.Node;
 import imop.ast.node.external.NumThreadsClause;
@@ -124,12 +121,9 @@ import imop.lib.transform.updater.InsertOnTheEdge.PivotPoint;
 import imop.lib.transform.updater.NodeRemover.LabelShiftingMode;
 import imop.lib.transform.updater.sideeffect.AddedCopy;
 import imop.lib.transform.updater.sideeffect.AddedEnclosingBlock;
-import imop.lib.transform.updater.sideeffect.IndexIncremented;
-import imop.lib.transform.updater.sideeffect.InitializationSimplified;
 import imop.lib.transform.updater.sideeffect.JumpEdgeConstraint;
 import imop.lib.transform.updater.sideeffect.MissingCFGParent;
 import imop.lib.transform.updater.sideeffect.NoUpdateDueToNameCollision;
-import imop.lib.transform.updater.sideeffect.NodeUpdated;
 import imop.lib.transform.updater.sideeffect.RemovedDeadCode;
 import imop.lib.transform.updater.sideeffect.SideEffect;
 import imop.lib.transform.updater.sideeffect.SyntacticConstraint;
@@ -1228,8 +1222,7 @@ public class InsertImmediatePredecessor {
 					// This means that the path is not reachable. 
 					// We should complete the transformation and return.
 					sideEffectList.add(new RemovedDeadCode(stepExpression));
-					sideEffectList
-							.addAll(InsertImmediatePredecessor.insert(link.enclosingNonLeafNode, targetNode));
+					sideEffectList.addAll(InsertImmediatePredecessor.insert(link.enclosingNonLeafNode, targetNode));
 					if (!Misc.changePerformed(sideEffectList)) {
 						for (Node n : unrollTargets) {
 							NodeRemover.removeNode(n, LabelShiftingMode.LABELS_WITH_NODE);

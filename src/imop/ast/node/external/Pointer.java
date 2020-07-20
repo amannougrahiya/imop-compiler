@@ -19,6 +19,13 @@ package imop.ast.node.external;
  * f2 ::= ( Pointer() )?
  */
 public class Pointer extends Node {
+	{
+		classId = 179;
+	}
+
+	public Pointer() {
+	}
+
 	/**
 	 * 
 	 */

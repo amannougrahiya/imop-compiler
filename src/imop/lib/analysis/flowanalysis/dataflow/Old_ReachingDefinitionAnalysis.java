@@ -18,10 +18,10 @@ import imop.ast.node.internal.SimplePrimaryExpression;
 import imop.lib.analysis.flowanalysis.Cell;
 import imop.lib.analysis.flowanalysis.Definition;
 import imop.lib.analysis.flowanalysis.Symbol;
-import imop.lib.analysis.flowanalysis.generic.FlowAnalysis.FlowFact;
 import imop.lib.analysis.flowanalysis.generic.AnalysisDimension;
 import imop.lib.analysis.flowanalysis.generic.AnalysisDimension.SVEDimension;
 import imop.lib.analysis.flowanalysis.generic.AnalysisName;
+import imop.lib.analysis.flowanalysis.generic.FlowAnalysis;
 import imop.lib.analysis.flowanalysis.generic.InterThreadForwardNonCellularAnalysis;
 import imop.lib.getter.AllDefinitionGetter;
 import imop.lib.util.CellSet;
@@ -31,7 +31,7 @@ import imop.parser.Program;
 public class Old_ReachingDefinitionAnalysis
 		extends InterThreadForwardNonCellularAnalysis<Old_ReachingDefinitionAnalysis.Old_ReachingDefinitionFlowFact> {
 
-	public static class Old_ReachingDefinitionFlowFact extends FlowFact {
+	public static class Old_ReachingDefinitionFlowFact extends FlowAnalysis.FlowFact {
 		public Set<Definition> definitions;
 
 		public Old_ReachingDefinitionFlowFact(Set<Definition> definitions) {

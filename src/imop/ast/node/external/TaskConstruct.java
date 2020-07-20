@@ -27,6 +27,13 @@ import imop.lib.cfg.info.TaskConstructCFGInfo;
  * f4 ::= Statement()
  */
 public class TaskConstruct extends OmpConstruct {
+	{
+		classId = 41691;
+	}
+
+	public TaskConstruct() {
+	}
+
 	/**
 	 * 
 	 */

@@ -22,6 +22,13 @@ import imop.ast.info.cfgNodeInfo.ForConstructInfo;
  * f3 ::= Statement()
  */
 public class ForConstruct extends OmpConstruct {
+	{
+		classId = 32721;
+	}
+
+	public ForConstruct() {
+	}
+
 	/**
 	 * 
 	 */

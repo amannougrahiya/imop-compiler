@@ -12,7 +12,7 @@ import imop.ast.node.external.Node;
 
 public class RemovedDFDPredecessor extends IndexDecremented {
 	Node baseNode;
-	
+
 	public RemovedDFDPredecessor(Node affectedNode, Node baseNode) {
 		super(affectedNode);
 		this.baseNode = baseNode;

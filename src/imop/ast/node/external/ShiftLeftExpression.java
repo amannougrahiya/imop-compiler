@@ -18,6 +18,13 @@ package imop.ast.node.external;
  * f1 ::= ShiftExpression()
  */
 public class ShiftLeftExpression extends Expression {
+	{
+		classId = 1354;
+	}
+
+	public ShiftLeftExpression() {
+	}
+
 	/**
 	 * 
 	 */

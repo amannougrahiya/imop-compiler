@@ -20,6 +20,13 @@ package imop.ast.node.external;
  * f3 ::= Statement()
  */
 public class CaseLabeledStatement extends LabeledStatement {
+	{
+		classId = 28941;
+	}
+
+	public CaseLabeledStatement() {
+	}
+
 	/**
 	 * 
 	 */

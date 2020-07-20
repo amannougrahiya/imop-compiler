@@ -19,6 +19,13 @@ package imop.ast.node.external;
  * TypedefName() )
  */
 public class TypeSpecifier extends Node {
+	{
+		classId = 1291;
+	}
+
+	public TypeSpecifier() {
+	}
+
 	/**
 	 * 
 	 */

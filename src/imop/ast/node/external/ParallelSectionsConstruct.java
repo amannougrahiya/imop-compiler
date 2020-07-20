@@ -22,6 +22,13 @@ package imop.ast.node.external;
  * f5 ::= SectionsScope()
  */
 public class ParallelSectionsConstruct extends ParallelConstruct {
+	{
+		classId = 942747;
+	}
+
+	public ParallelSectionsConstruct() {
+	}
+
 	/**
 	 * 
 	 */

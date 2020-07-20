@@ -23,6 +23,13 @@ import imop.ast.node.internal.OmpClause;
  * f3 ::= ")"
  */
 public class OmpSharedClause extends OmpClause {
+	{
+		classId *= 367;
+	}
+
+	public OmpSharedClause() {
+	}
+
 	/**
 	 * 
 	 */

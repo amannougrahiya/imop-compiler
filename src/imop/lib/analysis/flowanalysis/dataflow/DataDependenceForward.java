@@ -19,10 +19,10 @@ import imop.ast.node.internal.SimplePrimaryExpression;
 import imop.lib.analysis.flowanalysis.Cell;
 import imop.lib.analysis.flowanalysis.HeapCell;
 import imop.lib.analysis.flowanalysis.Symbol;
-import imop.lib.analysis.flowanalysis.generic.FlowAnalysis.FlowFact;
 import imop.lib.analysis.flowanalysis.generic.AnalysisDimension;
 import imop.lib.analysis.flowanalysis.generic.AnalysisDimension.SVEDimension;
 import imop.lib.analysis.flowanalysis.generic.AnalysisName;
+import imop.lib.analysis.flowanalysis.generic.FlowAnalysis;
 import imop.lib.analysis.flowanalysis.generic.InterThreadForwardNonCellularAnalysis;
 import imop.lib.util.CellMap;
 import imop.lib.util.CellSet;
@@ -30,7 +30,7 @@ import imop.lib.util.CellSet;
 public class DataDependenceForward
 		extends InterThreadForwardNonCellularAnalysis<DataDependenceForward.DataDependenceForwardFF> {
 
-	public static class DataDependenceForwardFF extends FlowFact {
+	public static class DataDependenceForwardFF extends FlowAnalysis.FlowFact {
 		public CellMap<NodeSet> writeSources;
 		public CellMap<NodeSet> readSources;
 

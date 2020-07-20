@@ -24,6 +24,13 @@ package imop.ast.node.external;
  * | OmpReductionClause()
  */
 public class DataClause extends Node {
+	{
+		classId = 47;
+	}
+
+	public DataClause() {
+	}
+
 	/**
 	 * 
 	 */

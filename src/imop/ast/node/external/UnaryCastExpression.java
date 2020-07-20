@@ -18,6 +18,13 @@ package imop.ast.node.external;
  * f1 ::= CastExpression()
  */
 public class UnaryCastExpression extends Expression {
+	{
+		classId = 1286;
+	}
+
+	public UnaryCastExpression() {
+	}
+
 	/**
 	 * 
 	 */

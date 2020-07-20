@@ -16,6 +16,10 @@ package imop.ast.node.external;
  * Represents an grammar optional node, e.g. ( A )? or [ A ]
  */
 public class NodeOptional extends Node {
+	{
+		classId = 503;
+	}
+
 	/**
 	 * 
 	 */

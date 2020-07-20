@@ -19,6 +19,13 @@ package imop.ast.node.external;
  * | OmpCopyPrivateClause()
  */
 public class ASingleClause extends Node {
+	{
+		classId = 97;
+	}
+
+	public ASingleClause() {
+	}
+
 	/**
 	 * 
 	 */

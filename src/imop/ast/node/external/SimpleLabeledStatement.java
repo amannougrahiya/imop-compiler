@@ -19,6 +19,13 @@ package imop.ast.node.external;
  * f2 ::= Statement()
  */
 public class SimpleLabeledStatement extends LabeledStatement {
+	{
+		classId = 28347;
+	}
+
+	public SimpleLabeledStatement() {
+	}
+
 	/**
 	 * 
 	 */

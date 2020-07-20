@@ -36,6 +36,7 @@ public class FieldSensitivity {
 	public static long counter = 0;
 	private static boolean debugMode = true;
 	public static boolean neededAtLeastOnce = false;
+
 	/**
 	 * Given two CFG nodes, this method informs whether the nodes may conflict
 	 * with each other.
