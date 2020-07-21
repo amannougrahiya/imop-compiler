@@ -129,7 +129,11 @@ import imop.lib.getter.InfiExactASTNodeListGetter;
 import imop.lib.getter.InfiExactASTNodesGetter;
 import imop.lib.getter.InfiExactMultiTypeASTNodeListGetter;
 import imop.lib.getter.InfiExactMultiTypeASTNodesGetter;
+import imop.lib.getter.InfiExactMultiTypeStatementGetter;
+import imop.lib.getter.InfiExactStatementGetter;
 import imop.lib.getter.InfiInheritedMultiASTNodesGetter;
+import imop.lib.getter.InfiInheritedMultiTypeStatementGetter;
+import imop.lib.getter.InfiInheritedStatementGetter;
 import imop.lib.getter.InfiInheritedASTNodesGetter;
 import imop.lib.getter.InfiInheritedMultiASTNodeListGetter;
 import imop.lib.getter.InfiInheritedASTNodeListGetter;
@@ -1464,10 +1468,17 @@ public class Misc {
 		if (n == null) {
 			return new HashSet<>();
 		}
+		if (classId % 3 == 0) {
+			Collection<T> returnSet = new HashSet<>();
+			InfiInheritedStatementGetter<T> nodeGetter = new InfiInheritedStatementGetter<>(classId, returnSet);
+			n.accept(nodeGetter);
+			return (Set<T>) returnSet;
+		}
 		if (Node.superClassIds.contains(classId)) {
 			InfiInheritedASTNodesGetter<T> nodeGetter = new InfiInheritedASTNodesGetter<>(classId, traverseExpressions);
 			n.accept(nodeGetter);
 			return nodeGetter.astContents;
+
 		} else {
 			return Misc.getExactEncloseeWithId(n, classId);
 		}
@@ -1516,6 +1527,12 @@ public class Misc {
 			TraverseExpressions traverseExpressions) {
 		if (n == null) {
 			return new LinkedList<>();
+		}
+		if (classId % 3 == 0) {
+			Collection<T> returnList = new ArrayList<>();
+			InfiInheritedStatementGetter<T> nodeGetter = new InfiInheritedStatementGetter<>(classId, returnList);
+			n.accept(nodeGetter);
+			return (List<T>) returnList;
 		}
 		if (Node.superClassIds.contains(classId)) {
 			InfiInheritedASTNodeListGetter<T> nodeGetter = new InfiInheritedASTNodeListGetter<>(classId,
@@ -1574,6 +1591,12 @@ public class Misc {
 		if (n == null) {
 			return new HashSet<>();
 		}
+		if (classId % 3 == 0) {
+			Collection<T> returnSet = new HashSet<>();
+			InfiExactStatementGetter<T> nodeGetter = new InfiExactStatementGetter<>(classId, returnSet);
+			n.accept(nodeGetter);
+			return (Set<T>) returnSet;
+		}
 		InfiExactASTNodesGetter<T> nodeGetter = new InfiExactASTNodesGetter<>(classId, traverseExpressions);
 		n.accept(nodeGetter);
 		return nodeGetter.astContents;
@@ -1625,6 +1648,12 @@ public class Misc {
 			TraverseExpressions traverseExpressions) {
 		if (n == null) {
 			return new LinkedList<>();
+		}
+		if (classId % 3 == 0) {
+			Collection<T> returnList = new ArrayList<>();
+			InfiExactStatementGetter<T> nodeGetter = new InfiExactStatementGetter<>(classId, returnList);
+			n.accept(nodeGetter);
+			return (List<T>) returnList;
 		}
 		InfiExactASTNodeListGetter<T> nodeGetter = new InfiExactASTNodeListGetter<>(classId, traverseExpressions);
 		n.accept(nodeGetter);
@@ -1678,13 +1707,28 @@ public class Misc {
 		if (n == null) {
 			return new HashSet<>();
 		}
-		if (Misc.doIntersect(Node.superClassIds, classIds)) {
-			InfiInheritedMultiASTNodesGetter nodeGetter = new InfiInheritedMultiASTNodesGetter(classIds,
-					traverseExpressions);
-			n.accept(nodeGetter);
-			return nodeGetter.astContents;
+		boolean notAStmtType = false;
+		for (int i : classIds) {
+			if (i % 3 != 0) {
+				notAStmtType = true;
+				break;
+			}
+		}
+		if (notAStmtType) {
+			if (Misc.doIntersect(Node.superClassIds, classIds)) {
+				InfiInheritedMultiASTNodesGetter nodeGetter = new InfiInheritedMultiASTNodesGetter(classIds,
+						traverseExpressions);
+				n.accept(nodeGetter);
+				return nodeGetter.astContents;
+			} else {
+				return Misc.getExactEncloseeWithId(n, classIds);
+			}
 		} else {
-			return Misc.getExactEncloseeWithId(n, classIds);
+			Collection<Node> returnSet = new HashSet<>();
+			InfiInheritedMultiTypeStatementGetter<Node> nodeGetter = new InfiInheritedMultiTypeStatementGetter<>(
+					classIds, returnSet);
+			n.accept(nodeGetter);
+			return (Set<Node>) returnSet;
 		}
 	}
 
@@ -1735,13 +1779,28 @@ public class Misc {
 		if (n == null) {
 			return new LinkedList<>();
 		}
-		if (Misc.doIntersect(Node.superClassIds, classIds)) {
-			InfiInheritedMultiASTNodeListGetter nodeGetter = new InfiInheritedMultiASTNodeListGetter(classIds,
-					traverseExpressions);
-			n.accept(nodeGetter);
-			return nodeGetter.astContents;
+		boolean notAStmtType = false;
+		for (int i : classIds) {
+			if (i % 3 != 0) {
+				notAStmtType = true;
+				break;
+			}
+		}
+		if (notAStmtType) {
+			if (Misc.doIntersect(Node.superClassIds, classIds)) {
+				InfiInheritedMultiASTNodeListGetter nodeGetter = new InfiInheritedMultiASTNodeListGetter(classIds,
+						traverseExpressions);
+				n.accept(nodeGetter);
+				return nodeGetter.astContents;
+			} else {
+				return Misc.getExactEncloseeListWithId(n, classIds);
+			}
 		} else {
-			return Misc.getExactEncloseeListWithId(n, classIds);
+			Collection<Node> returnList = new ArrayList<>();
+			InfiInheritedMultiTypeStatementGetter<Node> nodeGetter = new InfiInheritedMultiTypeStatementGetter<>(
+					classIds, returnList);
+			n.accept(nodeGetter);
+			return (List<Node>) returnList;
 		}
 	}
 
@@ -1792,10 +1851,26 @@ public class Misc {
 		if (n == null) {
 			return new HashSet<>();
 		}
-		InfiExactMultiTypeASTNodesGetter nodeGetter = new InfiExactMultiTypeASTNodesGetter(classIds,
-				traverseExpressions);
-		n.accept(nodeGetter);
-		return nodeGetter.astContents;
+		boolean notAStmtType = false;
+		for (int i : classIds) {
+			if (i % 3 != 0) {
+				notAStmtType = true;
+				break;
+			}
+		}
+		if (notAStmtType) {
+			InfiExactMultiTypeASTNodesGetter nodeGetter = new InfiExactMultiTypeASTNodesGetter(classIds,
+					traverseExpressions);
+			n.accept(nodeGetter);
+			return nodeGetter.astContents;
+		} else {
+			Collection<Node> returnSet = new HashSet<>();
+			InfiExactMultiTypeStatementGetter<Node> nodeGetter = new InfiExactMultiTypeStatementGetter<>(classIds,
+					returnSet);
+			n.accept(nodeGetter);
+			return (Set<Node>) returnSet;
+
+		}
 	}
 
 	/**
@@ -1845,10 +1920,25 @@ public class Misc {
 		if (n == null) {
 			return new LinkedList<>();
 		}
-		InfiExactMultiTypeASTNodeListGetter nodeGetter = new InfiExactMultiTypeASTNodeListGetter(classIds,
-				traverseExpressions);
-		n.accept(nodeGetter);
-		return nodeGetter.astContents;
+		boolean notAStmtType = false;
+		for (int i : classIds) {
+			if (i % 3 != 0) {
+				notAStmtType = true;
+				break;
+			}
+		}
+		if (notAStmtType) {
+			InfiExactMultiTypeASTNodeListGetter nodeGetter = new InfiExactMultiTypeASTNodeListGetter(classIds,
+					traverseExpressions);
+			n.accept(nodeGetter);
+			return nodeGetter.astContents;
+		} else {
+			Collection<Node> returnList = new ArrayList<>();
+			InfiExactMultiTypeStatementGetter<Node> nodeGetter = new InfiExactMultiTypeStatementGetter<>(classIds,
+					returnList);
+			n.accept(nodeGetter);
+			return (List<Node>) returnList;
+		}
 	}
 
 	/**
@@ -1974,6 +2064,9 @@ public class Misc {
 	 * @return
 	 */
 	public static int getLineNum(Node n) {
+		if (Program.disableLineNumbers) {
+			return -1;
+		}
 		LineNumGetter lineGetter = new LineNumGetter();
 		n.accept(lineGetter);
 		return lineGetter.lineNum;

@@ -44,7 +44,7 @@ do
 	cat $FILE > $PREFILE
 	cd ${IMOPHOME}/bin
 	java -ea -Xms2048M -Xmx4096M -cp ${IMOPHOME}/third-party-tools/com.microsoft.z3.jar:. \
-		-Djava.library.path=${Z3HOME}/build  -verbose:gc imop.Main --noPrepass -nru -f $PREFILE 2>> $ERRFILE
+		-Djava.library.path=${Z3HOME}/build  -verbose:gc imop.Main --noPrepass -dln -nru -f $PREFILE 2>> $ERRFILE
 	echo -e "======================"
 	echo -e "DUMP: $(cat $ERRFILE)"
 done

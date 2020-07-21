@@ -37,8 +37,8 @@ public class InfiParallelConstructGetter extends DepthFirstVisitor {
 	 */
 	@Override
 	public void visit(ParallelConstruct n) {
-		parallelConstructList.add(n);
 		n.getParConsF2().accept(this);
+		parallelConstructList.add(n);
 	}
 
 	/**
@@ -55,8 +55,8 @@ public class InfiParallelConstructGetter extends DepthFirstVisitor {
 	 */
 	@Override
 	public void visit(ParallelForConstruct n) {
-		parallelConstructList.add(n);
 		n.getF6().accept(this);
+		parallelConstructList.add(n);
 	}
 
 	/**
@@ -69,8 +69,8 @@ public class InfiParallelConstructGetter extends DepthFirstVisitor {
 	 */
 	@Override
 	public void visit(ParallelSectionsConstruct n) {
-		parallelConstructList.add(n);
 		n.getF5().accept(this);
+		parallelConstructList.add(n);
 	}
 
 	@Override

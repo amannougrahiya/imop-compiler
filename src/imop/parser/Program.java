@@ -120,6 +120,7 @@ public class Program {
 	private static boolean initialPhasesRemembered = false;
 	public static final long thresholdIDFAProcessingCount = (long) 1e6;
 	public static DecimalFormat df2 = new DecimalFormat("#.##");
+	public static boolean disableLineNumbers = false;
 
 	public static void rememberInitialPhasesIfRequired() {
 		if (Program.getRoot() == null) {
@@ -166,6 +167,7 @@ public class Program {
 		Program.preciseDFDEdges = false;
 		Program.updateCategory = UpdateCategory.LZINC; // Default is LZINC.
 		Program.mhpUpdateCategory = UpdateCategory.LZINC; // Default is LZINC.
+		Program.disableLineNumbers = true; // Unless we need line numbers, keep this as true. 
 
 		String filePath = "";
 		filePath = ("../tests/classB-preproc/bt-b.i"); // SVE-all: 29s.
@@ -393,6 +395,9 @@ public class Program {
 			}
 			if (str.equals("--file") || str.equals("-f")) {
 				filePath = args[index + 1];
+			}
+			if (str.equals("--disableLineNumbering") || str.equals("-dln")) {
+				Program.disableLineNumbers = true;
 			}
 			if (str.equals("--category") || str.equals("-c")) {
 				String next = args[index + 1];
