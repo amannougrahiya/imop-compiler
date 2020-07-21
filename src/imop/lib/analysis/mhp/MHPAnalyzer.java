@@ -64,7 +64,7 @@ public class MHPAnalyzer {
 		 * Step 6: For every parallel construct, clear the allPhaseList.
 		 */
 		BeginPhasePoint.flushALLMHPData();
-		for (ParallelConstruct parCons : Misc.getInheritedEnclosee(Program.getRoot(), ParallelConstruct.class)) {
+		for (ParallelConstruct parCons : Misc.getExactEnclosee(Program.getRoot(), ParallelConstruct.class)) {
 			parCons.getInfo().flushALLMHPData();
 		}
 	}

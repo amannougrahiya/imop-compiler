@@ -78,7 +78,7 @@ public class ConcurrencyAnalysis {
 	public static void performMHPByYuan() {
 		int aggregateSize = 0;
 		List<Integer> setSizes = new ArrayList<>();
-		for (ParallelConstruct parCons : Misc.getInheritedEnclosee(Program.getRoot(), ParallelConstruct.class)) {
+		for (ParallelConstruct parCons : Misc.getExactEnclosee(Program.getRoot(), ParallelConstruct.class)) {
 			BTNode btn = BarrierTreeConstructor.getBarrierTreeFor(parCons);
 			btn.populateBTPairs(parCons);
 			Set<StaticPhase> getAllStaticPhases = ConcurrencyAnalysis.getStaticPhases(parCons);
@@ -141,7 +141,7 @@ public class ConcurrencyAnalysis {
 			if (funcBT != null) {
 				funcLoc += funcBT.getString(1) + "\n";
 			}
-			for (ParallelConstruct parCons : Misc.getInheritedEnclosee(funcDef, ParallelConstruct.class)) {
+			for (ParallelConstruct parCons : Misc.getExactEnclosee(funcDef, ParallelConstruct.class)) {
 				BTNode btNode = parCons.getInfo().getBTNode();
 				if (btNode != null) {
 					funcLoc += "PC #" + i++ + ": \n";

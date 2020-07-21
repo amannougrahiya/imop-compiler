@@ -110,7 +110,7 @@ public class RedundantSynchronizationRemoval {
 		for (Node barrierNode : Misc.getInheritedEncloseeList(root, BarrierDirective.class)) {
 			BarrierDirective barrier = (BarrierDirective) barrierNode;
 			Set<Phase> allPhaseSet = new HashSet<>();
-			for (ParallelConstruct parConsNode : Misc.getInheritedEnclosee(Program.getRoot(),
+			for (ParallelConstruct parConsNode : Misc.getExactEnclosee(Program.getRoot(),
 					ParallelConstruct.class)) {
 				allPhaseSet.addAll(parConsNode.getInfo().getConnectedPhases());
 			}
@@ -308,7 +308,7 @@ public class RedundantSynchronizationRemoval {
 	}
 
 	public static void removeBarriersFromAllParConsWithin(Node root) {
-		for (ParallelConstruct parCons : Misc.getInheritedEnclosee(root, ParallelConstruct.class)) {
+		for (ParallelConstruct parCons : Misc.getExactEnclosee(root, ParallelConstruct.class)) {
 			RedundantSynchronizationRemoval.mergePhasesOf(parCons);
 		}
 	}

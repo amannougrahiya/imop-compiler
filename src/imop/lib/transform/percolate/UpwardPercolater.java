@@ -68,7 +68,7 @@ public class UpwardPercolater {
 	 * without crossing loop headers), and removes barriers.
 	 */
 	public static void percolateCodeAndRemoveBarriers() {
-		for (ParallelConstruct parConstruct : Misc.getInheritedEnclosee(Program.getRoot(), ParallelConstruct.class)) {
+		for (ParallelConstruct parConstruct : Misc.getExactEnclosee(Program.getRoot(), ParallelConstruct.class)) {
 			UpwardPercolater.initPercolate(parConstruct);
 		}
 		RedundantSynchronizationRemoval.removeBarriers(Program.getRoot());

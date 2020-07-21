@@ -102,7 +102,7 @@ public class LoopInstructionsRescheduler {
 		do {
 			changed = false;
 			DriverModule.performCopyElimination(itStmt);
-			for (ParallelConstruct parCons : Misc.getInheritedEnclosee(Program.getRoot(), ParallelConstruct.class)) {
+			for (ParallelConstruct parCons : Misc.getExactEnclosee(Program.getRoot(), ParallelConstruct.class)) {
 				UpwardPercolater.initPercolate(parCons);
 			}
 			int initialPhaseCount = DriverModule.phaseCountPerExecution(itStmt);

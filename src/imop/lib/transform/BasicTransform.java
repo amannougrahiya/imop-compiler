@@ -642,7 +642,7 @@ public class BasicTransform {
 	 *            removed.
 	 */
 	public static void removeEmptyConstructs(Node node) {
-		for (Node openNode : Misc.getInheritedEnclosee(node, OmpConstruct.class)) {
+		for (Node openNode : Misc.getExactEnclosee(node, OmpConstruct.class)) {
 			Statement stmt = openNode.getInfo().getCFGInfo().getBody();
 			if (stmt == null || !(stmt instanceof CompoundStatement)) {
 				continue;

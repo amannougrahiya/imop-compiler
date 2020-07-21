@@ -18,6 +18,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -352,7 +353,7 @@ public class Misc {
 	 * Creates the inter-task data-flow edges among DummyFlushDirective.
 	 */
 	public static void createDataFlowGraph(Node rootNode) {
-		for (ParallelConstruct parConstruct : Misc.getInheritedEnclosee(rootNode, ParallelConstruct.class)) {
+		for (ParallelConstruct parConstruct : Misc.getExactEnclosee(rootNode, ParallelConstruct.class)) {
 			for (Phase ph : parConstruct.getInfo().getConnectedPhases()) {
 				DataFlowGraph.populateInterTaskEdges(rootNode, ph);
 			}
@@ -1468,11 +1469,22 @@ public class Misc {
 		if (n == null) {
 			return new HashSet<>();
 		}
+		if (classId == 897) {
+			Misc.warnDueToLackOfFeature(
+					"Handling of ParCons via Misc.getInheritedEnclosee is not efficient. Use getExactEnclosee IF it is correct to do so.",
+					null);
+		}
 		if (classId % 3 == 0) {
 			Collection<T> returnSet = new HashSet<>();
-			InfiInheritedStatementGetter<T> nodeGetter = new InfiInheritedStatementGetter<>(classId, returnSet);
-			n.accept(nodeGetter);
-			return (Set<T>) returnSet;
+			if (Node.stmtSuperClassIds.contains(classId)) {
+				InfiInheritedStatementGetter<T> nodeGetter = new InfiInheritedStatementGetter<>(classId, returnSet);
+				n.accept(nodeGetter);
+				return (Set<T>) returnSet;
+			} else {
+				InfiExactStatementGetter<T> nodeGetter = new InfiExactStatementGetter<>(classId, returnSet);
+				n.accept(nodeGetter);
+				return (Set<T>) returnSet;
+			}
 		}
 		if (Node.superClassIds.contains(classId)) {
 			InfiInheritedASTNodesGetter<T> nodeGetter = new InfiInheritedASTNodesGetter<>(classId, traverseExpressions);
@@ -1528,11 +1540,22 @@ public class Misc {
 		if (n == null) {
 			return new LinkedList<>();
 		}
+		if (classId == 897) {
+			Misc.warnDueToLackOfFeature(
+					"Handling of ParCons via Misc.getInheritedEnclosee is not efficient. Use getExactEnclosee IF it is correct to do so.",
+					null);
+		}
 		if (classId % 3 == 0) {
 			Collection<T> returnList = new ArrayList<>();
-			InfiInheritedStatementGetter<T> nodeGetter = new InfiInheritedStatementGetter<>(classId, returnList);
-			n.accept(nodeGetter);
-			return (List<T>) returnList;
+			if (Node.stmtSuperClassIds.contains(classId)) {
+				InfiInheritedStatementGetter<T> nodeGetter = new InfiInheritedStatementGetter<>(classId, returnList);
+				n.accept(nodeGetter);
+				return (List<T>) returnList;
+			} else {
+				InfiExactStatementGetter<T> nodeGetter = new InfiExactStatementGetter<>(classId, returnList);
+				n.accept(nodeGetter);
+				return (List<T>) returnList;
+			}
 		}
 		if (Node.superClassIds.contains(classId)) {
 			InfiInheritedASTNodeListGetter<T> nodeGetter = new InfiInheritedASTNodeListGetter<>(classId,
@@ -1708,10 +1731,13 @@ public class Misc {
 			return new HashSet<>();
 		}
 		boolean notAStmtType = false;
+		boolean hasASuperStmt = false;
 		for (int i : classIds) {
 			if (i % 3 != 0) {
 				notAStmtType = true;
-				break;
+			}
+			if (Node.stmtSuperClassIds.contains(i)) {
+				hasASuperStmt = true;
 			}
 		}
 		if (notAStmtType) {
@@ -1725,10 +1751,18 @@ public class Misc {
 			}
 		} else {
 			Collection<Node> returnSet = new HashSet<>();
-			InfiInheritedMultiTypeStatementGetter<Node> nodeGetter = new InfiInheritedMultiTypeStatementGetter<>(
-					classIds, returnSet);
-			n.accept(nodeGetter);
-			return (Set<Node>) returnSet;
+			if (hasASuperStmt) {
+				InfiInheritedMultiTypeStatementGetter<Node> nodeGetter = new InfiInheritedMultiTypeStatementGetter<>(
+						classIds, returnSet);
+				n.accept(nodeGetter);
+				return (Set<Node>) returnSet;
+			} else {
+				InfiExactMultiTypeStatementGetter<Node> nodeGetter = new InfiExactMultiTypeStatementGetter<>(classIds,
+						returnSet);
+				n.accept(nodeGetter);
+				return (Set<Node>) returnSet;
+
+			}
 		}
 	}
 
@@ -1780,10 +1814,13 @@ public class Misc {
 			return new LinkedList<>();
 		}
 		boolean notAStmtType = false;
+		boolean hasASuperStmt = false;
 		for (int i : classIds) {
 			if (i % 3 != 0) {
 				notAStmtType = true;
-				break;
+			}
+			if (Node.stmtSuperClassIds.contains(i)) {
+				hasASuperStmt = true;
 			}
 		}
 		if (notAStmtType) {
@@ -1797,10 +1834,18 @@ public class Misc {
 			}
 		} else {
 			Collection<Node> returnList = new ArrayList<>();
-			InfiInheritedMultiTypeStatementGetter<Node> nodeGetter = new InfiInheritedMultiTypeStatementGetter<>(
-					classIds, returnList);
-			n.accept(nodeGetter);
-			return (List<Node>) returnList;
+			if (hasASuperStmt) {
+				InfiInheritedMultiTypeStatementGetter<Node> nodeGetter = new InfiInheritedMultiTypeStatementGetter<>(
+						classIds, returnList);
+				n.accept(nodeGetter);
+				return (List<Node>) returnList;
+			} else {
+				InfiExactMultiTypeStatementGetter<Node> nodeGetter = new InfiExactMultiTypeStatementGetter<>(classIds,
+						returnList);
+				n.accept(nodeGetter);
+				return (List<Node>) returnList;
+
+			}
 		}
 	}
 

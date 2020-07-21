@@ -8,7 +8,7 @@ c  in this directory. Do not modify it by hand.
 #define	NITER_DEFAULT	60
 #define	DT_DEFAULT	0.010
 #define	CONVERTDOUBLE	FALSE
-#define COMPILETIME "04 Dec 2019"
+#define COMPILETIME "20 Jul 2020"
 #define NPBVERSION "3.0 structured"
 #define CS1 "gcc"
 #define CS2 "gcc"

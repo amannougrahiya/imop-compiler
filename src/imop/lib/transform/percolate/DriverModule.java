@@ -377,7 +377,7 @@ public class DriverModule {
 			int minPhaseCount = DriverModule.phaseCountPerExecution(itStmt);
 			boolean proceed = DriverModule.run(itStmt);
 			if (proceed) {
-				for (ParallelConstruct parCons : Misc.getInheritedEnclosee(Program.getRoot(),
+				for (ParallelConstruct parCons : Misc.getExactEnclosee(Program.getRoot(),
 						ParallelConstruct.class)) {
 					UpwardPercolater.initPercolate(parCons);
 				}

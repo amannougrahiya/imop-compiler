@@ -31,8 +31,11 @@ public abstract class Node implements java.io.Serializable, DFable {
 	 * 
 	 */
 	private static final long serialVersionUID = -58300488119959833L;
+
+	public static final Set<Integer> stmtSuperClassIds = new HashSet<>(
+			Arrays.asList(new Integer[] {3, 15, 21, 33, 39, 51, 57, 897, 1479}));
 	public static final Set<Integer> superClassIds = new HashSet<>(
-			Arrays.asList(new Integer[] { 2, 3, 541, 467, 281, 1466, 15, 21, 33, 39, 51, 57, 1479, 897 }));
+			Arrays.asList(new Integer[]{ 2, 3, 15, 21, 33, 39, 51, 57, 281, 467, 541, 897, 1466, 1479 }));
 	private Node parent;
 	protected NodeInfo info;
 	private int nodeId = -1;

@@ -19,7 +19,6 @@ import imop.ast.node.internal.PostCallNode;
 import imop.ast.node.internal.PreCallNode;
 import imop.ast.node.internal.SimplePrimaryExpression;
 import imop.baseVisitor.DepthFirstProcess;
-import imop.baseVisitor.DepthFirstVisitor;
 
 /**
  * Collects statements of the given kind in post-order.

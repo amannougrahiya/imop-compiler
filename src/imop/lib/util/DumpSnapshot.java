@@ -284,7 +284,7 @@ public class DumpSnapshot {
 			return;
 		}
 		String text = "";
-		for (ParallelConstruct parCons : Misc.getInheritedEnclosee(Program.getRoot(), ParallelConstruct.class)) {
+		for (ParallelConstruct parCons : Misc.getExactEnclosee(Program.getRoot(), ParallelConstruct.class)) {
 			text += Misc.getLineNum(parCons) + ": " + parCons.getInfo().getConnectedPhases() + "\n";
 		}
 		DumpSnapshot.printToFile(text, Program.fileName + "-allPhList" + string + ".txt");
@@ -497,12 +497,6 @@ public class DumpSnapshot {
 			return;
 		}
 		n.accept(new ParallelPhaseDumper());
-	}
-
-	public static void dumpPhaseFlowGraph() {
-		for (ParallelConstruct parCons : Misc.getInheritedEnclosee(Program.getRoot(), ParallelConstruct.class)) {
-
-		}
 	}
 
 	/**
