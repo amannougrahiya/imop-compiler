@@ -13,14 +13,14 @@ import java.util.Set;
 
 import imop.ast.node.external.Node;
 import imop.lib.analysis.BasePA.StableStatus;
-import imop.lib.cfg.CFGEdge;
+import imop.lib.cfg.Edge;
 
 public abstract class BasePA {
 	public static Set<BasePA> allAbstractions = new HashSet<>();
 	protected Set<Node> addedNodes = new HashSet<>();
 	protected Set<Node> removedNodes = new HashSet<>();
-	protected Set<CFGEdge> addedEdges = new HashSet<>();
-	protected Set<CFGEdge> removedEdges = new HashSet<>();
+	protected Set<Edge> addedEdges = new HashSet<>();
+	protected Set<Edge> removedEdges = new HashSet<>();
 	protected StableStatus stableStatus = StableStatus.INIT;
 	protected final StabilizationMode stabilizationMode;
 
@@ -93,7 +93,7 @@ public abstract class BasePA {
 		}
 	}
 
-	public static void modelEdgeAddition(CFGEdge addedEdge) {
+	public static void modelEdgeAddition(Edge addedEdge) {
 		for (BasePA pa : BasePA.allAbstractions) {
 			boolean changed = pa.removedEdges.remove(addedEdge);
 			if (!changed) {
@@ -102,9 +102,9 @@ public abstract class BasePA {
 		}
 	}
 
-	public static void modelEdgeSetAddition(Set<CFGEdge> addedEdges) {
+	public static void modelEdgeSetAddition(Set<Edge> addedEdges) {
 		for (BasePA pa : BasePA.allAbstractions) {
-			for (CFGEdge n : addedEdges) {
+			for (Edge n : addedEdges) {
 				boolean changed = pa.removedEdges.remove(n);
 				if (!changed) {
 					pa.stableStatus = pa.addedEdges.add(n) ? StableStatus.UNSTABLE : pa.stableStatus;
@@ -113,7 +113,7 @@ public abstract class BasePA {
 		}
 	}
 
-	public static void modelEdgeRemoval(CFGEdge removedEdge) {
+	public static void modelEdgeRemoval(Edge removedEdge) {
 		for (BasePA pa : BasePA.allAbstractions) {
 			boolean changed = pa.addedEdges.remove(removedEdge);
 			if (!changed) {
@@ -122,9 +122,9 @@ public abstract class BasePA {
 		}
 	}
 
-	public static void modelEdgeSetRemoval(Set<CFGEdge> removedEdges) {
+	public static void modelEdgeSetRemoval(Set<Edge> removedEdges) {
 		for (BasePA pa : BasePA.allAbstractions) {
-			for (CFGEdge n : removedEdges) {
+			for (Edge n : removedEdges) {
 				boolean changed = pa.addedEdges.remove(n);
 				if (!changed) {
 					pa.stableStatus = pa.removedEdges.add(n) ? StableStatus.UNSTABLE : pa.stableStatus;
@@ -141,9 +141,9 @@ public abstract class BasePA {
 
 	public abstract void handleNodeRemoval(Node n);
 
-	public abstract void handleEdgeAddition(CFGEdge e);
+	public abstract void handleEdgeAddition(Edge e);
 
-	public abstract void handleEdgeRemoval(CFGEdge e);
+	public abstract void handleEdgeRemoval(Edge e);
 
 	public void stabilizer() {
 		if (this.stableStatus == StableStatus.STABLE) {
@@ -159,11 +159,11 @@ public abstract class BasePA {
 			this.handleNodeRemoval(n);
 		}
 		this.removedNodes.clear();
-		for (CFGEdge e : this.addedEdges) {
+		for (Edge e : this.addedEdges) {
 			this.handleEdgeAddition(e);
 		}
 		this.addedEdges.clear();
-		for (CFGEdge e : this.removedEdges) {
+		for (Edge e : this.removedEdges) {
 			this.handleEdgeRemoval(e);
 		}
 		this.removedEdges.clear();
