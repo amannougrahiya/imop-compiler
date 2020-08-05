@@ -10,12 +10,12 @@ package imop.lib.cfg;
 
 import imop.ast.node.external.Node;
 
-public class CFGEdge {
+public class Edge {
 	public final Node src;
 	public final Node dest;
 	private int hashCode = -1;
 
-	public CFGEdge(Node src, Node dest) {
+	public Edge(Node src, Node dest) {
 		assert (src != null && dest != null);
 		this.src = src;
 		this.dest = dest;
@@ -35,10 +35,10 @@ public class CFGEdge {
 			return true;
 		if (obj == null)
 			return false;
-		if (!(obj instanceof CFGEdge)) {
+		if (!(obj instanceof Edge)) {
 			return false;
 		}
-		CFGEdge other = (CFGEdge) obj;
+		Edge other = (Edge) obj;
 		if (dest != other.dest || src != other.src) {
 			return false;
 		}
