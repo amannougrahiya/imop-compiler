@@ -333,8 +333,11 @@ public class Symbol extends Cell {
 		}
 	}
 
+	//	public static Symbol tempNow;
+
 	@Override
 	public ImmutableCellSet getPointsTo(Node node) {
+		//		tempNow = this;
 		node = Misc.getCFGNodeFor(node);
 		if (this.type instanceof ArrayType) {
 			CellSet pointsToSet = new CellSet();

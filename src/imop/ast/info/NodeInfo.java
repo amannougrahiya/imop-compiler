@@ -636,6 +636,7 @@ public class NodeInfo implements Cloneable {
 					analysisHandle.markStateToBeValid();
 					if (analysisName == AnalysisName.POINTSTO) {
 						Program.memoizeAccesses++;
+						//						System.out.println("Triggering PTA stabilization in response to a query of points-to on " + Symbol.tempNow.getName());
 						analysisHandle.restartAnalysisFromStoredNodes();
 						Program.memoizeAccesses--;
 					} else {

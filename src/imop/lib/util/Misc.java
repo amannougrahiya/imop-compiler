@@ -93,6 +93,7 @@ import imop.ast.node.external.VariableList;
 import imop.ast.node.external.WhileStatement;
 import imop.ast.node.internal.BeginNode;
 import imop.ast.node.internal.CallStatement;
+import imop.ast.node.internal.DummyFlushDirective;
 import imop.ast.node.internal.EndNode;
 import imop.ast.node.internal.OmpClause;
 import imop.ast.node.internal.Scopeable;
@@ -124,6 +125,7 @@ import imop.lib.analysis.typeSystem.StructType;
 import imop.lib.analysis.typeSystem.Type;
 import imop.lib.analysis.typeSystem.Typedef;
 import imop.lib.analysis.typeSystem.UnionType;
+import imop.lib.cfg.info.ProgramElementExactCaches;
 import imop.lib.cfg.parallel.DataFlowGraph;
 import imop.lib.cg.CallSite;
 import imop.lib.getter.InfiExactASTNodeListGetter;
@@ -1388,7 +1390,7 @@ public class Misc {
 	 * @return
 	 *         classId corresponding to {@code astType}
 	 */
-	private static int getClassId(Class<? extends Node> astType) {
+	public static int getClassId(Class<? extends Node> astType) {
 		int classId = -1;
 		try {
 			Method m = astType.getMethod("getClassId");
@@ -1417,7 +1419,7 @@ public class Misc {
 	 *         set of classIds corresponding to the types in {@code astTypeSet}
 	 */
 	@SuppressWarnings("unchecked")
-	private static Set<Integer> getClassIds(Set<Class<? extends Node>> astTypeSet) {
+	public static Set<Integer> getClassIds(Set<Class<? extends Node>> astTypeSet) {
 		Set<Integer> classIdSet = new HashSet<>();
 		for (Class<?> astType : astTypeSet) {
 			classIdSet.add(Misc.getClassId((Class<? extends Node>) astType));
@@ -1473,6 +1475,7 @@ public class Misc {
 			Misc.warnDueToLackOfFeature(
 					"Handling of ParCons via Misc.getInheritedEnclosee is not efficient. Use getExactEnclosee IF it is correct to do so.",
 					null);
+			Thread.dumpStack();
 		}
 		if (classId % 3 == 0) {
 			Collection<T> returnSet = new HashSet<>();
@@ -1544,6 +1547,7 @@ public class Misc {
 			Misc.warnDueToLackOfFeature(
 					"Handling of ParCons via Misc.getInheritedEnclosee is not efficient. Use getExactEnclosee IF it is correct to do so.",
 					null);
+			Thread.dumpStack();
 		}
 		if (classId % 3 == 0) {
 			Collection<T> returnList = new ArrayList<>();
@@ -1581,6 +1585,11 @@ public class Misc {
 	 *         {@code astType}.
 	 */
 	public static <T extends Node> Set<T> getExactEnclosee(Node n, Class<T> astType) {
+		if (astType == CallStatement.class || astType == ParallelConstruct.class
+				|| astType == DummyFlushDirective.class) {
+			return ProgramElementExactCaches.getElements(astType);
+		}
+
 		return Misc.getExactEnclosee(n, astType, TraverseExpressions.TRAVERSE_EXPRESSIONS);
 	}
 

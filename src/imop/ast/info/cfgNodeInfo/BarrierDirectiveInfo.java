@@ -371,7 +371,7 @@ public class BarrierDirectiveInfo extends OmpDirectiveInfo {
 			System.err.println("Pushing a barrier down a forked path.");
 			NodeRemover.removeNode(barrier);
 			List<SideEffect> sideEffects = InsertImmediateSuccessor.insert(ifPredicate, barrier);
-			Phase.removeUnreachablePhases();
+			//			Phase.removeUnreachablePhases();
 			if (!Misc.changePerformed(sideEffects)) {
 				return false;
 			} else {

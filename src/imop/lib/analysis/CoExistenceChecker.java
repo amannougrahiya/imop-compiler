@@ -200,10 +200,12 @@ public class CoExistenceChecker {
 		PredicateFlowFact n2Paths = (PredicateFlowFact) n2.getInfo().getIN(AnalysisName.PREDICATE_ANALYSIS);
 
 		if (n1Paths == null || n2Paths == null) {
-			System.err.println("FOUND AN INTERESTING CASE, where the following nodes do not have any paths:\n"
-					+ n1.getInfo().getDebugString() + "\n and \n" + n2.getInfo().getDebugString());
-			DumpSnapshot.dumpPredicates("erroneous");
-			System.exit(0);
+			// TODO: Uncomment the following code, after re-inspecting the logic here.
+			//			System.err.println("FOUND AN INTERESTING CASE, where the following nodes do not have any paths:\n"
+			//					+ n1.getInfo().getDebugString() + "\n and \n" + n2.getInfo().getDebugString());
+			//			DumpSnapshot.dumpPredicates("erroneous");
+			//			Thread.dumpStack();
+			//			System.exit(0);
 			return true; // conservatively.
 		}
 

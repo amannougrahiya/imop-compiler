@@ -30,6 +30,7 @@ import imop.ast.node.internal.CallStatement;
 import imop.ast.node.internal.DummyFlushDirective;
 import imop.ast.node.internal.EndNode;
 import imop.ast.node.internal.Scopeable;
+import imop.lib.analysis.BasePA;
 import imop.lib.analysis.CoExistenceChecker;
 import imop.lib.analysis.flowanalysis.dataflow.PointsToAnalysis;
 import imop.lib.analysis.flowanalysis.dataflow.PointsToAnalysis.PointsToGlobalState;
@@ -45,6 +46,7 @@ import imop.lib.analysis.mhp.NodePhaseInfo;
 import imop.lib.analysis.mhp.Phase;
 import imop.lib.analysis.solver.ConstraintsGenerator;
 import imop.lib.cfg.info.CFGInfo;
+import imop.lib.cfg.info.ProgramElementExactCaches;
 import imop.lib.cg.CallStack;
 import imop.lib.cg.NodeWithStack;
 import imop.lib.util.CollectorVisitor;
@@ -119,6 +121,7 @@ public class AutomatedUpdater {
 		// Update of flow-facts for removal isn't done here, since we need the actual removal done before rerunning any analysis.
 		// updateSetForRemoval.add(AutomatedUpdator::updateFlowFactsForRemoval);
 
+		updateSetForRemoval.add(ProgramElementExactCaches::considerNodeRemoval);
 		updateSetForRemoval.add(AutomatedUpdater::performResetOfMHPUponRemoval);
 		updateSetForRemoval.add(AutomatedUpdater::updateCallStatementsUponRemoval);
 		updateSetForRemoval.add(AutomatedUpdater::updateSymbolsAtDummyFlushesUponRemoval);
@@ -127,6 +130,7 @@ public class AutomatedUpdater {
 		updateSetForRemoval.add(AutomatedUpdater::modelRemovalOfLabels);
 		//		updateSetForRemoval.add(AutomatedUpdater::invalidateEnclosingSymbolSets);
 
+		updateSetForAddition.add(ProgramElementExactCaches::considerNodeAddition);
 		//		updateSetForAddition.add(AutomatedUpdater::invalidateEnclosingSymbolSets);
 		updateSetForAddition.add(AutomatedUpdater::modelAdditionOfLabels);
 		//		updateSetForAddition.add(AutomatedUpdater::updateSymbolTableOnNodeAddition);
@@ -1121,7 +1125,7 @@ public class AutomatedUpdater {
 		if (!addedNode.getInfo().isConnectedToProgram()) {
 			return;
 		}
-		for (ParallelConstruct parCons : Misc.getInheritedPostOrderEnclosee(addedNode, ParallelConstruct.class)) {
+		for (ParallelConstruct parCons : Misc.getExactPostOrderEnclosee(addedNode, ParallelConstruct.class)) {
 			MHPAnalyzer mhp = new MHPAnalyzer(parCons);
 			mhp.initMHP();
 		}
@@ -1133,7 +1137,7 @@ public class AutomatedUpdater {
 	}
 
 	public static void performResetOfMHPUponRemoval(Node removedNode) {
-		for (ParallelConstruct parCons : Misc.getInheritedPostOrderEnclosee(removedNode, ParallelConstruct.class)) {
+		for (ParallelConstruct parCons : Misc.getExactPostOrderEnclosee(removedNode, ParallelConstruct.class)) {
 			parCons.getInfo().flushMHPData();
 		}
 	}

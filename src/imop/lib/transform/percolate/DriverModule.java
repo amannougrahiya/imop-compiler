@@ -134,9 +134,9 @@ public class DriverModule {
 		System.err.println("Time spent in expansion and barrier removal: " + (System.nanoTime() - timerLocal) / 1e9);
 		DumpSnapshot.dumpRoot("merged-rem-inlined-merged-rem" + Program.mhpUpdateCategory);
 		totTime = (System.nanoTime() - Main.totalTime) / (1.0 * 1e9);
-		System.err.println("MPR Time: " + (System.nanoTime() - mprTime) / 1e9);
-		System.err.println("TOTAL TIME (including disk I/O time): " + totTime + "s.");
-		System.exit(0);
+		//		System.err.println("MPR Time: " + (System.nanoTime() - mprTime) / 1e9);
+		//		System.err.println("TOTAL TIME (including disk I/O time): " + totTime + "s.");
+		//		System.exit(0);
 		//		RedundantSynchronizationRemoval.removeBarriersFromAllParConsWithin(Program.getRoot());
 		//		if (dumpIntermediate) {
 		//double
@@ -148,7 +148,7 @@ public class DriverModule {
 			Program.sveSensitive = SVEDimension.SVE_SENSITIVE;
 		}
 		//		change();
-		//		DriverModule.optimizeBarriers(); // This method does not return;
+		DriverModule.optimizeBarriers(); // This method does not return;
 		System.exit(0);
 	}
 
@@ -377,8 +377,7 @@ public class DriverModule {
 			int minPhaseCount = DriverModule.phaseCountPerExecution(itStmt);
 			boolean proceed = DriverModule.run(itStmt);
 			if (proceed) {
-				for (ParallelConstruct parCons : Misc.getExactEnclosee(Program.getRoot(),
-						ParallelConstruct.class)) {
+				for (ParallelConstruct parCons : Misc.getExactEnclosee(Program.getRoot(), ParallelConstruct.class)) {
 					UpwardPercolater.initPercolate(parCons);
 				}
 				/*
