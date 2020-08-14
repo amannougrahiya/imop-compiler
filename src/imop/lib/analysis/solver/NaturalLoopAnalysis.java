@@ -487,8 +487,6 @@ public class NaturalLoopAnalysis {
 		Set<Node> loopHeaders = new HashSet<>();
 		for (Node leaf : cfgNode.getInfo().getCFGInfo().getIntraTaskCFGLeafContents()) {
 			for (Node pred : leaf.getInfo().getCFGInfo().getInterProceduralLeafPredecessors()) {
-				int x = 0;
-				x = x + 1;
 				if (pred.getInfo().getDominators().contains(leaf)) {
 					loopHeaders.add(leaf);
 					break;

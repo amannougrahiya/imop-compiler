@@ -651,7 +651,7 @@ public class AutomatedUpdater {
 	 */
 	public static void updateFlowFactsForAddition(Node newNode) {
 		Node node = Misc.getCFGNodeFor(newNode);
-		if (Program.updateCategory == UpdateCategory.EGFF || Program.updateCategory == UpdateCategory.LZFF) {
+		if (Program.updateCategory == UpdateCategory.EGINV || Program.updateCategory == UpdateCategory.LZINV) {
 			AutomatedUpdater.updateFlowFactsForward(null);
 			AutomatedUpdater.updateFlowFactsBackward(null);
 			return;
@@ -696,7 +696,7 @@ public class AutomatedUpdater {
 	 *            set of nodes starting which forward analyses have to be rerun.
 	 */
 	public static void updateFlowFactsForward(Set<Node> nodeSet) {
-		if (Program.updateCategory == UpdateCategory.EGFF) {
+		if (Program.updateCategory == UpdateCategory.EGINV) {
 			assert (nodeSet == null || nodeSet.isEmpty());
 			for (FlowAnalysis<?> analysis : FlowAnalysis.getAllAnalyses().values()) {
 				if (analysis instanceof InterThreadForwardCellularAnalysis
@@ -704,7 +704,7 @@ public class AutomatedUpdater {
 					AutomatedUpdater.reinitIDFA(analysis);
 				}
 			}
-		} else if (Program.updateCategory == UpdateCategory.LZFF) {
+		} else if (Program.updateCategory == UpdateCategory.LZINV) {
 			assert (nodeSet == null || nodeSet.isEmpty());
 			for (FlowAnalysis<?> analysis : FlowAnalysis.getAllAnalyses().values()) {
 				if (analysis instanceof InterThreadForwardCellularAnalysis
@@ -713,7 +713,7 @@ public class AutomatedUpdater {
 				}
 			}
 
-		} else if (Program.updateCategory == UpdateCategory.EGINC) {
+		} else if (Program.updateCategory == UpdateCategory.EGUPD) {
 			for (FlowAnalysis<?> analysis : FlowAnalysis.getAllAnalyses().values()) {
 				if (analysis instanceof InterThreadForwardCellularAnalysis
 						|| analysis instanceof InterThreadForwardNonCellularAnalysis) {
@@ -734,7 +734,7 @@ public class AutomatedUpdater {
 					}
 				}
 			}
-		} else if (Program.updateCategory == UpdateCategory.LZINC) {
+		} else if (Program.updateCategory == UpdateCategory.LZUPD) {
 			for (FlowAnalysis<?> analysis : FlowAnalysis.getAllAnalyses().values()) {
 				if (analysis instanceof InterThreadForwardCellularAnalysis
 						|| analysis instanceof InterThreadForwardNonCellularAnalysis) {
@@ -773,7 +773,7 @@ public class AutomatedUpdater {
 	 *            rerun.
 	 */
 	public static void updateFlowFactsBackward(Set<Node> nodeSet) {
-		if (Program.updateCategory == UpdateCategory.EGFF) {
+		if (Program.updateCategory == UpdateCategory.EGINV) {
 			assert (nodeSet == null || nodeSet.isEmpty());
 			for (FlowAnalysis<?> analysis : FlowAnalysis.getAllAnalyses().values()) {
 				if (analysis instanceof InterThreadBackwardCellularAnalysis
@@ -781,7 +781,7 @@ public class AutomatedUpdater {
 					AutomatedUpdater.reinitIDFA(analysis);
 				}
 			}
-		} else if (Program.updateCategory == UpdateCategory.LZFF) {
+		} else if (Program.updateCategory == UpdateCategory.LZINV) {
 			assert (nodeSet == null || nodeSet.isEmpty());
 			for (FlowAnalysis<?> analysis : FlowAnalysis.getAllAnalyses().values()) {
 				if (analysis instanceof InterThreadBackwardCellularAnalysis
@@ -790,7 +790,7 @@ public class AutomatedUpdater {
 				}
 			}
 
-		} else if (Program.updateCategory == UpdateCategory.EGINC) {
+		} else if (Program.updateCategory == UpdateCategory.EGUPD) {
 			for (FlowAnalysis<?> analysis : FlowAnalysis.getAllAnalyses().values()) {
 				if (analysis instanceof InterThreadBackwardCellularAnalysis
 						|| analysis instanceof InterThreadBackwardNonCellularAnalysis) {
@@ -806,7 +806,7 @@ public class AutomatedUpdater {
 				}
 			}
 		} else {
-			assert (Program.updateCategory == UpdateCategory.LZINC);
+			assert (Program.updateCategory == UpdateCategory.LZUPD);
 			for (FlowAnalysis<?> analysis : FlowAnalysis.getAllAnalyses().values()) {
 				if (analysis instanceof InterThreadBackwardCellularAnalysis
 						|| analysis instanceof InterThreadBackwardNonCellularAnalysis) {
@@ -833,7 +833,7 @@ public class AutomatedUpdater {
 	 *         data-flow analyses.
 	 */
 	public static Set<Node> nodesForForwardRerunOnRemoval(Node oldNode) {
-		if (Program.updateCategory == UpdateCategory.EGFF || Program.updateCategory == UpdateCategory.LZFF) {
+		if (Program.updateCategory == UpdateCategory.EGINV || Program.updateCategory == UpdateCategory.LZINV) {
 			return null;
 		}
 		Node node = Misc.getCFGNodeFor(oldNode);
@@ -883,7 +883,7 @@ public class AutomatedUpdater {
 	 *         traversing in the forward direction.
 	 */
 	public static Set<Node> unreachableAfterRemovalForward(Node oldNode) {
-		if (Program.updateCategory == UpdateCategory.EGFF || Program.updateCategory == UpdateCategory.LZFF) {
+		if (Program.updateCategory == UpdateCategory.EGINV || Program.updateCategory == UpdateCategory.LZINV) {
 			return null;
 		}
 		Node node = Misc.getCFGNodeFor(oldNode);
@@ -940,7 +940,7 @@ public class AutomatedUpdater {
 	 *         data-flow analyses.
 	 */
 	public static Set<Node> nodesForBackwardRerunOnRemoval(Node oldNode) {
-		if (Program.updateCategory == UpdateCategory.EGFF || Program.updateCategory == UpdateCategory.LZFF) {
+		if (Program.updateCategory == UpdateCategory.EGINV || Program.updateCategory == UpdateCategory.LZINV) {
 			return null;
 		}
 		Node node = Misc.getCFGNodeFor(oldNode);
@@ -990,7 +990,7 @@ public class AutomatedUpdater {
 	 *         traversing in the backward direction.
 	 */
 	public static Set<Node> unreachableAfterRemovalBackward(Node oldNode) {
-		if (Program.updateCategory == UpdateCategory.EGFF || Program.updateCategory == UpdateCategory.LZFF) {
+		if (Program.updateCategory == UpdateCategory.EGINV || Program.updateCategory == UpdateCategory.LZINV) {
 			return null;
 		}
 		Node node = Misc.getCFGNodeFor(oldNode);
@@ -1257,10 +1257,10 @@ public class AutomatedUpdater {
 	 *            node that has been inserted at a location in the CFG.
 	 */
 	public static void updatePhaseAndInterTaskEdgesUponAddition(Node node) {
-		if (Program.mhpUpdateCategory == UpdateCategory.EGFF) {
+		if (Program.mhpUpdateCategory == UpdateCategory.EGINV) {
 			AutomatedUpdater.reinitMHP();
 			return;
-		} else if (Program.mhpUpdateCategory == UpdateCategory.LZFF) {
+		} else if (Program.mhpUpdateCategory == UpdateCategory.LZINV) {
 			BeginPhasePoint.globalMHPStale = true;
 			return;
 		}
@@ -1296,7 +1296,7 @@ public class AutomatedUpdater {
 		}
 		BeginPhasePoint.addStaleBeginPhasePoints(affectedBPPs);
 		BeginPhasePoint.stabilizationTime += (System.nanoTime() - timer);
-		if (Program.mhpUpdateCategory == UpdateCategory.EGINC) {
+		if (Program.mhpUpdateCategory == UpdateCategory.EGUPD) {
 			BeginPhasePoint.stabilizeStaleBeginPhasePoints();
 		}
 	}
@@ -1322,9 +1322,9 @@ public class AutomatedUpdater {
 	 *         {@link BeginPhasePoint#populateReachablesAndBarriers()}.
 	 */
 	public static Set<BeginPhasePoint> updateBPPOrGetAffectedBPPSetUponRemoval(Node node) {
-		if (Program.mhpUpdateCategory == UpdateCategory.EGFF) {
+		if (Program.mhpUpdateCategory == UpdateCategory.EGINV) {
 			return null;
-		} else if (Program.mhpUpdateCategory == UpdateCategory.LZFF) {
+		} else if (Program.mhpUpdateCategory == UpdateCategory.LZINV) {
 			return null;
 		}
 		node = Misc.getCFGNodeFor(node);
@@ -1372,14 +1372,14 @@ public class AutomatedUpdater {
 	 *            removal of certain nodes.
 	 */
 	public static void updatePhaseAndInterTaskEdgesUponRemoval(Set<BeginPhasePoint> bppSet) {
-		if (Program.mhpUpdateCategory == UpdateCategory.EGFF) {
+		if (Program.mhpUpdateCategory == UpdateCategory.EGINV) {
 			AutomatedUpdater.reinitMHP();
 			// The method above already calculates the time taken in stabilization.
 			return;
-		} else if (Program.mhpUpdateCategory == UpdateCategory.LZFF) {
+		} else if (Program.mhpUpdateCategory == UpdateCategory.LZINV) {
 			BeginPhasePoint.globalMHPStale = true;
 			return;
-		} else if (Program.mhpUpdateCategory == UpdateCategory.EGINC) {
+		} else if (Program.mhpUpdateCategory == UpdateCategory.EGUPD) {
 			long timer = System.nanoTime();
 			BeginPhasePoint.addStaleBeginPhasePoints(bppSet);
 			BeginPhasePoint.stabilizationTime += (System.nanoTime() - timer);
@@ -1400,11 +1400,11 @@ public class AutomatedUpdater {
 	 *            set of nodes starting which the CFG paths may change.
 	 */
 	public static void adjustPhaseAndInterTaskEdgesUponLabelUpdate(Set<Node> nodeSet) {
-		if (Program.mhpUpdateCategory == UpdateCategory.EGFF) {
+		if (Program.mhpUpdateCategory == UpdateCategory.EGINV) {
 			AutomatedUpdater.reinitMHP();
 			// The method above already calculates the time taken for stabilization.
 			return;
-		} else if (Program.mhpUpdateCategory == UpdateCategory.LZFF) {
+		} else if (Program.mhpUpdateCategory == UpdateCategory.LZINV) {
 			BeginPhasePoint.globalMHPStale = true;
 			return;
 		}
@@ -1416,7 +1416,7 @@ public class AutomatedUpdater {
 		BeginPhasePoint.addStaleBeginPhasePoints(affectedBPPs);
 		BeginPhasePoint.stabilizationTime += (System.nanoTime() - timer);
 
-		if (Program.mhpUpdateCategory == UpdateCategory.EGINC) {
+		if (Program.mhpUpdateCategory == UpdateCategory.EGUPD) {
 			BeginPhasePoint.stabilizeStaleBeginPhasePoints();
 		}
 	}

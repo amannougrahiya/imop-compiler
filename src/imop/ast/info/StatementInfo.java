@@ -315,7 +315,7 @@ public class StatementInfo extends NodeInfo {
 				startNodes.add(endNode);
 			}
 		}
-		if (Program.updateCategory == UpdateCategory.EGFF || Program.updateCategory == UpdateCategory.LZFF) {
+		if (Program.updateCategory == UpdateCategory.EGINV || Program.updateCategory == UpdateCategory.LZINV) {
 			AutomatedUpdater.updateFlowFactsForward(new HashSet<>());
 			AutomatedUpdater.updateFlowFactsBackward(new HashSet<>());
 		} else {
@@ -521,7 +521,7 @@ public class StatementInfo extends NodeInfo {
 				startNodes.add(endNode);
 			}
 		}
-		if (Program.updateCategory == UpdateCategory.EGFF || Program.updateCategory == UpdateCategory.LZFF) {
+		if (Program.updateCategory == UpdateCategory.EGINV || Program.updateCategory == UpdateCategory.LZINV) {
 			AutomatedUpdater.updateFlowFactsForward(new HashSet<>());
 			AutomatedUpdater.updateFlowFactsBackward(new HashSet<>());
 		} else {
@@ -659,7 +659,7 @@ public class StatementInfo extends NodeInfo {
 				startNodes.add(endNode);
 			}
 		}
-		if (Program.updateCategory == UpdateCategory.EGFF || Program.updateCategory == UpdateCategory.LZFF) {
+		if (Program.updateCategory == UpdateCategory.EGINV || Program.updateCategory == UpdateCategory.LZINV) {
 			AutomatedUpdater.updateFlowFactsForward(new HashSet<>());
 			AutomatedUpdater.updateFlowFactsBackward(new HashSet<>());
 		} else {
@@ -703,7 +703,7 @@ public class StatementInfo extends NodeInfo {
 				startNodes.add(endNode);
 			}
 		}
-		if (Program.updateCategory == UpdateCategory.EGFF || Program.updateCategory == UpdateCategory.LZFF) {
+		if (Program.updateCategory == UpdateCategory.EGINV || Program.updateCategory == UpdateCategory.LZINV) {
 			AutomatedUpdater.updateFlowFactsForward(new HashSet<>());
 			AutomatedUpdater.updateFlowFactsBackward(new HashSet<>());
 		} else {

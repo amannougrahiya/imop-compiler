@@ -75,9 +75,9 @@ public class NodePhaseInfo {
 
 	public Set<Phase> getPhaseSet() {
 		ProfileSS.addChangePoint(ProfileSS.phSet);
-		if (Program.mhpUpdateCategory == UpdateCategory.EGFF || Program.mhpUpdateCategory == UpdateCategory.EGINC) {
+		if (Program.mhpUpdateCategory == UpdateCategory.EGINV || Program.mhpUpdateCategory == UpdateCategory.EGUPD) {
 			return this.phaseSet;
-		} else if (Program.mhpUpdateCategory == UpdateCategory.LZFF) {
+		} else if (Program.mhpUpdateCategory == UpdateCategory.LZINV) {
 			if (BeginPhasePoint.globalMHPStale) {
 				BeginPhasePoint.globalMHPStale = false;
 				AutomatedUpdater.reinitMHP();

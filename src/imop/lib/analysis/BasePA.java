@@ -35,6 +35,10 @@ public abstract class BasePA {
 		LZUPD
 	}
 
+	/**
+	 * Constructs a program-abstraction with LZINV as its mode of stabilization.
+	 * 
+	 */
 	public BasePA() {
 		this.stabilizationMode = StabilizationMode.LZINV;
 		BasePA.allAbstractions.add(this);
@@ -42,18 +46,26 @@ public abstract class BasePA {
 
 	/**
 	 * Constructs a program-abstraction with {@code stabilizationMode} as its
-	 * mode of stabilization. The default, LZINV is used.
+	 * mode of stabilization (or LZINV, if the argument is {@code null}).
 	 * 
 	 * @param stabilizationMode
 	 *            selected mode of stabilization for this program-abstraction;
-	 *            default value: LZINV.
+	 *            if {@code null}, LZINV mode is used by default.
 	 */
 	public BasePA(StabilizationMode stabilizationMode) {
-		this.stabilizationMode = stabilizationMode;
+		if (stabilizationMode == null) {
+			this.stabilizationMode = StabilizationMode.LZINV;
+		} else {
+			this.stabilizationMode = stabilizationMode;
+		}
 		BasePA.allAbstractions.add(this);
 	}
 
-	public static void modelNodeAddition(Node addedNode) {
+	/**
+	 * INTERNAL method: This method is not supposed to be invoked from outside
+	 * the context of an elementary transformation.
+	 */
+	public final static void modelNodeAddition(Node addedNode) {
 		for (BasePA pa : BasePA.allAbstractions) {
 			boolean changed = pa.removedNodes.remove(addedNode);
 			if (!changed) {
@@ -62,7 +74,11 @@ public abstract class BasePA {
 		}
 	}
 
-	public static void modelNodeSetAddition(Set<Node> addedNodes) {
+	/**
+	 * INTERNAL method: This method is not supposed to be invoked from outside
+	 * the context of an elementary transformation.
+	 */
+	public final static void modelNodeSetAddition(Set<Node> addedNodes) {
 		for (BasePA pa : BasePA.allAbstractions) {
 			for (Node n : addedNodes) {
 				boolean changed = pa.removedNodes.remove(n);
@@ -73,7 +89,11 @@ public abstract class BasePA {
 		}
 	}
 
-	public static void modelNodeRemoval(Node removedNode) {
+	/**
+	 * INTERNAL method: This method is not supposed to be invoked from outside
+	 * the context of an elementary transformation.
+	 */
+	public final static void modelNodeRemoval(Node removedNode) {
 		for (BasePA pa : BasePA.allAbstractions) {
 			boolean changed = pa.addedNodes.remove(removedNode);
 			if (!changed) {
@@ -82,7 +102,11 @@ public abstract class BasePA {
 		}
 	}
 
-	public static void modelNodeSetRemoval(Set<Node> removedNodes) {
+	/**
+	 * INTERNAL method: This method is not supposed to be invoked from outside
+	 * the context of an elementary transformation.
+	 */
+	public final static void modelNodeSetRemoval(Set<Node> removedNodes) {
 		for (BasePA pa : BasePA.allAbstractions) {
 			for (Node n : removedNodes) {
 				boolean changed = pa.addedNodes.remove(n);
@@ -93,7 +117,11 @@ public abstract class BasePA {
 		}
 	}
 
-	public static void modelEdgeAddition(Edge addedEdge) {
+	/**
+	 * INTERNAL method: This method is not supposed to be invoked from outside
+	 * the context of an elementary transformation.
+	 */
+	public final static void modelEdgeAddition(Edge addedEdge) {
 		for (BasePA pa : BasePA.allAbstractions) {
 			boolean changed = pa.removedEdges.remove(addedEdge);
 			if (!changed) {
@@ -102,7 +130,11 @@ public abstract class BasePA {
 		}
 	}
 
-	public static void modelEdgeSetAddition(Set<Edge> addedEdges) {
+	/**
+	 * INTERNAL method: This method is not supposed to be invoked from outside
+	 * the context of an elementary transformation.
+	 */
+	public final static void modelEdgeSetAddition(Set<Edge> addedEdges) {
 		for (BasePA pa : BasePA.allAbstractions) {
 			for (Edge n : addedEdges) {
 				boolean changed = pa.removedEdges.remove(n);
@@ -113,7 +145,11 @@ public abstract class BasePA {
 		}
 	}
 
-	public static void modelEdgeRemoval(Edge removedEdge) {
+	/**
+	 * INTERNAL method: This method is not supposed to be invoked from outside
+	 * the context of an elementary transformation.
+	 */
+	public final static void modelEdgeRemoval(Edge removedEdge) {
 		for (BasePA pa : BasePA.allAbstractions) {
 			boolean changed = pa.addedEdges.remove(removedEdge);
 			if (!changed) {
@@ -122,7 +158,11 @@ public abstract class BasePA {
 		}
 	}
 
-	public static void modelEdgeSetRemoval(Set<Edge> removedEdges) {
+	/**
+	 * INTERNAL method: This method is not supposed to be invoked from outside
+	 * the context of an elementary transformation.
+	 */
+	public final static void modelEdgeSetRemoval(Set<Edge> removedEdges) {
 		for (BasePA pa : BasePA.allAbstractions) {
 			for (Edge n : removedEdges) {
 				boolean changed = pa.addedEdges.remove(n);
@@ -133,19 +173,69 @@ public abstract class BasePA {
 		}
 	}
 
+	/**
+	 * Concrete program-abstractions should implement this method to perform any
+	 * pre-processing that needs to be done before processing the impact of
+	 * program changes on the internal state of this abstraction.
+	 * 
+	 */
 	public abstract void commonPre();
 
+	/**
+	 * Concrete program-abstractions should implement this method to specify any
+	 * common post-processing tasks after handling the impact of program changes
+	 * to the internal state of this abstraction.
+	 */
 	public abstract void commonPost();
 
+	/**
+	 * Concrete program-abstractions should implement this method to specify how
+	 * their internal state would change if a node {@code n} has been added
+	 * to the super-graph of the program.
+	 * 
+	 * @param n
+	 *            node that has been added to the program.
+	 */
 	public abstract void handleNodeAddition(Node n);
 
+	/**
+	 * Concrete program-abstractions should implement this method to
+	 * 
+	 */
+	/**
+	 * Concrete program-abstractions should implement this method to specify how
+	 * their internal state would change if an edge {@code e} has been removed
+	 * from the super-graph of the program.
+	 * 
+	 * @param n
+	 *            node that has been removed from the program.
+	 */
 	public abstract void handleNodeRemoval(Node n);
 
+	/**
+	 * Concrete program-abstractions should implement this method to specify how
+	 * their internal state would change if an edge {@code e} has been added
+	 * to the super-graph of the program.
+	 * 
+	 * @param e
+	 *            edge that has been added to the program.
+	 */
 	public abstract void handleEdgeAddition(Edge e);
 
+	/**
+	 * Concrete program-abstractions should implement this method to specify how
+	 * their internal state would change if an edge {@code e} has been removed
+	 * from the super-graph of the program.
+	 * 
+	 * @param e
+	 *            edge that has been removed from the program.
+	 */
 	public abstract void handleEdgeRemoval(Edge e);
 
-	public void stabilizer() {
+	/**
+	 * Standard stabilizer defined by Homeostasis.
+	 */
+	public final void stabilizer() {
 		if (this.stableStatus == StableStatus.STABLE) {
 			return;
 		}
@@ -169,5 +259,50 @@ public abstract class BasePA {
 		this.removedEdges.clear();
 		this.commonPost();
 		this.stableStatus = StableStatus.STABLE;
+	}
+
+	/**
+	 * This version of the stabilizer should be invoked when getters need to
+	 * pass a context that can be used to determine, using
+	 * {@code BasePA#isStabilizationNeeded(Object[])}, whether stabilization
+	 * needs to be performed.
+	 * 
+	 * 
+	 * @param arr
+	 *            represents the <i>context</i> in which the getter of this
+	 *            program
+	 *            abstraction has been invoked.
+	 */
+	public void stabilizer(Object[] arr) {
+		if (arr == null || arr.length == 0) {
+			stabilizer();
+		}
+		if (this.isStabilizationNeeded(arr)) {
+			stabilizer();
+		}
+		return;
+	}
+
+	/**
+	 * This method can be overridden for a specific program abstraction to
+	 * implement heuristics under which the stabilization can be delayed, under
+	 * the given context in which the corresponding getter has been called.
+	 * <p>
+	 * Note that this method would be used only when a getter invokes
+	 * {@code #stabilizer(Object[])} and not {@code #stabilizer()}.
+	 * 
+	 * @param arr
+	 *            represents the <i>context</i> in which the getter of this
+	 *            program
+	 *            abstraction has been invoked.
+	 * @return
+	 *         {@code true} if stabilization needs to be performed in the given
+	 *         context; {@code false} otherwise. The conservative value is
+	 *         {@code true}.
+	 *         When {@code false}, the getter would essentially see the
+	 *         <i>old</i> internal state of this abstraction.
+	 */
+	public boolean isStabilizationNeeded(Object[] arr) {
+		return true;
 	}
 }

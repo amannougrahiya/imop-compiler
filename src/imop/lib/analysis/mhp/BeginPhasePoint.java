@@ -383,9 +383,9 @@ public class BeginPhasePoint extends PhasePoint {
 	}
 
 	public Set<EndPhasePoint> getNextBarriers() {
-		if (Program.mhpUpdateCategory == UpdateCategory.EGFF || Program.mhpUpdateCategory == UpdateCategory.EGINC) {
+		if (Program.mhpUpdateCategory == UpdateCategory.EGINV || Program.mhpUpdateCategory == UpdateCategory.EGUPD) {
 			return this.getInternalNextBarriers();
-		} else if (Program.mhpUpdateCategory == UpdateCategory.LZFF) {
+		} else if (Program.mhpUpdateCategory == UpdateCategory.LZINV) {
 			if (BeginPhasePoint.globalMHPStale) {
 				BeginPhasePoint.globalMHPStale = false;
 				AutomatedUpdater.reinitMHP();
@@ -403,9 +403,9 @@ public class BeginPhasePoint extends PhasePoint {
 	}
 
 	public Set<Phase> getPhaseSet() {
-		if (Program.mhpUpdateCategory == UpdateCategory.EGFF || Program.mhpUpdateCategory == UpdateCategory.EGINC) {
+		if (Program.mhpUpdateCategory == UpdateCategory.EGINV || Program.mhpUpdateCategory == UpdateCategory.EGUPD) {
 			return this.phaseSet;
-		} else if (Program.mhpUpdateCategory == UpdateCategory.LZFF) {
+		} else if (Program.mhpUpdateCategory == UpdateCategory.LZINV) {
 			if (BeginPhasePoint.globalMHPStale) {
 				BeginPhasePoint.globalMHPStale = false;
 				AutomatedUpdater.reinitMHP();
@@ -419,9 +419,9 @@ public class BeginPhasePoint extends PhasePoint {
 	}
 
 	public Set<Node> getReachableNodes() {
-		if (Program.mhpUpdateCategory == UpdateCategory.EGFF || Program.mhpUpdateCategory == UpdateCategory.EGINC) {
+		if (Program.mhpUpdateCategory == UpdateCategory.EGINV || Program.mhpUpdateCategory == UpdateCategory.EGUPD) {
 			return this.getInternalReachables();
-		} else if (Program.mhpUpdateCategory == UpdateCategory.LZFF) {
+		} else if (Program.mhpUpdateCategory == UpdateCategory.LZINV) {
 			if (BeginPhasePoint.globalMHPStale) {
 				BeginPhasePoint.globalMHPStale = false;
 				AutomatedUpdater.reinitMHP();

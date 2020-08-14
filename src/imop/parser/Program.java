@@ -59,10 +59,10 @@ public class Program {
 	}
 
 	public static enum UpdateCategory {
-		EGFF,  // eager update, upon each elementary transformation, with rerun of the analysis.
-		EGINC, // eager update, upon each elementary transformation, with incremental update to the analysis data.
-		LZFF,  // lazy update, involving rerun of the analysis, whenever first read is performed after transformation.
-		LZINC  // lazy update, with incremental update to the analysis data, whenever first read is performed after transformation.
+		EGINV,  // eager invalidation, upon each elementary transformation, with rerun of the analysis.
+		EGUPD, // eager update, upon each elementary transformation, with incremental update to the analysis data.
+		LZINV,  // lazy invalidation, involving rerun of the analysis, whenever first read is performed after transformation.
+		LZUPD  // lazy update, with incremental update to the analysis data, whenever first read is performed after transformation.
 
 	}
 
@@ -165,8 +165,8 @@ public class Program {
 		Program.basePointsTo = true;
 		Program.memoizeAccesses = 0;
 		Program.preciseDFDEdges = false;
-		Program.updateCategory = UpdateCategory.LZINC; // Default is LZINC.
-		Program.mhpUpdateCategory = UpdateCategory.LZINC; // Default is LZINC.
+		Program.updateCategory = UpdateCategory.LZUPD; // Default is LZINC.
+		Program.mhpUpdateCategory = UpdateCategory.LZUPD; // Default is LZINC.
 		Program.disableLineNumbers = true; // Unless we need line numbers, keep this as true. 
 
 		String filePath = "";
@@ -404,20 +404,20 @@ public class Program {
 				String next = args[index + 1];
 				switch (next) {
 				case "EGFF":
-					Program.mhpUpdateCategory = UpdateCategory.EGFF;
-					Program.updateCategory = UpdateCategory.EGFF;
+					Program.mhpUpdateCategory = UpdateCategory.EGINV;
+					Program.updateCategory = UpdateCategory.EGINV;
 					break;
 				case "LZFF":
-					Program.mhpUpdateCategory = UpdateCategory.LZFF;
-					Program.updateCategory = UpdateCategory.LZFF;
+					Program.mhpUpdateCategory = UpdateCategory.LZINV;
+					Program.updateCategory = UpdateCategory.LZINV;
 					break;
 				case "EGINC":
-					Program.mhpUpdateCategory = UpdateCategory.EGINC;
-					Program.updateCategory = UpdateCategory.EGINC;
+					Program.mhpUpdateCategory = UpdateCategory.EGUPD;
+					Program.updateCategory = UpdateCategory.EGUPD;
 					break;
 				case "LZINC":
-					Program.mhpUpdateCategory = UpdateCategory.LZINC;
-					Program.updateCategory = UpdateCategory.LZINC;
+					Program.mhpUpdateCategory = UpdateCategory.LZUPD;
+					Program.updateCategory = UpdateCategory.LZUPD;
 					break;
 				default:
 					System.out.println("Please use a valid identifier for category: EGFF, LZFF, EGINC, or LZINC.");

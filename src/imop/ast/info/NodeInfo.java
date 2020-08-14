@@ -618,9 +618,9 @@ public class NodeInfo implements Cloneable {
 			 * For this forward analysis, let's make the state consistent first,
 			 * if required.
 			 */
-			if (Program.updateCategory == UpdateCategory.EGFF || Program.updateCategory == UpdateCategory.EGINC) {
+			if (Program.updateCategory == UpdateCategory.EGINV || Program.updateCategory == UpdateCategory.EGUPD) {
 				assert (!analysisHandle.stateIsInvalid());
-			} else if (Program.updateCategory == UpdateCategory.LZFF) {
+			} else if (Program.updateCategory == UpdateCategory.LZINV) {
 				if (BeginPhasePoint.globalMHPStale) {
 					BeginPhasePoint.globalMHPStale = false;
 					AutomatedUpdater.reinitMHP();
@@ -630,7 +630,7 @@ public class NodeInfo implements Cloneable {
 					AutomatedUpdater.reinitIDFA(analysisHandle);
 				}
 			} else {
-				assert (Program.updateCategory == UpdateCategory.LZINC);
+				assert (Program.updateCategory == UpdateCategory.LZUPD);
 				if (analysisHandle.stateIsInvalid()) {
 					BeginPhasePoint.stabilizeStaleBeginPhasePoints();
 					analysisHandle.markStateToBeValid();
@@ -749,9 +749,9 @@ public class NodeInfo implements Cloneable {
 			 * For this forward analysis, let's make the state consistent first,
 			 * if required.
 			 */
-			if (Program.updateCategory == UpdateCategory.EGFF || Program.updateCategory == UpdateCategory.EGINC) {
+			if (Program.updateCategory == UpdateCategory.EGINV || Program.updateCategory == UpdateCategory.EGUPD) {
 				assert (!analysisHandle.stateIsInvalid());
-			} else if (Program.updateCategory == UpdateCategory.LZFF) {
+			} else if (Program.updateCategory == UpdateCategory.LZINV) {
 				if (BeginPhasePoint.globalMHPStale) {
 					BeginPhasePoint.globalMHPStale = false;
 					AutomatedUpdater.reinitMHP();
@@ -761,7 +761,7 @@ public class NodeInfo implements Cloneable {
 					AutomatedUpdater.reinitIDFA(analysisHandle);
 				}
 			} else {
-				assert (Program.updateCategory == UpdateCategory.LZINC);
+				assert (Program.updateCategory == UpdateCategory.LZUPD);
 				if (analysisHandle.stateIsInvalid()) {
 					BeginPhasePoint.stabilizeStaleBeginPhasePoints();
 					analysisHandle.markStateToBeValid();

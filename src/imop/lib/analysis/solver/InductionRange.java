@@ -502,14 +502,9 @@ public class InductionRange {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((finalOperator == null) ? 0 : finalOperator.hashCode());
-		result = prime * result + ((finalValue == null) ? 0 : finalValue.hashCode());
 		result = prime * result + ((inductionVariable == null) ? 0 : inductionVariable.hashCode());
-		result = prime * result + ((initValue == null) ? 0 : initValue.hashCode());
 		result = prime * result + ((loopHeader == null) ? 0 : loopHeader.hashCode());
 		result = prime * result + ((loopTail == null) ? 0 : loopTail.hashCode());
-		result = prime * result + ((stepOperator == null) ? 0 : stepOperator.hashCode());
-		result = prime * result + ((stepValue == null) ? 0 : stepValue.hashCode());
 		return result;
 	}
 

@@ -120,9 +120,9 @@ public class DummyFlushDirectiveInfo extends FlushDirectiveInfo {
 		if (incomingInterTaskEdges == null) {
 			incomingInterTaskEdges = new HashSet<>();
 		}
-		if (Program.mhpUpdateCategory == UpdateCategory.EGFF || Program.mhpUpdateCategory == UpdateCategory.EGINC) {
+		if (Program.mhpUpdateCategory == UpdateCategory.EGINV || Program.mhpUpdateCategory == UpdateCategory.EGUPD) {
 			return this.incomingInterTaskEdges;
-		} else if (Program.mhpUpdateCategory == UpdateCategory.LZFF) {
+		} else if (Program.mhpUpdateCategory == UpdateCategory.LZINV) {
 			if (BeginPhasePoint.globalMHPStale) {
 				BeginPhasePoint.globalMHPStale = false;
 				AutomatedUpdater.reinitMHP();
@@ -149,9 +149,9 @@ public class DummyFlushDirectiveInfo extends FlushDirectiveInfo {
 		if (outgoingInterTaskEdges == null) {
 			outgoingInterTaskEdges = new HashSet<>();
 		}
-		if (Program.mhpUpdateCategory == UpdateCategory.EGFF || Program.mhpUpdateCategory == UpdateCategory.EGINC) {
+		if (Program.mhpUpdateCategory == UpdateCategory.EGINV || Program.mhpUpdateCategory == UpdateCategory.EGUPD) {
 			return this.outgoingInterTaskEdges;
-		} else if (Program.mhpUpdateCategory == UpdateCategory.LZFF) {
+		} else if (Program.mhpUpdateCategory == UpdateCategory.LZINV) {
 			if (BeginPhasePoint.globalMHPStale) {
 				BeginPhasePoint.globalMHPStale = false;
 				AutomatedUpdater.reinitMHP();

@@ -664,9 +664,9 @@ public class Phase {
 
 	public Set<Node> getNodeSet() {
 		ProfileSS.addChangePoint(ProfileSS.phSet);
-		if (Program.mhpUpdateCategory == UpdateCategory.EGFF || Program.mhpUpdateCategory == UpdateCategory.EGINC) {
+		if (Program.mhpUpdateCategory == UpdateCategory.EGINV || Program.mhpUpdateCategory == UpdateCategory.EGUPD) {
 			return this.nodeSet;
-		} else if (Program.mhpUpdateCategory == UpdateCategory.LZFF) {
+		} else if (Program.mhpUpdateCategory == UpdateCategory.LZINV) {
 			if (BeginPhasePoint.globalMHPStale) {
 				BeginPhasePoint.globalMHPStale = false;
 				AutomatedUpdater.reinitMHP();
@@ -683,9 +683,9 @@ public class Phase {
 	}
 
 	public Set<BeginPhasePoint> getBeginPoints() {
-		if (Program.mhpUpdateCategory == UpdateCategory.EGFF || Program.mhpUpdateCategory == UpdateCategory.EGINC) {
+		if (Program.mhpUpdateCategory == UpdateCategory.EGINV || Program.mhpUpdateCategory == UpdateCategory.EGUPD) {
 			return this.beginPoints;
-		} else if (Program.mhpUpdateCategory == UpdateCategory.LZFF) {
+		} else if (Program.mhpUpdateCategory == UpdateCategory.LZINV) {
 			if (BeginPhasePoint.globalMHPStale) {
 				BeginPhasePoint.globalMHPStale = false;
 				AutomatedUpdater.reinitMHP();
@@ -701,9 +701,9 @@ public class Phase {
 	}
 
 	public Set<EndPhasePoint> getEndPoints() {
-		if (Program.mhpUpdateCategory == UpdateCategory.EGFF || Program.mhpUpdateCategory == UpdateCategory.EGINC) {
+		if (Program.mhpUpdateCategory == UpdateCategory.EGINV || Program.mhpUpdateCategory == UpdateCategory.EGUPD) {
 			return this.endPoints;
-		} else if (Program.mhpUpdateCategory == UpdateCategory.LZFF) {
+		} else if (Program.mhpUpdateCategory == UpdateCategory.LZINV) {
 			if (BeginPhasePoint.globalMHPStale) {
 				BeginPhasePoint.globalMHPStale = false;
 				AutomatedUpdater.reinitMHP();
@@ -716,9 +716,9 @@ public class Phase {
 
 	public Phase getSuccPhase() {
 		ProfileSS.addChangePoint(ProfileSS.phSet);
-		if (Program.mhpUpdateCategory == UpdateCategory.EGFF || Program.mhpUpdateCategory == UpdateCategory.EGINC) {
+		if (Program.mhpUpdateCategory == UpdateCategory.EGINV || Program.mhpUpdateCategory == UpdateCategory.EGUPD) {
 			return this.succPhase;
-		} else if (Program.mhpUpdateCategory == UpdateCategory.LZFF) {
+		} else if (Program.mhpUpdateCategory == UpdateCategory.LZINV) {
 			if (BeginPhasePoint.globalMHPStale) {
 				BeginPhasePoint.globalMHPStale = false;
 				AutomatedUpdater.reinitMHP();
@@ -731,9 +731,9 @@ public class Phase {
 
 	public List<Phase> getPredPhases() {
 		ProfileSS.addChangePoint(ProfileSS.phSet);
-		if (Program.mhpUpdateCategory == UpdateCategory.EGFF || Program.mhpUpdateCategory == UpdateCategory.EGINC) {
+		if (Program.mhpUpdateCategory == UpdateCategory.EGINV || Program.mhpUpdateCategory == UpdateCategory.EGUPD) {
 			return this.predPhases;
-		} else if (Program.mhpUpdateCategory == UpdateCategory.LZFF) {
+		} else if (Program.mhpUpdateCategory == UpdateCategory.LZINV) {
 			if (BeginPhasePoint.globalMHPStale) {
 				BeginPhasePoint.globalMHPStale = false;
 				AutomatedUpdater.reinitMHP();
