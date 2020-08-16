@@ -1041,6 +1041,7 @@ public class AutomatedUpdater {
 	 * @param node
 	 */
 	public static void modelAdditionOfLabels(Node node) {
+		PointsToAnalysis.disableHeuristic();
 		node = Misc.getCFGNodeFor(node);
 		for (Node cfgNode : node.getInfo().getCFGInfo().getLexicalCFGContents()) {
 			if (cfgNode instanceof Statement) {
@@ -1061,6 +1062,7 @@ public class AutomatedUpdater {
 	 * @param node
 	 */
 	public static void modelRemovalOfLabels(Node node) {
+		PointsToAnalysis.disableHeuristic();
 		node = Misc.getCFGNodeFor(node);
 		for (Node cfgNode : node.getInfo().getCFGInfo().getLexicalCFGContents()) {
 			if (cfgNode instanceof Statement) {

@@ -38,6 +38,7 @@ import imop.lib.analysis.flowanalysis.Cell;
 import imop.lib.analysis.flowanalysis.FieldCell;
 import imop.lib.analysis.flowanalysis.FreeVariable;
 import imop.lib.analysis.flowanalysis.Symbol;
+import imop.lib.analysis.flowanalysis.dataflow.PointsToAnalysis;
 import imop.lib.analysis.mhp.BeginPhasePoint;
 import imop.lib.cfg.NestedCFG;
 import imop.lib.cfg.link.autoupdater.AutomatedUpdater;
@@ -153,6 +154,7 @@ public class CompoundStatementCFGInfo extends CFGInfo {
 	}
 
 	private List<SideEffect> removeStatement(Statement element) {
+		PointsToAnalysis.handleNodeAdditionOrRemovalForHeuristic(element);
 		AutomatedUpdater.flushCaches();
 		List<SideEffect> sideEffectList = new ArrayList<>();
 		element = Misc.getStatementWrapper(element);
@@ -171,6 +173,7 @@ public class CompoundStatementCFGInfo extends CFGInfo {
 	}
 
 	public List<SideEffect> removeDeclaration(Declaration declaration) {
+		PointsToAnalysis.handleNodeAdditionOrRemovalForHeuristic(declaration);
 		AutomatedUpdater.flushCaches();
 		List<SideEffect> sideEffectList = new ArrayList<>();
 		/*

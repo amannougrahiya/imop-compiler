@@ -20,6 +20,7 @@ import imop.ast.node.external.NodeSequence;
 import imop.ast.node.external.NodeToken;
 import imop.ast.node.external.ParallelConstruct;
 import imop.ast.node.external.Statement;
+import imop.lib.analysis.flowanalysis.dataflow.PointsToAnalysis;
 import imop.lib.analysis.mhp.BeginPhasePoint;
 import imop.lib.cfg.NestedCFG;
 import imop.lib.cfg.link.autoupdater.AutomatedUpdater;
@@ -44,6 +45,7 @@ public class IfStatementCFGInfo extends CFGInfo {
 		if (predicate == this.getPredicate()) {
 			return;
 		}
+		PointsToAnalysis.disableHeuristic();
 		AutomatedUpdater.flushCaches();
 		IfStatement owner = (IfStatement) this.getOwner();
 		NodeRemover.removeNodeIfConnected(predicate);
@@ -109,6 +111,9 @@ public class IfStatementCFGInfo extends CFGInfo {
 			sideEffectList.addAll(this.setThenBody(newStmt));
 			return sideEffectList;
 		}
+
+		PointsToAnalysis.handleNodeAdditionOrRemovalForHeuristic(stmt);
+		PointsToAnalysis.handleNodeAdditionOrRemovalForHeuristic(owner.getF4());
 		stmt.setParent(owner);
 
 		Set<Node> rerunNodesForward = AutomatedUpdater.unreachableAfterRemovalForward(owner.getF4());
@@ -176,7 +181,11 @@ public class IfStatementCFGInfo extends CFGInfo {
 		if (owner.getF5().present()) {
 			NodeSequence nodeSeq = (NodeSequence) owner.getF5().getNode();
 			Statement oldElseBody = (Statement) nodeSeq.getNodes().get(1);
+
+			PointsToAnalysis.handleNodeAdditionOrRemovalForHeuristic(stmt);
+			PointsToAnalysis.handleNodeAdditionOrRemovalForHeuristic(oldElseBody);
 			stmt.setParent(nodeSeq);
+
 			Set<Node> rerunNodesForward = AutomatedUpdater.unreachableAfterRemovalForward(oldElseBody);
 			Set<Node> rerunNodesBackward = AutomatedUpdater.unreachableAfterRemovalBackward(oldElseBody);
 			Set<BeginPhasePoint> affectedBeginPhasePoints = AutomatedUpdater
@@ -199,6 +208,7 @@ public class IfStatementCFGInfo extends CFGInfo {
 			AutomatedUpdater.updateFlowFactsBackward(rerunNodesBackward);
 			return sideEffectList;
 		} else {
+			PointsToAnalysis.handleNodeAdditionOrRemovalForHeuristic(stmt);
 			NodeSequence nodeSeq = new NodeSequence(2);
 			nodeSeq.addNode(new NodeToken("else"));
 			nodeSeq.addNode(stmt);
@@ -240,6 +250,7 @@ public class IfStatementCFGInfo extends CFGInfo {
 			return;
 		}
 		Statement oldElseBody = (Statement) nodeSeq.getNodes().get(1);
+		PointsToAnalysis.handleNodeAdditionOrRemovalForHeuristic(oldElseBody);
 		Set<Node> rerunNodesForward = AutomatedUpdater.nodesForForwardRerunOnRemoval(oldElseBody);
 		Set<Node> rerunNodesBackward = AutomatedUpdater.nodesForBackwardRerunOnRemoval(oldElseBody);
 		Set<BeginPhasePoint> affectedBeginPhasePoints = AutomatedUpdater

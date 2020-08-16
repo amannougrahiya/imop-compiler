@@ -18,6 +18,7 @@ import imop.ast.node.external.Node;
 import imop.ast.node.external.ParallelConstruct;
 import imop.ast.node.external.Statement;
 import imop.ast.node.external.WhileStatement;
+import imop.lib.analysis.flowanalysis.dataflow.PointsToAnalysis;
 import imop.lib.analysis.mhp.BeginPhasePoint;
 import imop.lib.cfg.NestedCFG;
 import imop.lib.cfg.link.autoupdater.AutomatedUpdater;
@@ -39,6 +40,7 @@ public class WhileStatementCFGInfo extends CFGInfo {
 	}
 
 	public void setPredicate(Expression predicate) {
+		PointsToAnalysis.disableHeuristic();
 		if (predicate == this.getPredicate()) {
 			return;
 		}
@@ -114,6 +116,8 @@ public class WhileStatementCFGInfo extends CFGInfo {
 			return sideEffectList;
 		}
 
+		PointsToAnalysis.handleNodeAdditionOrRemovalForHeuristic(stmt);
+		PointsToAnalysis.handleNodeAdditionOrRemovalForHeuristic(owner.getF4());
 		stmt.setParent(owner);
 
 		Set<Node> rerunNodesForward = AutomatedUpdater.unreachableAfterRemovalForward(owner.getF4());

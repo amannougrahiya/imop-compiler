@@ -19,6 +19,7 @@ import imop.ast.node.external.NodeListOptional;
 import imop.ast.node.external.ParallelConstruct;
 import imop.ast.node.external.SectionsConstruct;
 import imop.ast.node.external.Statement;
+import imop.lib.analysis.flowanalysis.dataflow.PointsToAnalysis;
 import imop.lib.analysis.mhp.BeginPhasePoint;
 import imop.lib.cfg.NestedCFG;
 import imop.lib.cfg.link.autoupdater.AutomatedUpdater;
@@ -73,6 +74,7 @@ public class SectionsConstructCFGInfo extends CFGInfo {
 		}
 		AutomatedUpdater.flushCaches();
 
+		PointsToAnalysis.handleNodeAdditionOrRemovalForHeuristic(aSection.getF3());
 		NodeListOptional sectionList = ((SectionsConstruct) getOwner()).getF4().getF2();
 		Set<Node> rerunNodesForward = AutomatedUpdater.nodesForForwardRerunOnRemoval(aSection.getF3());
 		Set<Node> rerunNodesBackward = AutomatedUpdater.nodesForBackwardRerunOnRemoval(aSection.getF3());
@@ -127,6 +129,7 @@ public class SectionsConstructCFGInfo extends CFGInfo {
 			return sideEffectList;
 		}
 
+		PointsToAnalysis.handleNodeAdditionOrRemovalForHeuristic(sectionBody);
 		ASection newSection;
 		if (stmt.getParent() instanceof ASection) {
 			newSection = (ASection) stmt.getParent();

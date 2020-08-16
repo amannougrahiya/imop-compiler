@@ -32,6 +32,7 @@ import imop.ast.node.external.Statement;
 import imop.ast.node.external.UniqueParallelClause;
 import imop.ast.node.external.UniqueParallelOrDataClauseList;
 import imop.ast.node.internal.OmpClause;
+import imop.lib.analysis.flowanalysis.dataflow.PointsToAnalysis;
 import imop.lib.analysis.mhp.BeginPhasePoint;
 import imop.lib.cfg.NestedCFG;
 import imop.lib.cfg.link.autoupdater.AutomatedUpdater;
@@ -249,6 +250,8 @@ public class ParallelConstructCFGInfo extends CFGInfo {
 			return sideEffectList;
 		}
 
+		PointsToAnalysis.handleNodeAdditionOrRemovalForHeuristic(stmt);
+		PointsToAnalysis.handleNodeAdditionOrRemovalForHeuristic(owner.getParConsF2());
 		stmt.setParent(owner);
 
 		Set<Node> rerunNodesForward = AutomatedUpdater.unreachableAfterRemovalForward(owner.getParConsF2());
