@@ -355,7 +355,7 @@ public class Symbol extends Cell {
 				return new ImmutableCellSet();
 			}
 			ImmutableCellSet retSet;
-			PointsToFlowMap opff = (PointsToFlowMap) node.getInfo().getIN(AnalysisName.POINTSTO);
+			PointsToFlowMap opff = (PointsToFlowMap) node.getInfo().getIN(AnalysisName.POINTSTO, this);
 			if (opff == null) {
 				return new ImmutableCellSet(); // return an empty points-to set.
 			} else {

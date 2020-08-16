@@ -35,6 +35,7 @@ import imop.ast.node.external.TaskConstruct;
 import imop.ast.node.external.UniqueTaskClause;
 import imop.ast.node.external.UntiedClause;
 import imop.ast.node.internal.OmpClause;
+import imop.lib.analysis.flowanalysis.dataflow.PointsToAnalysis;
 import imop.lib.analysis.mhp.BeginPhasePoint;
 import imop.lib.cfg.NestedCFG;
 import imop.lib.cfg.link.autoupdater.AutomatedUpdater;
@@ -289,6 +290,8 @@ public class TaskConstructCFGInfo extends CFGInfo {
 			return sideEffectList;
 		}
 
+		PointsToAnalysis.handleNodeAdditionOrRemovalForHeuristic(stmt);
+		PointsToAnalysis.handleNodeAdditionOrRemovalForHeuristic(owner.getF4());
 		stmt.setParent(owner);
 
 		Set<Node> rerunNodesForward = AutomatedUpdater.unreachableAfterRemovalForward(owner.getF4());

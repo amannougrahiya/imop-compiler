@@ -75,6 +75,7 @@ import imop.lib.analysis.flowanalysis.dataflow.DataDependenceForward.DataDepende
 import imop.lib.analysis.flowanalysis.dataflow.HeapValidityAnalysis;
 import imop.lib.analysis.flowanalysis.dataflow.LivenessAnalysis;
 import imop.lib.analysis.flowanalysis.dataflow.NodeSet;
+import imop.lib.analysis.flowanalysis.dataflow.PointsToAnalysis;
 import imop.lib.analysis.flowanalysis.dataflow.ReachingDefinitionAnalysis;
 import imop.lib.analysis.flowanalysis.dataflow.ReachingDefinitionAnalysis.ReachingDefinitionFlowMap;
 import imop.lib.analysis.flowanalysis.generic.AnalysisName;
@@ -606,6 +607,10 @@ public class NodeInfo implements Cloneable {
 	 * @return
 	 */
 	public FlowFact getIN(AnalysisName analysisName) {
+		return this.getIN(analysisName, null);
+	}
+
+	public FlowFact getIN(AnalysisName analysisName, Cell thisCell) {
 		ProfileSS.addChangePoint(ProfileSS.ptaSet);
 		checkFirstRun(analysisName);
 		/*
@@ -631,16 +636,33 @@ public class NodeInfo implements Cloneable {
 				}
 			} else {
 				assert (Program.updateCategory == UpdateCategory.LZUPD);
-				if (analysisHandle.stateIsInvalid()) {
-					BeginPhasePoint.stabilizeStaleBeginPhasePoints();
-					analysisHandle.markStateToBeValid();
-					if (analysisName == AnalysisName.POINTSTO) {
-						Program.memoizeAccesses++;
-						//						System.out.println("Triggering PTA stabilization in response to a query of points-to on " + Symbol.tempNow.getName());
-						analysisHandle.restartAnalysisFromStoredNodes();
-						Program.memoizeAccesses--;
-					} else {
-						analysisHandle.restartAnalysisFromStoredNodes();
+				if (thisCell == null) {
+					if (analysisHandle.stateIsInvalid()) {
+						BeginPhasePoint.stabilizeStaleBeginPhasePoints();
+						analysisHandle.markStateToBeValid();
+						if (analysisName == AnalysisName.POINTSTO) {
+							Program.memoizeAccesses++;
+							//						System.out.println("Triggering PTA stabilization in response to a query of points-to on " + Symbol.tempNow.getName());
+							analysisHandle.restartAnalysisFromStoredNodes();
+							Program.memoizeAccesses--;
+						} else {
+							analysisHandle.restartAnalysisFromStoredNodes();
+						}
+					}
+				} else {
+					//					if (analysisHandle.stateIsInvalid()) {
+					if (analysisHandle.stateIsInvalid() && (!PointsToAnalysis.isHeuristicEnabled
+							|| PointsToAnalysis.affectedCellsInThisEpoch.contains(thisCell))) {
+						BeginPhasePoint.stabilizeStaleBeginPhasePoints();
+						analysisHandle.markStateToBeValid();
+						if (analysisName == AnalysisName.POINTSTO) {
+							Program.memoizeAccesses++;
+							//						System.out.println("Triggering PTA stabilization in response to a query of points-to on " + Symbol.tempNow.getName());
+							analysisHandle.restartAnalysisFromStoredNodes();
+							Program.memoizeAccesses--;
+						} else {
+							analysisHandle.restartAnalysisFromStoredNodes();
+						}
 					}
 				}
 			}

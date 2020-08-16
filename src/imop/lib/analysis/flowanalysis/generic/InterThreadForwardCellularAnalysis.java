@@ -542,7 +542,7 @@ public abstract class InterThreadForwardCellularAnalysis<F extends CellularDataF
 	}
 
 	@Override
-	public final void restartAnalysisFromStoredNodes() {
+	public void restartAnalysisFromStoredNodes() {
 		if (this.analysisName == AnalysisName.POINTSTO
 				&& PointsToAnalysis.stateOfPointsTo != PointsToGlobalState.STALE) {
 			nodesToBeUpdated.clear();

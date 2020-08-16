@@ -185,7 +185,7 @@ public class Program {
 		//		filePath = ("../tests/npb-post/ep3-0.i"); // SVE-all: 0.55s
 		//		filePath = ("../tests/npb-post/ft3-0.i"); // SVE-all: 3.73s.
 		//		filePath = ("../tests/npb-post/is3-0.i"); // SVE-all: 0.69
-		filePath = ("../tests/npb-post/lu3-0.i"); // SVE-all: 16.26s.
+		//		filePath = ("../tests/npb-post/lu3-0.i"); // SVE-all: 16.26s.
 		//		filePath = ("../tests/npb-post/mg3-0.i"); // SVE-all: 9.88s;
 		//		filePath = ("../tests/npb-post/sp3-0.i"); // SVE-all: 23s.
 
