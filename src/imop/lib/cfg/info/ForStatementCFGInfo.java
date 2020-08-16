@@ -23,7 +23,6 @@ import imop.ast.node.external.ParallelConstruct;
 import imop.ast.node.external.Statement;
 import imop.ast.node.internal.BeginNode;
 import imop.ast.node.internal.EndNode;
-import imop.lib.analysis.flowanalysis.dataflow.PointsToAnalysis;
 import imop.lib.analysis.mhp.BeginPhasePoint;
 import imop.lib.cfg.NestedCFG;
 import imop.lib.cfg.link.autoupdater.AutomatedUpdater;
@@ -48,7 +47,6 @@ public class ForStatementCFGInfo extends CFGInfo {
 		if (e1 == this.getInitExpression()) {
 			return;
 		}
-		PointsToAnalysis.disableHeuristic();
 		removeInitExpression();
 		NodeRemover.removeNodeIfConnected(e1);
 		ForStatement owner = (ForStatement) this.getOwner();
@@ -77,7 +75,6 @@ public class ForStatementCFGInfo extends CFGInfo {
 	public void removeInitExpression() {
 		ForStatement owner = (ForStatement) this.getOwner();
 		if (owner.getF2().present()) {
-			PointsToAnalysis.disableHeuristic();
 			AutomatedUpdater.flushCaches();
 			Set<Node> rerunNodesForward = AutomatedUpdater.nodesForForwardRerunOnRemoval(owner.getF2().getNode());
 			Set<Node> rerunNodesBackward = AutomatedUpdater.nodesForBackwardRerunOnRemoval(owner.getF2().getNode());
@@ -100,7 +97,6 @@ public class ForStatementCFGInfo extends CFGInfo {
 		if (e2 == this.getTerminationExpression()) {
 			return;
 		}
-		PointsToAnalysis.disableHeuristic();
 		removeTerminationExpression();
 		NodeRemover.removeNodeIfConnected(e2);
 		ForStatement owner = (ForStatement) this.getOwner();
@@ -129,7 +125,6 @@ public class ForStatementCFGInfo extends CFGInfo {
 	public void removeTerminationExpression() {
 		ForStatement owner = (ForStatement) this.getOwner();
 		if (owner.getF4().present()) {
-			PointsToAnalysis.disableHeuristic();
 			AutomatedUpdater.flushCaches();
 			Set<Node> rerunNodesForward = AutomatedUpdater.nodesForForwardRerunOnRemoval(owner.getF4().getNode());
 			Set<Node> rerunNodesBackward = AutomatedUpdater.nodesForBackwardRerunOnRemoval(owner.getF4().getNode());
@@ -152,7 +147,6 @@ public class ForStatementCFGInfo extends CFGInfo {
 		if (e3 == this.getStepExpression()) {
 			return;
 		}
-		PointsToAnalysis.disableHeuristic();
 		removeStepExpression();
 		NodeRemover.removeNodeIfConnected(e3);
 		ForStatement owner = (ForStatement) this.getOwner();
@@ -179,7 +173,6 @@ public class ForStatementCFGInfo extends CFGInfo {
 	}
 
 	public void removeStepExpression() {
-		PointsToAnalysis.disableHeuristic();
 		ForStatement owner = (ForStatement) this.getOwner();
 		if (owner.getF6().present()) {
 			AutomatedUpdater.flushCaches();
@@ -235,8 +228,6 @@ public class ForStatementCFGInfo extends CFGInfo {
 			return sideEffectList;
 		}
 
-		PointsToAnalysis.handleNodeAdditionOrRemovalForHeuristic(stmt);
-		PointsToAnalysis.handleNodeAdditionOrRemovalForHeuristic(owner.getF8());
 		stmt.setParent(owner);
 
 		Set<Node> rerunNodesForward = AutomatedUpdater.unreachableAfterRemovalForward(owner.getF8());

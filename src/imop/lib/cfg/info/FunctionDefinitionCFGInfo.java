@@ -25,7 +25,6 @@ import imop.ast.node.external.ParameterList;
 import imop.ast.node.external.ParameterTypeList;
 import imop.ast.node.external.ParameterTypeListClosed;
 import imop.ast.node.external.Statement;
-import imop.lib.analysis.flowanalysis.dataflow.PointsToAnalysis;
 import imop.lib.analysis.mhp.BeginPhasePoint;
 import imop.lib.cfg.NestedCFG;
 import imop.lib.cfg.link.autoupdater.AutomatedUpdater;
@@ -220,9 +219,6 @@ public class FunctionDefinitionCFGInfo extends CFGInfo {
 		AutomatedUpdater.flushCaches();
 		NodeRemover.removeNodeIfConnected(compStmt);
 		FunctionDefinition owner = (FunctionDefinition) this.getOwner();
-		
-		PointsToAnalysis.handleNodeAdditionOrRemovalForHeuristic(compStmt);
-		PointsToAnalysis.handleNodeAdditionOrRemovalForHeuristic(owner.getF3());
 		compStmt.setParent(owner);
 
 		Set<Node> rerunNodesForward = AutomatedUpdater.unreachableAfterRemovalForward(owner.getF3());

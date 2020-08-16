@@ -8,75 +8,25 @@
  */
 package imop.ast.info;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
-
 import imop.ast.annotation.IncompleteSemantics;
 import imop.ast.annotation.Label;
 import imop.ast.annotation.PragmaImop;
 import imop.ast.annotation.SimpleLabel;
 import imop.ast.info.cfgNodeInfo.CompoundStatementInfo;
 import imop.ast.info.cfgNodeInfo.FunctionDefinitionInfo;
-import imop.ast.node.external.CastExpression;
-import imop.ast.node.external.CompoundStatement;
-import imop.ast.node.external.Declaration;
-import imop.ast.node.external.ElementsOfTranslation;
-import imop.ast.node.external.Expression;
-import imop.ast.node.external.ForConstruct;
-import imop.ast.node.external.FunctionDefinition;
-import imop.ast.node.external.Initializer;
-import imop.ast.node.external.JumpStatement;
-import imop.ast.node.external.LabeledStatement;
-import imop.ast.node.external.Node;
-import imop.ast.node.external.NodeSequence;
-import imop.ast.node.external.NodeToken;
-import imop.ast.node.external.OmpConstruct;
-import imop.ast.node.external.OmpDfltSharedClause;
-import imop.ast.node.external.OmpFirstPrivateClause;
-import imop.ast.node.external.OmpForCondition;
-import imop.ast.node.external.OmpLastPrivateClause;
-import imop.ast.node.external.OmpPrivateClause;
-import imop.ast.node.external.OmpSharedClause;
-import imop.ast.node.external.ParallelConstruct;
-import imop.ast.node.external.ParallelForConstruct;
-import imop.ast.node.external.Statement;
-import imop.ast.node.external.TaskConstruct;
-import imop.ast.node.external.TranslationUnit;
-import imop.ast.node.external.VariableList;
-import imop.ast.node.internal.BeginNode;
-import imop.ast.node.internal.CallStatement;
-import imop.ast.node.internal.EndNode;
-import imop.ast.node.internal.OmpClause;
-import imop.ast.node.internal.Scopeable;
+import imop.ast.node.external.*;
+import imop.ast.node.internal.*;
 import imop.deprecated.Deprecated_FlowFact;
 import imop.deprecated.Deprecated_InterProceduralCFGPass;
 import imop.lib.analysis.Assignment;
 import imop.lib.analysis.AssignmentGetter;
-import imop.lib.analysis.flowanalysis.AddressCell;
-import imop.lib.analysis.flowanalysis.Cell;
-import imop.lib.analysis.flowanalysis.Definition;
-import imop.lib.analysis.flowanalysis.FieldCell;
-import imop.lib.analysis.flowanalysis.FreeVariable;
-import imop.lib.analysis.flowanalysis.HeapCell;
-import imop.lib.analysis.flowanalysis.SCC;
-import imop.lib.analysis.flowanalysis.Symbol;
+import imop.lib.analysis.flowanalysis.*;
 import imop.lib.analysis.flowanalysis.controlflow.DominanceAnalysis;
 import imop.lib.analysis.flowanalysis.controlflow.DominanceAnalysis.DominatorFlowFact;
 import imop.lib.analysis.flowanalysis.controlflow.PredicateAnalysis;
-import imop.lib.analysis.flowanalysis.dataflow.CopyPropagationAnalysis;
+import imop.lib.analysis.flowanalysis.dataflow.*;
 import imop.lib.analysis.flowanalysis.dataflow.CopyPropagationAnalysis.CopyPropagationFlowMap;
-import imop.lib.analysis.flowanalysis.dataflow.DataDependenceForward;
 import imop.lib.analysis.flowanalysis.dataflow.DataDependenceForward.DataDependenceForwardFF;
-import imop.lib.analysis.flowanalysis.dataflow.HeapValidityAnalysis;
-import imop.lib.analysis.flowanalysis.dataflow.LivenessAnalysis;
-import imop.lib.analysis.flowanalysis.dataflow.NodeSet;
-import imop.lib.analysis.flowanalysis.dataflow.PointsToAnalysis;
-import imop.lib.analysis.flowanalysis.dataflow.ReachingDefinitionAnalysis;
 import imop.lib.analysis.flowanalysis.dataflow.ReachingDefinitionAnalysis.ReachingDefinitionFlowMap;
 import imop.lib.analysis.flowanalysis.generic.AnalysisName;
 import imop.lib.analysis.flowanalysis.generic.FlowAnalysis;
@@ -92,36 +42,21 @@ import imop.lib.analysis.solver.PointerDereferenceGetter;
 import imop.lib.analysis.solver.SyntacticAccessExpression;
 import imop.lib.analysis.solver.SyntacticAccessExpressionGetter;
 import imop.lib.analysis.solver.tokens.Tokenizable;
-import imop.lib.analysis.typeSystem.EnumType;
-import imop.lib.analysis.typeSystem.StructType;
-import imop.lib.analysis.typeSystem.Type;
-import imop.lib.analysis.typeSystem.Typedef;
-import imop.lib.analysis.typeSystem.UnionType;
+import imop.lib.analysis.typeSystem.*;
 import imop.lib.cfg.info.CFGInfo;
 import imop.lib.cfg.link.autoupdater.AutomatedUpdater;
 import imop.lib.cg.CallSite;
 import imop.lib.cg.CallStack;
 import imop.lib.cg.NodeWithStack;
-import imop.lib.getter.BarrierGetter;
-import imop.lib.getter.CallSiteGetter;
-import imop.lib.getter.CellAccessGetter;
-import imop.lib.getter.StringGetter;
+import imop.lib.getter.*;
 import imop.lib.getter.StringGetter.Commentor;
-import imop.lib.getter.UsedCellsGetter;
-import imop.lib.getter.UsedTypeGetter;
-import imop.lib.getter.UsedTypedefGetter;
 import imop.lib.transform.simplify.CompoundStatementNormalizer;
-import imop.lib.util.CellList;
-import imop.lib.util.CellMap;
-import imop.lib.util.CellSet;
-import imop.lib.util.CollectorVisitor;
-import imop.lib.util.DumpSnapshot;
-import imop.lib.util.ExtensibleCellMap;
-import imop.lib.util.Misc;
-import imop.lib.util.ProfileSS;
+import imop.lib.util.*;
 import imop.parser.FrontEnd;
 import imop.parser.Program;
 import imop.parser.Program.UpdateCategory;
+
+import java.util.*;
 
 /**
  * Corresponds to the information related to an AST node.
@@ -607,10 +542,6 @@ public class NodeInfo implements Cloneable {
 	 * @return
 	 */
 	public FlowFact getIN(AnalysisName analysisName) {
-		return this.getIN(analysisName, null);
-	}
-
-	public FlowFact getIN(AnalysisName analysisName, Cell thisCell) {
 		ProfileSS.addChangePoint(ProfileSS.ptaSet);
 		checkFirstRun(analysisName);
 		/*
@@ -636,33 +567,16 @@ public class NodeInfo implements Cloneable {
 				}
 			} else {
 				assert (Program.updateCategory == UpdateCategory.LZUPD);
-				if (thisCell == null) {
-					if (analysisHandle.stateIsInvalid()) {
-						BeginPhasePoint.stabilizeStaleBeginPhasePoints();
-						analysisHandle.markStateToBeValid();
-						if (analysisName == AnalysisName.POINTSTO) {
-							Program.memoizeAccesses++;
-							//						System.out.println("Triggering PTA stabilization in response to a query of points-to on " + Symbol.tempNow.getName());
-							analysisHandle.restartAnalysisFromStoredNodes();
-							Program.memoizeAccesses--;
-						} else {
-							analysisHandle.restartAnalysisFromStoredNodes();
-						}
-					}
-				} else {
-					//					if (analysisHandle.stateIsInvalid()) {
-					if (analysisHandle.stateIsInvalid() && (!PointsToAnalysis.isHeuristicEnabled
-							|| PointsToAnalysis.affectedCellsInThisEpoch.contains(thisCell))) {
-						BeginPhasePoint.stabilizeStaleBeginPhasePoints();
-						analysisHandle.markStateToBeValid();
-						if (analysisName == AnalysisName.POINTSTO) {
-							Program.memoizeAccesses++;
-							//						System.out.println("Triggering PTA stabilization in response to a query of points-to on " + Symbol.tempNow.getName());
-							analysisHandle.restartAnalysisFromStoredNodes();
-							Program.memoizeAccesses--;
-						} else {
-							analysisHandle.restartAnalysisFromStoredNodes();
-						}
+				if (analysisHandle.stateIsInvalid()) {
+					BeginPhasePoint.stabilizeStaleBeginPhasePoints();
+					analysisHandle.markStateToBeValid();
+					if (analysisName == AnalysisName.POINTSTO) {
+						Program.memoizeAccesses++;
+						//						System.out.println("Triggering PTA stabilization in response to a query of points-to on " + Symbol.tempNow.getName());
+						analysisHandle.restartAnalysisFromStoredNodes();
+						Program.memoizeAccesses--;
+					} else {
+						analysisHandle.restartAnalysisFromStoredNodes();
 					}
 				}
 			}

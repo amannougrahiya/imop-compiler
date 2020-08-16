@@ -12,7 +12,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import imop.ast.info.PTAStabilizationHeuristic;
 import imop.ast.info.cfgNodeInfo.ParameterDeclarationInfo;
 import imop.ast.node.external.BreakStatement;
 import imop.ast.node.external.CompoundStatement;
@@ -66,7 +65,6 @@ import imop.lib.analysis.typeSystem.PointerType;
 import imop.lib.analysis.typeSystem.StructType;
 import imop.lib.analysis.typeSystem.Type;
 import imop.lib.analysis.typeSystem.UnionType;
-import imop.lib.cfg.info.CFGInfo;
 import imop.lib.util.CellList;
 import imop.lib.util.CellMap;
 import imop.lib.util.CellSet;
@@ -76,94 +74,6 @@ import imop.lib.util.Misc;
 import imop.parser.Program;
 
 public class PointsToAnalysis extends InterThreadForwardCellularAnalysis<PointsToAnalysis.PointsToFlowMap> {
-
-	public static boolean isHeuristicEnabled = true;
-	public static CellSet affectedCellsInThisEpoch = new CellSet();
-
-	public static void handleNodeAdditionOrRemovalForHeuristic(Node affectedNode) {
-		if (!isHeuristicEnabled) {
-			return;
-		}
-		CellSet affectedCells = PTAStabilizationHeuristic.getAffectedCells(affectedNode);
-		if (affectedCells == null) {
-			PointsToAnalysis.disableHeuristic();
-			return;
-		} else {
-			affectedCellsInThisEpoch.addAll(affectedCells);
-		}
-	}
-
-	public static void disableHeuristic() {
-		PointsToAnalysis.isHeuristicEnabled = false;
-		affectedCellsInThisEpoch.clear();
-	}
-
-	public static void enableHeuristic() {
-		PointsToAnalysis.isHeuristicEnabled = true;
-		affectedCellsInThisEpoch.clear();
-	}
-
-	public void restartAnalysisFromStoredNodes() {
-		if (this.analysisName == AnalysisName.POINTSTO
-				&& PointsToAnalysis.stateOfPointsTo != PointsToGlobalState.STALE) {
-			nodesToBeUpdated.clear();
-			return;
-		}
-		this.autoUpdateTriggerCounter++;
-		PointsToAnalysis.enableHeuristic(); // Mark start of next epoch.
-		long localTimer = System.nanoTime();
-
-		/*
-		 * From the set of nodes to be updated, we obtain the workList to be
-		 * processed.
-		 * We add all the entry points of the SCC of each node.
-		 */
-		this.workList.recreate();
-		Set<Node> remSet = new HashSet<>();
-		for (Node n : nodesToBeUpdated) {
-			boolean added = this.workList.add(n);
-			if (added) {
-				remSet.add(n);
-			}
-			// OLD CODE: Now we do not add the entry points of SCCs to be processed.
-			//			SCC nSCC = n.getInfo().getCFGInfo().getSCC();
-			//			if (nSCC != null) {
-			//				this.workList.addAll(nSCC.getEntryNodes());
-			//			}
-		}
-		// OLD CODE: Now, if we ever find that a node is unconnected to the program, we remove it from processing.
-		this.nodesToBeUpdated.removeAll(remSet);
-		//		this.nodesToBeUpdated.clear();
-
-		this.processedInThisUpdate = new HashSet<>();
-		this.yetToBeFinalized = new HashSet<>();
-		while (!workList.isEmpty()) {
-			Node nodeToBeAnalyzed = workList.removeFirstElement();
-			CFGInfo nInfo = nodeToBeAnalyzed.getInfo().getCFGInfo();
-			if (nInfo.getSCC() == null) {
-				// Here, node itself is an SCC. We do not require two rounds.
-				this.nodesProcessedDuringUpdate++;
-				this.debugRecursion(nodeToBeAnalyzed);
-				this.processWhenNotUpdated(nodeToBeAnalyzed); // Directly invoke the second round processing.
-				continue;
-			} else {
-				/*
-				 * This node belongs to an SCC. We should process the whole of
-				 * SCC in the first phase, followed by its processing in the
-				 * second phase, and only then shall we move on to the next SCC.
-				 */
-				stabilizeSCCOf(nodeToBeAnalyzed);
-			}
-		}
-
-		localTimer = System.nanoTime() - localTimer;
-		this.flowAnalysisUpdateTimer += localTimer;
-		if (this.analysisName == AnalysisName.POINTSTO
-				&& PointsToAnalysis.stateOfPointsTo == PointsToGlobalState.STALE) {
-			PointsToAnalysis.stateOfPointsTo = PointsToGlobalState.CORRECT;
-			//			DumpSnapshot.dumpPointsTo("stable" + Program.updateCategory + this.autoUpdateTriggerCounter);
-		}
-	}
 
 	public PointsToAnalysis() {
 		super(AnalysisName.POINTSTO, new AnalysisDimension(Program.sveSensitivityOfIDFAEdges));

@@ -28,7 +28,6 @@ import imop.ast.node.external.ParallelSectionsConstruct;
 import imop.ast.node.external.Statement;
 import imop.ast.node.external.SwitchStatement;
 import imop.ast.node.internal.EndNode;
-import imop.lib.analysis.flowanalysis.dataflow.PointsToAnalysis;
 import imop.lib.cfg.info.CFGInfo;
 import imop.lib.cfg.link.autoupdater.AutomatedUpdater;
 import imop.lib.getter.SwitchRelevantStatementsGetter;
@@ -114,7 +113,6 @@ public class StatementInfo extends NodeInfo {
 	 * @param newLabel
 	 */
 	public void addLabelAnnotation(Label newLabel) {
-		PointsToAnalysis.disableHeuristic();
 		this.addLabelAnnotation(-1, newLabel);
 	}
 
@@ -125,7 +123,6 @@ public class StatementInfo extends NodeInfo {
 	 * @param newLabel
 	 */
 	public void addLabelAnnotation(int index, Label newLabel) {
-		PointsToAnalysis.disableHeuristic();
 		ProfileSS.addChangePoint(ProfileSS.labSet);
 		if (this.getNode() instanceof OmpConstruct || this.getNode() instanceof OmpDirective) {
 			Misc.exitDueToError("Cannot add the label " + newLabel + " to an OpenMP construct/directive.");
@@ -230,7 +227,6 @@ public class StatementInfo extends NodeInfo {
 	 *         true, if the label was removed.
 	 */
 	public boolean removeSimpleLabelAnnotation(String string) {
-		PointsToAnalysis.disableHeuristic();
 		ProfileSS.addChangePoint(ProfileSS.labSet);
 		if (this.getNode() instanceof OmpConstruct || this.getNode() instanceof OmpDirective) {
 			return false;
@@ -261,7 +257,6 @@ public class StatementInfo extends NodeInfo {
 	 *         true, if the label was removed.
 	 */
 	private boolean removeCaseLabelAnnotation(String caseString) {
-		PointsToAnalysis.disableHeuristic();
 		for (Label lab : new HashSet<>(this.annotatedLabels)) {
 			if (lab instanceof CaseLabel) {
 				CaseLabel caseL = (CaseLabel) lab;
@@ -274,7 +269,6 @@ public class StatementInfo extends NodeInfo {
 	}
 
 	private boolean removeDefaultLabelAnnotation() {
-		PointsToAnalysis.disableHeuristic();
 		for (Label lab : new HashSet<>(this.annotatedLabels)) {
 			if (lab instanceof DefaultLabel) {
 				return this.removeLabelAnnotation(lab);
@@ -306,7 +300,6 @@ public class StatementInfo extends NodeInfo {
 		//			}
 		//		}
 
-		PointsToAnalysis.disableHeuristic();
 		AutomatedUpdater.flushCaches();
 		// Update CFG, Incompleteness, FlowFacts, and other data structures.
 		Set<Node> newPredecessors = this.adjustSemanticsForLabelAddition(newLabel); //, LabelUpdateMode.UPDATE_ONLY_THIS);
@@ -374,7 +367,6 @@ public class StatementInfo extends NodeInfo {
 	 *         a result of insertion of {@code label}.
 	 */
 	public Set<Node> adjustSemanticsForLabelAddition(Label label) {
-		PointsToAnalysis.disableHeuristic();
 		AutomatedUpdater.flushCaches();
 		Set<Node> addedPredecessors = new HashSet<>();
 		if (label instanceof SimpleLabel) {
@@ -485,7 +477,6 @@ public class StatementInfo extends NodeInfo {
 	 *         true if the label was removed.
 	 */
 	public boolean removeLabelAnnotation(Label oldLabel) {
-		PointsToAnalysis.disableHeuristic();
 		ProfileSS.addChangePoint(ProfileSS.labSet);
 		if (this.getNode() instanceof OmpConstruct || this.getNode() instanceof OmpDirective) {
 			return false;
@@ -513,7 +504,6 @@ public class StatementInfo extends NodeInfo {
 	 *            a label of the owner node.
 	 */
 	private void updateUponLabelRemoval(Label oldLabel) {
-		PointsToAnalysis.disableHeuristic();
 		AutomatedUpdater.flushCaches();
 		if (!this.getLabelAnnotations().contains(oldLabel)) {
 			return;
@@ -580,7 +570,6 @@ public class StatementInfo extends NodeInfo {
 	 *         added.
 	 */
 	private Set<Node> adjustSemanticsForLabelRemoval(Label label) {
-		PointsToAnalysis.disableHeuristic();
 		AutomatedUpdater.flushCaches();
 		Set<Node> noMorePredecessors = new HashSet<>();
 		if (label instanceof SimpleLabel) {
@@ -646,7 +635,6 @@ public class StatementInfo extends NodeInfo {
 	 *            a label of the owner node.
 	 */
 	public void updateUponLabeledNodeAddition(Label newLabel) {
-		PointsToAnalysis.disableHeuristic();
 		if (!Misc.isCFGNode(this.getNode()) && !(this.getNode() instanceof ParallelForConstruct)
 				&& !(this.getNode() instanceof ParallelSectionsConstruct)) {
 			//		if (!Misc.isCFGNode(this.getNode())) {
@@ -695,7 +683,6 @@ public class StatementInfo extends NodeInfo {
 	 */
 	public void updateUponLabeledNodeRemoval(Label oldLabel) {
 		//		if (!Misc.isCFGNode(this.getNode())) {
-		PointsToAnalysis.disableHeuristic();
 		AutomatedUpdater.flushCaches();
 		if (!Misc.isCFGNode(this.getNode()) && !(this.getNode() instanceof ParallelForConstruct)
 				&& !(this.getNode() instanceof ParallelSectionsConstruct)) {
@@ -765,7 +752,6 @@ public class StatementInfo extends NodeInfo {
 	 *         added.
 	 */
 	private Set<Node> adjustSemanticsForLabeledNodeRemoval(Label label) {
-		PointsToAnalysis.disableHeuristic();
 		AutomatedUpdater.flushCaches();
 		Set<Node> noMorePredecessors = new HashSet<>();
 		if (label instanceof SimpleLabel) {
@@ -803,7 +789,6 @@ public class StatementInfo extends NodeInfo {
 	 * Clears all the label annotations from the owner statement.
 	 */
 	public void clearLabelAnnotations() {
-		PointsToAnalysis.disableHeuristic();
 		ProfileSS.addChangePoint(ProfileSS.labSet);
 		if (this.getNode() instanceof OmpConstruct || this.getNode() instanceof OmpDirective) {
 			return;

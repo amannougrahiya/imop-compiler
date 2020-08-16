@@ -21,7 +21,6 @@ import imop.ast.node.external.OmpForInitExpression;
 import imop.ast.node.external.OmpForReinitExpression;
 import imop.ast.node.external.ParallelConstruct;
 import imop.ast.node.external.Statement;
-import imop.lib.analysis.flowanalysis.dataflow.PointsToAnalysis;
 import imop.lib.analysis.mhp.BeginPhasePoint;
 import imop.lib.cfg.NestedCFG;
 import imop.lib.cfg.link.autoupdater.AutomatedUpdater;
@@ -46,7 +45,6 @@ public class ForConstructCFGInfo extends CFGInfo {
 		if (initExpression == this.getInitExpression()) {
 			return;
 		}
-		PointsToAnalysis.disableHeuristic();
 		AutomatedUpdater.flushCaches();
 		NodeRemover.removeNodeIfConnected(initExpression);
 		ForConstruct owner = (ForConstruct) this.getOwner();
@@ -82,7 +80,6 @@ public class ForConstructCFGInfo extends CFGInfo {
 		if (forCondition == this.getForConditionExpression()) {
 			return;
 		}
-		PointsToAnalysis.disableHeuristic();
 		AutomatedUpdater.flushCaches();
 		NodeRemover.removeNodeIfConnected(forCondition);
 		ForConstruct owner = (ForConstruct) this.getOwner();
@@ -118,7 +115,6 @@ public class ForConstructCFGInfo extends CFGInfo {
 		if (reinitExpression == this.getReinitExpression()) {
 			return;
 		}
-		PointsToAnalysis.disableHeuristic();
 		AutomatedUpdater.flushCaches();
 		NodeRemover.removeNodeIfConnected(reinitExpression);
 		ForConstruct owner = (ForConstruct) this.getOwner();
@@ -185,8 +181,6 @@ public class ForConstructCFGInfo extends CFGInfo {
 			return sideEffectList;
 		}
 
-		PointsToAnalysis.handleNodeAdditionOrRemovalForHeuristic(stmt);
-		PointsToAnalysis.handleNodeAdditionOrRemovalForHeuristic(owner.getF3());
 		stmt.setParent(owner);
 
 		Set<Node> rerunNodesForward = AutomatedUpdater.unreachableAfterRemovalForward(owner.getF3());

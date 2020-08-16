@@ -19,7 +19,7 @@ import imop.lib.analysis.typeSystem.PointerType;
 import imop.lib.util.CellSet;
 
 public class PTAStabilizationHeuristic {
-	public static CellSet getAffectedCells(Node node) {
+	public CellSet getAffectedCells(Node node) {
 		if (!node.getInfo().isControlConfined()) {
 			return null;
 		}

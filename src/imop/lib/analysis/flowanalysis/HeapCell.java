@@ -175,7 +175,7 @@ public class HeapCell extends Cell {
 			return new ImmutableCellSet(this.getDefaultPointsTo(node));
 		} else {
 			ImmutableCellSet retSet;
-			PointsToFlowMap pff = (PointsToFlowMap) node.getInfo().getIN(AnalysisName.POINTSTO, this);
+			PointsToFlowMap pff = (PointsToFlowMap) node.getInfo().getIN(AnalysisName.POINTSTO);
 			if (pff == null) {
 				return new ImmutableCellSet(); // return an empty points-to set.
 			} else {
