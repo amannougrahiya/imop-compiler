@@ -8,12 +8,10 @@
  */
 package imop.lib.cg;
 
-import java.util.Vector;
-
-import imop.ast.node.external.FunctionDefinition;
-import imop.ast.node.external.Node;
-import imop.ast.node.external.PostfixExpression;
+import imop.ast.node.external.*;
 import imop.lib.util.Misc;
+
+import java.util.Vector;
 
 /**
  * @deprecated

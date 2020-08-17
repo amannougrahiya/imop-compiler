@@ -8,9 +8,7 @@
  */
 package imop.ast.annotation;
 
-import imop.ast.node.external.ConstantExpression;
-import imop.ast.node.external.Statement;
-import imop.ast.node.external.SwitchStatement;
+import imop.ast.node.external.*;
 import imop.lib.util.Misc;
 import imop.parser.FrontEnd;
 

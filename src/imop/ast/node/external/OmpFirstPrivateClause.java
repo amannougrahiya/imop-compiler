@@ -13,7 +13,7 @@
 package imop.ast.node.external;
 
 import imop.ast.info.OmpFirstPrivateClauseInfo;
-import imop.ast.node.internal.OmpClause;
+import imop.ast.node.internal.*;
 
 /**
  * Grammar production:

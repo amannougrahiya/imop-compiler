@@ -8,12 +8,12 @@
  */
 package imop.ast.info.cfgNodeInfo;
 
-import java.util.List;
-
 import imop.ast.info.StatementInfo;
-import imop.ast.node.external.Node;
+import imop.ast.node.external.*;
 import imop.lib.analysis.Assignment;
 import imop.lib.analysis.AssignmentGetter;
+
+import java.util.List;
 
 public class ExpressionStatementInfo extends StatementInfo {
 

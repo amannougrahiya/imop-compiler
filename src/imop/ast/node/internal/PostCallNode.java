@@ -8,7 +8,7 @@
  */
 package imop.ast.node.internal;
 
-import imop.ast.node.external.Node;
+import imop.ast.node.external.*;
 import imop.baseVisitor.GJNoArguVisitor;
 import imop.baseVisitor.GJVisitor;
 import imop.baseVisitor.GJVoidVisitor;

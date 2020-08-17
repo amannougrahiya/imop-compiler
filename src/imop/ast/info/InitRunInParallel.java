@@ -8,17 +8,11 @@
  */
 package imop.ast.info;
 
-import java.util.List;
-
-import imop.ast.node.external.APostfixOperation;
-import imop.ast.node.external.ArgumentList;
-import imop.ast.node.external.Node;
-import imop.ast.node.external.NodeToken;
-import imop.ast.node.external.PostfixExpression;
-import imop.ast.node.external.PostfixOperationsList;
-import imop.ast.node.external.PrimaryExpression;
+import imop.ast.node.external.*;
 import imop.baseVisitor.GJVoidDepthFirst;
 import imop.lib.getter.FunctionDefinitionGetter;
+
+import java.util.List;
 
 /**
  * Needs to be verified (AND modified).

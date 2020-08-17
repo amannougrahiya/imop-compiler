@@ -8,7 +8,7 @@
  */
 package imop.ast.annotation;
 
-import imop.ast.node.external.Node;
+import imop.ast.node.external.*;
 
 public class PragmaImop extends Annotation {
 	private String pragmaString;

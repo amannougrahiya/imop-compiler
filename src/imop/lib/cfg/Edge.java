@@ -8,7 +8,7 @@
  */
 package imop.lib.cfg;
 
-import imop.ast.node.external.Node;
+import imop.ast.node.external.*;
 
 public class Edge {
 	public final Node src;

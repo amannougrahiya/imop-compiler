@@ -8,14 +8,13 @@
  */
 package imop.ast.node.internal;
 
-import java.util.ArrayList;
-
 import imop.ast.info.cfgNodeInfo.CallStatementInfo;
-import imop.ast.node.external.NodeToken;
-import imop.ast.node.external.Statement;
+import imop.ast.node.external.*;
 import imop.lib.cfg.CFGGenerator;
 import imop.lib.getter.CallStatementGetter;
 import imop.lib.util.Misc;
+
+import java.util.ArrayList;
 
 /**
  * This class represents either a FunctionCall or a MessageSend.

@@ -8,11 +8,11 @@
  */
 package imop.lib.cfg;
 
-import java.util.List;
-
-import imop.ast.node.external.Node;
+import imop.ast.node.external.*;
 import imop.baseVisitor.DepthFirstProcess;
 import imop.lib.util.Misc;
+
+import java.util.List;
 
 /**
  * This visitor calls createCFG() on all the leaf CFG nodes.

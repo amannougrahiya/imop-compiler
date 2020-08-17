@@ -8,18 +8,14 @@
  */
 package imop.ast.info;
 
-import java.util.HashSet;
-import java.util.Set;
-
-import imop.ast.node.external.Node;
-import imop.ast.node.external.NodeSequence;
-import imop.ast.node.external.NodeToken;
-import imop.ast.node.external.OmpConstruct;
-import imop.ast.node.external.VariableList;
-import imop.ast.node.internal.OmpClause;
+import imop.ast.node.external.*;
+import imop.ast.node.internal.*;
 import imop.lib.util.CellSet;
 import imop.lib.util.Misc;
 import imop.parser.FrontEnd;
+
+import java.util.HashSet;
+import java.util.Set;
 
 public class OmpClauseInfo extends NodeInfo {
 

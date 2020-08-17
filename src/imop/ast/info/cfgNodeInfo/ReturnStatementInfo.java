@@ -9,9 +9,7 @@
 package imop.ast.info.cfgNodeInfo;
 
 import imop.ast.info.JumpStatementInfo;
-import imop.ast.node.external.Expression;
-import imop.ast.node.external.Node;
-import imop.ast.node.external.ReturnStatement;
+import imop.ast.node.external.*;
 import imop.lib.cfg.info.ReturnStatementCFGInfo;
 
 public class ReturnStatementInfo extends JumpStatementInfo {

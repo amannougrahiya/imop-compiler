@@ -8,7 +8,7 @@
  */
 package imop.ast.annotation;
 
-import imop.ast.node.external.Node;
+import imop.ast.node.external.*;
 
 /**
  * @author aman

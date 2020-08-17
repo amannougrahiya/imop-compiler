@@ -8,8 +8,8 @@
  */
 package imop.lib.cfg.info;
 
-import imop.ast.node.external.Node;
-import imop.ast.node.internal.EndNode;
+import imop.ast.node.external.*;
+import imop.ast.node.internal.*;
 import imop.lib.util.Misc;
 
 public class BreakStatementCFGInfo extends CFGInfo {

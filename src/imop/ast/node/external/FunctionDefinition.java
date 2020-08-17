@@ -12,12 +12,12 @@
 
 package imop.ast.node.external;
 
-import java.util.HashMap;
-
 import imop.ast.info.cfgNodeInfo.FunctionDefinitionInfo;
-import imop.ast.node.internal.Scopeable;
+import imop.ast.node.internal.*;
 import imop.lib.analysis.typeSystem.Type;
 import imop.lib.transform.simplify.OldFunctionStyleRemover;
+
+import java.util.HashMap;
 
 /**
  * Grammar production:

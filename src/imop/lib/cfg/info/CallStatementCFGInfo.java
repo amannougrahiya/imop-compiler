@@ -8,13 +8,11 @@
  */
 package imop.lib.cfg.info;
 
+import imop.ast.node.external.*;
+import imop.ast.node.internal.*;
+
 import java.util.ArrayList;
 import java.util.List;
-
-import imop.ast.node.external.Node;
-import imop.ast.node.internal.CallStatement;
-import imop.ast.node.internal.PostCallNode;
-import imop.ast.node.internal.PreCallNode;
 
 public class CallStatementCFGInfo extends CFGInfo {
 

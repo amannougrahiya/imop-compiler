@@ -8,36 +8,9 @@
  */
 package imop.lib.cfg.info;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
-import imop.ast.node.external.AtomicConstruct;
-import imop.ast.node.external.BarrierDirective;
-import imop.ast.node.external.CompoundStatement;
-import imop.ast.node.external.CompoundStatementElement;
-import imop.ast.node.external.CriticalConstruct;
-import imop.ast.node.external.Declaration;
-import imop.ast.node.external.FlushDirective;
-import imop.ast.node.external.GotoStatement;
-import imop.ast.node.external.Node;
-import imop.ast.node.external.NodeListOptional;
-import imop.ast.node.external.OrderedConstruct;
-import imop.ast.node.external.ParallelConstruct;
-import imop.ast.node.external.Statement;
-import imop.ast.node.external.TaskConstruct;
-import imop.ast.node.external.TaskwaitDirective;
-import imop.ast.node.external.TaskyieldDirective;
-import imop.ast.node.internal.CallStatement;
-import imop.ast.node.internal.DummyFlushDirective;
-import imop.ast.node.internal.DummyFlushType;
-import imop.ast.node.internal.Scopeable;
-import imop.lib.analysis.flowanalysis.AddressCell;
-import imop.lib.analysis.flowanalysis.Cell;
-import imop.lib.analysis.flowanalysis.FieldCell;
-import imop.lib.analysis.flowanalysis.FreeVariable;
-import imop.lib.analysis.flowanalysis.Symbol;
+import imop.ast.node.external.*;
+import imop.ast.node.internal.*;
+import imop.lib.analysis.flowanalysis.*;
 import imop.lib.analysis.flowanalysis.dataflow.PointsToAnalysis;
 import imop.lib.analysis.mhp.BeginPhasePoint;
 import imop.lib.cfg.NestedCFG;
@@ -47,20 +20,16 @@ import imop.lib.transform.simplify.InsertDummyFlushDirectives;
 import imop.lib.transform.simplify.Normalization;
 import imop.lib.transform.simplify.SplitCombinedConstructs;
 import imop.lib.transform.updater.NodeRemover;
-import imop.lib.transform.updater.sideeffect.AddedDFDPredecessor;
-import imop.lib.transform.updater.sideeffect.AddedDFDSuccessor;
-import imop.lib.transform.updater.sideeffect.InitializationSimplified;
-import imop.lib.transform.updater.sideeffect.NamespaceCollisionOnAddition;
-import imop.lib.transform.updater.sideeffect.NamespaceCollisionOnRemoval;
-import imop.lib.transform.updater.sideeffect.NodeUpdated;
-import imop.lib.transform.updater.sideeffect.RemovedDFDPredecessor;
-import imop.lib.transform.updater.sideeffect.RemovedDFDSuccessor;
-import imop.lib.transform.updater.sideeffect.SideEffect;
-import imop.lib.transform.updater.sideeffect.UnauthorizedDFDUpdate;
+import imop.lib.transform.updater.sideeffect.*;
 import imop.lib.util.CellSet;
 import imop.lib.util.Misc;
 import imop.parser.FrontEnd;
 import imop.parser.Program;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 public class CompoundStatementCFGInfo extends CFGInfo {
 

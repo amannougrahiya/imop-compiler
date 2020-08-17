@@ -13,7 +13,7 @@
 package imop.ast.node.external;
 
 import imop.ast.info.cfgNodeInfo.ExpressionStatementInfo;
-import imop.ast.node.internal.CallStatement;
+import imop.ast.node.internal.*;
 import imop.lib.getter.CallStatementGetter;
 
 /**

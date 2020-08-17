@@ -8,9 +8,8 @@
  */
 package imop.lib.cfg;
 
-import imop.ast.node.external.Node;
-import imop.ast.node.internal.BeginNode;
-import imop.ast.node.internal.EndNode;
+import imop.ast.node.external.*;
+import imop.ast.node.internal.*;
 
 /**
  * Corresponds to an internal CFG's begin and end nodes for a given AST node.

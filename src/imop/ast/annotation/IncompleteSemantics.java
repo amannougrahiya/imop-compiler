@@ -8,28 +8,15 @@
  */
 package imop.ast.annotation;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 import imop.ast.annotation.IncompleteEdge.TypeOfIncompleteness;
-import imop.ast.node.external.BreakStatement;
-import imop.ast.node.external.ContinueStatement;
-import imop.ast.node.external.Expression;
-import imop.ast.node.external.GotoStatement;
-import imop.ast.node.external.Node;
-import imop.ast.node.external.OmpConstruct;
-import imop.ast.node.external.OmpDirective;
-import imop.ast.node.external.ReturnStatement;
-import imop.ast.node.external.Statement;
-import imop.ast.node.external.SwitchStatement;
+import imop.ast.node.external.*;
 import imop.lib.cfg.CFGLinkFinder;
 import imop.lib.cfg.info.CFGInfo;
 import imop.lib.cfg.link.node.SwitchPredicateLink;
 import imop.lib.getter.SwitchRelevantStatementsGetter;
 import imop.lib.util.Misc;
+
+import java.util.*;
 
 /**
  * This class represents the incomplete semantics associated with a newly

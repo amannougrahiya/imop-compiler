@@ -9,12 +9,7 @@
 package imop.ast.info.cfgNodeInfo;
 
 import imop.ast.info.NodeInfo;
-import imop.ast.node.external.Declarator;
-import imop.ast.node.external.Node;
-import imop.ast.node.external.NodeSequence;
-import imop.ast.node.external.NodeToken;
-import imop.ast.node.external.ParameterDeclaration;
-import imop.ast.node.external.ParameterList;
+import imop.ast.node.external.*;
 import imop.lib.analysis.flowanalysis.Symbol;
 import imop.lib.util.Misc;
 

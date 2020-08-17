@@ -8,9 +8,7 @@
  */
 package imop.ast.annotation;
 
-import imop.ast.node.external.OmpConstruct;
-import imop.ast.node.external.OmpDirective;
-import imop.ast.node.external.Statement;
+import imop.ast.node.external.*;
 
 public abstract class Label extends Annotation {
 	protected Statement labeledCFGNode;

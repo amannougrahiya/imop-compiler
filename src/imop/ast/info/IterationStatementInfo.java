@@ -8,7 +8,7 @@
  */
 package imop.ast.info;
 
-import imop.ast.node.external.Node;
+import imop.ast.node.external.*;
 import imop.lib.util.Misc;
 
 public class IterationStatementInfo extends StatementInfo {

@@ -9,7 +9,7 @@
 package imop.ast.info.cfgNodeInfo;
 
 import imop.ast.info.JumpStatementInfo;
-import imop.ast.node.external.Node;
+import imop.ast.node.external.*;
 import imop.lib.cfg.info.BreakStatementCFGInfo;
 import imop.lib.util.Misc;
 

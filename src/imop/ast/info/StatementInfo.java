@@ -8,26 +8,12 @@
  */
 package imop.ast.info;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 import imop.ast.annotation.CaseLabel;
 import imop.ast.annotation.DefaultLabel;
 import imop.ast.annotation.Label;
 import imop.ast.annotation.SimpleLabel;
-import imop.ast.node.external.Expression;
-import imop.ast.node.external.GotoStatement;
-import imop.ast.node.external.Node;
-import imop.ast.node.external.OmpConstruct;
-import imop.ast.node.external.OmpDirective;
-import imop.ast.node.external.ParallelForConstruct;
-import imop.ast.node.external.ParallelSectionsConstruct;
-import imop.ast.node.external.Statement;
-import imop.ast.node.external.SwitchStatement;
-import imop.ast.node.internal.EndNode;
+import imop.ast.node.external.*;
+import imop.ast.node.internal.*;
 import imop.lib.analysis.flowanalysis.dataflow.PointsToAnalysis;
 import imop.lib.cfg.info.CFGInfo;
 import imop.lib.cfg.link.autoupdater.AutomatedUpdater;
@@ -36,6 +22,8 @@ import imop.lib.util.Misc;
 import imop.lib.util.ProfileSS;
 import imop.parser.Program;
 import imop.parser.Program.UpdateCategory;
+
+import java.util.*;
 
 public class StatementInfo extends NodeInfo {
 	/**

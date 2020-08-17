@@ -12,15 +12,11 @@
 
 package imop.ast.node.external;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 import imop.ast.info.NodeInfo;
 import imop.lib.analysis.flowanalysis.DFable;
 import imop.lib.util.Misc;
+
+import java.util.*;
 
 /**
  * The class which all syntax tree classes must extend.

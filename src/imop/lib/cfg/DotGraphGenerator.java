@@ -8,10 +8,10 @@
  */
 package imop.lib.cfg;
 
-import java.io.BufferedWriter;
-
-import imop.ast.node.external.Node;
+import imop.ast.node.external.*;
 import imop.lib.util.DumpSnapshot;
+
+import java.io.BufferedWriter;
 
 /**
  * This class generates the dot graph text for the CFGs created.

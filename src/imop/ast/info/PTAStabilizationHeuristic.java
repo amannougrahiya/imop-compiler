@@ -8,13 +8,8 @@
  */
 package imop.ast.info;
 
-import imop.ast.node.external.Node;
-import imop.lib.analysis.flowanalysis.AddressCell;
-import imop.lib.analysis.flowanalysis.Cell;
-import imop.lib.analysis.flowanalysis.FieldCell;
-import imop.lib.analysis.flowanalysis.FreeVariable;
-import imop.lib.analysis.flowanalysis.HeapCell;
-import imop.lib.analysis.flowanalysis.Symbol;
+import imop.ast.node.external.*;
+import imop.lib.analysis.flowanalysis.*;
 import imop.lib.analysis.typeSystem.PointerType;
 import imop.lib.util.CellSet;
 

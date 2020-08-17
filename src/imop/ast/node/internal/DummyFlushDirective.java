@@ -8,22 +8,15 @@
  */
 package imop.ast.node.internal;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 import imop.ast.info.cfgNodeInfo.DummyFlushDirectiveInfo;
-import imop.ast.node.external.FlushDirective;
-import imop.ast.node.external.MasterConstruct;
-import imop.ast.node.external.Node;
-import imop.ast.node.external.SingleConstruct;
+import imop.ast.node.external.*;
 import imop.lib.analysis.flowanalysis.Cell;
 import imop.lib.cg.CallStack;
 import imop.lib.cg.NodeWithStack;
 import imop.lib.util.CellSet;
 import imop.lib.util.CollectorVisitor;
+
+import java.util.*;
 
 public class DummyFlushDirective extends FlushDirective {
 	{

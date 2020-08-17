@@ -8,30 +8,11 @@
  */
 package imop.ast.info.cfgNodeInfo;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 import imop.ast.info.DataSharingAttribute;
 import imop.ast.info.NodeInfo;
 import imop.ast.info.OmpDirectiveInfo;
-import imop.ast.node.external.BarrierDirective;
-import imop.ast.node.external.BreakStatement;
-import imop.ast.node.external.CompoundStatement;
-import imop.ast.node.external.Declaration;
-import imop.ast.node.external.DoStatement;
-import imop.ast.node.external.Expression;
-import imop.ast.node.external.FlushDirective;
-import imop.ast.node.external.ForStatement;
-import imop.ast.node.external.IfStatement;
-import imop.ast.node.external.IterationStatement;
-import imop.ast.node.external.Node;
-import imop.ast.node.external.ParallelConstruct;
-import imop.ast.node.external.Statement;
-import imop.ast.node.external.SwitchStatement;
-import imop.ast.node.external.WhileStatement;
-import imop.ast.node.internal.BeginNode;
-import imop.ast.node.internal.EndNode;
+import imop.ast.node.external.*;
+import imop.ast.node.internal.*;
 import imop.lib.analysis.CoExistenceChecker;
 import imop.lib.analysis.flowanalysis.Cell;
 import imop.lib.analysis.flowanalysis.generic.AnalysisDimension.SVEDimension;
@@ -56,6 +37,10 @@ import imop.lib.util.CellSet;
 import imop.lib.util.CollectorVisitor;
 import imop.lib.util.Misc;
 import imop.parser.Program;
+
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 public class BarrierDirectiveInfo extends OmpDirectiveInfo {
 	public BarrierDirectiveInfo(BarrierDirective owner) {

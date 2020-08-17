@@ -9,8 +9,7 @@
 package imop.ast.info.cfgNodeInfo;
 
 import imop.ast.info.JumpStatementInfo;
-import imop.ast.node.external.GotoStatement;
-import imop.ast.node.external.Node;
+import imop.ast.node.external.*;
 import imop.lib.cfg.info.GotoStatementCFGInfo;
 
 public class GotoStatementInfo extends JumpStatementInfo {

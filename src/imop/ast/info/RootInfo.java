@@ -8,42 +8,18 @@
  */
 package imop.ast.info;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
-import imop.ast.node.external.CompoundStatement;
-import imop.ast.node.external.Declaration;
-import imop.ast.node.external.ElementsOfTranslation;
-import imop.ast.node.external.ExternalDeclaration;
-import imop.ast.node.external.FunctionDefinition;
-import imop.ast.node.external.Node;
-import imop.ast.node.external.NodeSequence;
-import imop.ast.node.external.NodeToken;
-import imop.ast.node.external.ThreadPrivateDirective;
-import imop.ast.node.external.TranslationUnit;
-import imop.ast.node.external.VariableList;
-import imop.ast.node.internal.CallStatement;
+import imop.ast.node.external.*;
+import imop.ast.node.internal.*;
 import imop.lib.analysis.flowanalysis.Cell;
 import imop.lib.analysis.flowanalysis.HeapCell;
 import imop.lib.analysis.flowanalysis.Symbol;
-import imop.lib.analysis.typeSystem.ArrayType;
-import imop.lib.analysis.typeSystem.EnumType;
-import imop.lib.analysis.typeSystem.FunctionType;
-import imop.lib.analysis.typeSystem.StructType;
-import imop.lib.analysis.typeSystem.Type;
-import imop.lib.analysis.typeSystem.Typedef;
-import imop.lib.analysis.typeSystem.UnionType;
+import imop.lib.analysis.typeSystem.*;
 import imop.lib.cfg.link.autoupdater.AutomatedUpdater;
 import imop.lib.getter.AllFunctionDefinitionGetter;
-import imop.lib.util.CellCollection;
-import imop.lib.util.CellList;
-import imop.lib.util.CellSet;
-import imop.lib.util.Misc;
-import imop.lib.util.ProfileSS;
+import imop.lib.util.*;
 import imop.parser.Program;
+
+import java.util.*;
 
 public class RootInfo extends NodeInfo {
 

@@ -8,33 +8,15 @@
  */
 package imop.ast.info.cfgNodeInfo;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 import imop.ast.annotation.Label;
 import imop.ast.annotation.SimpleLabel;
 import imop.ast.info.DataSharingAttribute;
 import imop.ast.info.NodeInfo;
-import imop.ast.node.external.CompoundStatement;
-import imop.ast.node.external.Declaration;
-import imop.ast.node.external.Expression;
-import imop.ast.node.external.FunctionDefinition;
-import imop.ast.node.external.Node;
-import imop.ast.node.external.ParameterDeclaration;
-import imop.ast.node.external.ReturnStatement;
-import imop.ast.node.external.Statement;
-import imop.ast.node.internal.CallStatement;
-import imop.ast.node.internal.Scopeable;
+import imop.ast.node.external.*;
+import imop.ast.node.internal.*;
 import imop.lib.analysis.flowanalysis.Symbol;
-import imop.lib.analysis.typeSystem.ArrayType;
-import imop.lib.analysis.typeSystem.FunctionType;
+import imop.lib.analysis.typeSystem.*;
 import imop.lib.analysis.typeSystem.FunctionType.Parameter;
-import imop.lib.analysis.typeSystem.Type;
-import imop.lib.analysis.typeSystem.Typedef;
-import imop.lib.analysis.typeSystem.VoidType;
 import imop.lib.builder.Builder;
 import imop.lib.cfg.info.FunctionDefinitionCFGInfo;
 import imop.lib.cg.CallSite;
@@ -43,6 +25,8 @@ import imop.lib.util.CellSet;
 import imop.lib.util.Misc;
 import imop.lib.util.ProfileSS;
 import imop.parser.Program;
+
+import java.util.*;
 
 /**
  * This class holds the information specific to a FunctionDefinition node.

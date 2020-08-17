@@ -9,10 +9,7 @@
 package imop.ast.info.cfgNodeInfo;
 
 import imop.ast.info.OmpConstructInfo;
-import imop.ast.node.external.AtomicClause;
-import imop.ast.node.external.AtomicConstruct;
-import imop.ast.node.external.Node;
-import imop.ast.node.external.NodeToken;
+import imop.ast.node.external.*;
 import imop.lib.analysis.flowanalysis.Symbol;
 import imop.lib.cfg.info.AtomicConstructCFGInfo;
 import imop.lib.util.CellList;

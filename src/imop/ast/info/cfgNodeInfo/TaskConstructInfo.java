@@ -8,18 +8,16 @@
  */
 package imop.ast.info.cfgNodeInfo;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import imop.ast.info.OmpConstructInfo;
-import imop.ast.node.external.Node;
-import imop.ast.node.external.TaskConstruct;
-import imop.ast.node.internal.BeginNode;
-import imop.ast.node.internal.EndNode;
+import imop.ast.node.external.*;
+import imop.ast.node.internal.*;
 import imop.lib.cfg.info.TaskConstructCFGInfo;
 import imop.lib.cg.CallStack;
 import imop.lib.cg.NodeWithStack;
 import imop.lib.util.CollectorVisitor;
+
+import java.util.HashSet;
+import java.util.Set;
 
 public class TaskConstructInfo extends OmpConstructInfo {
 

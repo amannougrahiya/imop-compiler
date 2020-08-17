@@ -9,11 +9,7 @@
 package imop.ast.info.cfgNodeInfo;
 
 import imop.ast.info.OmpConstructInfo;
-import imop.ast.node.external.ANowaitDataClause;
-import imop.ast.node.external.Node;
-import imop.ast.node.external.NodeChoice;
-import imop.ast.node.external.NowaitClause;
-import imop.ast.node.external.SectionsConstruct;
+import imop.ast.node.external.*;
 import imop.lib.cfg.info.SectionsConstructCFGInfo;
 import imop.parser.FrontEnd;
 

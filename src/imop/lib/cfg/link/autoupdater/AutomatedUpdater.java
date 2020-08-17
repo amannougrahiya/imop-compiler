@@ -8,38 +8,13 @@
  */
 package imop.lib.cfg.link.autoupdater;
 
-import java.util.ArrayList;
-import java.util.ConcurrentModificationException;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.Stack;
-
 import imop.ast.annotation.Label;
-import imop.ast.node.external.BarrierDirective;
-import imop.ast.node.external.CompoundStatement;
-import imop.ast.node.external.Declaration;
-import imop.ast.node.external.FlushDirective;
-import imop.ast.node.external.FunctionDefinition;
-import imop.ast.node.external.Node;
-import imop.ast.node.external.ParallelConstruct;
-import imop.ast.node.external.Statement;
-import imop.ast.node.external.TranslationUnit;
-import imop.ast.node.internal.BeginNode;
-import imop.ast.node.internal.CallStatement;
-import imop.ast.node.internal.DummyFlushDirective;
-import imop.ast.node.internal.EndNode;
-import imop.ast.node.internal.Scopeable;
-import imop.lib.analysis.BasePA;
+import imop.ast.node.external.*;
+import imop.ast.node.internal.*;
 import imop.lib.analysis.CoExistenceChecker;
 import imop.lib.analysis.flowanalysis.dataflow.PointsToAnalysis;
 import imop.lib.analysis.flowanalysis.dataflow.PointsToAnalysis.PointsToGlobalState;
-import imop.lib.analysis.flowanalysis.generic.AnalysisName;
-import imop.lib.analysis.flowanalysis.generic.FlowAnalysis;
-import imop.lib.analysis.flowanalysis.generic.InterThreadBackwardCellularAnalysis;
-import imop.lib.analysis.flowanalysis.generic.InterThreadBackwardNonCellularAnalysis;
-import imop.lib.analysis.flowanalysis.generic.InterThreadForwardCellularAnalysis;
-import imop.lib.analysis.flowanalysis.generic.InterThreadForwardNonCellularAnalysis;
+import imop.lib.analysis.flowanalysis.generic.*;
 import imop.lib.analysis.mhp.BeginPhasePoint;
 import imop.lib.analysis.mhp.MHPAnalyzer;
 import imop.lib.analysis.mhp.NodePhaseInfo;
@@ -53,6 +28,8 @@ import imop.lib.util.CollectorVisitor;
 import imop.lib.util.Misc;
 import imop.parser.Program;
 import imop.parser.Program.UpdateCategory;
+
+import java.util.*;
 
 public class AutomatedUpdater {
 

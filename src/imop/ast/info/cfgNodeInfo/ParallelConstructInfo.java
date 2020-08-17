@@ -8,29 +8,9 @@
  */
 package imop.ast.info.cfgNodeInfo;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 import imop.ast.info.OmpConstructInfo;
-import imop.ast.node.external.AUniqueParallelOrDataClause;
-import imop.ast.node.external.DataClause;
-import imop.ast.node.external.IfClause;
-import imop.ast.node.external.Node;
-import imop.ast.node.external.NodeChoice;
-import imop.ast.node.external.NumThreadsClause;
-import imop.ast.node.external.OmpCopyinClause;
-import imop.ast.node.external.OmpFirstPrivateClause;
-import imop.ast.node.external.OmpLastPrivateClause;
-import imop.ast.node.external.OmpPrivateClause;
-import imop.ast.node.external.OmpReductionClause;
-import imop.ast.node.external.OmpSharedClause;
-import imop.ast.node.external.ParallelConstruct;
-import imop.ast.node.external.UniqueParallelClause;
-import imop.ast.node.external.UniqueParallelOrDataClauseList;
-import imop.ast.node.internal.BeginNode;
-import imop.ast.node.internal.OmpClause;
+import imop.ast.node.external.*;
+import imop.ast.node.internal.*;
 import imop.lib.analysis.mhp.BeginPhasePoint;
 import imop.lib.analysis.mhp.Phase;
 import imop.lib.analysis.mhp.yuan.BTBarrierNode;
@@ -39,6 +19,11 @@ import imop.lib.cfg.info.ParallelConstructCFGInfo;
 import imop.lib.util.CellSet;
 import imop.lib.util.Misc;
 import imop.lib.util.ProfileSS;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 public class ParallelConstructInfo extends OmpConstructInfo {
 	private List<Phase> allPhaseList;

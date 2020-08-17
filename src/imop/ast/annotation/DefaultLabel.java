@@ -8,8 +8,7 @@
  */
 package imop.ast.annotation;
 
-import imop.ast.node.external.Statement;
-import imop.ast.node.external.SwitchStatement;
+import imop.ast.node.external.*;
 import imop.lib.util.Misc;
 
 public class DefaultLabel extends Label {

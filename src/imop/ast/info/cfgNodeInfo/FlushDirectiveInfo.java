@@ -9,7 +9,7 @@
 package imop.ast.info.cfgNodeInfo;
 
 import imop.ast.info.OmpDirectiveInfo;
-import imop.ast.node.external.Node;
+import imop.ast.node.external.*;
 
 public class FlushDirectiveInfo extends OmpDirectiveInfo {
 

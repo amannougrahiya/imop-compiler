@@ -8,22 +8,15 @@
  */
 package imop.ast.info.cfgNodeInfo;
 
-import java.util.Set;
-
 import imop.ast.info.OmpConstructInfo;
-import imop.ast.node.external.AUniqueForOrDataOrNowaitClause;
-import imop.ast.node.external.ForConstruct;
-import imop.ast.node.external.Node;
-import imop.ast.node.external.NodeChoice;
-import imop.ast.node.external.NodeToken;
-import imop.ast.node.external.NowaitClause;
-import imop.ast.node.external.ScheduleKind;
-import imop.ast.node.external.UniqueForClause;
-import imop.ast.node.internal.OmpClause;
+import imop.ast.node.external.*;
+import imop.ast.node.internal.*;
 import imop.lib.cfg.info.ForConstructCFGInfo;
 import imop.lib.util.Misc;
 import imop.parser.CParserConstants;
 import imop.parser.FrontEnd;
+
+import java.util.Set;
 
 public class ForConstructInfo extends OmpConstructInfo {
 

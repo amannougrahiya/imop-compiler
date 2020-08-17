@@ -8,12 +8,12 @@
  */
 package imop.lib.cfg;
 
-import java.io.BufferedWriter;
-
 import imop.ast.info.NodeInfo;
-import imop.ast.node.external.Node;
+import imop.ast.node.external.*;
 import imop.baseVisitor.GJDepthFirstProcess;
 import imop.lib.util.Misc;
+
+import java.io.BufferedWriter;
 
 /**
  * This class writes the dot edges' information.

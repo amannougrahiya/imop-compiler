@@ -8,30 +8,8 @@
  */
 package imop.lib.cfg.info;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-
-import imop.ast.node.external.AUniqueParallelOrDataClause;
-import imop.ast.node.external.CompoundStatement;
-import imop.ast.node.external.DataClause;
-import imop.ast.node.external.IfClause;
-import imop.ast.node.external.Node;
-import imop.ast.node.external.NodeChoice;
-import imop.ast.node.external.NumThreadsClause;
-import imop.ast.node.external.OmpCopyinClause;
-import imop.ast.node.external.OmpDfltNoneClause;
-import imop.ast.node.external.OmpDfltSharedClause;
-import imop.ast.node.external.OmpFirstPrivateClause;
-import imop.ast.node.external.OmpLastPrivateClause;
-import imop.ast.node.external.OmpPrivateClause;
-import imop.ast.node.external.OmpReductionClause;
-import imop.ast.node.external.OmpSharedClause;
-import imop.ast.node.external.ParallelConstruct;
-import imop.ast.node.external.Statement;
-import imop.ast.node.external.UniqueParallelClause;
-import imop.ast.node.external.UniqueParallelOrDataClauseList;
-import imop.ast.node.internal.OmpClause;
+import imop.ast.node.external.*;
+import imop.ast.node.internal.*;
 import imop.lib.analysis.flowanalysis.dataflow.PointsToAnalysis;
 import imop.lib.analysis.mhp.BeginPhasePoint;
 import imop.lib.cfg.NestedCFG;
@@ -46,6 +24,10 @@ import imop.lib.transform.updater.sideeffect.SideEffect;
 import imop.lib.util.Misc;
 import imop.parser.FrontEnd;
 import imop.parser.Program;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
 public class ParallelConstructCFGInfo extends CFGInfo {
 

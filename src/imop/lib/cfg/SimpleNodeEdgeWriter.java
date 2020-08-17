@@ -8,13 +8,13 @@
  */
 package imop.lib.cfg;
 
+import imop.ast.node.external.*;
+import imop.baseVisitor.GJVoidDepthFirstProcess;
+import imop.lib.util.Misc;
+
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.util.List;
-
-import imop.ast.node.external.Node;
-import imop.baseVisitor.GJVoidDepthFirstProcess;
-import imop.lib.util.Misc;
 
 /**
  */

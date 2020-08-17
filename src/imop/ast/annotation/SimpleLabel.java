@@ -8,7 +8,7 @@
  */
 package imop.ast.annotation;
 
-import imop.ast.node.external.Statement;
+import imop.ast.node.external.*;
 
 public class SimpleLabel extends Label {
 	private String labelName;

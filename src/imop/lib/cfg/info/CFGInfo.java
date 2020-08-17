@@ -8,26 +8,9 @@
  */
 package imop.lib.cfg.info;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
-
 import imop.ast.info.NodeInfo;
-import imop.ast.node.external.FunctionDefinition;
-import imop.ast.node.external.JumpStatement;
-import imop.ast.node.external.MasterConstruct;
-import imop.ast.node.external.Node;
-import imop.ast.node.external.ParallelConstruct;
-import imop.ast.node.external.SingleConstruct;
-import imop.ast.node.external.Statement;
-import imop.ast.node.internal.BeginNode;
-import imop.ast.node.internal.CallStatement;
-import imop.ast.node.internal.DummyFlushDirective;
-import imop.ast.node.internal.EndNode;
-import imop.ast.node.internal.PostCallNode;
-import imop.ast.node.internal.PreCallNode;
+import imop.ast.node.external.*;
+import imop.ast.node.internal.*;
 import imop.lib.analysis.CoExistenceChecker;
 import imop.lib.analysis.flowanalysis.DFable;
 import imop.lib.analysis.flowanalysis.SCC;
@@ -46,6 +29,12 @@ import imop.lib.util.CollectorVisitor;
 import imop.lib.util.Misc;
 import imop.lib.util.ProfileSS;
 import imop.parser.Program;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public class CFGInfo {
 	public static long uniPrecisionTimer = 0;

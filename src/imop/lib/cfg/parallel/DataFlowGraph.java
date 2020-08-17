@@ -8,13 +8,13 @@
  */
 package imop.lib.cfg.parallel;
 
-import java.util.HashSet;
-import java.util.Set;
-
-import imop.ast.node.external.Node;
-import imop.ast.node.internal.DummyFlushDirective;
+import imop.ast.node.external.*;
+import imop.ast.node.internal.*;
 import imop.lib.analysis.mhp.Phase;
 import imop.lib.util.Misc;
+
+import java.util.HashSet;
+import java.util.Set;
 
 public class DataFlowGraph {
 	/**

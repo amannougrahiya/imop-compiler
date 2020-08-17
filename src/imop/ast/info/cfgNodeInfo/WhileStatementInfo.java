@@ -8,17 +8,8 @@
  */
 package imop.ast.info.cfgNodeInfo;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import imop.ast.info.IterationStatementInfo;
-import imop.ast.node.external.CompoundStatement;
-import imop.ast.node.external.Declaration;
-import imop.ast.node.external.Expression;
-import imop.ast.node.external.IfStatement;
-import imop.ast.node.external.Node;
-import imop.ast.node.external.Statement;
-import imop.ast.node.external.WhileStatement;
+import imop.ast.node.external.*;
 import imop.lib.analysis.typeSystem.FloatingType;
 import imop.lib.analysis.typeSystem.IntegerType;
 import imop.lib.analysis.typeSystem.Type;
@@ -31,6 +22,9 @@ import imop.lib.transform.updater.NodeRemover;
 import imop.lib.transform.updater.sideeffect.SideEffect;
 import imop.lib.util.Misc;
 import imop.parser.FrontEnd;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class WhileStatementInfo extends IterationStatementInfo {
 

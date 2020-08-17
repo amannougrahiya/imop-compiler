@@ -8,12 +8,11 @@
  */
 package imop.ast.info;
 
-import java.util.List;
-
-import imop.ast.node.external.Node;
-import imop.ast.node.external.NowaitClause;
-import imop.ast.node.internal.OmpClause;
+import imop.ast.node.external.*;
+import imop.ast.node.internal.*;
 import imop.lib.getter.OmpClauseGetter;
+
+import java.util.List;
 
 public class OmpConstructInfo extends StatementInfo {
 	public OmpConstructInfo(Node owner) {

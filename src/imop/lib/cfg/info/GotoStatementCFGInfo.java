@@ -8,9 +8,7 @@
  */
 package imop.lib.cfg.info;
 
-import imop.ast.node.external.GotoStatement;
-import imop.ast.node.external.Node;
-import imop.ast.node.external.Statement;
+import imop.ast.node.external.*;
 import imop.lib.util.Misc;
 
 public class GotoStatementCFGInfo extends CFGInfo {

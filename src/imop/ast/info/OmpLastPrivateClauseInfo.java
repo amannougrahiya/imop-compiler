@@ -8,13 +8,11 @@
  */
 package imop.ast.info;
 
+import imop.ast.node.external.*;
+import imop.lib.util.Misc;
+
 import java.util.HashSet;
 import java.util.Set;
-
-import imop.ast.node.external.Node;
-import imop.ast.node.external.OmpLastPrivateClause;
-import imop.ast.node.external.VariableList;
-import imop.lib.util.Misc;
 
 public class OmpLastPrivateClauseInfo extends OmpClauseInfo {
 

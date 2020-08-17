@@ -8,9 +8,7 @@
  */
 package imop.ast.node.internal;
 
-import imop.ast.node.external.AssignmentExpression;
-import imop.ast.node.external.Expression;
-import imop.ast.node.external.NodeListOptional;
+import imop.ast.node.external.*;
 
 public class Predicate extends Expression {
 	{

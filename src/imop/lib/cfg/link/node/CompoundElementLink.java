@@ -8,10 +8,7 @@
  */
 package imop.lib.cfg.link.node;
 
-import imop.ast.node.external.CompoundStatement;
-import imop.ast.node.external.Declaration;
-import imop.ast.node.external.Node;
-import imop.ast.node.external.Statement;
+import imop.ast.node.external.*;
 import imop.lib.cfg.link.baseVisitor.CFGLinkVisitor;
 import imop.lib.cfg.link.baseVisitor.GJCFGLinkVisitor;
 import imop.lib.cfg.link.baseVisitor.GJNoArguCFGLinkVisitor;

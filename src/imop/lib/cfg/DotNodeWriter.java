@@ -8,15 +8,14 @@
  */
 package imop.lib.cfg;
 
-import java.io.BufferedWriter;
-import java.io.IOException;
-
 import imop.ast.info.NodeInfo;
 import imop.ast.info.cfgNodeInfo.FunctionDefinitionInfo;
-import imop.ast.node.external.FunctionDefinition;
-import imop.ast.node.external.Node;
+import imop.ast.node.external.*;
 import imop.baseVisitor.GJDepthFirstProcess;
 import imop.lib.util.Misc;
+
+import java.io.BufferedWriter;
+import java.io.IOException;
 
 /**
  * This class writes the dot node and subgraph information.

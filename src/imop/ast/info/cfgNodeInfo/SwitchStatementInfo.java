@@ -8,20 +8,19 @@
  */
 package imop.ast.info.cfgNodeInfo;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-
 import imop.ast.annotation.CaseLabel;
 import imop.ast.annotation.DefaultLabel;
 import imop.ast.annotation.Label;
 import imop.ast.info.SelectionStatementInfo;
 import imop.ast.info.StatementInfo;
-import imop.ast.node.external.Node;
-import imop.ast.node.external.Statement;
+import imop.ast.node.external.*;
 import imop.lib.cfg.info.SwitchStatementCFGInfo;
 import imop.lib.getter.SwitchRelevantStatementsGetter;
 import imop.lib.util.Misc;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
 public class SwitchStatementInfo extends SelectionStatementInfo {
 

@@ -8,34 +8,14 @@
  */
 package imop.ast.info.cfgNodeInfo;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import imop.ast.info.NodeInfo;
-import imop.ast.node.external.ADeclarationSpecifier;
-import imop.ast.node.external.Declaration;
-import imop.ast.node.external.Declarator;
-import imop.ast.node.external.EnumSpecifier;
-import imop.ast.node.external.EnumSpecifierWithList;
-import imop.ast.node.external.EnumeratorList;
-import imop.ast.node.external.InitDeclarator;
-import imop.ast.node.external.InitDeclaratorList;
-import imop.ast.node.external.Initializer;
-import imop.ast.node.external.Node;
-import imop.ast.node.external.NodeSequence;
-import imop.ast.node.external.NodeToken;
-import imop.ast.node.external.StorageClassSpecifier;
-import imop.ast.node.external.StructDeclaration;
-import imop.ast.node.external.StructDeclarationList;
-import imop.ast.node.external.StructDeclarator;
-import imop.ast.node.external.StructDeclaratorList;
-import imop.ast.node.external.StructDeclaratorWithDeclarator;
-import imop.ast.node.external.StructOrUnionSpecifier;
-import imop.ast.node.external.StructOrUnionSpecifierWithList;
-import imop.ast.node.external.TypeSpecifier;
+import imop.ast.node.external.*;
 import imop.lib.analysis.flowanalysis.Cell;
 import imop.lib.analysis.flowanalysis.Symbol;
 import imop.lib.util.Misc;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class DeclarationInfo extends NodeInfo {
 

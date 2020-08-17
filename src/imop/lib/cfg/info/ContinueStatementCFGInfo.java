@@ -8,11 +8,7 @@
  */
 package imop.lib.cfg.info;
 
-import imop.ast.node.external.DoStatement;
-import imop.ast.node.external.ForConstruct;
-import imop.ast.node.external.ForStatement;
-import imop.ast.node.external.Node;
-import imop.ast.node.external.WhileStatement;
+import imop.ast.node.external.*;
 import imop.lib.util.Misc;
 
 public class ContinueStatementCFGInfo extends CFGInfo {

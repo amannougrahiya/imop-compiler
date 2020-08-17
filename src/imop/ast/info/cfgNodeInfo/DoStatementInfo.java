@@ -9,11 +9,7 @@
 package imop.ast.info.cfgNodeInfo;
 
 import imop.ast.info.IterationStatementInfo;
-import imop.ast.node.external.CompoundStatement;
-import imop.ast.node.external.DoStatement;
-import imop.ast.node.external.Expression;
-import imop.ast.node.external.Node;
-import imop.ast.node.external.Statement;
+import imop.ast.node.external.*;
 import imop.lib.analysis.typeSystem.FloatingType;
 import imop.lib.analysis.typeSystem.IntegerType;
 import imop.lib.analysis.typeSystem.Type;

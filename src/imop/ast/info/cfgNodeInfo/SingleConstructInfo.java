@@ -8,24 +8,17 @@
  */
 package imop.ast.info.cfgNodeInfo;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import imop.ast.info.OmpConstructInfo;
-import imop.ast.node.external.ASingleClause;
-import imop.ast.node.external.BarrierDirective;
-import imop.ast.node.external.Node;
-import imop.ast.node.external.NodeChoice;
-import imop.ast.node.external.NowaitClause;
-import imop.ast.node.external.ParallelConstruct;
-import imop.ast.node.external.SingleConstruct;
-import imop.ast.node.internal.BeginNode;
-import imop.ast.node.internal.EndNode;
+import imop.ast.node.external.*;
+import imop.ast.node.internal.*;
 import imop.lib.cfg.info.SingleConstructCFGInfo;
 import imop.lib.cg.CallStack;
 import imop.lib.cg.NodeWithStack;
 import imop.lib.util.CollectorVisitor;
 import imop.parser.FrontEnd;
+
+import java.util.HashSet;
+import java.util.Set;
 
 public class SingleConstructInfo extends OmpConstructInfo {
 

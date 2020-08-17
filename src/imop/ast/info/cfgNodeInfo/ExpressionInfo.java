@@ -8,21 +8,16 @@
  */
 package imop.ast.info.cfgNodeInfo;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import imop.ast.info.NodeInfo;
-import imop.ast.node.external.Expression;
-import imop.ast.node.external.Node;
+import imop.ast.node.external.*;
 import imop.lib.analysis.flowanalysis.BranchEdge;
-import imop.lib.analysis.typeSystem.ArithmeticType;
-import imop.lib.analysis.typeSystem.FloatingType;
-import imop.lib.analysis.typeSystem.IntegerType;
-import imop.lib.analysis.typeSystem.PointerType;
-import imop.lib.analysis.typeSystem.Type;
+import imop.lib.analysis.typeSystem.*;
 import imop.lib.getter.CellAccessGetter;
 import imop.lib.util.CellList;
 import imop.lib.util.Misc;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class ExpressionInfo extends NodeInfo {
 	private boolean isSVEAnnotated = false;

@@ -9,7 +9,7 @@
 package imop.ast.info.cfgNodeInfo;
 
 import imop.ast.info.StatementInfo;
-import imop.ast.node.external.Node;
+import imop.ast.node.external.*;
 
 public class UnknownPragmaInfo extends StatementInfo {
 

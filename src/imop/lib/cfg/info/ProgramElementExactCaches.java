@@ -8,14 +8,14 @@
  */
 package imop.lib.cfg.info;
 
+import imop.ast.node.external.*;
+import imop.lib.util.Misc;
+import imop.parser.Program;
+
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-
-import imop.ast.node.external.Node;
-import imop.lib.util.Misc;
-import imop.parser.Program;
 
 /**
  * This class is used to cache a list of a given exact-type of AST node in the

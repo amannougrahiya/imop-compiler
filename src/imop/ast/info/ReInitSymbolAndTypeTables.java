@@ -10,9 +10,7 @@ package imop.ast.info;
 
 import imop.ast.info.cfgNodeInfo.CompoundStatementInfo;
 import imop.ast.info.cfgNodeInfo.FunctionDefinitionInfo;
-import imop.ast.node.external.CompoundStatement;
-import imop.ast.node.external.FunctionDefinition;
-import imop.ast.node.external.TranslationUnit;
+import imop.ast.node.external.*;
 import imop.baseVisitor.DepthFirstVisitor;
 
 /**

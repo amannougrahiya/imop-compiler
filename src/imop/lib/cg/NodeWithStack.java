@@ -8,7 +8,7 @@
  */
 package imop.lib.cg;
 
-import imop.ast.node.external.Node;
+import imop.ast.node.external.*;
 
 public class NodeWithStack {
 	protected final Node node;

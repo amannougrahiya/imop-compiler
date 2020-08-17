@@ -8,7 +8,7 @@
  */
 package imop.lib.cfg.parallel;
 
-import imop.ast.node.internal.DummyFlushDirective;
+import imop.ast.node.internal.*;
 
 public class InterTaskEdge {
 	private final DummyFlushDirective sourceNode;

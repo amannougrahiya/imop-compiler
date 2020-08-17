@@ -8,9 +8,7 @@
  */
 package imop.ast.node.internal;
 
-import imop.ast.node.external.Constant;
-import imop.ast.node.external.Expression;
-import imop.ast.node.external.NodeToken;
+import imop.ast.node.external.*;
 
 public class SimplePrimaryExpression extends Expression {
 	{

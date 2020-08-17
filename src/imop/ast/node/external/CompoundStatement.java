@@ -12,11 +12,11 @@
 
 package imop.ast.node.external;
 
-import java.util.HashMap;
-
 import imop.ast.info.cfgNodeInfo.CompoundStatementInfo;
-import imop.ast.node.internal.Scopeable;
+import imop.ast.node.internal.*;
 import imop.lib.analysis.typeSystem.Type;
+
+import java.util.HashMap;
 
 /**
  * Grammar production:

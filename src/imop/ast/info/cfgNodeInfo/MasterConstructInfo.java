@@ -9,7 +9,7 @@
 package imop.ast.info.cfgNodeInfo;
 
 import imop.ast.info.OmpConstructInfo;
-import imop.ast.node.external.Node;
+import imop.ast.node.external.*;
 import imop.lib.cfg.info.MasterConstructCFGInfo;
 
 public class MasterConstructInfo extends OmpConstructInfo {

@@ -9,22 +9,7 @@
 // TODO: Verify
 package imop.lib.cfg.info;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-
-import imop.ast.node.external.CompoundStatement;
-import imop.ast.node.external.FunctionDefinition;
-import imop.ast.node.external.Node;
-import imop.ast.node.external.NodeListOptional;
-import imop.ast.node.external.NodeOptional;
-import imop.ast.node.external.NodeSequence;
-import imop.ast.node.external.NodeToken;
-import imop.ast.node.external.ParameterDeclaration;
-import imop.ast.node.external.ParameterList;
-import imop.ast.node.external.ParameterTypeList;
-import imop.ast.node.external.ParameterTypeListClosed;
-import imop.ast.node.external.Statement;
+import imop.ast.node.external.*;
 import imop.lib.analysis.flowanalysis.dataflow.PointsToAnalysis;
 import imop.lib.analysis.mhp.BeginPhasePoint;
 import imop.lib.cfg.NestedCFG;
@@ -34,6 +19,10 @@ import imop.lib.transform.updater.NodeRemover;
 import imop.lib.util.Misc;
 import imop.parser.FrontEnd;
 import imop.parser.Program;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
 public class FunctionDefinitionCFGInfo extends CFGInfo {
 

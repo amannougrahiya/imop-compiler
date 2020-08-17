@@ -8,72 +8,24 @@
  */
 package imop.lib.cfg;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-
 import imop.ast.annotation.CaseLabel;
 import imop.ast.annotation.DefaultLabel;
 import imop.ast.annotation.IncompleteEdge;
 import imop.ast.annotation.IncompleteEdge.TypeOfIncompleteness;
 import imop.ast.annotation.Label;
 import imop.ast.info.cfgNodeInfo.ExpressionInfo;
-import imop.ast.node.external.ASection;
-import imop.ast.node.external.AtomicConstruct;
-import imop.ast.node.external.BreakStatement;
-import imop.ast.node.external.CompoundStatement;
-import imop.ast.node.external.ContinueStatement;
-import imop.ast.node.external.CriticalConstruct;
-import imop.ast.node.external.DoStatement;
-import imop.ast.node.external.Expression;
-import imop.ast.node.external.FinalClause;
-import imop.ast.node.external.ForConstruct;
-import imop.ast.node.external.ForStatement;
-import imop.ast.node.external.FunctionDefinition;
-import imop.ast.node.external.GotoStatement;
-import imop.ast.node.external.IfClause;
-import imop.ast.node.external.IfStatement;
-import imop.ast.node.external.MasterConstruct;
-import imop.ast.node.external.Node;
-import imop.ast.node.external.NodeSequence;
-import imop.ast.node.external.NumThreadsClause;
-import imop.ast.node.external.OmpForReinitExpression;
-import imop.ast.node.external.OrderedConstruct;
-import imop.ast.node.external.ParallelConstruct;
-import imop.ast.node.external.ParallelForConstruct;
-import imop.ast.node.external.ParallelSectionsConstruct;
-import imop.ast.node.external.ParameterDeclaration;
-import imop.ast.node.external.ReturnStatement;
-import imop.ast.node.external.SectionsConstruct;
-import imop.ast.node.external.SingleConstruct;
-import imop.ast.node.external.Statement;
-import imop.ast.node.external.SwitchStatement;
-import imop.ast.node.external.TaskConstruct;
-import imop.ast.node.external.WhileStatement;
-import imop.ast.node.internal.CallStatement;
-import imop.ast.node.internal.OmpClause;
-import imop.ast.node.internal.PostCallNode;
-import imop.ast.node.internal.PreCallNode;
+import imop.ast.node.external.*;
+import imop.ast.node.internal.*;
 import imop.baseVisitor.DepthFirstVisitor;
 import imop.lib.analysis.typeSystem.IntegerType;
 import imop.lib.analysis.typeSystem.Type;
 import imop.lib.cfg.info.ForConstructCFGInfo;
-import imop.lib.cfg.link.node.CFGLink;
-import imop.lib.cfg.link.node.DoBodyLink;
-import imop.lib.cfg.link.node.DoEndLink;
-import imop.lib.cfg.link.node.DoPredicateLink;
-import imop.lib.cfg.link.node.ForBodyLink;
-import imop.lib.cfg.link.node.ForEndLink;
-import imop.lib.cfg.link.node.ForTermLink;
-import imop.lib.cfg.link.node.IfElseBodyLink;
-import imop.lib.cfg.link.node.IfEndLink;
-import imop.lib.cfg.link.node.IfPredicateLink;
-import imop.lib.cfg.link.node.IfThenBodyLink;
-import imop.lib.cfg.link.node.SwitchPredicateLink;
-import imop.lib.cfg.link.node.WhileBodyLink;
-import imop.lib.cfg.link.node.WhileEndLink;
-import imop.lib.cfg.link.node.WhilePredicateLink;
+import imop.lib.cfg.link.node.*;
 import imop.lib.util.Misc;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 /**
  * Populates getParent, getSuccBlock, getPredBlock and getNestedCFG entries.

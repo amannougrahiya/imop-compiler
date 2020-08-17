@@ -8,10 +8,10 @@
  */
 package imop.lib.cg;
 
-import java.util.Stack;
-
-import imop.ast.node.internal.CallStatement;
+import imop.ast.node.internal.*;
 import imop.parser.Program;
+
+import java.util.Stack;
 
 public class CallStack {
 

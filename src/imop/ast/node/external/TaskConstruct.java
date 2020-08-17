@@ -12,11 +12,11 @@
 
 package imop.ast.node.external;
 
-import java.util.List;
-
 import imop.ast.info.cfgNodeInfo.TaskConstructInfo;
-import imop.ast.node.internal.OmpClause;
+import imop.ast.node.internal.*;
 import imop.lib.cfg.info.TaskConstructCFGInfo;
+
+import java.util.List;
 
 /**
  * Grammar production:

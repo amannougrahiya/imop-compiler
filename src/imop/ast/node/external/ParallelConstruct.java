@@ -13,7 +13,7 @@
 package imop.ast.node.external;
 
 import imop.ast.info.cfgNodeInfo.ParallelConstructInfo;
-import imop.ast.node.internal.OmpClause;
+import imop.ast.node.internal.*;
 import imop.lib.cfg.info.ParallelConstructCFGInfo;
 
 /**

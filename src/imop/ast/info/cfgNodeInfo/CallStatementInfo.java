@@ -8,14 +8,9 @@
  */
 package imop.ast.info.cfgNodeInfo;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import imop.ast.info.StatementInfo;
-import imop.ast.node.external.FunctionDefinition;
-import imop.ast.node.external.Node;
-import imop.ast.node.internal.CallStatement;
-import imop.ast.node.internal.SimplePrimaryExpression;
+import imop.ast.node.external.*;
+import imop.ast.node.internal.*;
 import imop.lib.analysis.flowanalysis.Cell;
 import imop.lib.analysis.flowanalysis.FreeVariable;
 import imop.lib.analysis.flowanalysis.Symbol;
@@ -27,6 +22,9 @@ import imop.lib.util.CellList;
 import imop.lib.util.ImmutableCellSet;
 import imop.lib.util.Misc;
 import imop.lib.util.ProfileSS;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class CallStatementInfo extends StatementInfo {
 	/**

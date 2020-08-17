@@ -9,9 +9,7 @@
 package imop.ast.info.cfgNodeInfo;
 
 import imop.ast.info.SelectionStatementInfo;
-import imop.ast.node.external.IfStatement;
-import imop.ast.node.external.Node;
-import imop.ast.node.external.Statement;
+import imop.ast.node.external.*;
 import imop.lib.cfg.info.IfStatementCFGInfo;
 import imop.parser.FrontEnd;
 
