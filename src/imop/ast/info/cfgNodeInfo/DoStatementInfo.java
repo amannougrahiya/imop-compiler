@@ -31,9 +31,14 @@ public class DoStatementInfo extends IterationStatementInfo {
 		return (DoStatementCFGInfo) cfgInfo;
 	}
 
+	@Override
+	public Node getLoopEntryPoint() {
+	    return this.getCFGInfo().getNestedCFG().getBegin();
+	}
+
 	/**
 	 * Unroll this owner loop to achieve the given {@code unrollingFactor}.
-	 * 
+	 *
 	 * @param unrollingFactor
 	 *            number of copies of iteration-body in the final state.
 	 *            <p>

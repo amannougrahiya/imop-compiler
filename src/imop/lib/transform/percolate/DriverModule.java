@@ -8,36 +8,10 @@
  */
 package imop.lib.transform.percolate;
 
-import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import imop.Main;
 import imop.ast.info.DataSharingAttribute;
-import imop.ast.node.external.BarrierDirective;
-import imop.ast.node.external.BreakStatement;
-import imop.ast.node.external.CompoundStatement;
-import imop.ast.node.external.Declaration;
-import imop.ast.node.external.DoStatement;
-import imop.ast.node.external.Expression;
-import imop.ast.node.external.ExpressionStatement;
-import imop.ast.node.external.ForStatement;
-import imop.ast.node.external.FunctionDefinition;
-import imop.ast.node.external.IterationStatement;
-import imop.ast.node.external.MasterConstruct;
-import imop.ast.node.external.Node;
-import imop.ast.node.external.ParallelConstruct;
-import imop.ast.node.external.SingleConstruct;
-import imop.ast.node.external.Statement;
-import imop.ast.node.external.TranslationUnit;
-import imop.ast.node.external.WhileStatement;
-import imop.ast.node.internal.BeginNode;
-import imop.ast.node.internal.Scopeable;
+import imop.ast.node.external.*;
+import imop.ast.node.internal.*;
 import imop.lib.analysis.SVEChecker;
 import imop.lib.analysis.flowanalysis.Cell;
 import imop.lib.analysis.flowanalysis.SCC;
@@ -66,14 +40,12 @@ import imop.lib.transform.simplify.ParallelConstructExpander;
 import imop.lib.transform.simplify.RedundantSynchronizationRemoval;
 import imop.lib.transform.updater.InsertImmediatePredecessor;
 import imop.lib.transform.updater.InsertOnTheEdge;
-import imop.lib.util.CellSet;
-import imop.lib.util.CollectorVisitor;
-import imop.lib.util.DumpSnapshot;
-import imop.lib.util.Misc;
-import imop.lib.util.ProfileSS;
-import imop.lib.util.TraversalOrderObtainer;
+import imop.lib.util.*;
 import imop.parser.FrontEnd;
 import imop.parser.Program;
+
+import java.text.DecimalFormat;
+import java.util.*;
 
 public class DriverModule {
 	public static int counter = 0;
@@ -367,7 +339,7 @@ public class DriverModule {
 	 */
 	public static void run(TranslationUnit root) {
 		System.err.println("Pass: Performing synchronization optimizations on the program.");
-		Set<Class<? extends Node>> iterationClasses = new HashSet<>();
+		Set<Class<? extends Node>> iterationClasses = new HashSet<>(16);
 		iterationClasses.add(DoStatement.class);
 		iterationClasses.add(WhileStatement.class);
 		iterationClasses.add(ForStatement.class);
@@ -390,7 +362,6 @@ public class DriverModule {
 				//				Program.sveSensitive = false;
 			}
 		}
-		return;
 	}
 
 	/**
@@ -1212,19 +1183,7 @@ public class DriverModule {
 		int maxLength = 1;
 		Set<NodeWithStack> internalNodes = itStmt.getInfo().getCFGInfo()
 				.getIntraTaskCFGLeafContentsOfSameParLevel(new CallStack());
-		Node loopEntryPoint;
-		if (itStmt instanceof WhileStatement) {
-			WhileStatement whileStmt = (WhileStatement) itStmt;
-			loopEntryPoint = whileStmt.getInfo().getCFGInfo().getPredicate();
-		} else if (itStmt instanceof ForStatement) {
-			ForStatement forStmt = (ForStatement) itStmt;
-			loopEntryPoint = forStmt.getInfo().getCFGInfo().getTerminationExpression();
-		} else if (itStmt instanceof DoStatement) {
-			DoStatement doStmt = (DoStatement) itStmt;
-			loopEntryPoint = doStmt.getInfo().getCFGInfo().getNestedCFG().getBegin();
-		} else {
-			return maxLength;
-		}
+		Node loopEntryPoint = itStmt.getInfo().getLoopEntryPoint();
 		// TODO: Add code here for the case where loopEntryPoint is null.
 		int thisOuterLength = 1;
 		for (Phase ph : loopEntryPoint.getInfo().getNodePhaseInfo().getPhaseSet()) {
