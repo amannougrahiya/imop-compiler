@@ -16,6 +16,7 @@ import imop.lib.builder.Builder;
 import imop.lib.cfg.CFGGenerator;
 import imop.lib.cfg.info.CFGInfo;
 import imop.lib.cfg.info.CompoundStatementCFGInfo;
+import imop.lib.cfg.info.ForStatementCFGInfo;
 import imop.lib.getter.StringGetter;
 import imop.lib.transform.simplify.InsertDummyFlushDirectives;
 import imop.lib.transform.updater.InsertImmediatePredecessor;
@@ -607,12 +608,42 @@ public class BasicTransform {
      * @param root
      *         the AST node below which all do-while loops need to be converted into a while loop.
      */
-    public static void convertAllDoWhileToWhile(Node root) {
+    public static DoStatement convertAllDoWhileToWhile(Node root) {
         for (DoStatement doStmt : Misc.getExactEnclosee(root, DoStatement.class)) {
             // TODO: Code here.
         }
+        return null;
     }
 
+    public static IterationStatement convertToWhile(IterationStatement itStmt) {
+        if (itStmt instanceof WhileStatement) {
+            return itStmt;
+        } else if (itStmt instanceof DoStatement) {
+            // TODO: Code here.
+            return itStmt;
+        } else {
+            ForStatementCFGInfo cfgInfo = (ForStatementCFGInfo) itStmt.getInfo().getCFGInfo();
+            if (cfgInfo.hasStepExpression()) {
+                Expression stepExpr = cfgInfo.getStepExpression();
+                for (Node pred : stepExpr.getInfo().getCFGInfo().getPredBlocks()) {
+                    Statement expStmt = FrontEnd.parseAndNormalize(stepExpr + ";", Statement.class);
+                    InsertImmediatePredecessor.insert(pred, expStmt);
+                }
+                cfgInfo.removeStepExpression();
+            }
+
+            StringBuilder whileStr = new StringBuilder();
+            if (cfgInfo.hasInitExpression()) {
+                Statement initStmt = FrontEnd.parseAndNormalize(cfgInfo.getInitExpression() + ";", Statement.class);
+                InsertImmediatePredecessor.insert(itStmt, initStmt);
+                cfgInfo.removeInitExpression();
+            }
+            whileStr.append("while (").append(cfgInfo.getTerminationExpression()).append(")").append(cfgInfo.getBody());
+            WhileStatement whileStmt = FrontEnd.parseAndNormalize(whileStr.toString(), WhileStatement.class);
+            NodeReplacer.replaceNodes(itStmt, whileStmt);
+            return whileStmt;
+        }
+    }
 
     /**
      * This method removes empty OpenMP constructs from the given {@code node}.
