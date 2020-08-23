@@ -8,25 +8,10 @@
  */
 package imop.lib.getter;
 
-import java.util.Vector;
-
-import imop.ast.node.external.AtomicConstruct;
-import imop.ast.node.external.CriticalConstruct;
-import imop.ast.node.external.DoStatement;
-import imop.ast.node.external.ForConstruct;
-import imop.ast.node.external.ForStatement;
-import imop.ast.node.external.IfStatement;
-import imop.ast.node.external.MasterConstruct;
-import imop.ast.node.external.OrderedConstruct;
-import imop.ast.node.external.ParallelConstruct;
-import imop.ast.node.external.ParallelForConstruct;
-import imop.ast.node.external.ParallelSectionsConstruct;
-import imop.ast.node.external.SectionsConstruct;
-import imop.ast.node.external.SingleConstruct;
-import imop.ast.node.external.SwitchStatement;
-import imop.ast.node.external.TaskConstruct;
-import imop.ast.node.external.WhileStatement;
+import imop.ast.node.external.*;
 import imop.baseVisitor.DepthFirstVisitor;
+
+import java.util.Vector;
 
 /**
  * Obtains a list of parallel constructs in the same level of CFG.

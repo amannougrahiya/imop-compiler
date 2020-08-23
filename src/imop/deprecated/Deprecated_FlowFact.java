@@ -8,7 +8,7 @@
  */
 package imop.deprecated;
 
-import imop.ast.node.external.Node;
+import imop.ast.node.external.*;
 
 @Deprecated
 public abstract class Deprecated_FlowFact {

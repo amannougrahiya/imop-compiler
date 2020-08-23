@@ -8,16 +8,8 @@
  */
 package imop.lib.analysis;
 
-import java.util.HashSet;
-import java.util.Set;
-import java.util.stream.Collectors;
-
-import imop.ast.node.external.BarrierDirective;
-import imop.ast.node.external.Expression;
-import imop.ast.node.external.Node;
-import imop.ast.node.external.OmpForCondition;
-import imop.ast.node.external.ParallelConstruct;
-import imop.ast.node.internal.BeginNode;
+import imop.ast.node.external.*;
+import imop.ast.node.internal.*;
 import imop.lib.analysis.flowanalysis.BranchEdge;
 import imop.lib.analysis.flowanalysis.Symbol;
 import imop.lib.analysis.flowanalysis.controlflow.PredicateAnalysis.PredicateFlowFact;
@@ -29,11 +21,14 @@ import imop.lib.analysis.mhp.Phase;
 import imop.lib.cg.CallStack;
 import imop.lib.cg.NodeWithStack;
 import imop.lib.util.CollectorVisitor;
-import imop.lib.util.DumpSnapshot;
 import imop.lib.util.Misc;
 import imop.lib.util.NodePair;
 import imop.lib.util.NodePhasePair;
 import imop.parser.Program;
+
+import java.util.HashSet;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public class CoExistenceChecker {
 	public static Set<NodePair> knownCoExistingNodes = new HashSet<>();

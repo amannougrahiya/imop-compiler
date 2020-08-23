@@ -8,19 +8,13 @@
  */
 package imop.lib.util;
 
-import java.util.AbstractCollection;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Set;
-import java.util.WeakHashMap;
-import java.util.function.Consumer;
-
 import imop.lib.analysis.flowanalysis.Cell;
 import imop.lib.analysis.flowanalysis.FreeVariable;
 import imop.lib.analysis.flowanalysis.Symbol;
 import imop.parser.Program;
+
+import java.util.*;
+import java.util.function.Consumer;
 
 public abstract class CellCollection extends AbstractCollection<Cell> implements Iterable<Cell> {
 	protected Collection<Cell> internalRepresentation;

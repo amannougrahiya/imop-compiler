@@ -8,13 +8,8 @@
  */
 package imop.lib.analysis.flowanalysis.controlflow;
 
-import java.util.HashSet;
-import java.util.Set;
-
-import imop.ast.node.external.FunctionDefinition;
-import imop.ast.node.external.Node;
-import imop.ast.node.external.ParameterDeclaration;
-import imop.ast.node.internal.SimplePrimaryExpression;
+import imop.ast.node.external.*;
+import imop.ast.node.internal.*;
 import imop.lib.analysis.flowanalysis.generic.AnalysisDimension;
 import imop.lib.analysis.flowanalysis.generic.AnalysisDimension.SVEDimension;
 import imop.lib.analysis.flowanalysis.generic.AnalysisName;
@@ -23,6 +18,9 @@ import imop.lib.analysis.flowanalysis.generic.InterProceduralControlFlowAnalysis
 import imop.lib.util.CellSet;
 import imop.lib.util.ImmutableSet;
 import imop.parser.Program;
+
+import java.util.HashSet;
+import java.util.Set;
 
 public class ImmutableDominanceAnalysis
 		extends InterProceduralControlFlowAnalysis<ImmutableDominanceAnalysis.DominatorFlowFact> {

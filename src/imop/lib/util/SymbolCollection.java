@@ -8,12 +8,12 @@
  */
 package imop.lib.util;
 
-import java.util.Collection;
-import java.util.Iterator;
-
 import imop.lib.analysis.flowanalysis.Cell;
 import imop.lib.analysis.flowanalysis.Symbol;
 import imop.parser.Program;
+
+import java.util.Collection;
+import java.util.Iterator;
 
 public abstract class SymbolCollection implements Iterable<Symbol> {
 	Collection<Symbol> internalRepresentation;

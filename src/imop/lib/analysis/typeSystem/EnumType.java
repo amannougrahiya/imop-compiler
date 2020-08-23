@@ -8,15 +8,14 @@
  */
 package imop.lib.analysis.typeSystem;
 
+import imop.ast.node.external.*;
+import imop.ast.node.internal.*;
+import imop.parser.FrontEnd;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
-import imop.ast.node.external.ConstantExpression;
-import imop.ast.node.external.Declaration;
-import imop.ast.node.internal.Scopeable;
-import imop.parser.FrontEnd;
 
 /**
  * This class represents <code>enum</code>erators.

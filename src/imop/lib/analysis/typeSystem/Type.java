@@ -8,37 +8,12 @@
  */
 package imop.lib.analysis.typeSystem;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 import imop.ast.info.RootInfo;
 import imop.ast.info.cfgNodeInfo.CompoundStatementInfo;
 import imop.ast.info.cfgNodeInfo.DeclarationInfo;
 import imop.ast.info.cfgNodeInfo.FunctionDefinitionInfo;
-import imop.ast.node.external.AbstractDeclarator;
-import imop.ast.node.external.CastExpressionTyped;
-import imop.ast.node.external.CompoundStatement;
-import imop.ast.node.external.Declaration;
-import imop.ast.node.external.DeclarationSpecifiers;
-import imop.ast.node.external.Declarator;
-import imop.ast.node.external.Expression;
-import imop.ast.node.external.FunctionDefinition;
-import imop.ast.node.external.Node;
-import imop.ast.node.external.NodeSequence;
-import imop.ast.node.external.NodeToken;
-import imop.ast.node.external.ParameterAbstraction;
-import imop.ast.node.external.ParameterDeclaration;
-import imop.ast.node.external.ParameterList;
-import imop.ast.node.external.ParameterTypeList;
-import imop.ast.node.external.SpecifierQualifierList;
-import imop.ast.node.external.StructDeclaration;
-import imop.ast.node.external.StructDeclarator;
-import imop.ast.node.external.TranslationUnit;
-import imop.ast.node.external.TypeName;
-import imop.ast.node.internal.Scopeable;
+import imop.ast.node.external.*;
+import imop.ast.node.internal.*;
 import imop.lib.analysis.flowanalysis.Cell;
 import imop.lib.analysis.flowanalysis.Symbol;
 import imop.lib.analysis.solver.BaseSyntax;
@@ -46,6 +21,8 @@ import imop.lib.getter.ExpressionTypeGetter;
 import imop.lib.util.Misc;
 import imop.parser.FrontEnd;
 import imop.parser.Program;
+
+import java.util.*;
 
 /**
  * This is the superclass for all the various

@@ -8,16 +8,14 @@
  */
 package imop.lib.transform.percolate;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import imop.ast.info.cfgNodeInfo.FunctionDefinitionInfo;
-import imop.ast.node.external.BarrierDirective;
-import imop.ast.node.external.Node;
-import imop.ast.node.external.ParallelConstruct;
+import imop.ast.node.external.*;
 import imop.baseVisitor.cfgTraversals.DepthFirstCFG;
 import imop.lib.cg.CallSite;
 import imop.lib.util.Misc;
+
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Given a rootBarrier, this visitor stores all the nodes that are reachable

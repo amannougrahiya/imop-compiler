@@ -8,12 +8,12 @@
  */
 package imop.lib.getter;
 
+import imop.ast.node.external.*;
+import imop.baseVisitor.DepthFirstProcess;
+
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
-
-import imop.ast.node.external.Node;
-import imop.baseVisitor.DepthFirstProcess;
 
 /**
  * Performs a post-order traversal in the visited node to collect the nodes

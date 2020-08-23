@@ -8,17 +8,11 @@
  */
 package imop.lib.transform.percolate;
 
-import java.util.List;
-
-import imop.ast.node.external.CompoundStatement;
-import imop.ast.node.external.FunctionDefinition;
-import imop.ast.node.external.Node;
-import imop.ast.node.external.ParallelConstruct;
-import imop.ast.node.external.TranslationUnit;
-import imop.ast.node.internal.BeginNode;
-import imop.ast.node.internal.CallStatement;
-import imop.ast.node.internal.Scopeable;
+import imop.ast.node.external.*;
+import imop.ast.node.internal.*;
 import imop.lib.util.Misc;
+
+import java.util.List;
 
 @Deprecated
 public class RegionMerger {

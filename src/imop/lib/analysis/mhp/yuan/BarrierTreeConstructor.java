@@ -8,25 +8,14 @@
  */
 package imop.lib.analysis.mhp.yuan;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import imop.ast.annotation.Label;
-import imop.ast.node.external.BarrierDirective;
-import imop.ast.node.external.BreakStatement;
-import imop.ast.node.external.CompoundStatement;
-import imop.ast.node.external.Declaration;
-import imop.ast.node.external.DoStatement;
-import imop.ast.node.external.ForStatement;
-import imop.ast.node.external.FunctionDefinition;
-import imop.ast.node.external.IfStatement;
-import imop.ast.node.external.Node;
-import imop.ast.node.external.ParallelConstruct;
-import imop.ast.node.external.SwitchStatement;
-import imop.ast.node.external.WhileStatement;
-import imop.ast.node.internal.CallStatement;
+import imop.ast.node.external.*;
+import imop.ast.node.internal.*;
 import imop.baseVisitor.GJNoArguDepthFirstProcess;
 import imop.lib.util.Misc;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Provides method to generate barrier tree corresponding to a

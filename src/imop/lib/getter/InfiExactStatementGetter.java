@@ -8,18 +8,9 @@
  */
 package imop.lib.getter;
 
-import java.util.Collection;
-
 import imop.ast.node.external.*;
-import imop.ast.node.internal.BeginNode;
-import imop.ast.node.internal.CallStatement;
-import imop.ast.node.internal.DummyFlushDirective;
-import imop.ast.node.internal.EndNode;
-import imop.ast.node.internal.PostCallNode;
-import imop.ast.node.internal.PreCallNode;
-import imop.ast.node.internal.SimplePrimaryExpression;
-import imop.baseVisitor.DepthFirstProcess;
-import imop.baseVisitor.DepthFirstVisitor;
+
+import java.util.Collection;
 
 /**
  * Collects statements of the given kind in post-order.

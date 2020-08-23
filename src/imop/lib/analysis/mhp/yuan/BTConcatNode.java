@@ -8,7 +8,7 @@
  */
 package imop.lib.analysis.mhp.yuan;
 
-import imop.ast.node.external.ParallelConstruct;
+import imop.ast.node.external.*;
 
 /**
  * Represents a concatenation node in Barrier Tree.

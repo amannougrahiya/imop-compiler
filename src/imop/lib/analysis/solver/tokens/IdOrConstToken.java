@@ -8,9 +8,7 @@
  */
 package imop.lib.analysis.solver.tokens;
 
-import imop.ast.node.external.Constant;
-import imop.ast.node.external.Node;
-import imop.ast.node.external.NodeToken;
+import imop.ast.node.external.*;
 import imop.lib.builder.Builder;
 import imop.parser.FrontEnd;
 

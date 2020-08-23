@@ -8,17 +8,14 @@
  */
 package imop.lib.analysis.mhp;
 
-import java.util.List;
-
-import imop.ast.node.external.Node;
-import imop.ast.node.external.ParallelConstruct;
-import imop.ast.node.external.ParallelForConstruct;
-import imop.ast.node.external.ParallelSectionsConstruct;
-import imop.ast.node.internal.EndNode;
+import imop.ast.node.external.*;
+import imop.ast.node.internal.*;
 import imop.baseVisitor.cfgTraversals.GJVoidDepthFirstCFG;
 import imop.lib.cg.CallSite;
 import imop.lib.getter.CallSiteGetter;
 import imop.lib.util.Misc;
+
+import java.util.List;
 
 /**
  * When called on the beginNode of a ParallelConstruct, this visitor

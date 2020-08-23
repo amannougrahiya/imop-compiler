@@ -8,8 +8,7 @@
  */
 package imop.lib.analysis.mhp.lock;
 
-import imop.ast.node.external.CriticalConstruct;
-import imop.ast.node.external.RegionPhrase;
+import imop.ast.node.external.*;
 
 public class CriticalLock extends AbstractLock {
 	private CriticalLock(String regionName) {

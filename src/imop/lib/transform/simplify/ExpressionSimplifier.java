@@ -8,17 +8,9 @@ g * Copyright (c) 2019 Aman Nougrahiya, V Krishna Nandivada, IIT Madras.
  */
 package imop.lib.transform.simplify;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 import imop.ast.annotation.Label;
 import imop.ast.node.external.*;
-import imop.ast.node.internal.CallStatement;
-import imop.ast.node.internal.OmpClause;
-import imop.ast.node.internal.PostCallNode;
-import imop.ast.node.internal.PreCallNode;
+import imop.ast.node.internal.*;
 import imop.baseVisitor.GJNoArguDepthFirstProcess;
 import imop.lib.analysis.typeSystem.Type;
 import imop.lib.builder.Builder;
@@ -26,6 +18,11 @@ import imop.lib.getter.ExpressionTypeGetter;
 import imop.lib.getter.StructUnionOrEnumInfoGetter;
 import imop.lib.util.Misc;
 import imop.parser.FrontEnd;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Simplifies expressions, by carrying out the following:

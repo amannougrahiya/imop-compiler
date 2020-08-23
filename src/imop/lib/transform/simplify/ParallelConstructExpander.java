@@ -8,54 +8,10 @@
  */
 package imop.lib.transform.simplify;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 import imop.ast.info.OmpClauseInfo;
 import imop.ast.info.cfgNodeInfo.ParameterDeclarationInfo;
-import imop.ast.node.external.BarrierDirective;
-import imop.ast.node.external.CompoundStatement;
-import imop.ast.node.external.Declaration;
-import imop.ast.node.external.DoStatement;
-import imop.ast.node.external.Expression;
-import imop.ast.node.external.ForStatement;
-import imop.ast.node.external.FunctionDefinition;
-import imop.ast.node.external.IfClause;
-import imop.ast.node.external.IfStatement;
-import imop.ast.node.external.IterationStatement;
-import imop.ast.node.external.JumpStatement;
-import imop.ast.node.external.MasterConstruct;
-import imop.ast.node.external.Node;
-import imop.ast.node.external.NumThreadsClause;
-import imop.ast.node.external.OmpConstruct;
-import imop.ast.node.external.OmpCopyinClause;
-import imop.ast.node.external.OmpDfltNoneClause;
-import imop.ast.node.external.OmpDfltSharedClause;
-import imop.ast.node.external.OmpDirective;
-import imop.ast.node.external.OmpFirstPrivateClause;
-import imop.ast.node.external.OmpLastPrivateClause;
-import imop.ast.node.external.OmpPrivateClause;
-import imop.ast.node.external.OmpReductionClause;
-import imop.ast.node.external.OmpSharedClause;
-import imop.ast.node.external.ParallelConstruct;
-import imop.ast.node.external.ParameterDeclaration;
-import imop.ast.node.external.SelectionStatement;
-import imop.ast.node.external.Statement;
-import imop.ast.node.external.SwitchStatement;
-import imop.ast.node.external.UnknownCpp;
-import imop.ast.node.external.UnknownPragma;
-import imop.ast.node.external.VariableList;
-import imop.ast.node.external.WhileStatement;
-import imop.ast.node.internal.BeginNode;
-import imop.ast.node.internal.CallStatement;
-import imop.ast.node.internal.DummyFlushDirective;
-import imop.ast.node.internal.DummyFlushType;
-import imop.ast.node.internal.OmpClause;
-import imop.ast.node.internal.PreCallNode;
-import imop.ast.node.internal.SimplePrimaryExpression;
+import imop.ast.node.external.*;
+import imop.ast.node.internal.*;
 import imop.lib.analysis.flowanalysis.Cell;
 import imop.lib.analysis.flowanalysis.FieldCell;
 import imop.lib.analysis.flowanalysis.Symbol;
@@ -74,6 +30,8 @@ import imop.lib.util.CellList;
 import imop.lib.util.CellSet;
 import imop.lib.util.Misc;
 import imop.parser.FrontEnd;
+
+import java.util.*;
 
 public class ParallelConstructExpander {
 

@@ -8,20 +8,17 @@
  */
 package imop.lib.analysis.mhp;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import imop.ast.info.cfgNodeInfo.ParallelConstructInfo;
-import imop.ast.node.external.FunctionDefinition;
-import imop.ast.node.external.Node;
-import imop.ast.node.external.ParallelConstruct;
-import imop.ast.node.external.TranslationUnit;
-import imop.ast.node.internal.EndNode;
+import imop.ast.node.external.*;
+import imop.ast.node.internal.*;
 import imop.lib.cg.CallStack;
 import imop.lib.cg.NodeWithStack;
 import imop.lib.getter.InfiParallelConstructGetter;
 import imop.lib.util.Misc;
 import imop.parser.Program;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * This class represents the May Happen in Parallel analysis pass.

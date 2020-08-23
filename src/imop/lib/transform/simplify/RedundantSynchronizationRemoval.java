@@ -8,17 +8,8 @@
  */
 package imop.lib.transform.simplify;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Set;
-
-import imop.ast.node.external.BarrierDirective;
-import imop.ast.node.external.CompoundStatement;
-import imop.ast.node.external.MasterConstruct;
-import imop.ast.node.external.Node;
-import imop.ast.node.external.ParallelConstruct;
-import imop.ast.node.internal.BeginNode;
-import imop.ast.node.internal.EndNode;
+import imop.ast.node.external.*;
+import imop.ast.node.internal.*;
 import imop.lib.analysis.CoExistenceChecker;
 import imop.lib.analysis.mhp.BeginPhasePoint;
 import imop.lib.analysis.mhp.EndPhasePoint;
@@ -31,6 +22,10 @@ import imop.lib.util.DumpSnapshot;
 import imop.lib.util.Misc;
 import imop.lib.util.ProfileSS;
 import imop.parser.Program;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
 public class RedundantSynchronizationRemoval {
 	public static void mergePhasesOf(ParallelConstruct parCons) {

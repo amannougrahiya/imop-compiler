@@ -8,17 +8,17 @@
  */
 package imop.deprecated;
 
-import java.util.HashSet;
-import java.util.Set;
-
-import imop.ast.node.external.Node;
-import imop.ast.node.internal.EndNode;
+import imop.ast.node.external.*;
+import imop.ast.node.internal.*;
 import imop.baseVisitor.cfgTraversals.DepthFirstCFG;
 import imop.lib.analysis.flowanalysis.Cell;
 import imop.lib.analysis.flowanalysis.Symbol;
 import imop.lib.analysis.flowanalysis.Usage;
 import imop.lib.util.CellMap;
 import imop.lib.util.Misc;
+
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  */

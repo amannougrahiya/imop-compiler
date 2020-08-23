@@ -8,14 +8,14 @@
  */
 package imop;
 
+import imop.ast.node.external.*;
+import imop.parser.FrontEnd;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
-
-import imop.ast.node.external.TranslationUnit;
-import imop.parser.FrontEnd;
 
 public class ParseCheckMain {
 

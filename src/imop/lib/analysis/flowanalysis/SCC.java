@@ -8,20 +8,18 @@
  */
 package imop.lib.analysis.flowanalysis;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.Stack;
-
 import imop.ast.info.cfgNodeInfo.BarrierDirectiveInfo;
-import imop.ast.node.external.BarrierDirective;
-import imop.ast.node.external.FunctionDefinition;
-import imop.ast.node.external.Node;
-import imop.ast.node.internal.BeginNode;
+import imop.ast.node.external.*;
+import imop.ast.node.internal.*;
 import imop.lib.analysis.flowanalysis.generic.AnalysisDimension.SVEDimension;
 import imop.lib.cfg.info.CFGInfo;
 import imop.lib.util.TraversalOrderObtainer;
 import imop.parser.Program;
+
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.Stack;
 
 public class SCC implements DFable {
 	private static int counter = 0;

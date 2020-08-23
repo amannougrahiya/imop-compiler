@@ -8,18 +8,7 @@
  */
 package imop.lib.getter;
 
-import imop.ast.node.external.ADeclarationSpecifier;
-import imop.ast.node.external.EnumSpecifier;
-import imop.ast.node.external.EnumSpecifierWithId;
-import imop.ast.node.external.EnumSpecifierWithList;
-import imop.ast.node.external.EnumeratorList;
-import imop.ast.node.external.NodeToken;
-import imop.ast.node.external.StructDeclarationList;
-import imop.ast.node.external.StructOrUnion;
-import imop.ast.node.external.StructOrUnionSpecifier;
-import imop.ast.node.external.StructOrUnionSpecifierWithId;
-import imop.ast.node.external.StructOrUnionSpecifierWithList;
-import imop.ast.node.external.TypeSpecifier;
+import imop.ast.node.external.*;
 import imop.baseVisitor.DepthFirstProcess;
 import imop.parser.CParserConstants;
 

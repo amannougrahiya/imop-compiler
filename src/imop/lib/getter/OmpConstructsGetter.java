@@ -9,10 +9,10 @@
 
 package imop.lib.getter;
 
-import java.util.Vector;
-
-import imop.ast.node.external.OmpConstruct;
+import imop.ast.node.external.*;
 import imop.baseVisitor.DepthFirstVisitor;
+
+import java.util.Vector;
 
 /**
  * Populates ompList with references to the outermost OmpConstructs

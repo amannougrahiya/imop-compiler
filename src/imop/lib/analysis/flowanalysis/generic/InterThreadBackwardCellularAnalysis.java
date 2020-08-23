@@ -8,18 +8,9 @@
  */
 package imop.lib.analysis.flowanalysis.generic;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import imop.ast.info.NodeInfo;
-import imop.ast.node.external.BarrierDirective;
-import imop.ast.node.external.CompoundStatement;
-import imop.ast.node.external.FunctionDefinition;
-import imop.ast.node.external.Node;
-import imop.ast.node.internal.BeginNode;
-import imop.ast.node.internal.EndNode;
-import imop.ast.node.internal.PostCallNode;
-import imop.ast.node.internal.PreCallNode;
+import imop.ast.node.external.*;
+import imop.ast.node.internal.*;
 import imop.lib.analysis.CoExistenceChecker;
 import imop.lib.analysis.flowanalysis.AddressCell;
 import imop.lib.analysis.flowanalysis.Cell;
@@ -33,6 +24,9 @@ import imop.lib.util.CellSet;
 import imop.lib.util.Immutable;
 import imop.lib.util.Misc;
 import imop.parser.Program;
+
+import java.util.HashSet;
+import java.util.Set;
 
 public abstract class InterThreadBackwardCellularAnalysis<F extends CellularDataFlowAnalysis.CellularFlowMap<?>>
 		extends CellularDataFlowAnalysis<F> {

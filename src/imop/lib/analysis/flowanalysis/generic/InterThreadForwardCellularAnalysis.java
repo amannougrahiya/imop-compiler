@@ -8,26 +8,11 @@
  */
 package imop.lib.analysis.flowanalysis.generic;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import imop.ast.info.NodeInfo;
-import imop.ast.node.external.BarrierDirective;
-import imop.ast.node.external.CompoundStatement;
-import imop.ast.node.external.FunctionDefinition;
-import imop.ast.node.external.Node;
-import imop.ast.node.external.ParallelConstruct;
-import imop.ast.node.internal.BeginNode;
-import imop.ast.node.internal.CallStatement;
-import imop.ast.node.internal.EndNode;
-import imop.ast.node.internal.PostCallNode;
-import imop.ast.node.internal.PreCallNode;
+import imop.ast.node.external.*;
+import imop.ast.node.internal.*;
 import imop.lib.analysis.CoExistenceChecker;
-import imop.lib.analysis.flowanalysis.AddressCell;
-import imop.lib.analysis.flowanalysis.Cell;
-import imop.lib.analysis.flowanalysis.FieldCell;
-import imop.lib.analysis.flowanalysis.SCC;
-import imop.lib.analysis.flowanalysis.Symbol;
+import imop.lib.analysis.flowanalysis.*;
 import imop.lib.analysis.flowanalysis.dataflow.PointsToAnalysis;
 import imop.lib.analysis.flowanalysis.dataflow.PointsToAnalysis.PointsToGlobalState;
 import imop.lib.analysis.flowanalysis.generic.AnalysisDimension.SVEDimension;
@@ -39,6 +24,9 @@ import imop.lib.util.CellSet;
 import imop.lib.util.Immutable;
 import imop.lib.util.Misc;
 import imop.parser.Program;
+
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * A generic class to implement an inter-thread interprocedural forward

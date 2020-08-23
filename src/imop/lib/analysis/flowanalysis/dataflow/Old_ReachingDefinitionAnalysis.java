@@ -8,13 +8,8 @@
  */
 package imop.lib.analysis.flowanalysis.dataflow;
 
-import java.util.HashSet;
-import java.util.Set;
-
-import imop.ast.node.external.FunctionDefinition;
-import imop.ast.node.external.Node;
-import imop.ast.node.external.ParameterDeclaration;
-import imop.ast.node.internal.SimplePrimaryExpression;
+import imop.ast.node.external.*;
+import imop.ast.node.internal.*;
 import imop.lib.analysis.flowanalysis.Cell;
 import imop.lib.analysis.flowanalysis.Definition;
 import imop.lib.analysis.flowanalysis.Symbol;
@@ -26,6 +21,9 @@ import imop.lib.analysis.flowanalysis.generic.InterThreadForwardNonCellularAnaly
 import imop.lib.getter.AllDefinitionGetter;
 import imop.lib.util.CellSet;
 import imop.parser.Program;
+
+import java.util.HashSet;
+import java.util.Set;
 
 @Deprecated
 public class Old_ReachingDefinitionAnalysis

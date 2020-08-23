@@ -8,19 +8,7 @@
  */
 package imop.lib.transform.simplify;
 
-import imop.ast.node.external.ADeclaratorOp;
-import imop.ast.node.external.Declaration;
-import imop.ast.node.external.DeclarationList;
-import imop.ast.node.external.DeclarationSpecifiers;
-import imop.ast.node.external.Declarator;
-import imop.ast.node.external.FunctionDefinition;
-import imop.ast.node.external.Node;
-import imop.ast.node.external.NodeOptional;
-import imop.ast.node.external.NodeSequence;
-import imop.ast.node.external.NodeToken;
-import imop.ast.node.external.OldParameterList;
-import imop.ast.node.external.OldParameterListClosed;
-import imop.ast.node.external.ParameterTypeListClosed;
+import imop.ast.node.external.*;
 import imop.baseVisitor.DepthFirstProcess;
 import imop.parser.FrontEnd;
 

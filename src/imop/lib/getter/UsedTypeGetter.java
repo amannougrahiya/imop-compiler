@@ -8,14 +8,13 @@
  */
 package imop.lib.getter;
 
-import java.util.HashSet;
-import java.util.Set;
-
-import imop.ast.node.external.CastExpressionTyped;
-import imop.ast.node.external.SizeofTypeName;
+import imop.ast.node.external.*;
 import imop.baseVisitor.DepthFirstProcess;
 import imop.lib.analysis.typeSystem.Type;
 import imop.lib.util.Misc;
+
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Provides default methods which visit each node in the tree in depth-first

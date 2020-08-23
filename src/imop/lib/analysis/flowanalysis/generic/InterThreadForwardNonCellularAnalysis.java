@@ -8,20 +8,18 @@
  */
 package imop.lib.analysis.flowanalysis.generic;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import imop.ast.info.NodeInfo;
-import imop.ast.node.external.BarrierDirective;
-import imop.ast.node.external.FunctionDefinition;
-import imop.ast.node.external.Node;
-import imop.ast.node.internal.BeginNode;
+import imop.ast.node.external.*;
+import imop.ast.node.internal.*;
 import imop.lib.analysis.CoExistenceChecker;
 import imop.lib.analysis.flowanalysis.generic.AnalysisDimension.SVEDimension;
 import imop.lib.analysis.mhp.Phase;
 import imop.lib.analysis.mhp.PhasePoint;
 import imop.lib.util.CellSet;
 import imop.lib.util.Misc;
+
+import java.util.HashSet;
+import java.util.Set;
 
 public abstract class InterThreadForwardNonCellularAnalysis<F extends FlowAnalysis.FlowFact>
 		extends NonCellularDataFlowAnalysis<F> {

@@ -8,26 +8,20 @@
  */
 package imop.lib.transform.simplify;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 import imop.ast.annotation.Label;
 import imop.ast.info.OmpConstructInfo;
-import imop.ast.node.external.BarrierDirective;
-import imop.ast.node.external.CompoundStatement;
-import imop.ast.node.external.ForConstruct;
-import imop.ast.node.external.Node;
-import imop.ast.node.external.SectionsConstruct;
-import imop.ast.node.external.SingleConstruct;
-import imop.ast.node.external.Statement;
+import imop.ast.node.external.*;
 import imop.lib.transform.updater.sideeffect.AddedEnclosingBlock;
 import imop.lib.transform.updater.sideeffect.AddedExplicitBarrier;
 import imop.lib.transform.updater.sideeffect.AddedNowaitClause;
 import imop.lib.transform.updater.sideeffect.SideEffect;
 import imop.lib.util.Misc;
 import imop.parser.FrontEnd;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Replaces all the implicit barriers with explicit barriers.

@@ -8,7 +8,7 @@
  */
 package imop.lib.util;
 
-import imop.ast.node.external.Node;
+import imop.ast.node.external.*;
 
 public class NodePair {
 	public final Node one;

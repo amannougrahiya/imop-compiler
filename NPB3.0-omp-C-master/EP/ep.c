@@ -1,269 +1,812 @@
-/*--------------------------------------------------------------------
-  
-  NAS Parallel Benchmarks 3.0 structured OpenMP C versions - EP
 
-  This benchmark is an OpenMP C version of the NPB EP code.
-  
-  The OpenMP C 2.3 versions are derived by RWCP from the serial Fortran versions 
-  in "NPB 2.3-serial" developed by NAS. 3.0 translation is performed by the UVSQ.
-
-  Permission to use, copy, distribute and modify this software for any
-  purpose with or without fee is hereby granted.
-  This software is provided "as is" without express or implied warranty.
-  
-  Information on OpenMP activities at RWCP is available at:
-
-           http://pdplab.trc.rwcp.or.jp/pdperf/Omni/
-  
-  Information on NAS Parallel Benchmarks 2.3 is available at:
-  
-           http://www.nas.nasa.gov/NAS/NPB/
-
---------------------------------------------------------------------*/
-/*--------------------------------------------------------------------
-
-  Author: P. O. Frederickson 
-          D. H. Bailey
-          A. C. Woo
-
-  OpenMP C version: S. Satoh
-  
-  3.0 structure translation: M. Popov  
-  
---------------------------------------------------------------------*/
-
-#include "npb-C.h"
-#include "npbparams.h"
-
-/* parameters */
-#define	MK		16
-#define	MM		(M - MK)
-#define	NN		(1 << MM)
-#define	NK		(1 << MK)
-#define	NQ		10
-#define EPSILON		1.0e-8
-#define	A		1220703125.0
-#define	S		271828183.0
-#define	TIMERS_ENABLED	FALSE
-
-/* global variables */
-/* common /storage/ */
-static double x[2*NK];
+/*[]*/
+struct __sFILEX ;
+/*[]*/
+int printf(const char *restrict , ...);
+/*[]*/
+extern double log(double );
+/*[]*/
+extern double fabs(double );
+/*[]*/
+extern double pow(double , double );
+/*[]*/
+extern double sqrt(double );
+/*[]*/
+typedef int boolean;
+/*[]*/
+extern double randlc(double *, double );
+/*[]*/
+extern void vranlc(int , double * , double  , double *);
+/*[]*/
+extern void timer_clear(int );
+/*[]*/
+extern void timer_start(int );
+/*[]*/
+extern void timer_stop(int );
+/*[]*/
+extern double timer_read(int );
+/*[]*/
+extern void c_print_results(char *name, char class , int n1 , int n2 , int n3 , int niter , int nthreads , double t , double mops , char *optype , int passed_verification , char *npbversion , char *compiletime , char *cc , char *clink , char *c_lib , char *c_inc , char *cflags , char *clinkflags , char *rand);
+/*[]*/
+static double x[2 * (1 << 16)];
 #pragma omp threadprivate(x)
-static double q[NQ];
-
-/*--------------------------------------------------------------------
-      program EMBAR
-c-------------------------------------------------------------------*/
-/*
-c   This is the serial version of the APP Benchmark 1,
-c   the "embarassingly parallel" benchmark.
-c
-c   M is the Log_2 of the number of complex pairs of uniform (0, 1) random
-c   numbers.  MK is the Log_2 of the size of each batch of uniform random
-c   numbers.  MK can be set for convenience on a given system, since it does
-c   not affect the results.
-*/
+/*[]*/
+static double q[10];
+/*[]*/
+/*[]*/
+/*[]*/
 int main(int argc, char **argv) {
-
-    double Mops, t1, t2, t3, t4, x1, x2, sx, sy, tm, an, tt, gc;
-    double dum[3] = { 1.0, 1.0, 1.0 };
-    int np, ierr, node, no_nodes, i, ik, kk, l, k, nit, ierrcode,
-	no_large_nodes, np_add, k_offset, j;
+/*[]*/
+    /*[]*/
+    double Mops;
+    /*[]*/
+    double t1;
+    /*[]*/
+    double t2;
+    /*[]*/
+    double sx;
+    /*[]*/
+    double sy;
+    /*[]*/
+    double tm;
+    /*[]*/
+    double an;
+    /*[]*/
+    double tt;
+    /*[]*/
+    double gc;
+    /*[]*/
+    double dum[3] = {1.0, 1.0 , 1.0};
+    /*[]*/
+    int np;
+    /*[]*/
+    int i;
+    /*[]*/
+    int k;
+    /*[]*/
+    int nit;
+    /*[]*/
+    int k_offset;
+    /*[]*/
+    int j;
+    /*[]*/
     int nthreads = 1;
+    /*[]*/
     boolean verified;
-    char size[13+1];	/* character*13 */
-
-/*
-c   Because the size of the problem is too large to store in a 32-bit
-c   integer for some classes, we put it into a string (for printing).
-c   Have to strip off the decimal point put in there by the floating
-c   point print statement (internal file)
-*/
-
-    printf("\n\n NAS Parallel Benchmarks 3.0 structured OpenMP C version"
-	   " - EP Benchmark\n");
-    sprintf(size, "%12.0f", pow(2.0, M+1));
+    /*[]*/
+    char size[13 + 1];
+    /*[]*/
+    printf("\n\n NAS Parallel Benchmarks 3.0 structured OpenMP C version" " - EP Benchmark\n");
+    /*[]*/
+    /*[]*/
+    int _imopVarPre149;
+    /*[]*/
+    double _imopVarPre150;
+    /*[]*/
+    int _imopVarPre153;
+    /*[]*/
+    int _imopVarPre154;
+    /*[]*/
+    unsigned int _imopVarPre155;
+    /*[]*/
+    _imopVarPre149 = 24 + 1;
+    /*[]*/
+    _imopVarPre150 = pow(2.0, _imopVarPre149);
+    /*[]*/
+    /*[]*/
+    _imopVarPre153 = 2 > 1;
+    /*[]*/
+    /*[]*/
+    if (_imopVarPre153) {
+    /*[]*/
+        /*[]*/
+        _imopVarPre154 = 1;
+    } else {
+    /*[]*/
+        /*[]*/
+        _imopVarPre154 = 0;
+    }
+    /*[]*/
+    _imopVarPre155 = __builtin_object_size(size, _imopVarPre154);
+    /*[]*/
+    /*[]*/
+    __builtin___sprintf_chk(size, 0, _imopVarPre155, "%12.0f", _imopVarPre150);
+    /*[]*/
+    /*[]*/
+    /*[]*/
+    /*[]*/
+    /*[]*/
     for (j = 13; j >= 1; j--) {
-	if (size[j] == '.') size[j] = ' ';
+    /*[]*/
+        /*[]*/
+        /*[]*/
+        if (size[j] == '.') {
+        /*[]*/
+            /*[]*/
+            size[j] = ' ';
+        }
     }
+    /*[]*/
     printf(" Number of random numbers generated: %13s\n", size);
-
-    verified = FALSE;
-
-/*
-c   Compute the number of "batches" of random number pairs generated 
-c   per processor. Adjust if the number of processors does not evenly 
-c   divide the total number
-*/
-    np = NN;
-
-/*
-c   Call the random number generator functions and initialize
-c   the x-array to reduce the effects of paging on the timings.
-c   Also, call all mathematical functions that are used. Make
-c   sure these initializations cannot be eliminated as dead code.
-*/
-    vranlc(0, &(dum[0]), dum[1], &(dum[2]));
-    dum[0] = randlc(&(dum[1]), dum[2]);
-    
-#pragma omp parallel for default(shared) private(i)
-    for (i = 0; i < 2*NK; i++) x[i] = -1.0e99;
-    
-    Mops = log(sqrt(fabs(max(1.0, 1.0))));
-
-    timer_clear(1);
-    timer_clear(2);
-    timer_clear(3);
-    timer_start(1);
-
-    vranlc(0, &t1, A, x);
-
-/*   Compute AN = A ^ (2 * NK) (mod 2^46). */
-
-    t1 = A;
-
-    for ( i = 1; i <= MK+1; i++) {
-	t2 = randlc(&t1, t1);
-    }
-
-    an = t1;
-    tt = S;
-    gc = 0.0;
-    sx = 0.0;
-    sy = 0.0;
-
-    for ( i = 0; i <= NQ - 1; i++) {
-	q[i] = 0.0;
-    }
-      
-/*
-c   Each instance of this loop may be performed independently. We compute
-c   the k offsets separately to take into account the fact that some nodes
-c   have more numbers to generate than others
-*/
-    k_offset = -1;
-
-#pragma omp parallel copyin(x)
-{
-    double t1, t2, t3, t4, x1, x2;
-    int kk, i, ik, l;
-    double qq[NQ];		/* private copy of q[0:NQ-1] */
-
-    for (i = 0; i < NQ; i++) qq[i] = 0.0;
-
-#pragma omp for reduction(+:sx,sy) schedule(static)  
-    for (k = 1; k <= np; k++) {
-	kk = k_offset + k;
-	t1 = S;
-	t2 = an;
-
-/*      Find starting seed t1 for this kk. */
-
-	for (i = 1; i <= 100; i++) {
-            ik = kk / 2;
-            if (2 * ik != kk) t3 = randlc(&t1, t2);
-            if (ik == 0) break;
-            t3 = randlc(&t2, t2);
-            kk = ik;
-	}
-
-/*      Compute uniform pseudorandom numbers. */
-
-	if (TIMERS_ENABLED == TRUE) timer_start(3);
-	vranlc(2*NK, &t1, A, x-1);
-	if (TIMERS_ENABLED == TRUE) timer_stop(3);
-
-/*
-c       Compute Gaussian deviates by acceptance-rejection method and 
-c       tally counts in concentric square annuli.  This loop is not 
-c       vectorizable.
-*/
-	if (TIMERS_ENABLED == TRUE) timer_start(2);
-
-	for ( i = 0; i < NK; i++) {
-            x1 = 2.0 * x[2*i] - 1.0;
-            x2 = 2.0 * x[2*i+1] - 1.0;
-            t1 = pow2(x1) + pow2(x2);
-            if (t1 <= 1.0) {
-		t2 = sqrt(-2.0 * log(t1) / t1);
-		t3 = (x1 * t2);				/* Xi */
-		t4 = (x2 * t2);				/* Yi */
-		l = max(fabs(t3), fabs(t4));
-		qq[l] += 1.0;				/* counts */
-		sx = sx + t3;				/* sum of Xi */
-		sy = sy + t4;				/* sum of Yi */
-            }
-	}
-	if (TIMERS_ENABLED == TRUE) timer_stop(2);
-    }
-#pragma omp critical
+    /*[]*/
+    /*[]*/
+    verified = 0;
+    /*[]*/
+    np = (1 << (24 - 16));
+    /*[]*/
+    double *_imopVarPre159;
+    /*[]*/
+    double _imopVarPre160;
+    /*[]*/
+    double *_imopVarPre161;
+    /*[]*/
+    _imopVarPre159 = &(dum[2]);
+    /*[]*/
+    _imopVarPre160 = dum[1];
+    /*[]*/
+    _imopVarPre161 = &(dum[0]);
+    /*[]*/
+    vranlc(0, _imopVarPre161, _imopVarPre160, _imopVarPre159);
+    /*[]*/
+    /*[]*/
+    double _imopVarPre164;
+    /*[]*/
+    double *_imopVarPre165;
+    /*[]*/
+    double _imopVarPre166;
+    /*[]*/
+    _imopVarPre164 = dum[2];
+    /*[]*/
+    _imopVarPre165 = &(dum[1]);
+    /*[]*/
+    _imopVarPre166 = randlc(_imopVarPre165, _imopVarPre164);
+    /*[]*/
+    /*[]*/
+    dum[0] = _imopVarPre166;
+    /*[1]*/
+#pragma omp parallel default(shared) private(i)
     {
-      for (i = 0; i <= NQ - 1; i++) q[i] += qq[i];
+    /*[1]*/
+        /*[1]*/
+#pragma omp for nowait
+        /*[1]*/
+        /*[1]*/
+        /*[1]*/
+        for (i = 0; i < 2 * (1 << 16); i++) {
+        /*[1]*/
+            /*[1]*/
+            x[i] = -1.0e99;
+        }
     }
-#if defined(_OPENMP)
-#pragma omp master
-    nthreads = omp_get_num_threads();
-#endif /* _OPENMP */    
-} /* end of parallel region */    
-
-    for (i = 0; i <= NQ-1; i++) {
+    /*[]*/
+    int _imopVarPre201;
+    /*[]*/
+    double _imopVarPre202;
+    /*[]*/
+    double _imopVarPre203;
+    /*[]*/
+    double _imopVarPre204;
+    /*[]*/
+    double _imopVarPre205;
+    /*[]*/
+    _imopVarPre201 = (1.0 > 1.0);
+    /*[]*/
+    /*[]*/
+    if (_imopVarPre201) {
+    /*[]*/
+        /*[]*/
+        _imopVarPre202 = 1.0;
+    } else {
+    /*[]*/
+        /*[]*/
+        _imopVarPre202 = 1.0;
+    }
+    /*[]*/
+    _imopVarPre203 = fabs(_imopVarPre202);
+    /*[]*/
+    /*[]*/
+    _imopVarPre204 = sqrt(_imopVarPre203);
+    /*[]*/
+    /*[]*/
+    _imopVarPre205 = log(_imopVarPre204);
+    /*[]*/
+    /*[]*/
+    Mops = _imopVarPre205;
+    /*[]*/
+    timer_clear(1);
+    /*[]*/
+    /*[]*/
+    timer_clear(2);
+    /*[]*/
+    /*[]*/
+    timer_clear(3);
+    /*[]*/
+    /*[]*/
+    timer_start(1);
+    /*[]*/
+    /*[]*/
+    double *_imopVarPre207;
+    /*[]*/
+    _imopVarPre207 = &t1;
+    /*[]*/
+    vranlc(0, _imopVarPre207, 1220703125.0, x);
+    /*[]*/
+    /*[]*/
+    t1 = 1220703125.0;
+    /*[]*/
+    /*[]*/
+    /*[]*/
+    /*[]*/
+    for (i = 1; i <= 16 + 1; i++) {
+    /*[]*/
+        /*[]*/
+        double *_imopVarPre209;
+        /*[]*/
+        double _imopVarPre210;
+        /*[]*/
+        _imopVarPre209 = &t1;
+        /*[]*/
+        _imopVarPre210 = randlc(_imopVarPre209, t1);
+        /*[]*/
+        /*[]*/
+        t2 = _imopVarPre210;
+    }
+    /*[]*/
+    an = t1;
+    /*[]*/
+    tt = 271828183.0;
+    /*[]*/
+    gc = 0.0;
+    /*[]*/
+    sx = 0.0;
+    /*[]*/
+    sy = 0.0;
+    /*[]*/
+    /*[]*/
+    /*[]*/
+    /*[]*/
+    for (i = 0; i <= 10 - 1; i++) {
+    /*[]*/
+        /*[]*/
+        q[i] = 0.0;
+    }
+    /*[]*/
+    k_offset = -1;
+    /*[2]*/
+#pragma omp parallel copyin(x)
+    {
+    /*[2]*/
+        /*[2]*/
+        double t1;
+        /*[2]*/
+        double t2;
+        /*[2]*/
+        double t3;
+        /*[2]*/
+        double t4;
+        /*[2]*/
+        double x1;
+        /*[2]*/
+        double x2;
+        /*[2]*/
+        int kk;
+        /*[2]*/
+        int i;
+        /*[2]*/
+        int ik;
+        /*[2]*/
+        int l;
+        /*[2]*/
+        double qq[10];
+        /*[2]*/
+        /*[2]*/
+        /*[2]*/
+        /*[2]*/
+        for (i = 0; i < 10; i++) {
+        /*[2]*/
+            /*[2]*/
+            qq[i] = 0.0;
+        }
+        /*[2]*/
+#pragma omp for reduction(+:sx, sy) schedule(static) nowait
+        /*[2]*/
+        /*[2]*/
+        /*[2]*/
+        for (k = 1; k <= np; k++) {
+        /*[2]*/
+            /*[2]*/
+            kk = k_offset + k;
+            /*[2]*/
+            t1 = 271828183.0;
+            /*[2]*/
+            t2 = an;
+            /*[2]*/
+            /*[2]*/
+            /*[2]*/
+            /*[2]*/
+            for (i = 1; i <= 100; i++) {
+            /*[2]*/
+                /*[2]*/
+                ik = kk / 2;
+                /*[2]*/
+                /*[2]*/
+                if (2 * ik != kk) {
+                /*[2]*/
+                    /*[2]*/
+                    double *_imopVarPre212;
+                    /*[2]*/
+                    double _imopVarPre213;
+                    /*[2]*/
+                    _imopVarPre212 = &t1;
+                    /*[2]*/
+                    _imopVarPre213 = randlc(_imopVarPre212, t2);
+                    /*[2]*/
+                    /*[2]*/
+                    t3 = _imopVarPre213;
+                }
+                /*[2]*/
+                /*[2]*/
+                if (ik == 0) {
+                /*[2]*/
+                    /*[2]*/
+                    break;
+                }
+                /*[2]*/
+                double *_imopVarPre215;
+                /*[2]*/
+                double _imopVarPre216;
+                /*[2]*/
+                _imopVarPre215 = &t2;
+                /*[2]*/
+                _imopVarPre216 = randlc(_imopVarPre215, t2);
+                /*[2]*/
+                /*[2]*/
+                t3 = _imopVarPre216;
+                /*[2]*/
+                kk = ik;
+            }
+            /*[2]*/
+            /*[2]*/
+            if (0 == 1) {
+            /*[2]*/
+                /*[2]*/
+                timer_start(3);
+                /*[2]*/
+            }
+            /*[2]*/
+            double *_imopVarPre220;
+            /*[2]*/
+            double *_imopVarPre221;
+            /*[2]*/
+            int _imopVarPre222;
+            /*[2]*/
+            _imopVarPre220 = x - 1;
+            /*[2]*/
+            _imopVarPre221 = &t1;
+            /*[2]*/
+            _imopVarPre222 = 2 * (1 << 16);
+            /*[2]*/
+            vranlc(_imopVarPre222, _imopVarPre221, 1220703125.0, _imopVarPre220);
+            /*[2]*/
+            /*[2]*/
+            /*[2]*/
+            if (0 == 1) {
+            /*[2]*/
+                /*[2]*/
+                timer_stop(3);
+                /*[2]*/
+            }
+            /*[2]*/
+            /*[2]*/
+            if (0 == 1) {
+            /*[2]*/
+                /*[2]*/
+                timer_start(2);
+                /*[2]*/
+            }
+            /*[2]*/
+            /*[2]*/
+            /*[2]*/
+            /*[2]*/
+            for (i = 0; i < (1 << 16); i++) {
+            /*[2]*/
+                /*[2]*/
+                x1 = 2.0 * x[2 * i] - 1.0;
+                /*[2]*/
+                x2 = 2.0 * x[2 * i + 1] - 1.0;
+                /*[2]*/
+                t1 = (x1 * x1) + (x2 * x2);
+                /*[2]*/
+                /*[2]*/
+                if (t1 <= 1.0) {
+                /*[2]*/
+                    /*[2]*/
+                    double _imopVarPre227;
+                    /*[2]*/
+                    double _imopVarPre228;
+                    /*[2]*/
+                    double _imopVarPre229;
+                    /*[2]*/
+                    _imopVarPre227 = log(t1);
+                    /*[2]*/
+                    /*[2]*/
+                    _imopVarPre228 = -2.0 * _imopVarPre227 / t1;
+                    /*[2]*/
+                    _imopVarPre229 = sqrt(_imopVarPre228);
+                    /*[2]*/
+                    /*[2]*/
+                    t2 = _imopVarPre229;
+                    /*[2]*/
+                    t3 = (x1 * t2);
+                    /*[2]*/
+                    t4 = (x2 * t2);
+                    /*[2]*/
+                    double _imopVarPre250;
+                    /*[2]*/
+                    double _imopVarPre251;
+                    /*[2]*/
+                    int _imopVarPre252;
+                    /*[2]*/
+                    double _imopVarPre253;
+                    /*[2]*/
+                    double _imopVarPre255;
+                    /*[2]*/
+                    double _imopVarPre257;
+                    /*[2]*/
+                    _imopVarPre250 = fabs(t3);
+                    /*[2]*/
+                    /*[2]*/
+                    _imopVarPre251 = fabs(t4);
+                    /*[2]*/
+                    /*[2]*/
+                    _imopVarPre252 = (_imopVarPre250 > _imopVarPre251);
+                    /*[2]*/
+                    /*[2]*/
+                    if (_imopVarPre252) {
+                    /*[2]*/
+                        /*[2]*/
+                        _imopVarPre255 = fabs(t3);
+                        /*[2]*/
+                        /*[2]*/
+                        _imopVarPre253 = _imopVarPre255;
+                    } else {
+                    /*[2]*/
+                        /*[2]*/
+                        _imopVarPre257 = fabs(t4);
+                        /*[2]*/
+                        /*[2]*/
+                        _imopVarPre253 = _imopVarPre257;
+                    }
+                    /*[2]*/
+                    l = _imopVarPre253;
+                    /*[2]*/
+                    qq[l] += 1.0;
+                    /*[2]*/
+                    sx = sx + t3;
+                    /*[2]*/
+                    sy = sy + t4;
+                }
+            }
+            /*[2]*/
+            /*[2]*/
+            if (0 == 1) {
+            /*[2]*/
+                /*[2]*/
+                timer_stop(2);
+                /*[2]*/
+            }
+        }
+        /*[2]*/
+        // #pragma omp dummyFlush CRITICAL_START
+        /*[2]*/
+#pragma omp critical
+        {
+        /*[2]*/
+            /*[2]*/
+            /*[2]*/
+            /*[2]*/
+            /*[2]*/
+            for (i = 0; i <= 10 - 1; i++) {
+            /*[2]*/
+                /*[2]*/
+                q[i] += qq[i];
+            }
+        }
+        /*[2]*/
+        // #pragma omp dummyFlush CRITICAL_END
+    }
+    /*[]*/
+    /*[]*/
+    /*[]*/
+    /*[]*/
+    for (i = 0; i <= 10 - 1; i++) {
+    /*[]*/
+        /*[]*/
         gc = gc + q[i];
     }
-
+    /*[]*/
     timer_stop(1);
+    /*[]*/
+    /*[]*/
     tm = timer_read(1);
-
+    /*[]*/
+    /*[]*/
     nit = 0;
-    if (M == 24) {
-	if((fabs((sx- (-3.247834652034740e3))/sx) <= EPSILON) &&
-	   (fabs((sy- (-6.958407078382297e3))/sy) <= EPSILON)) {
-	    verified = TRUE;
-	}
-    } else if (M == 25) {
-	if ((fabs((sx- (-2.863319731645753e3))/sx) <= EPSILON) &&
-	    (fabs((sy- (-6.320053679109499e3))/sy) <= EPSILON)) {
-	    verified = TRUE;
-	}
-    } else if (M == 28) {
-	if ((fabs((sx- (-4.295875165629892e3))/sx) <= EPSILON) &&
-	    (fabs((sy- (-1.580732573678431e4))/sy) <= EPSILON)) {
-	    verified = TRUE;
-	}
-    } else if (M == 30) {
-	if ((fabs((sx- (4.033815542441498e4))/sx) <= EPSILON) &&
-	    (fabs((sy- (-2.660669192809235e4))/sy) <= EPSILON)) {
-	    verified = TRUE;
-	}
-    } else if (M == 32) {
-	if ((fabs((sx- (4.764367927995374e4))/sx) <= EPSILON) &&
-	    (fabs((sy- (-8.084072988043731e4))/sy) <= EPSILON)) {
-	    verified = TRUE;
-	}
+    /*[]*/
+    /*[]*/
+    if (24 == 24) {
+    /*[]*/
+        /*[]*/
+        double _imopVarPre269;
+        /*[]*/
+        double _imopVarPre270;
+        /*[]*/
+        int _imopVarPre271;
+        /*[]*/
+        double _imopVarPre274;
+        /*[]*/
+        double _imopVarPre275;
+        /*[]*/
+        _imopVarPre269 = (sx - (-3.247834652034740e3)) / sx;
+        /*[]*/
+        _imopVarPre270 = fabs(_imopVarPre269);
+        /*[]*/
+        /*[]*/
+        _imopVarPre271 = (_imopVarPre270 <= 1.0e-8);
+        /*[]*/
+        /*[]*/
+        if (_imopVarPre271) {
+        /*[]*/
+            /*[]*/
+            _imopVarPre274 = (sy - (-6.958407078382297e3)) / sy;
+            /*[]*/
+            _imopVarPre275 = fabs(_imopVarPre274);
+            /*[]*/
+            /*[]*/
+            _imopVarPre271 = (_imopVarPre275 <= 1.0e-8);
+        }
+        /*[]*/
+        /*[]*/
+        if (_imopVarPre271) {
+        /*[]*/
+            /*[]*/
+            verified = 1;
+        }
+    } else {
+    /*[]*/
+        /*[]*/
+        /*[]*/
+        if (24 == 25) {
+        /*[]*/
+            /*[]*/
+            double _imopVarPre287;
+            /*[]*/
+            double _imopVarPre288;
+            /*[]*/
+            int _imopVarPre289;
+            /*[]*/
+            double _imopVarPre292;
+            /*[]*/
+            double _imopVarPre293;
+            /*[]*/
+            _imopVarPre287 = (sx - (-2.863319731645753e3)) / sx;
+            /*[]*/
+            _imopVarPre288 = fabs(_imopVarPre287);
+            /*[]*/
+            /*[]*/
+            _imopVarPre289 = (_imopVarPre288 <= 1.0e-8);
+            /*[]*/
+            /*[]*/
+            if (_imopVarPre289) {
+            /*[]*/
+                /*[]*/
+                _imopVarPre292 = (sy - (-6.320053679109499e3)) / sy;
+                /*[]*/
+                _imopVarPre293 = fabs(_imopVarPre292);
+                /*[]*/
+                /*[]*/
+                _imopVarPre289 = (_imopVarPre293 <= 1.0e-8);
+            }
+            /*[]*/
+            /*[]*/
+            if (_imopVarPre289) {
+            /*[]*/
+                /*[]*/
+                verified = 1;
+            }
+        } else {
+        /*[]*/
+            /*[]*/
+            /*[]*/
+            if (24 == 28) {
+            /*[]*/
+                /*[]*/
+                double _imopVarPre305;
+                /*[]*/
+                double _imopVarPre306;
+                /*[]*/
+                int _imopVarPre307;
+                /*[]*/
+                double _imopVarPre310;
+                /*[]*/
+                double _imopVarPre311;
+                /*[]*/
+                _imopVarPre305 = (sx - (-4.295875165629892e3)) / sx;
+                /*[]*/
+                _imopVarPre306 = fabs(_imopVarPre305);
+                /*[]*/
+                /*[]*/
+                _imopVarPre307 = (_imopVarPre306 <= 1.0e-8);
+                /*[]*/
+                /*[]*/
+                if (_imopVarPre307) {
+                /*[]*/
+                    /*[]*/
+                    _imopVarPre310 = (sy - (-1.580732573678431e4)) / sy;
+                    /*[]*/
+                    _imopVarPre311 = fabs(_imopVarPre310);
+                    /*[]*/
+                    /*[]*/
+                    _imopVarPre307 = (_imopVarPre311 <= 1.0e-8);
+                }
+                /*[]*/
+                /*[]*/
+                if (_imopVarPre307) {
+                /*[]*/
+                    /*[]*/
+                    verified = 1;
+                }
+            } else {
+            /*[]*/
+                /*[]*/
+                /*[]*/
+                if (24 == 30) {
+                /*[]*/
+                    /*[]*/
+                    double _imopVarPre323;
+                    /*[]*/
+                    double _imopVarPre324;
+                    /*[]*/
+                    int _imopVarPre325;
+                    /*[]*/
+                    double _imopVarPre328;
+                    /*[]*/
+                    double _imopVarPre329;
+                    /*[]*/
+                    _imopVarPre323 = (sx - 4.033815542441498e4) / sx;
+                    /*[]*/
+                    _imopVarPre324 = fabs(_imopVarPre323);
+                    /*[]*/
+                    /*[]*/
+                    _imopVarPre325 = (_imopVarPre324 <= 1.0e-8);
+                    /*[]*/
+                    /*[]*/
+                    if (_imopVarPre325) {
+                    /*[]*/
+                        /*[]*/
+                        _imopVarPre328 = (sy - (-2.660669192809235e4)) / sy;
+                        /*[]*/
+                        _imopVarPre329 = fabs(_imopVarPre328);
+                        /*[]*/
+                        /*[]*/
+                        _imopVarPre325 = (_imopVarPre329 <= 1.0e-8);
+                    }
+                    /*[]*/
+                    /*[]*/
+                    if (_imopVarPre325) {
+                    /*[]*/
+                        /*[]*/
+                        verified = 1;
+                    }
+                } else {
+                /*[]*/
+                    /*[]*/
+                    /*[]*/
+                    if (24 == 32) {
+                    /*[]*/
+                        /*[]*/
+                        double _imopVarPre341;
+                        /*[]*/
+                        double _imopVarPre342;
+                        /*[]*/
+                        int _imopVarPre343;
+                        /*[]*/
+                        double _imopVarPre346;
+                        /*[]*/
+                        double _imopVarPre347;
+                        /*[]*/
+                        _imopVarPre341 = (sx - 4.764367927995374e4) / sx;
+                        /*[]*/
+                        _imopVarPre342 = fabs(_imopVarPre341);
+                        /*[]*/
+                        /*[]*/
+                        _imopVarPre343 = (_imopVarPre342 <= 1.0e-8);
+                        /*[]*/
+                        /*[]*/
+                        if (_imopVarPre343) {
+                        /*[]*/
+                            /*[]*/
+                            _imopVarPre346 = (sy - (-8.084072988043731e4)) / sy;
+                            /*[]*/
+                            _imopVarPre347 = fabs(_imopVarPre346);
+                            /*[]*/
+                            /*[]*/
+                            _imopVarPre343 = (_imopVarPre347 <= 1.0e-8);
+                        }
+                        /*[]*/
+                        /*[]*/
+                        if (_imopVarPre343) {
+                        /*[]*/
+                            /*[]*/
+                            verified = 1;
+                        }
+                    }
+                }
+            }
+        }
     }
-
-    Mops = pow(2.0, M+1)/tm/1000000.0;
-
-    printf("EP Benchmark Results: \n"
-	   "CPU Time = %10.4f\n"
-	   "N = 2^%5d\n"
-	   "No. Gaussian Pairs = %15.0f\n"
-	   "Sums = %25.15e %25.15e\n"
-	   "Counts:\n",
-	   tm, M, gc, sx, sy);
-    for (i = 0; i  <= NQ-1; i++) {
-	printf("%3d %15.0f\n", i, q[i]);
+    /*[]*/
+    int _imopVarPre350;
+    /*[]*/
+    double _imopVarPre351;
+    /*[]*/
+    _imopVarPre350 = 24 + 1;
+    /*[]*/
+    _imopVarPre351 = pow(2.0, _imopVarPre350);
+    /*[]*/
+    /*[]*/
+    Mops = _imopVarPre351 / tm / 1000000.0;
+    /*[]*/
+    printf("EP Benchmark Results: \n" "CPU Time = %10.4f\n" "N = 2^%5d\n" "No. Gaussian Pairs = %15.0f\n" "Sums = %25.15e %25.15e\n" "Counts:\n", tm, 24, gc, sx, sy);
+    /*[]*/
+    /*[]*/
+    /*[]*/
+    /*[]*/
+    /*[]*/
+    for (i = 0; i <= 10 - 1; i++) {
+    /*[]*/
+        /*[]*/
+        double _imopVarPre353;
+        /*[]*/
+        _imopVarPre353 = q[i];
+        /*[]*/
+        printf("%3d %15.0f\n", i, _imopVarPre353);
+        /*[]*/
     }
-	  
-    c_print_results("EP", CLASS, M+1, 0, 0, nit, nthreads,
-		  tm, Mops, 	
-		  "Random numbers generated",
-		  verified, NPBVERSION, COMPILETIME,
-		  CS1, CS2, CS3, CS4, CS5, CS6, CS7);
-
-    if (TIMERS_ENABLED == TRUE) {
-	printf("Total time:     %f", timer_read(1));
-	printf("Gaussian pairs: %f", timer_read(2));
-	printf("Random numbers: %f", timer_read(3));
+    /*[]*/
+    int _imopVarPre355;
+    /*[]*/
+    _imopVarPre355 = 24 + 1;
+    /*[]*/
+    c_print_results("EP", 'S', _imopVarPre355, 0, 0, nit, nthreads, tm, Mops, "Random numbers generated", verified, "3.0 structured", "21 Jul 2017", "gcc", "gcc", "(none)", "-I../common", "-O3 -fopenmp", "-O3 -fopenmp", "randdp");
+    /*[]*/
+    /*[]*/
+    /*[]*/
+    if (0 == 1) {
+    /*[]*/
+        /*[]*/
+        double _imopVarPre357;
+        /*[]*/
+        _imopVarPre357 = timer_read(1);
+        /*[]*/
+        /*[]*/
+        printf("Total time:     %f", _imopVarPre357);
+        /*[]*/
+        /*[]*/
+        double _imopVarPre359;
+        /*[]*/
+        _imopVarPre359 = timer_read(2);
+        /*[]*/
+        /*[]*/
+        printf("Gaussian pairs: %f", _imopVarPre359);
+        /*[]*/
+        /*[]*/
+        double _imopVarPre361;
+        /*[]*/
+        _imopVarPre361 = timer_read(3);
+        /*[]*/
+        /*[]*/
+        printf("Random numbers: %f", _imopVarPre361);
+        /*[]*/
     }
 }

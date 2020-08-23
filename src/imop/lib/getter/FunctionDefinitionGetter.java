@@ -8,15 +8,10 @@
  */
 package imop.lib.getter;
 
-import java.util.Vector;
-
-import imop.ast.node.external.Declarator;
-import imop.ast.node.external.DirectDeclarator;
-import imop.ast.node.external.FunctionDefinition;
-import imop.ast.node.external.IdentifierOrDeclarator;
-import imop.ast.node.external.NodeSequence;
-import imop.ast.node.external.NodeToken;
+import imop.ast.node.external.*;
 import imop.baseVisitor.GJDepthFirst;
+
+import java.util.Vector;
 
 /**
  * Populates funcDefNodes with the FunctionDefinition nodes corresponding to

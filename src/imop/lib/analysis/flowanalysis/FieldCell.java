@@ -8,7 +8,7 @@
  */
 package imop.lib.analysis.flowanalysis;
 
-import imop.ast.node.external.Node;
+import imop.ast.node.external.*;
 import imop.lib.util.CellSet;
 import imop.lib.util.ImmutableCellSet;
 

@@ -8,22 +8,9 @@
  */
 package imop.lib.analysis.flowanalysis.dataflow;
 
-import java.util.List;
-
 import imop.ast.info.cfgNodeInfo.ParameterDeclarationInfo;
-import imop.ast.node.external.CompoundStatement;
-import imop.ast.node.external.Declaration;
-import imop.ast.node.external.ElementsOfTranslation;
-import imop.ast.node.external.ExternalDeclaration;
-import imop.ast.node.external.FunctionDefinition;
-import imop.ast.node.external.Node;
-import imop.ast.node.external.NodeToken;
-import imop.ast.node.external.ParameterDeclaration;
-import imop.ast.node.external.TranslationUnit;
-import imop.ast.node.internal.BeginNode;
-import imop.ast.node.internal.EndNode;
-import imop.ast.node.internal.PostCallNode;
-import imop.ast.node.internal.SimplePrimaryExpression;
+import imop.ast.node.external.*;
+import imop.ast.node.internal.*;
 import imop.lib.analysis.Assignment;
 import imop.lib.analysis.AssignmentGetter;
 import imop.lib.analysis.flowanalysis.Cell;
@@ -36,6 +23,8 @@ import imop.lib.util.CellSet;
 import imop.lib.util.ExtensibleCellMap;
 import imop.lib.util.Misc;
 import imop.parser.Program;
+
+import java.util.List;
 
 public class CopyPropagationAnalysis
 		extends InterThreadForwardCellularAnalysis<CopyPropagationAnalysis.CopyPropagationFlowMap> {

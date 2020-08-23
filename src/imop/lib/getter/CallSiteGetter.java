@@ -8,19 +8,13 @@
  */
 package imop.lib.getter;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import imop.ast.node.external.APostfixOperation;
-import imop.ast.node.external.ArgumentList;
-import imop.ast.node.external.FunctionDefinition;
-import imop.ast.node.external.Node;
-import imop.ast.node.external.NodeToken;
-import imop.ast.node.external.PostfixExpression;
-import imop.ast.node.external.SizeofUnaryExpression;
+import imop.ast.node.external.*;
 import imop.baseVisitor.DepthFirstVisitor;
 import imop.lib.cg.CallSite;
 import imop.parser.Program;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Populates callSiteList with the call sites within the visited node's AST

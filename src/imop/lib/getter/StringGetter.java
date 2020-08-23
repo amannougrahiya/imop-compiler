@@ -8,28 +8,21 @@
  */
 package imop.lib.getter;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-
-import imop.ast.annotation.CaseLabel;
-import imop.ast.annotation.DefaultLabel;
-import imop.ast.annotation.Label;
-import imop.ast.annotation.PragmaImop;
-import imop.ast.annotation.SimpleLabel;
+import imop.ast.annotation.*;
 import imop.ast.info.NodeInfo;
 import imop.ast.info.StatementInfo;
 import imop.ast.node.external.*;
-import imop.ast.node.internal.CallStatement;
-import imop.ast.node.internal.DummyFlushDirective;
-import imop.ast.node.internal.OmpClause;
-import imop.ast.node.internal.SimplePrimaryExpression;
+import imop.ast.node.internal.*;
 import imop.baseVisitor.DepthFirstProcess;
 import imop.lib.transform.BasicTransform;
 import imop.lib.util.Misc;
 import imop.parser.CParserConstants;
 import imop.parser.FrontEnd;
 import imop.parser.Program;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 /**
  * Obtain String representation of the code corresponding to the current state

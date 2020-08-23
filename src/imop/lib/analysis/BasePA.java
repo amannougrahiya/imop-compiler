@@ -8,12 +8,11 @@
  */
 package imop.lib.analysis;
 
+import imop.ast.node.external.*;
+import imop.lib.cfg.Edge;
+
 import java.util.HashSet;
 import java.util.Set;
-
-import imop.ast.node.external.Node;
-import imop.lib.analysis.BasePA.StableStatus;
-import imop.lib.cfg.Edge;
 
 public abstract class BasePA {
 	public static Set<BasePA> allAbstractions = new HashSet<>();

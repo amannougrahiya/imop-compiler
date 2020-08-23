@@ -54,14 +54,20 @@ public class Program {
     public static boolean removeUnused;
     public static String fileName;
     public static boolean enableUnmodifiability;
-    public static boolean preciseDFDEdges = false; // Checks whether at least one symbol is required for communication.
-    public static boolean printSideEffects = true; // Prints side-effects as comments on annotated nodes.
+    /** Checks whether at least one symbol is required for communication. */
+    public static boolean preciseDFDEdges = false;
+    /** Prints side-effects as comments on annotated nodes. */
+    public static boolean printSideEffects = true;
     public static boolean printDFDs = true;
     public static boolean printRWinDFDs = false;
-    public static boolean dumpIntermediateStates = false; // Decides whether intermediate states of the program should be dumped.
+    /** Decides whether intermediate states of the program should be dumped. */
+    public static boolean dumpIntermediateStates = false;
     public static boolean printNoFiles = false;
+    /** Decided whether the PTA-heuristic that looks at the cell being dereferenced, is enabled. */
+    public static boolean ptaHeuristicEnabled = false;
     public static UpdateCategory updateCategory;
     public static UpdateCategory mhpUpdateCategory;
+
     /**
      * Set the default SVE sensitivity for the whole program.<br> Note that IDFA's <i>may</i> have their fixed SVE
      * sensitivity values, defined in their constructors.
@@ -145,7 +151,7 @@ public class Program {
         String filePath = "";
         filePath = ("../tests/classB-preproc/bt-b.i"); // SVE-all: 29s.
         //		filePath = ("../tests/classB-preproc/cg-b.i"); // SVE-all: 2.50s.
-        //		filePath = ("../tests/classB-preproc/ep-b.i"); // SVE-all: 0.55s
+        //        		filePath = ("../tests/classB-preproc/ep-b.i"); // SVE-all: 0.55s
         //		filePath = ("../tests/classB-preproc/ft-b.i"); // SVE-all: 3.73s.
         //		filePath = ("../tests/classB-preproc/is-b.i"); // SVE-all: 0.69
         //		filePath = ("../tests/classB-preproc/lu-b.i"); // SVE-all: 16.26s.
@@ -155,12 +161,12 @@ public class Program {
         //		filePath = ("../output-dump/ft-bimop_output_LZINC.i"); // SVE-all: 29s.
         filePath = ("../tests/npb-post/bt3-0.i"); // SVE-all: 29s.
         //		filePath = ("../tests/npb-post/cg3-0.i"); // SVE-all: 2.50s.
-        //		filePath = ("../tests/npb-post/ep3-0.i"); // SVE-all: 0.55s
-        //		filePath = ("../tests/npb-post/ft3-0.i"); // SVE-all: 3.73s.
-        //		filePath = ("../tests/npb-post/is3-0.i"); // SVE-all: 0.69
-        filePath = ("../tests/npb-post/lu3-0.i"); // SVE-all: 16.26s.
+        //        filePath = ("../tests/npb-post/ep3-0.i"); // SVE-all: 0.55s
+        //        filePath = ("../tests/npb-post/ft3-0.i"); // SVE-all: 3.73s.
+        filePath = ("../tests/npb-post/is3-0.i"); // SVE-all: 0.69
+        //        filePath = ("../tests/npb-post/lu3-0.i"); // SVE-all: 16.26s.
         //		filePath = ("../tests/npb-post/mg3-0.i"); // SVE-all: 9.88s;
-        filePath = ("../tests/npb-post/sp3-0.i"); // SVE-all: 23s.
+        //        filePath = ("../tests/npb-post/sp3-0.i"); // SVE-all: 23s.
 
         //		filePath = "../output-dump/imop_useful.i";
         //		filePath = ("../src/imop/lib/testcases/cfgTests/singleLooping.c");
@@ -312,8 +318,9 @@ public class Program {
         //		filePath = ("../tests/fft_openmp.i");
         //		filePath = ("../tests/quake.i");
         //		filePath = ("../tests/sequoia/amgmk.i");
-        //		filePath = ("../tests/sequoia/clomp.i");
-        //		filePath = ("../tests/fsu/md_openmp.i");
+        filePath = ("../tests/sequoia/clomp.i");
+        filePath = ("../tests/fsu/md_openmp.i");
+        filePath = ("../tests/alternate.i");
         //		filePath = ("../tests/parboil/lbm.i");
         //		filePath = ("../tests/insert.i");
         //		filePath = ("../tests/minebench/kmeans.i");
@@ -419,7 +426,10 @@ public class Program {
         } catch (FileNotFoundException e) {
             if (filePath.isEmpty()) {
                 System.out.println("Please specify the input file.");
-                System.out.println("usage: java <jvmoptions> imop.Main [--prepass | -p | --noPrePass | --npe] " + "[--removeUnused | -ru | --noRemoveUnused | --nru] " + "[--sveSensitive | -sve | --noSveSensitive | --nsve] " + "[--fieldSensitive | -fs | --noFieldSensitive | -- nfs] " + "--file|-f <input-file>");
+                System.out.println("usage: java <jvmoptions> imop.Main [--prepass | -p | --noPrePass | --npe] " +
+                        "[--removeUnused | -ru | --noRemoveUnused | --nru] " +
+                        "[--sveSensitive | -sve | --noSveSensitive | --nsve] " +
+                        "[--fieldSensitive | -fs | --noFieldSensitive | -- nfs] " + "--file|-f <input-file>");
             }
             System.out.println(filePath + " is not a valid file path.");
             e.printStackTrace();
@@ -683,7 +693,8 @@ public class Program {
         for (Node elemNode : Program.getRoot().getF0().getNodes()) {
             ElementsOfTranslation elemTr = (ElementsOfTranslation) elemNode;
             Node internal = elemTr.getF0().getChoice();
-            if (internal instanceof UnknownCpp && internal.toString().startsWith("# include") || internal.toString().startsWith("#include")) {
+            if (internal instanceof UnknownCpp && internal.toString().startsWith("# include") ||
+                    internal.toString().startsWith("#include")) {
                 if (foundEnd) {
                     return null;
                 }

@@ -8,12 +8,10 @@
  */
 package imop.lib.analysis.solver;
 
-import java.util.List;
-
-import imop.ast.node.external.APostfixOperation;
-import imop.ast.node.external.Node;
-import imop.ast.node.external.PrimaryExpression;
+import imop.ast.node.external.*;
 import imop.lib.analysis.solver.tokens.Tokenizable;
+
+import java.util.List;
 
 /**
  * For an array dereference of the syntactic form {@code e1[e2]} (and NOT of the

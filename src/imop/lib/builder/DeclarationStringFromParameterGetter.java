@@ -8,18 +8,10 @@
  */
 package imop.lib.builder;
 
-import java.util.List;
-
-import imop.ast.node.external.ADeclaratorOp;
-import imop.ast.node.external.Declarator;
-import imop.ast.node.external.DeclaratorOpList;
-import imop.ast.node.external.DimensionSize;
-import imop.ast.node.external.DirectDeclarator;
-import imop.ast.node.external.IdentifierOrDeclarator;
-import imop.ast.node.external.Node;
-import imop.ast.node.external.NodeToken;
-import imop.ast.node.external.ParameterDeclaration;
+import imop.ast.node.external.*;
 import imop.baseVisitor.DepthFirstProcess;
+
+import java.util.List;
 
 /**
  * This class sets the declCodeString of the declaration for a new variable

@@ -8,8 +8,7 @@
  */
 package imop.lib.transform;
 
-import imop.ast.node.external.NodeToken;
-import imop.ast.node.external.PrimaryExpression;
+import imop.ast.node.external.*;
 import imop.baseVisitor.DepthFirstVisitor;
 import imop.lib.analysis.flowanalysis.Symbol;
 

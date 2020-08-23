@@ -8,10 +8,10 @@
  */
 package imop.deprecated;
 
-import java.util.List;
-
 import imop.baseVisitor.GJNoArguDepthFirstProcess;
 import imop.lib.analysis.flowanalysis.Cell;
+
+import java.util.List;
 
 /**
  * This class populates sharedLvalueReadList and sharedLvalueWriteList with the

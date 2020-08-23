@@ -8,11 +8,8 @@
  */
 package imop.lib.analysis.mhp.yuan;
 
-import imop.ast.node.external.BarrierDirective;
-import imop.ast.node.external.Node;
-import imop.ast.node.external.ParallelConstruct;
-import imop.ast.node.internal.BeginNode;
-import imop.ast.node.internal.EndNode;
+import imop.ast.node.external.*;
+import imop.ast.node.internal.*;
 
 /**
  * Represents a barrier node in a Barrier Tree.

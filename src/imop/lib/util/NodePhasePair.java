@@ -8,7 +8,7 @@
  */
 package imop.lib.util;
 
-import imop.ast.node.external.Node;
+import imop.ast.node.external.*;
 import imop.lib.analysis.mhp.Phase;
 
 public class NodePhasePair {

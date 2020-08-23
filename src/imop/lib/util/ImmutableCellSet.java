@@ -8,12 +8,12 @@
  */
 package imop.lib.util;
 
+import imop.lib.analysis.flowanalysis.Cell;
+
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.function.Predicate;
-
-import imop.lib.analysis.flowanalysis.Cell;
 
 public class ImmutableCellSet extends CellSet implements Immutable {
 

@@ -8,18 +8,8 @@
  */
 package imop.lib.transform.simplify;
 
-import imop.ast.node.external.AtomicConstruct;
-import imop.ast.node.external.BarrierDirective;
-import imop.ast.node.external.CriticalConstruct;
-import imop.ast.node.external.FlushDirective;
-import imop.ast.node.external.Node;
-import imop.ast.node.external.OrderedConstruct;
-import imop.ast.node.external.TaskConstruct;
-import imop.ast.node.external.TaskwaitDirective;
-import imop.ast.node.external.TaskyieldDirective;
-import imop.ast.node.internal.CallStatement;
-import imop.ast.node.internal.DummyFlushDirective;
-import imop.ast.node.internal.DummyFlushType;
+import imop.ast.node.external.*;
+import imop.ast.node.internal.*;
 import imop.lib.cfg.info.CompoundStatementCFGInfo;
 import imop.lib.transform.updater.InsertImmediatePredecessor;
 import imop.lib.transform.updater.InsertImmediateSuccessor;

@@ -8,20 +8,16 @@
  */
 package imop.deprecated;
 
-import java.util.List;
-import java.util.Set;
-
-import imop.ast.node.external.Node;
-import imop.ast.node.external.ParallelConstruct;
-import imop.ast.node.external.ParallelForConstruct;
-import imop.ast.node.external.ParallelSectionsConstruct;
-import imop.ast.node.external.TaskConstruct;
-import imop.ast.node.internal.EndNode;
+import imop.ast.node.external.*;
+import imop.ast.node.internal.*;
 import imop.baseVisitor.cfgTraversals.DepthFirstCFG;
 import imop.lib.analysis.flowanalysis.Definition;
 import imop.lib.analysis.flowanalysis.Symbol;
 import imop.lib.util.CellList;
 import imop.lib.util.Misc;
+
+import java.util.List;
+import java.util.Set;
 
 /**
  * Given a definition markerDef, this class marks all the nodes where this

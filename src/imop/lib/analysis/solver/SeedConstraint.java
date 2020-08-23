@@ -8,13 +8,13 @@
  */
 package imop.lib.analysis.solver;
 
-import java.util.Collections;
-import java.util.List;
-
-import imop.ast.node.external.Node;
+import imop.ast.node.external.*;
 import imop.lib.analysis.solver.tokens.IdOrConstToken;
 import imop.lib.analysis.solver.tokens.OperatorToken;
 import imop.lib.analysis.solver.tokens.Tokenizable;
+
+import java.util.Collections;
+import java.util.List;
 
 /**
  * Intermediate representation of the constraints of the form

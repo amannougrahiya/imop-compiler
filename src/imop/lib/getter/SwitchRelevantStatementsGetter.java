@@ -8,17 +8,14 @@
  */
 package imop.lib.getter;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import imop.ast.annotation.CaseLabel;
 import imop.ast.annotation.DefaultLabel;
-import imop.ast.node.external.DefaultLabeledStatement;
-import imop.ast.node.external.Node;
-import imop.ast.node.external.Statement;
-import imop.ast.node.external.SwitchStatement;
+import imop.ast.node.external.*;
 import imop.baseVisitor.DepthFirstProcess;
 import imop.lib.util.Misc;
+
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * This visitor populates "cases" with the case (and default) labeled statements

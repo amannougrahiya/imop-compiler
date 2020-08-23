@@ -8,7 +8,7 @@
  */
 package imop.deprecated;
 
-import imop.ast.node.external.ParallelConstruct;
+import imop.ast.node.external.*;
 
 @Deprecated
 public class Deprecated_RemoveAnti {

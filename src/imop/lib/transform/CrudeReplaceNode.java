@@ -9,13 +9,7 @@
 package imop.lib.transform;
 
 import imop.ast.node.external.*;
-import imop.ast.node.internal.BeginNode;
-import imop.ast.node.internal.CallStatement;
-import imop.ast.node.internal.DummyFlushDirective;
-import imop.ast.node.internal.EndNode;
-import imop.ast.node.internal.PostCallNode;
-import imop.ast.node.internal.PreCallNode;
-import imop.ast.node.internal.SimplePrimaryExpression;
+import imop.ast.node.internal.*;
 import imop.baseVisitor.DepthFirstVisitor;
 import imop.lib.util.Misc;
 

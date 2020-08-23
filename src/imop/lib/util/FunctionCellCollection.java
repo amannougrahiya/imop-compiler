@@ -8,9 +8,9 @@
  */
 package imop.lib.util;
 
-import java.util.Set;
-
 import imop.lib.analysis.flowanalysis.Cell;
+
+import java.util.Set;
 
 public abstract class FunctionCellCollection extends CellCollection {
 

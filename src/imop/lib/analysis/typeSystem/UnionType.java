@@ -8,13 +8,13 @@
  */
 package imop.lib.analysis.typeSystem;
 
+import imop.ast.node.external.*;
+import imop.ast.node.internal.*;
+
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
-import imop.ast.node.external.Declaration;
-import imop.ast.node.internal.Scopeable;
 
 /**
  * Represents a union type.

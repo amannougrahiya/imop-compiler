@@ -8,30 +8,20 @@
  */
 package imop.lib.analysis.flowanalysis;
 
-import java.util.LinkedList;
-import java.util.List;
-
 import imop.ast.info.cfgNodeInfo.CompoundStatementInfo;
-import imop.ast.node.external.CompoundStatement;
-import imop.ast.node.external.Declaration;
-import imop.ast.node.external.FunctionDefinition;
-import imop.ast.node.external.Node;
-import imop.ast.node.external.ParameterDeclaration;
-import imop.ast.node.external.TranslationUnit;
-import imop.ast.node.internal.Scopeable;
+import imop.ast.node.external.*;
+import imop.ast.node.internal.*;
 import imop.lib.analysis.flowanalysis.dataflow.PointsToAnalysis.PointsToFlowMap;
 import imop.lib.analysis.flowanalysis.generic.AnalysisName;
-import imop.lib.analysis.typeSystem.ArithmeticType;
-import imop.lib.analysis.typeSystem.ArrayType;
-import imop.lib.analysis.typeSystem.FunctionType;
-import imop.lib.analysis.typeSystem.HasStaticModifier;
-import imop.lib.analysis.typeSystem.PointerType;
-import imop.lib.analysis.typeSystem.Type;
+import imop.lib.analysis.typeSystem.*;
 import imop.lib.builder.Builder;
 import imop.lib.util.CellSet;
 import imop.lib.util.ImmutableCellSet;
 import imop.lib.util.Misc;
 import imop.parser.Program;
+
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * This class represents an abstraction of a variable (or stack-element) in C,

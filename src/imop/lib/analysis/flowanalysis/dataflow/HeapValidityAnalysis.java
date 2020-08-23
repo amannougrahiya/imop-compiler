@@ -8,11 +8,8 @@
  */
 package imop.lib.analysis.flowanalysis.dataflow;
 
-import imop.ast.node.external.Node;
-import imop.ast.node.external.ParameterDeclaration;
-import imop.ast.node.internal.CallStatement;
-import imop.ast.node.internal.PostCallNode;
-import imop.ast.node.internal.SimplePrimaryExpression;
+import imop.ast.node.external.*;
+import imop.ast.node.internal.*;
 import imop.lib.analysis.flowanalysis.Cell;
 import imop.lib.analysis.flowanalysis.HeapCell;
 import imop.lib.analysis.flowanalysis.Symbol;

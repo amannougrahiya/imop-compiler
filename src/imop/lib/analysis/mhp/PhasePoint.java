@@ -8,12 +8,12 @@
  */
 package imop.lib.analysis.mhp;
 
-import java.util.Stack;
-
-import imop.ast.node.external.Node;
+import imop.ast.node.external.*;
 import imop.lib.cg.CallSite;
 import imop.lib.cg.CallStack;
 import imop.lib.cg.NodeWithStack;
+
+import java.util.Stack;
 
 public abstract class PhasePoint extends NodeWithStack {
 	public PhasePoint(Node sink, CallStack callStack) {

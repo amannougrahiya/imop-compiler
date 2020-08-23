@@ -8,21 +8,7 @@
  */
 package imop.lib.transform.simplify;
 
-import java.util.HashSet;
-import java.util.List;
-
-import imop.ast.node.external.ArgumentList;
-import imop.ast.node.external.CompoundStatement;
-import imop.ast.node.external.ConditionalExpression;
-import imop.ast.node.external.Declaration;
-import imop.ast.node.external.Expression;
-import imop.ast.node.external.ExpressionClosed;
-import imop.ast.node.external.InitDeclaratorList;
-import imop.ast.node.external.LogicalANDExpression;
-import imop.ast.node.external.LogicalORExpression;
-import imop.ast.node.external.Node;
-import imop.ast.node.external.SizeofTypeName;
-import imop.ast.node.external.SizeofUnaryExpression;
+import imop.ast.node.external.*;
 import imop.baseVisitor.DepthFirstProcess;
 import imop.lib.getter.StructUnionOrEnumInfoGetter;
 import imop.lib.transform.updater.InsertImmediatePredecessor;
@@ -31,6 +17,9 @@ import imop.lib.transform.updater.sideeffect.NodeUpdated;
 import imop.lib.transform.updater.sideeffect.SideEffect;
 import imop.lib.util.Misc;
 import imop.parser.FrontEnd;
+
+import java.util.HashSet;
+import java.util.List;
 
 public class Normalization {
 

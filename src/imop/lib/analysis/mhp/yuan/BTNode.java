@@ -8,10 +8,9 @@
  */
 package imop.lib.analysis.mhp.yuan;
 
-import java.util.Stack;
+import imop.ast.node.external.*;
 
-import imop.ast.node.external.FunctionDefinition;
-import imop.ast.node.external.ParallelConstruct;
+import java.util.Stack;
 
 /**
  * Abstract class for nodes of a Barrier Tree.

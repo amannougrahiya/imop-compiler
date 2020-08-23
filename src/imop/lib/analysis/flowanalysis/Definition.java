@@ -8,7 +8,7 @@
  */
 package imop.lib.analysis.flowanalysis;
 
-import imop.ast.node.external.Node;
+import imop.ast.node.external.*;
 
 public class Definition {
 	private final Node definingNode;

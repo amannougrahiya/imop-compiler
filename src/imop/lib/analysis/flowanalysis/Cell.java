@@ -8,10 +8,7 @@
  */
 package imop.lib.analysis.flowanalysis;
 
-import java.util.HashSet;
-import java.util.Set;
-
-import imop.ast.node.external.Node;
+import imop.ast.node.external.*;
 import imop.lib.analysis.solver.Accessible;
 import imop.lib.analysis.typeSystem.ArrayType;
 import imop.lib.analysis.typeSystem.StructType;
@@ -19,6 +16,9 @@ import imop.lib.analysis.typeSystem.UnionType;
 import imop.lib.util.CellSet;
 import imop.lib.util.Immutable;
 import imop.lib.util.ImmutableCellSet;
+
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Represents an abstraction of a memory cell.

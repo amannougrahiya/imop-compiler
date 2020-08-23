@@ -8,12 +8,12 @@
  */
 package imop.lib.analysis.typeSystem;
 
-import java.util.HashSet;
-import java.util.Set;
-
-import imop.ast.node.external.ConstantExpression;
+import imop.ast.node.external.*;
 import imop.lib.util.Misc;
 import imop.parser.FrontEnd;
+
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Represents the array type.

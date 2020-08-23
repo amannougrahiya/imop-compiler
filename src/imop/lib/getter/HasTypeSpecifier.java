@@ -8,7 +8,7 @@
  */
 package imop.lib.getter;
 
-import imop.ast.node.external.TypeSpecifier;
+import imop.ast.node.external.*;
 import imop.baseVisitor.DepthFirstVisitor;
 
 public class HasTypeSpecifier extends DepthFirstVisitor {

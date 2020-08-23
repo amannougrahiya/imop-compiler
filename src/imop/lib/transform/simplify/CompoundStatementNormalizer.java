@@ -8,49 +8,18 @@
  */
 package imop.lib.transform.simplify;
 
+import imop.ast.annotation.Label;
+import imop.ast.node.external.*;
+import imop.baseVisitor.GJVoidDepthFirstProcess;
+import imop.lib.cfg.info.CompoundStatementCFGInfo;
+import imop.lib.transform.updater.sideeffect.*;
+import imop.lib.util.Misc;
+import imop.parser.FrontEnd;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
-import imop.ast.annotation.Label;
-import imop.ast.node.external.ASection;
-import imop.ast.node.external.AtomicConstruct;
-import imop.ast.node.external.CompoundStatement;
-import imop.ast.node.external.CriticalConstruct;
-import imop.ast.node.external.Declaration;
-import imop.ast.node.external.DeclarationList;
-import imop.ast.node.external.Expression;
-import imop.ast.node.external.ForConstruct;
-import imop.ast.node.external.FunctionDefinition;
-import imop.ast.node.external.JumpStatement;
-import imop.ast.node.external.MasterConstruct;
-import imop.ast.node.external.Node;
-import imop.ast.node.external.OmpDirective;
-import imop.ast.node.external.OmpEol;
-import imop.ast.node.external.OrderedConstruct;
-import imop.ast.node.external.ParallelConstruct;
-import imop.ast.node.external.ParallelForConstruct;
-import imop.ast.node.external.ParallelSectionsConstruct;
-import imop.ast.node.external.SectionsConstruct;
-import imop.ast.node.external.SingleConstruct;
-import imop.ast.node.external.Statement;
-import imop.ast.node.external.TaskConstruct;
-import imop.ast.node.external.TranslationUnit;
-import imop.ast.node.external.UnknownCpp;
-import imop.baseVisitor.GJVoidDepthFirstProcess;
-import imop.lib.cfg.info.CompoundStatementCFGInfo;
-import imop.lib.transform.updater.sideeffect.AddedDFDPredecessor;
-import imop.lib.transform.updater.sideeffect.AddedDFDSuccessor;
-import imop.lib.transform.updater.sideeffect.AddedEnclosingBlock;
-import imop.lib.transform.updater.sideeffect.AddedExplicitBarrier;
-import imop.lib.transform.updater.sideeffect.AddedNowaitClause;
-import imop.lib.transform.updater.sideeffect.InitializationSimplified;
-import imop.lib.transform.updater.sideeffect.RemovedDFDPredecessor;
-import imop.lib.transform.updater.sideeffect.RemovedDFDSuccessor;
-import imop.lib.transform.updater.sideeffect.SideEffect;
-import imop.lib.util.Misc;
-import imop.parser.FrontEnd;
 
 /**
  * Provides a method to remove extra scoping of nodes in

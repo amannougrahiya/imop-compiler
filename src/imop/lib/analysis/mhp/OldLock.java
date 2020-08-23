@@ -8,10 +8,10 @@
  */
 package imop.lib.analysis.mhp;
 
+import imop.ast.node.external.*;
+
 import java.util.HashSet;
 import java.util.Set;
-
-import imop.ast.node.external.Node;
 
 /**
  * This class represents a static-time abstract lock.

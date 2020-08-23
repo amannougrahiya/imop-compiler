@@ -8,8 +8,7 @@
  */
 package imop.lib.getter;
 
-import imop.ast.node.external.OldParameterListClosed;
-import imop.ast.node.external.ParameterTypeListClosed;
+import imop.ast.node.external.*;
 import imop.baseVisitor.DepthFirstProcess;
 
 /**

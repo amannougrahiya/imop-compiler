@@ -8,9 +8,8 @@
  */
 package imop.lib.analysis.mhp;
 
-import imop.ast.node.external.BarrierDirective;
-import imop.ast.node.external.Node;
-import imop.ast.node.internal.EndNode;
+import imop.ast.node.external.*;
+import imop.ast.node.internal.*;
 import imop.lib.cg.CallStack;
 import imop.lib.cg.NodeWithStack;
 import imop.lib.util.Misc;

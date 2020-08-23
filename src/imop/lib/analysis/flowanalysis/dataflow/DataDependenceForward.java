@@ -8,14 +8,8 @@
  */
 package imop.lib.analysis.flowanalysis.dataflow;
 
-import java.util.HashSet;
-import java.util.Set;
-
-import imop.ast.node.external.CompoundStatement;
-import imop.ast.node.external.Node;
-import imop.ast.node.external.ParameterDeclaration;
-import imop.ast.node.internal.EndNode;
-import imop.ast.node.internal.SimplePrimaryExpression;
+import imop.ast.node.external.*;
+import imop.ast.node.internal.*;
 import imop.lib.analysis.flowanalysis.Cell;
 import imop.lib.analysis.flowanalysis.HeapCell;
 import imop.lib.analysis.flowanalysis.Symbol;
@@ -26,6 +20,9 @@ import imop.lib.analysis.flowanalysis.generic.FlowAnalysis;
 import imop.lib.analysis.flowanalysis.generic.InterThreadForwardNonCellularAnalysis;
 import imop.lib.util.CellMap;
 import imop.lib.util.CellSet;
+
+import java.util.HashSet;
+import java.util.Set;
 
 public class DataDependenceForward
 		extends InterThreadForwardNonCellularAnalysis<DataDependenceForward.DataDependenceForwardFF> {

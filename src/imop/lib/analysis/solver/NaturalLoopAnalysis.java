@@ -8,12 +8,7 @@
  */
 package imop.lib.analysis.solver;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
-import imop.ast.node.external.Node;
+import imop.ast.node.external.*;
 import imop.lib.analysis.flowanalysis.Cell;
 import imop.lib.analysis.flowanalysis.Definition;
 import imop.lib.analysis.flowanalysis.Symbol;
@@ -25,6 +20,11 @@ import imop.lib.analysis.typeSystem.ArithmeticType;
 import imop.lib.util.CellList;
 import imop.lib.util.CollectorVisitor;
 import imop.lib.util.Misc;
+
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * This class contains static methods that are used to analyze natural loops.

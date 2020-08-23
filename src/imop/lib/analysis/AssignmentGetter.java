@@ -8,35 +8,15 @@
  */
 package imop.lib.analysis;
 
+import imop.ast.info.cfgNodeInfo.ParameterDeclarationInfo;
+import imop.ast.node.external.*;
+import imop.ast.node.internal.*;
+import imop.baseVisitor.DepthFirstProcess;
+import imop.lib.util.Misc;
+
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-
-import imop.ast.info.cfgNodeInfo.ParameterDeclarationInfo;
-import imop.ast.node.external.Expression;
-import imop.ast.node.external.FunctionDefinition;
-import imop.ast.node.external.InitDeclarator;
-import imop.ast.node.external.Initializer;
-import imop.ast.node.external.Node;
-import imop.ast.node.external.NodeSequence;
-import imop.ast.node.external.NodeToken;
-import imop.ast.node.external.NonConditionalExpression;
-import imop.ast.node.external.OmpForAdditive;
-import imop.ast.node.external.OmpForInitExpression;
-import imop.ast.node.external.OmpForMultiplicative;
-import imop.ast.node.external.OmpForSubtractive;
-import imop.ast.node.external.ParameterDeclaration;
-import imop.ast.node.external.ReturnStatement;
-import imop.ast.node.external.ShortAssignMinus;
-import imop.ast.node.external.ShortAssignPlus;
-import imop.ast.node.external.SizeofUnaryExpression;
-import imop.ast.node.external.UnarySizeofExpression;
-import imop.ast.node.internal.CallStatement;
-import imop.ast.node.internal.PostCallNode;
-import imop.ast.node.internal.PreCallNode;
-import imop.ast.node.internal.SimplePrimaryExpression;
-import imop.baseVisitor.DepthFirstProcess;
-import imop.lib.util.Misc;
 
 public class AssignmentGetter {
 	/**

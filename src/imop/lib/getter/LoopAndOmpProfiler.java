@@ -8,44 +8,12 @@
  */
 package imop.lib.getter;
 
-import java.util.Set;
-
-import imop.ast.node.external.AtomicConstruct;
-import imop.ast.node.external.BarrierDirective;
-import imop.ast.node.external.BreakStatement;
-import imop.ast.node.external.CompoundStatement;
-import imop.ast.node.external.ContinueStatement;
-import imop.ast.node.external.CriticalConstruct;
-import imop.ast.node.external.DoStatement;
-import imop.ast.node.external.ExpressionStatement;
-import imop.ast.node.external.FinalClause;
-import imop.ast.node.external.FlushDirective;
-import imop.ast.node.external.ForConstruct;
-import imop.ast.node.external.ForStatement;
-import imop.ast.node.external.FunctionDefinition;
-import imop.ast.node.external.GotoStatement;
-import imop.ast.node.external.IfClause;
-import imop.ast.node.external.MasterConstruct;
-import imop.ast.node.external.Node;
-import imop.ast.node.external.NumThreadsClause;
-import imop.ast.node.external.OmpConstruct;
-import imop.ast.node.external.OmpDirective;
-import imop.ast.node.external.OrderedConstruct;
-import imop.ast.node.external.ParallelConstruct;
-import imop.ast.node.external.ParallelForConstruct;
-import imop.ast.node.external.ParallelSectionsConstruct;
-import imop.ast.node.external.ReturnStatement;
-import imop.ast.node.external.SectionsConstruct;
-import imop.ast.node.external.SingleConstruct;
-import imop.ast.node.external.Statement;
-import imop.ast.node.external.SwitchStatement;
-import imop.ast.node.external.TaskConstruct;
-import imop.ast.node.external.TaskwaitDirective;
-import imop.ast.node.external.TaskyieldDirective;
-import imop.ast.node.external.WhileStatement;
-import imop.ast.node.internal.CallStatement;
+import imop.ast.node.external.*;
+import imop.ast.node.internal.*;
 import imop.baseVisitor.DepthFirstProcess;
 import imop.lib.util.Misc;
+
+import java.util.Set;
 
 /**
  * Provides default methods for processing all the CFG nodes.

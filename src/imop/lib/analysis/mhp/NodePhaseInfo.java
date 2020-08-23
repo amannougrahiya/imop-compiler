@@ -8,17 +8,9 @@
  */
 package imop.lib.analysis.mhp;
 
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
-
-import imop.ast.node.external.Node;
-import imop.ast.node.internal.DummyFlushDirective;
-import imop.lib.analysis.flowanalysis.generic.FlowAnalysis;
-import imop.lib.analysis.flowanalysis.generic.InterThreadBackwardCellularAnalysis;
-import imop.lib.analysis.flowanalysis.generic.InterThreadBackwardNonCellularAnalysis;
-import imop.lib.analysis.flowanalysis.generic.InterThreadForwardCellularAnalysis;
-import imop.lib.analysis.flowanalysis.generic.InterThreadForwardNonCellularAnalysis;
+import imop.ast.node.external.*;
+import imop.ast.node.internal.*;
+import imop.lib.analysis.flowanalysis.generic.*;
 import imop.lib.cfg.link.autoupdater.AutomatedUpdater;
 import imop.lib.cfg.parallel.DataFlowGraph;
 import imop.lib.cfg.parallel.InterTaskEdge;
@@ -26,6 +18,10 @@ import imop.lib.util.Misc;
 import imop.lib.util.ProfileSS;
 import imop.parser.Program;
 import imop.parser.Program.UpdateCategory;
+
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * This class contains the parallel phase information corresponding to the node.

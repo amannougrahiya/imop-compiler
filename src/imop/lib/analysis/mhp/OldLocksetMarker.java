@@ -8,14 +8,11 @@
  */
 package imop.lib.analysis.mhp;
 
-import java.util.List;
-
-import imop.ast.node.external.AtomicConstruct;
-import imop.ast.node.external.CriticalConstruct;
-import imop.ast.node.external.Node;
-import imop.ast.node.external.RegionPhrase;
+import imop.ast.node.external.*;
 import imop.baseVisitor.GJVoidDepthFirstProcess;
 import imop.lib.util.Misc;
+
+import java.util.List;
 
 /**
  * This visitor visits and marks all the CFG nodes

@@ -8,19 +8,15 @@
  */
 package imop.deprecated;
 
-import java.util.HashSet;
-import java.util.Set;
-
-import imop.ast.node.external.Node;
-import imop.ast.node.external.ParallelConstruct;
-import imop.ast.node.external.ParallelForConstruct;
-import imop.ast.node.external.ParallelSectionsConstruct;
-import imop.ast.node.external.TaskConstruct;
+import imop.ast.node.external.*;
 import imop.baseVisitor.DepthFirstProcess;
 import imop.lib.analysis.flowanalysis.Definition;
 import imop.lib.util.CellList;
 import imop.lib.util.CellMap;
 import imop.lib.util.Misc;
+
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * This class traverses all the elementary read/write nodes,

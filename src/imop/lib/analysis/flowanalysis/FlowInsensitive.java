@@ -8,17 +8,14 @@
  */
 package imop.lib.analysis.flowanalysis;
 
-import java.util.Set;
-
-import imop.ast.node.external.FunctionDefinition;
-import imop.ast.node.external.Node;
-import imop.ast.node.external.TranslationUnit;
-import imop.ast.node.internal.BeginNode;
-import imop.ast.node.internal.EndNode;
+import imop.ast.node.external.*;
+import imop.ast.node.internal.*;
 import imop.lib.analysis.flowanalysis.generic.AnalysisName;
 import imop.lib.analysis.flowanalysis.generic.FlowAnalysis;
 import imop.lib.analysis.flowanalysis.generic.FlowAnalysis.FlowFact;
 import imop.parser.Program;
+
+import java.util.Set;
 
 public class FlowInsensitive {
 

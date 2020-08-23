@@ -8,11 +8,11 @@
  */
 package imop.lib.analysis.flowanalysis;
 
+import imop.ast.node.external.*;
+
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
-
-import imop.ast.node.external.Expression;
 
 /**
  * This class represents one of the many branches that a predicate may take.

@@ -8,7 +8,7 @@
  */
 package imop.lib.transform.updater.sideeffect;
 
-import imop.ast.node.external.Node;
+import imop.ast.node.external.*;
 
 public class NeighbourUpdated extends SideEffect {
 

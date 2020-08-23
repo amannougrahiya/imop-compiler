@@ -8,27 +8,12 @@
  */
 package imop.lib.analysis.flowanalysis.controlflow;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
-
 import imop.ast.info.cfgNodeInfo.ExpressionInfo;
-import imop.ast.node.external.BarrierDirective;
-import imop.ast.node.external.Expression;
-import imop.ast.node.external.Node;
-import imop.ast.node.external.ParallelConstruct;
-import imop.ast.node.external.ParameterDeclaration;
-import imop.ast.node.internal.BeginNode;
-import imop.ast.node.internal.EndNode;
+import imop.ast.node.external.*;
+import imop.ast.node.internal.*;
 import imop.lib.analysis.flowanalysis.BranchEdge;
-import imop.lib.analysis.flowanalysis.generic.AnalysisDimension;
+import imop.lib.analysis.flowanalysis.generic.*;
 import imop.lib.analysis.flowanalysis.generic.AnalysisDimension.SVEDimension;
-import imop.lib.analysis.flowanalysis.generic.AnalysisName;
-import imop.lib.analysis.flowanalysis.generic.FlowAnalysis;
-import imop.lib.analysis.flowanalysis.generic.IntraProceduralControlFlowAnalysis;
-import imop.lib.analysis.flowanalysis.generic.ReversePostOrderWorkList;
 import imop.lib.analysis.mhp.BeginPhasePoint;
 import imop.lib.cg.CallStack;
 import imop.lib.cg.NodeWithStack;
@@ -36,6 +21,8 @@ import imop.lib.util.CellSet;
 import imop.lib.util.ImmutableList;
 import imop.lib.util.ImmutableSet;
 import imop.lib.util.Misc;
+
+import java.util.*;
 
 public class PredicateAnalysis extends IntraProceduralControlFlowAnalysis<PredicateAnalysis.PredicateFlowFact> {
 

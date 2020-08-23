@@ -8,19 +8,13 @@
  */
 package imop.lib.getter;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import imop.ast.node.external.*;
-import imop.ast.node.internal.BeginNode;
-import imop.ast.node.internal.CallStatement;
-import imop.ast.node.internal.DummyFlushDirective;
-import imop.ast.node.internal.EndNode;
-import imop.ast.node.internal.PostCallNode;
-import imop.ast.node.internal.PreCallNode;
-import imop.ast.node.internal.SimplePrimaryExpression;
+import imop.ast.node.internal.*;
 import imop.baseVisitor.DepthFirstProcess;
 import imop.lib.util.Misc;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A visitor that accumulates ALL the CFG nodes encountered in the depth-first

@@ -8,9 +8,7 @@
  */
 package imop.lib.getter;
 
-import imop.ast.node.external.NodeToken;
-import imop.ast.node.external.TypeSpecifier;
-import imop.ast.node.external.TypedefName;
+import imop.ast.node.external.*;
 import imop.baseVisitor.DepthFirstProcess;
 
 /**

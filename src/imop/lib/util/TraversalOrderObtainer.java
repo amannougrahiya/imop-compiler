@@ -8,13 +8,9 @@
  */
 package imop.lib.util;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 import imop.lib.util.CollectorVisitor.NeighbourSetGetter;
+
+import java.util.*;
 
 public class TraversalOrderObtainer {
 	public static long orderGenerationTime = 0;

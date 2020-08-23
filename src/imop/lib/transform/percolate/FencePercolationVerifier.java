@@ -8,17 +8,16 @@
  */
 package imop.lib.transform.percolate;
 
-import java.util.HashSet;
-import java.util.Set;
-
-import imop.ast.node.external.BarrierDirective;
-import imop.ast.node.external.Node;
+import imop.ast.node.external.*;
 import imop.lib.analysis.mhp.Phase;
 import imop.lib.cg.CallStack;
 import imop.lib.cg.NodeWithStack;
 import imop.lib.util.CellSet;
 import imop.lib.util.CollectorVisitor;
 import imop.lib.util.Misc;
+
+import java.util.HashSet;
+import java.util.Set;
 
 public class FencePercolationVerifier {
 

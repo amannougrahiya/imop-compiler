@@ -8,19 +8,14 @@
  */
 package imop.lib.analysis.flowanalysis.generic;
 
-import java.util.Collection;
-import java.util.Set;
-
 import imop.ast.info.NodeInfo;
-import imop.ast.node.external.BarrierDirective;
-import imop.ast.node.external.FunctionDefinition;
-import imop.ast.node.external.Node;
-import imop.ast.node.external.ParameterDeclaration;
-import imop.ast.node.internal.BeginNode;
-import imop.ast.node.internal.CallStatement;
-import imop.ast.node.internal.SimplePrimaryExpression;
+import imop.ast.node.external.*;
+import imop.ast.node.internal.*;
 import imop.lib.analysis.flowanalysis.generic.AnalysisDimension.ContextDimension;
 import imop.lib.util.Misc;
+
+import java.util.Collection;
+import java.util.Set;
 
 public abstract class InterProceduralControlFlowAnalysis<F extends FlowAnalysis.FlowFact>
 		extends ControlFlowAnalysis<F> {

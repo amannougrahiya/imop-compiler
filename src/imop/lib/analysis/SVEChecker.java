@@ -8,36 +8,10 @@
  */
 package imop.lib.analysis;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 import imop.ast.info.DataSharingAttribute;
-import imop.ast.node.external.CompoundStatement;
-import imop.ast.node.external.Declaration;
-import imop.ast.node.external.DoStatement;
-import imop.ast.node.external.Expression;
-import imop.ast.node.external.ExpressionStatement;
-import imop.ast.node.external.IfStatement;
-import imop.ast.node.external.Node;
-import imop.ast.node.external.OmpForCondition;
-import imop.ast.node.external.OmpForInitExpression;
-import imop.ast.node.external.OmpForReinitExpression;
-import imop.ast.node.external.ParameterDeclaration;
-import imop.ast.node.external.SwitchStatement;
-import imop.ast.node.external.UnknownPragma;
-import imop.ast.node.external.WhileStatement;
-import imop.ast.node.internal.CallStatement;
-import imop.ast.node.internal.PostCallNode;
-import imop.ast.node.internal.PreCallNode;
-import imop.ast.node.internal.SimplePrimaryExpression;
-import imop.lib.analysis.flowanalysis.AddressCell;
-import imop.lib.analysis.flowanalysis.Cell;
-import imop.lib.analysis.flowanalysis.Definition;
-import imop.lib.analysis.flowanalysis.FieldCell;
-import imop.lib.analysis.flowanalysis.FreeVariable;
-import imop.lib.analysis.flowanalysis.HeapCell;
-import imop.lib.analysis.flowanalysis.Symbol;
+import imop.ast.node.external.*;
+import imop.ast.node.internal.*;
+import imop.lib.analysis.flowanalysis.*;
 import imop.lib.analysis.typeSystem.ArrayType;
 import imop.lib.analysis.typeSystem.FunctionType;
 import imop.lib.analysis.typeSystem.Type;
@@ -45,6 +19,10 @@ import imop.lib.util.CellList;
 import imop.lib.util.Misc;
 import imop.lib.util.NodePair;
 import imop.parser.Program;
+
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 public class SVEChecker {
 

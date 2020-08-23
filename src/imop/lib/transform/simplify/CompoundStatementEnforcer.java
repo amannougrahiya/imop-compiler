@@ -12,30 +12,7 @@
 
 package imop.lib.transform.simplify;
 
-import imop.ast.node.external.ASection;
-import imop.ast.node.external.CompoundStatement;
-import imop.ast.node.external.CompoundStatementElement;
-import imop.ast.node.external.CriticalConstruct;
-import imop.ast.node.external.DoStatement;
-import imop.ast.node.external.ForConstruct;
-import imop.ast.node.external.ForStatement;
-import imop.ast.node.external.IfStatement;
-import imop.ast.node.external.MasterConstruct;
-import imop.ast.node.external.Node;
-import imop.ast.node.external.NodeChoice;
-import imop.ast.node.external.NodeListOptional;
-import imop.ast.node.external.NodeSequence;
-import imop.ast.node.external.OrderedConstruct;
-import imop.ast.node.external.ParallelConstruct;
-import imop.ast.node.external.ParallelForConstruct;
-import imop.ast.node.external.ParallelSectionsConstruct;
-import imop.ast.node.external.SectionsConstruct;
-import imop.ast.node.external.SectionsScope;
-import imop.ast.node.external.SingleConstruct;
-import imop.ast.node.external.Statement;
-import imop.ast.node.external.SwitchStatement;
-import imop.ast.node.external.TaskConstruct;
-import imop.ast.node.external.WhileStatement;
+import imop.ast.node.external.*;
 import imop.baseVisitor.DepthFirstVisitor;
 import imop.lib.util.Misc;
 import imop.parser.FrontEnd;

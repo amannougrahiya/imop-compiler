@@ -8,13 +8,13 @@
  */
 package imop.lib.analysis.flowanalysis.controlflow;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.ListIterator;
-
 import imop.lib.analysis.flowanalysis.BranchEdge;
 import imop.lib.analysis.mhp.BeginPhasePoint;
 import imop.lib.util.ImmutableList;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.ListIterator;
 
 public class ReversePath {
 	public final BeginPhasePoint bPP;

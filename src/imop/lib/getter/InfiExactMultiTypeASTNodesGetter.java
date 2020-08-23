@@ -8,13 +8,12 @@
  */
 package imop.lib.getter;
 
-import java.util.HashSet;
-import java.util.Set;
-
-import imop.ast.node.external.Expression;
-import imop.ast.node.external.Node;
+import imop.ast.node.external.*;
 import imop.baseVisitor.DepthFirstProcess;
 import imop.lib.util.Misc.TraverseExpressions;
+
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Populates the set astContents with all the internal AST nodes of any of the

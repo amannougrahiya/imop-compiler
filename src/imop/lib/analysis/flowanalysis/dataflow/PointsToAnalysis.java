@@ -8,80 +8,35 @@
  */
 package imop.lib.analysis.flowanalysis.dataflow;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 import imop.ast.info.PTAStabilizationHeuristic;
 import imop.ast.info.cfgNodeInfo.ParameterDeclarationInfo;
-import imop.ast.node.external.BreakStatement;
-import imop.ast.node.external.CompoundStatement;
-import imop.ast.node.external.ContinueStatement;
-import imop.ast.node.external.Declaration;
-import imop.ast.node.external.ElementsOfTranslation;
-import imop.ast.node.external.Expression;
-import imop.ast.node.external.ExpressionStatement;
-import imop.ast.node.external.ExternalDeclaration;
-import imop.ast.node.external.FinalClause;
-import imop.ast.node.external.FlushDirective;
-import imop.ast.node.external.FunctionDefinition;
-import imop.ast.node.external.GotoStatement;
-import imop.ast.node.external.IfClause;
-import imop.ast.node.external.Initializer;
-import imop.ast.node.external.Node;
-import imop.ast.node.external.NodeToken;
-import imop.ast.node.external.NonConditionalExpression;
-import imop.ast.node.external.NumThreadsClause;
-import imop.ast.node.external.OmpForCondition;
-import imop.ast.node.external.OmpForInitExpression;
-import imop.ast.node.external.OmpForReinitExpression;
-import imop.ast.node.external.ParameterDeclaration;
-import imop.ast.node.external.ReturnStatement;
-import imop.ast.node.external.SizeofUnaryExpression;
-import imop.ast.node.external.TaskwaitDirective;
-import imop.ast.node.external.TaskyieldDirective;
-import imop.ast.node.external.TranslationUnit;
-import imop.ast.node.external.UnarySizeofExpression;
-import imop.ast.node.external.UnknownCpp;
-import imop.ast.node.external.UnknownPragma;
-import imop.ast.node.internal.BeginNode;
-import imop.ast.node.internal.CallStatement;
-import imop.ast.node.internal.DummyFlushDirective;
-import imop.ast.node.internal.EndNode;
-import imop.ast.node.internal.PostCallNode;
-import imop.ast.node.internal.PreCallNode;
-import imop.ast.node.internal.SimplePrimaryExpression;
+import imop.ast.node.external.*;
+import imop.ast.node.internal.*;
 import imop.baseVisitor.DepthFirstProcess;
-import imop.lib.analysis.flowanalysis.AddressCell;
-import imop.lib.analysis.flowanalysis.Cell;
-import imop.lib.analysis.flowanalysis.FieldCell;
-import imop.lib.analysis.flowanalysis.HeapCell;
-import imop.lib.analysis.flowanalysis.Symbol;
+import imop.lib.analysis.flowanalysis.*;
 import imop.lib.analysis.flowanalysis.generic.AnalysisDimension;
 import imop.lib.analysis.flowanalysis.generic.AnalysisName;
 import imop.lib.analysis.flowanalysis.generic.CellularDataFlowAnalysis;
 import imop.lib.analysis.flowanalysis.generic.InterThreadForwardCellularAnalysis;
-import imop.lib.analysis.typeSystem.ArrayType;
-import imop.lib.analysis.typeSystem.PointerType;
-import imop.lib.analysis.typeSystem.StructType;
-import imop.lib.analysis.typeSystem.Type;
-import imop.lib.analysis.typeSystem.UnionType;
+import imop.lib.analysis.typeSystem.*;
 import imop.lib.cfg.info.CFGInfo;
-import imop.lib.util.CellList;
-import imop.lib.util.CellMap;
-import imop.lib.util.CellSet;
-import imop.lib.util.ExtensibleCellMap;
-import imop.lib.util.ImmutableCellSet;
-import imop.lib.util.Misc;
+import imop.lib.util.*;
 import imop.parser.Program;
+
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 public class PointsToAnalysis extends InterThreadForwardCellularAnalysis<PointsToAnalysis.PointsToFlowMap> {
 
-	public static boolean isHeuristicEnabled = true;
+	public static boolean isHeuristicEnabled = true; // Also enable Program.ptaHeuristicEnabled
 	public static CellSet affectedCellsInThisEpoch = new CellSet();
 
 	public static void handleNodeAdditionOrRemovalForHeuristic(Node affectedNode) {
 		if (!isHeuristicEnabled) {
+			return;
+		} else if (!Program.ptaHeuristicEnabled){
+			isHeuristicEnabled = false;
 			return;
 		}
 		CellSet affectedCells = PTAStabilizationHeuristic.getAffectedCells(affectedNode);

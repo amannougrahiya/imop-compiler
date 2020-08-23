@@ -9,14 +9,11 @@
 
 package imop.lib.getter;
 
-import java.util.Vector;
-
-import imop.ast.node.external.Expression;
-import imop.ast.node.external.ParallelConstruct;
-import imop.ast.node.external.ParallelForConstruct;
-import imop.ast.node.external.ParallelSectionsConstruct;
+import imop.ast.node.external.*;
 import imop.baseVisitor.DepthFirstVisitor;
 import imop.lib.util.Misc;
+
+import java.util.Vector;
 
 /**
  * This class adds to the list of parallel construct all the parallel

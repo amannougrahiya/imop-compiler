@@ -8,15 +8,9 @@
  */
 package imop.lib.util;
 
-import java.util.HashMap;
+import com.microsoft.z3.*;
 
-import com.microsoft.z3.ArithExpr;
-import com.microsoft.z3.BoolExpr;
-import com.microsoft.z3.Context;
-import com.microsoft.z3.IntExpr;
-import com.microsoft.z3.Model;
-import com.microsoft.z3.Solver;
-import com.microsoft.z3.Status;
+import java.util.HashMap;
 
 public class Z3Solver {
 

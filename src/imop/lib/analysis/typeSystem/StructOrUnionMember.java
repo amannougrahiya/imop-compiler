@@ -8,7 +8,7 @@
  */
 package imop.lib.analysis.typeSystem;
 
-import imop.ast.node.external.ConstantExpression;
+import imop.ast.node.external.*;
 
 public class StructOrUnionMember {
 	private Type elementType;

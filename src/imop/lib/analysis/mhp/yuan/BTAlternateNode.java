@@ -8,13 +8,12 @@
  */
 package imop.lib.analysis.mhp.yuan;
 
+import imop.ast.node.external.*;
+import imop.lib.analysis.SVEChecker;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
-
-import imop.ast.node.external.Expression;
-import imop.ast.node.external.ParallelConstruct;
-import imop.lib.analysis.SVEChecker;
 
 /**
  * Represents an alternation node of a Barrier Tree.<br>

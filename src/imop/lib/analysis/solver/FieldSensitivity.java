@@ -8,18 +8,16 @@
  */
 package imop.lib.analysis.solver;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
-import imop.ast.node.external.CastExpression;
-import imop.ast.node.external.Node;
-import imop.ast.node.internal.BeginNode;
-import imop.ast.node.internal.EndNode;
+import imop.ast.node.external.*;
+import imop.ast.node.internal.*;
 import imop.lib.analysis.solver.tokens.IdOrConstToken;
 import imop.lib.analysis.solver.tokens.OperatorToken;
 import imop.lib.util.Misc;
 import imop.lib.util.NodePair;
+
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * This class contains various methods that are specific to field-sensitive

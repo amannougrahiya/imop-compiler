@@ -8,40 +8,13 @@
  */
 package imop.lib.builder;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-
 import imop.ast.annotation.CaseLabel;
 import imop.ast.annotation.DefaultLabel;
 import imop.ast.annotation.Label;
 import imop.ast.annotation.SimpleLabel;
 import imop.ast.info.cfgNodeInfo.ParameterDeclarationInfo;
-import imop.ast.node.external.ADeclaratorOp;
-import imop.ast.node.external.CompoundStatement;
-import imop.ast.node.external.Declaration;
-import imop.ast.node.external.DeclarationList;
-import imop.ast.node.external.DeclarationSpecifiers;
-import imop.ast.node.external.ElementsOfTranslation;
-import imop.ast.node.external.Expression;
-import imop.ast.node.external.ExternalDeclaration;
-import imop.ast.node.external.FunctionDefinition;
-import imop.ast.node.external.GotoStatement;
-import imop.ast.node.external.Initializer;
-import imop.ast.node.external.Node;
-import imop.ast.node.external.NodeChoice;
-import imop.ast.node.external.NodeSequence;
-import imop.ast.node.external.NodeToken;
-import imop.ast.node.external.OldParameterList;
-import imop.ast.node.external.OldParameterListClosed;
-import imop.ast.node.external.ParameterDeclaration;
-import imop.ast.node.external.ParameterList;
-import imop.ast.node.external.ParameterTypeList;
-import imop.ast.node.external.ParameterTypeListClosed;
-import imop.ast.node.external.Statement;
-import imop.ast.node.external.TranslationUnit;
-import imop.ast.node.internal.DummyFlushDirective;
-import imop.ast.node.internal.Scopeable;
+import imop.ast.node.external.*;
+import imop.ast.node.internal.*;
 import imop.lib.analysis.flowanalysis.Symbol;
 import imop.lib.analysis.typeSystem.StructType;
 import imop.lib.analysis.typeSystem.Type;
@@ -50,6 +23,10 @@ import imop.lib.getter.StringGetter;
 import imop.lib.util.Misc;
 import imop.parser.FrontEnd;
 import imop.parser.Program;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 public class Builder {
 	public static int counterVar = 0;

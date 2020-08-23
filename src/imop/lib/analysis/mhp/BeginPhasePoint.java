@@ -8,15 +8,8 @@
  */
 package imop.lib.analysis.mhp;
 
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
-
-import imop.ast.node.external.BarrierDirective;
-import imop.ast.node.external.Node;
-import imop.ast.node.external.ParallelConstruct;
-import imop.ast.node.internal.BeginNode;
-import imop.ast.node.internal.EndNode;
+import imop.ast.node.external.*;
+import imop.ast.node.internal.*;
 import imop.lib.cfg.link.autoupdater.AutomatedUpdater;
 import imop.lib.cg.CallStack;
 import imop.lib.cg.NodeWithStack;
@@ -24,6 +17,10 @@ import imop.lib.util.CollectorVisitor;
 import imop.lib.util.Misc;
 import imop.parser.Program;
 import imop.parser.Program.UpdateCategory;
+
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 
 public class BeginPhasePoint extends PhasePoint {
 	// Note that the node can be a BeginNode of a ParallelConstruct, or it can be a BarrierDirective.

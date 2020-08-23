@@ -8,14 +8,10 @@
  */
 package imop.lib.analysis.flowanalysis;
 
-import java.util.AbstractSet;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Set;
-import java.util.function.Predicate;
-
 import imop.lib.util.Immutable;
+
+import java.util.*;
+import java.util.function.Predicate;
 
 public class ImmutableDefinitionSet extends AbstractSet<Definition> implements Immutable {
 	private Set<Definition> defSet;

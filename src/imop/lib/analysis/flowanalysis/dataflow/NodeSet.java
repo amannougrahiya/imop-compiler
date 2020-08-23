@@ -8,10 +8,10 @@
  */
 package imop.lib.analysis.flowanalysis.dataflow;
 
+import imop.ast.node.external.*;
+
 import java.util.HashSet;
 import java.util.Set;
-
-import imop.ast.node.external.Node;
 
 public class NodeSet {
 	private Set<Node> internalSet;

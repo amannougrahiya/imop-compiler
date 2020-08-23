@@ -8,11 +8,11 @@
  */
 package imop.lib.analysis.solver;
 
-import java.util.List;
-
-import imop.ast.node.external.Node;
+import imop.ast.node.external.*;
 import imop.lib.analysis.solver.tokens.Tokenizable;
 import imop.lib.util.Misc;
+
+import java.util.List;
 
 /**
  * This is a superclass for {@link SyntacticAccessExpression} and

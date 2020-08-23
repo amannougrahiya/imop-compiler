@@ -8,47 +8,23 @@
  */
 package imop.lib.transform.simplify;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
-
-import imop.ast.node.external.ArrayInitializer;
-import imop.ast.node.external.CompoundStatement;
-import imop.ast.node.external.Declaration;
-import imop.ast.node.external.Declarator;
-import imop.ast.node.external.Initializer;
-import imop.ast.node.external.Node;
-import imop.ast.node.external.Statement;
-import imop.ast.node.external.WhileStatement;
+import imop.ast.node.external.*;
 import imop.lib.analysis.flowanalysis.Symbol;
 import imop.lib.cfg.CFGLinkFinder;
 import imop.lib.cfg.info.CompoundStatementCFGInfo;
 import imop.lib.cfg.link.baseVisitor.CFGLinkVisitor;
-import imop.lib.cfg.link.node.AtomicStatementLink;
-import imop.lib.cfg.link.node.CFGLink;
-import imop.lib.cfg.link.node.CompoundElementLink;
-import imop.lib.cfg.link.node.CriticalBodyLink;
-import imop.lib.cfg.link.node.DoBodyLink;
-import imop.lib.cfg.link.node.ForBodyLink;
-import imop.lib.cfg.link.node.FunctionBodyLink;
-import imop.lib.cfg.link.node.IfElseBodyLink;
-import imop.lib.cfg.link.node.IfThenBodyLink;
-import imop.lib.cfg.link.node.MasterBodyLink;
-import imop.lib.cfg.link.node.OmpForBodyLink;
-import imop.lib.cfg.link.node.OrderedBodyLink;
-import imop.lib.cfg.link.node.ParallelBodyLink;
-import imop.lib.cfg.link.node.SectionsSectionBodyLink;
-import imop.lib.cfg.link.node.SingleBodyLink;
-import imop.lib.cfg.link.node.SwitchBodyLink;
-import imop.lib.cfg.link.node.TaskBodyLink;
-import imop.lib.cfg.link.node.WhileBodyLink;
+import imop.lib.cfg.link.node.*;
 import imop.lib.transform.updater.InsertImmediatePredecessor;
 import imop.lib.transform.updater.InsertImmediateSuccessor;
 import imop.lib.transform.updater.sideeffect.SideEffect;
 import imop.lib.util.Misc;
 import imop.parser.FrontEnd;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public class DeclarationEscalator {
 	/**

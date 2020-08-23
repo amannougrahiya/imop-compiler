@@ -8,14 +8,14 @@
  */
 package imop.lib.util;
 
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.function.UnaryOperator;
-
 import imop.lib.analysis.flowanalysis.Cell;
 import imop.lib.analysis.flowanalysis.FreeVariable;
 import imop.lib.analysis.flowanalysis.Symbol;
 import imop.parser.Program;
+
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.function.UnaryOperator;
 
 public class CellList extends CellCollection {
 

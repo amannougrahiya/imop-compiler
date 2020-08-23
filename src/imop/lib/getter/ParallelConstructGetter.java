@@ -9,13 +9,11 @@
 
 package imop.lib.getter;
 
+import imop.ast.node.external.*;
+import imop.baseVisitor.DepthFirstVisitor;
+
 import java.util.HashSet;
 import java.util.Set;
-
-import imop.ast.node.external.ParallelConstruct;
-import imop.ast.node.external.ParallelForConstruct;
-import imop.ast.node.external.ParallelSectionsConstruct;
-import imop.baseVisitor.DepthFirstVisitor;
 
 /**
  * This class adds to the list of parallel construct all the parallel constructs

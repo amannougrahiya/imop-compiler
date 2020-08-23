@@ -9,12 +9,7 @@
 package imop.baseVisitor;
 
 import imop.ast.node.external.*;
-import imop.ast.node.internal.BeginNode;
-import imop.ast.node.internal.CallStatement;
-import imop.ast.node.internal.EndNode;
-import imop.ast.node.internal.PostCallNode;
-import imop.ast.node.internal.PreCallNode;
-import imop.ast.node.internal.SimplePrimaryExpression;
+import imop.ast.node.internal.*;
 
 /**
  * Provides default methods which visit each node in the tree in depth-first

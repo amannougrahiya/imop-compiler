@@ -8,59 +8,9 @@
  */
 package imop.lib.analysis.flowanalysis.generic;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
-
 import imop.ast.info.NodeInfo;
-import imop.ast.node.external.AtomicConstruct;
-import imop.ast.node.external.BarrierDirective;
-import imop.ast.node.external.BreakStatement;
-import imop.ast.node.external.CompoundStatement;
-import imop.ast.node.external.ContinueStatement;
-import imop.ast.node.external.CriticalConstruct;
-import imop.ast.node.external.Declaration;
-import imop.ast.node.external.DoStatement;
-import imop.ast.node.external.Expression;
-import imop.ast.node.external.ExpressionStatement;
-import imop.ast.node.external.FinalClause;
-import imop.ast.node.external.FlushDirective;
-import imop.ast.node.external.ForConstruct;
-import imop.ast.node.external.ForStatement;
-import imop.ast.node.external.FunctionDefinition;
-import imop.ast.node.external.GotoStatement;
-import imop.ast.node.external.IfClause;
-import imop.ast.node.external.IfStatement;
-import imop.ast.node.external.MasterConstruct;
-import imop.ast.node.external.Node;
-import imop.ast.node.external.NumThreadsClause;
-import imop.ast.node.external.OmpForCondition;
-import imop.ast.node.external.OmpForInitExpression;
-import imop.ast.node.external.OmpForReinitExpression;
-import imop.ast.node.external.OrderedConstruct;
-import imop.ast.node.external.ParallelConstruct;
-import imop.ast.node.external.ParallelForConstruct;
-import imop.ast.node.external.ParallelSectionsConstruct;
-import imop.ast.node.external.ParameterDeclaration;
-import imop.ast.node.external.ReturnStatement;
-import imop.ast.node.external.SectionsConstruct;
-import imop.ast.node.external.SingleConstruct;
-import imop.ast.node.external.SwitchStatement;
-import imop.ast.node.external.TaskConstruct;
-import imop.ast.node.external.TaskwaitDirective;
-import imop.ast.node.external.TaskyieldDirective;
-import imop.ast.node.external.UnknownCpp;
-import imop.ast.node.external.UnknownPragma;
-import imop.ast.node.external.WhileStatement;
-import imop.ast.node.internal.BeginNode;
-import imop.ast.node.internal.CallStatement;
-import imop.ast.node.internal.DummyFlushDirective;
-import imop.ast.node.internal.EndNode;
-import imop.ast.node.internal.PostCallNode;
-import imop.ast.node.internal.PreCallNode;
-import imop.ast.node.internal.SimplePrimaryExpression;
+import imop.ast.node.external.*;
+import imop.ast.node.internal.*;
 import imop.baseVisitor.cfgTraversals.GJDepthFirstCFG;
 import imop.lib.analysis.CoExistenceChecker;
 import imop.lib.analysis.flowanalysis.AddressCell;
@@ -69,12 +19,7 @@ import imop.lib.analysis.flowanalysis.FieldCell;
 import imop.lib.analysis.flowanalysis.Symbol;
 import imop.lib.analysis.flowanalysis.dataflow.PointsToAnalysis;
 import imop.lib.analysis.flowanalysis.dataflow.PointsToAnalysis.PointsToGlobalState;
-import imop.lib.analysis.flowanalysis.generic.AnalysisDimension.ContextDimension;
-import imop.lib.analysis.flowanalysis.generic.AnalysisDimension.FieldDimension;
-import imop.lib.analysis.flowanalysis.generic.AnalysisDimension.FlowDimension;
-import imop.lib.analysis.flowanalysis.generic.AnalysisDimension.PathDimension;
-import imop.lib.analysis.flowanalysis.generic.AnalysisDimension.ProceduralDimension;
-import imop.lib.analysis.flowanalysis.generic.AnalysisDimension.SVEDimension;
+import imop.lib.analysis.flowanalysis.generic.AnalysisDimension.*;
 import imop.lib.analysis.flowanalysis.generic.CellularDataFlowAnalysis.CellularFlowMap;
 import imop.lib.analysis.flowanalysis.generic.FlowAnalysis.FlowFact;
 import imop.lib.analysis.mhp.Phase;
@@ -87,6 +32,8 @@ import imop.lib.util.CollectorVisitor;
 import imop.lib.util.Immutable;
 import imop.lib.util.Misc;
 import imop.parser.Program;
+
+import java.util.*;
 
 /**
  * A generic class to implement an inter-thread interprocedural forward

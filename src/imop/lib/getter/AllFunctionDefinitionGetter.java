@@ -8,11 +8,11 @@
  */
 package imop.lib.getter;
 
+import imop.ast.node.external.*;
+import imop.baseVisitor.DepthFirstVisitor;
+
 import java.util.LinkedList;
 import java.util.List;
-
-import imop.ast.node.external.FunctionDefinition;
-import imop.baseVisitor.DepthFirstVisitor;
 
 /**
  * Populates the funcList with all the nodes of type FunctionDefinition

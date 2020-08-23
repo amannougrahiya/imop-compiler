@@ -8,17 +8,8 @@
  */
 package imop.lib.analysis.flowanalysis.dataflow;
 
-import java.util.HashMap;
-
-import imop.ast.node.external.AtomicConstruct;
-import imop.ast.node.external.CriticalConstruct;
-import imop.ast.node.external.Node;
-import imop.ast.node.external.ParameterDeclaration;
-import imop.ast.node.internal.BeginNode;
-import imop.ast.node.internal.CallStatement;
-import imop.ast.node.internal.EndNode;
-import imop.ast.node.internal.PreCallNode;
-import imop.ast.node.internal.SimplePrimaryExpression;
+import imop.ast.node.external.*;
+import imop.ast.node.internal.*;
 import imop.lib.analysis.flowanalysis.Cell;
 import imop.lib.analysis.flowanalysis.Symbol;
 import imop.lib.analysis.flowanalysis.generic.AnalysisDimension;
@@ -32,6 +23,8 @@ import imop.lib.analysis.mhp.lock.CriticalLock;
 import imop.lib.analysis.mhp.lock.RoutineLock;
 import imop.lib.util.CellList;
 import imop.lib.util.CellSet;
+
+import java.util.HashMap;
 
 public class LockSetAnalysis extends InterThreadForwardNonCellularAnalysis<LockSetAnalysis.LockFlowFact> {
 

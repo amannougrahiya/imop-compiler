@@ -8,7 +8,7 @@
  */
 package imop.lib.analysis.flowanalysis.generic;
 
-import imop.ast.node.external.Node;
+import imop.ast.node.external.*;
 
 public class NodeStatePair {
 	private int hashCode = -1;

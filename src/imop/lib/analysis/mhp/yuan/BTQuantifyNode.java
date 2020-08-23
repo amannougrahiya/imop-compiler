@@ -8,9 +8,7 @@
  */
 package imop.lib.analysis.mhp.yuan;
 
-import imop.ast.node.external.CompoundStatement;
-import imop.ast.node.external.Expression;
-import imop.ast.node.external.ParallelConstruct;
+import imop.ast.node.external.*;
 import imop.lib.analysis.SVEChecker;
 
 /**

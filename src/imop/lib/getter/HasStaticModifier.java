@@ -8,8 +8,7 @@
  */
 package imop.lib.getter;
 
-import imop.ast.node.external.NodeToken;
-import imop.ast.node.external.StorageClassSpecifier;
+import imop.ast.node.external.*;
 import imop.baseVisitor.DepthFirstVisitor;
 
 public class HasStaticModifier extends DepthFirstVisitor {

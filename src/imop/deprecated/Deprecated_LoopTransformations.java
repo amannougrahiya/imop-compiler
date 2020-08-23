@@ -8,7 +8,7 @@
  */
 package imop.deprecated;
 
-import imop.ast.node.external.WhileStatement;
+import imop.ast.node.external.*;
 import imop.parser.FrontEnd;
 
 /**

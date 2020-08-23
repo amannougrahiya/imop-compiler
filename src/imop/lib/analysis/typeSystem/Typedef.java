@@ -8,20 +8,15 @@
  */
 package imop.lib.analysis.typeSystem;
 
-import java.util.HashMap;
-
 import imop.ast.info.RootInfo;
 import imop.ast.info.cfgNodeInfo.CompoundStatementInfo;
-import imop.ast.node.external.CompoundStatement;
-import imop.ast.node.external.Declaration;
-import imop.ast.node.external.FunctionDefinition;
-import imop.ast.node.external.Node;
-import imop.ast.node.external.TranslationUnit;
-import imop.ast.node.external.TypedefName;
-import imop.ast.node.internal.Scopeable;
+import imop.ast.node.external.*;
+import imop.ast.node.internal.*;
 import imop.lib.util.Misc;
 import imop.parser.FrontEnd;
 import imop.parser.Program;
+
+import java.util.HashMap;
 
 public class Typedef {
 	private Type type; // Type that is represented by a typedef.

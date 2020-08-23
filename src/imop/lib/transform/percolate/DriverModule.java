@@ -191,7 +191,8 @@ public class DriverModule {
         }
         System.err.println("Time spent in forward IDFA updates -- ");
         for (FlowAnalysis<?> analysis : FlowAnalysis.getAllAnalyses().values()) {
-            System.err.println("\t For " + analysis.getAnalysisName() + ": " + analysis.flowAnalysisUpdateTimer / (1e9) + "s.");
+            System.err.println(
+                    "\t For " + analysis.getAnalysisName() + ": " + analysis.flowAnalysisUpdateTimer / (1e9) + "s.");
             if (analysis.getAnalysisName() == AnalysisName.POINTSTO) {
                 incIDFATime = analysis.flowAnalysisUpdateTimer / (1e9 * 1.0);
             }
@@ -221,17 +222,22 @@ public class DriverModule {
         //		}
         totTime = (System.nanoTime() - Main.totalTime) / (1.0 * 1e9);
         System.err.println("TOTAL TIME (including disk I/O time): " + totTime + "s.");
-        System.err.println("This execution ran in " + Program.updateCategory + " mode for IDFA update, and in " + Program.mhpUpdateCategory + " mode for MHP update.");
+        System.err.println("This execution ran in " + Program.updateCategory + " mode for IDFA update, and in " +
+                Program.mhpUpdateCategory + " mode for MHP update.");
         System.err.println("Optimized a total of " + AutomatedUpdater.hasBeenOtimized + " stale markings.");
-        DumpSnapshot.printToFile(Program.getRoot(), (Program.fileName + "imop_output_" + Program.mhpUpdateCategory + ".i").trim());
+        DumpSnapshot.printToFile(Program.getRoot(), (Program.fileName + "imop_output_" + Program.mhpUpdateCategory +
+                ".i").trim());
         DumpSnapshot.dumpPointsTo("final" + Program.updateCategory);
         DumpSnapshot.dumpPhases("final" + Program.mhpUpdateCategory);
         if (dumpIntermediate) {
             DumpSnapshot.dumpNestedCFG(Program.getRoot(), "optimized" + Program.mhpUpdateCategory);
         }
         DecimalFormat df2 = Program.df2;
-        System.out.println(Program.fileName + " " + Program.updateCategory + " " + df2.format(totTime) + " " + df2.format(incMHPTime) + " " + df2.format(incIDFATime) + " " + incMHPTriggers + " " + incIDFATriggers + " " + finalIncNodes + " " + tarjanCount + " " + df2.format(sccTime));
-        System.err.println("Number of times PTA would have had to run in semi-eager mode: " + ProfileSS.flagSwitchCount);
+        System.out.println(Program.fileName + " " + Program.updateCategory + " " + df2.format(totTime) + " " +
+                df2.format(incMHPTime) + " " + df2.format(incIDFATime) + " " + incMHPTriggers + " " + incIDFATriggers +
+                " " + finalIncNodes + " " + tarjanCount + " " + df2.format(sccTime));
+        System.err.println(
+                "Number of times PTA would have had to run in semi-eager mode: " + ProfileSS.flagSwitchCount);
         //		System.err.println("Trigger count: " + triggerSizeCountList);
         System.exit(0);
     }
@@ -247,19 +253,24 @@ public class DriverModule {
         }
         System.err.println("Time spent in forward IDFA updates -- ");
         for (FlowAnalysis<?> analysis : FlowAnalysis.getAllAnalyses().values()) {
-            System.err.println("\t For " + analysis.getAnalysisName() + ": " + analysis.flowAnalysisUpdateTimer / (1e9) + "s.");
+            System.err.println(
+                    "\t For " + analysis.getAnalysisName() + ": " + analysis.flowAnalysisUpdateTimer / (1e9) + "s.");
         }
         System.err.println("Time spent in SVE queries: " + SVEChecker.sveTimer / (1e9 * 1.0) + "s.");
-        System.err.println("Time spent in phase update: " + (Phase.stabilizationTime + BeginPhasePoint.stabilizationTime) / (1e9 * 1.0) + "s.");
+        System.err.println("Time spent in phase update: " +
+                (Phase.stabilizationTime + BeginPhasePoint.stabilizationTime) / (1e9 * 1.0) + "s.");
         System.err.println("Time spent in inlining: " + FunctionInliner.inliningTimer / (1e9 * 1.0) + "s.");
-        System.err.println("Time spent in having uni-task precision in IDFA edge creation: " + CFGInfo.uniPrecisionTimer / (1e9 * 1.0) + "s.");
+        System.err.println("Time spent in having uni-task precision in IDFA edge creation: " +
+                CFGInfo.uniPrecisionTimer / (1e9 * 1.0) + "s.");
         System.err.println("Number of field-sensitive queries: " + FieldSensitivity.counter);
         System.err.println("Time spent in field-sensitive queries: " + FieldSensitivity.timer / (1e9 * 1.0) + "s.");
-        System.err.println("Time spent in generating reverse postordering of the program nodes: " + TraversalOrderObtainer.orderGenerationTime / (1e9 * 1.0) + "s.");
+        System.err.println("Time spent in generating reverse postordering of the program nodes: " +
+                TraversalOrderObtainer.orderGenerationTime / (1e9 * 1.0) + "s.");
         if (Program.fieldSensitive) {
             DumpSnapshot.printToFile(ConstraintsGenerator.allConstraintString, Program.fileName + "_z3_queries.txt");
         }
-        System.err.println("TOTAL TIME (including disk I/O time): " + (System.nanoTime() - Main.totalTime) / (1.0 * 1e9) + "s.");
+        System.err.println(
+                "TOTAL TIME (including disk I/O time): " + (System.nanoTime() - Main.totalTime) / (1.0 * 1e9) + "s.");
         DumpSnapshot.printToFile(Program.getRoot(), "imop_output.i");
         DumpSnapshot.dumpPhases("final");
         DumpSnapshot.dumpNestedCFG(Program.getRoot(), "optimized");
@@ -289,20 +300,26 @@ public class DriverModule {
         }
         System.err.println("Time spent in forward IDFA updates -- ");
         for (FlowAnalysis<?> analysis : FlowAnalysis.getAllAnalyses().values()) {
-            System.err.println("\t For " + analysis.getAnalysisName() + ": " + analysis.flowAnalysisUpdateTimer / (1e9) + "s.");
+            System.err.println(
+                    "\t For " + analysis.getAnalysisName() + ": " + analysis.flowAnalysisUpdateTimer / (1e9) + "s.");
         }
         System.err.println("Time spent in SVE queries: " + SVEChecker.sveTimer / (1e9 * 1.0) + "s.");
-        System.err.println("Time spent in phase update: " + (Phase.stabilizationTime + BeginPhasePoint.stabilizationTime) / (1e9 * 1.0) + "s.");
+        System.err.println("Time spent in phase update: " +
+                (Phase.stabilizationTime + BeginPhasePoint.stabilizationTime) / (1e9 * 1.0) + "s.");
         System.err.println("Time spent in inlining: " + FunctionInliner.inliningTimer / (1e9 * 1.0) + "s.");
-        System.err.println("Time spent in having uni-task precision in IDFA edge creation: " + CFGInfo.uniPrecisionTimer / (1e9 * 1.0) + "s.");
+        System.err.println("Time spent in having uni-task precision in IDFA edge creation: " +
+                CFGInfo.uniPrecisionTimer / (1e9 * 1.0) + "s.");
         System.err.println("Number of field-sensitive queries: " + FieldSensitivity.counter);
         System.err.println("Time spent in field-sensitive queries: " + FieldSensitivity.timer / (1e9 * 1.0) + "s.");
-        System.err.println("Time spent in generating reverse postordering of the program nodes: " + TraversalOrderObtainer.orderGenerationTime / (1e9 * 1.0) + "s.");
+        System.err.println("Time spent in generating reverse postordering of the program nodes: " +
+                TraversalOrderObtainer.orderGenerationTime / (1e9 * 1.0) + "s.");
         if (Program.fieldSensitive) {
             DumpSnapshot.printToFile(ConstraintsGenerator.allConstraintString, Program.fileName + "_z3_queries.txt");
         }
-        System.err.println("TOTAL TIME (including disk I/O time): " + (System.nanoTime() - Main.totalTime) / (1.0 * 1e9) + "s.");
-        System.err.println("This execution ran in " + Program.updateCategory + " mode for IDFA update, and in " + Program.mhpUpdateCategory + " mode for MHP update.");
+        System.err.println(
+                "TOTAL TIME (including disk I/O time): " + (System.nanoTime() - Main.totalTime) / (1.0 * 1e9) + "s.");
+        System.err.println("This execution ran in " + Program.updateCategory + " mode for IDFA update, and in " +
+                Program.mhpUpdateCategory + " mode for MHP update.");
         DumpSnapshot.printToFile(Program.getRoot(), "imop_output.i");
         DumpSnapshot.dumpNestedCFG(Program.getRoot(), "optimized");
         DumpSnapshot.dumpPhases("final");
@@ -366,7 +383,8 @@ public class DriverModule {
         int swapLength = getSwapLength(itStmt);
         int maxUnrollFactor = phaseCountPerExecution(itStmt);
         if (maxUnrollFactor == 1) {
-            System.err.println("\t Not procesing the iteration at line #" + Misc.getLineNum(itStmt) + " since it contains only one abstract phase within.");
+            System.err.println("\t Not procesing the iteration at line #" + Misc.getLineNum(itStmt) +
+                    " since it contains only one abstract phase within.");
             return false;
         }
 
@@ -376,7 +394,8 @@ public class DriverModule {
         itStmt = BasicTransform.convertToWhile(itStmt);
 
         // Step 2: Remove unnecessary barriers from the original body of the loop.
-        System.err.println("\t Processing the iteration at line #" + Misc.getLineNum(itStmt) + " for maximum unrolling factor of " + maxUnrollFactor);
+        System.err.println("\t Processing the iteration at line #" + Misc.getLineNum(itStmt) +
+                " for maximum unrolling factor of " + maxUnrollFactor);
         BasicTransform.simplifyPredicate(itStmt);
         if (itStmt instanceof WhileStatement) {
             WhileStatement whileStmt = (WhileStatement) itStmt;
@@ -390,7 +409,8 @@ public class DriverModule {
         }
         DriverModule.intraIterationCodePercolation(itStmt);
         RedundantSynchronizationRemoval.removeBarriers(itStmt);
-        System.err.println("\t Initial phase count per iteration: " + DriverModule.phaseCountPerExecution(itStmt) + " for loop at line#" + Misc.getLineNum(itStmt));
+        System.err.println("\t Initial phase count per iteration: " + DriverModule.phaseCountPerExecution(itStmt) +
+                " for loop at line#" + Misc.getLineNum(itStmt));
         //		System.err.println("\t Initial phase count per iteration: " + NewDriverModule.getBarrierCountInNode(itStmt)
         //				+ " for loop at line#" + Misc.getLineNum(itStmt));
 
@@ -457,7 +477,9 @@ public class DriverModule {
                     System.out.println("Unrolling once again, such that unrolling-factor can be a multiple of swap-length.");
                     iterate = true;
                 } else {
-                    System.out.println("Now, we stop with unrolling factor " + unrollFactor + ", which is divisible by " + swapLength + ".");
+                    System.out.println(
+                            "Now, we stop with unrolling factor " + unrollFactor + ", which is divisible by " +
+                                    swapLength + ".");
                     iterate = false;
                 }
             }
@@ -662,7 +684,8 @@ public class DriverModule {
             Set<Node> frontierNodes = new HashSet<>();
 
             insideNodes = CollectorVisitor.collectNodeSetInGenericGraph(cleanNode, frontierNodes, (n) -> {
-                if (n instanceof BreakStatement && Misc.getEnclosingLoopOrForConstruct(n) == Misc.getCFGNodeFor(itStmt)) {
+                if (n instanceof BreakStatement &&
+                        Misc.getEnclosingLoopOrForConstruct(n) == Misc.getCFGNodeFor(itStmt)) {
                     return true;
                 }
                 if (n == newBorderNode) {
@@ -769,7 +792,9 @@ public class DriverModule {
                     swapMap = new HashMap<>();
                     swapBackMap.put(frontier, swapMap);
                 }
-                System.err.println("\t We might swap " + sym.getName() + " with " + newSymbolName + " immediately before " + frontier + " if required.");
+                System.err.println(
+                        "\t We might swap " + sym.getName() + " with " + newSymbolName + " immediately before " +
+                                frontier + " if required.");
                 swapMap.put(sym.getName(), newSymbolName);
             }
         }
@@ -856,7 +881,8 @@ public class DriverModule {
              * Step 4: Obtain the swapping node.
              */
             String swapperStr;
-            if (frontier.getInfo().getAllLexicalNonLeafEnclosersExclusive().stream().anyMatch(non -> non instanceof SingleConstruct || non instanceof MasterConstruct)) {
+            if (frontier.getInfo().getAllLexicalNonLeafEnclosersExclusive().stream().anyMatch(non ->
+                    non instanceof SingleConstruct || non instanceof MasterConstruct)) {
                 swapperStr = "{";
                 for (String old : needSwapping) {
                     swapperStr += old + " = " + swapBackMap.get(frontier).get(old) + ";\n";
@@ -1152,7 +1178,8 @@ public class DriverModule {
              * If this phase does not have any end point that lies within
              * the loop, then continue.
              */
-            if (!ph.getEndPoints().parallelStream().anyMatch(n -> internalNodes.parallelStream().anyMatch(iN -> iN.getNode() == n.getNode()))) {
+            if (!ph.getEndPoints().parallelStream().anyMatch(n -> internalNodes.parallelStream().anyMatch(iN ->
+                    iN.getNode() == n.getNode()))) {
                 continue;
             }
 
@@ -1173,7 +1200,8 @@ public class DriverModule {
                 if (nextPhase.getNodeSet().parallelStream().anyMatch(n -> n == loopEntryPoint)) {
                     break;
                 }
-                if (!nextPhase.getSuccPhase().getEndPoints().parallelStream().anyMatch(n -> internalNodes.parallelStream().anyMatch(iN -> iN.getNode() == n.getNode()))) {
+                if (!nextPhase.getSuccPhase().getEndPoints().parallelStream().anyMatch(n -> internalNodes.parallelStream().anyMatch(iN ->
+                        iN.getNode() == n.getNode()))) {
                     break;
                 }
                 thisLength++;
@@ -1254,7 +1282,8 @@ public class DriverModule {
                  * If this phase does not have any end point that lies within
                  * the loop, then continue.
                  */
-                if (!ph.getSuccPhase().getEndPoints().parallelStream().anyMatch(n -> internalNodes.parallelStream().anyMatch(iN -> iN.getNode() == n.getNode()))) {
+                if (!ph.getSuccPhase().getEndPoints().parallelStream().anyMatch(n -> internalNodes.parallelStream().anyMatch(iN ->
+                        iN.getNode() == n.getNode()))) {
                     continue;
                 }
 
@@ -1269,7 +1298,8 @@ public class DriverModule {
                     if (nextPhase.getNodeSet().parallelStream().anyMatch(n -> n == predicate)) {
                         break;
                     }
-                    if (!nextPhase.getSuccPhase().getEndPoints().parallelStream().anyMatch(n -> internalNodes.parallelStream().anyMatch(iN -> iN.getNode() == n.getNode()))) {
+                    if (!nextPhase.getSuccPhase().getEndPoints().parallelStream().anyMatch(n -> internalNodes.parallelStream().anyMatch(iN ->
+                            iN.getNode() == n.getNode()))) {
                         break;
                     }
                     nextPhase = nextPhase.getSuccPhase();
@@ -1350,7 +1380,9 @@ public class DriverModule {
                     return true;
                 } else {
                     if (node instanceof Expression) {
-                        System.err.println(Misc.getLineNum(node) + " " + Misc.getLineNum(antiDest) + " for " + node + " and " + antiDest);
+                        System.err.println(
+                                Misc.getLineNum(node) + " " + Misc.getLineNum(antiDest) + " for " + node + " and " +
+                                        antiDest);
                     }
                 }
             }

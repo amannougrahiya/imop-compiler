@@ -8,38 +8,19 @@
  */
 package imop.lib.transform.simplify;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
-import imop.ast.node.external.ForConstruct;
-import imop.ast.node.external.IfClause;
-import imop.ast.node.external.Node;
-import imop.ast.node.external.NumThreadsClause;
-import imop.ast.node.external.OmpConstruct;
-import imop.ast.node.external.OmpCopyinClause;
-import imop.ast.node.external.OmpDfltNoneClause;
-import imop.ast.node.external.OmpDfltSharedClause;
-import imop.ast.node.external.OmpFirstPrivateClause;
-import imop.ast.node.external.OmpForCondition;
-import imop.ast.node.external.OmpForInitExpression;
-import imop.ast.node.external.OmpForReinitExpression;
-import imop.ast.node.external.OmpLastPrivateClause;
-import imop.ast.node.external.OmpPrivateClause;
-import imop.ast.node.external.OmpSharedClause;
-import imop.ast.node.external.ParallelConstruct;
-import imop.ast.node.external.ParallelForConstruct;
-import imop.ast.node.external.ParallelSectionsConstruct;
-import imop.ast.node.external.SectionsConstruct;
-import imop.ast.node.external.Statement;
-import imop.ast.node.internal.OmpClause;
+import imop.ast.node.external.*;
+import imop.ast.node.internal.*;
 import imop.lib.transform.BasicTransform;
 import imop.lib.transform.updater.sideeffect.NodeUpdated;
 import imop.lib.transform.updater.sideeffect.SideEffect;
 import imop.lib.transform.updater.sideeffect.SyntacticConstraint;
 import imop.lib.util.Misc;
 import imop.parser.FrontEnd;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 public class SplitCombinedConstructs {
 	/**

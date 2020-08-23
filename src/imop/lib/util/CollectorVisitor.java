@@ -8,19 +8,16 @@
  */
 package imop.lib.util;
 
+import imop.ast.node.external.*;
+import imop.ast.node.internal.*;
+import imop.lib.cg.CallStack;
+import imop.lib.cg.NodeWithStack;
+
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Predicate;
-
-import imop.ast.node.external.BarrierDirective;
-import imop.ast.node.external.Node;
-import imop.ast.node.external.ParallelConstruct;
-import imop.ast.node.internal.BeginNode;
-import imop.ast.node.internal.EndNode;
-import imop.lib.cg.CallStack;
-import imop.lib.cg.NodeWithStack;
 
 public class CollectorVisitor {
 

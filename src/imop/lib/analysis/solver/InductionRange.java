@@ -8,16 +8,8 @@
  */
 package imop.lib.analysis.solver;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 import imop.ast.info.cfgNodeInfo.ForConstructInfo.SchedulingType;
-import imop.ast.node.external.ForConstruct;
-import imop.ast.node.external.Node;
-import imop.ast.node.external.NodeToken;
-import imop.ast.node.external.OmpForReinitExpression;
+import imop.ast.node.external.*;
 import imop.lib.analysis.flowanalysis.Symbol;
 import imop.lib.analysis.solver.tokens.ExpressionTokenizer;
 import imop.lib.analysis.solver.tokens.IdOrConstToken;
@@ -26,6 +18,11 @@ import imop.lib.analysis.solver.tokens.Tokenizable;
 import imop.lib.builder.Builder;
 import imop.lib.util.Misc;
 import imop.parser.CParserConstants;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Represents range of values that a variable may take.

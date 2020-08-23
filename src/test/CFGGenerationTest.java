@@ -8,15 +8,14 @@
  */
 package test;
 
-import static org.junit.Assert.assertEquals;
-
-import java.io.FileNotFoundException;
-
+import imop.parser.Program;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import imop.parser.Program;
+import java.io.FileNotFoundException;
+
+import static org.junit.Assert.assertEquals;
 
 public class CFGGenerationTest {
 

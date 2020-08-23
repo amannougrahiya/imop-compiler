@@ -8,9 +8,9 @@
  */
 package imop.lib.analysis.flowanalysis;
 
-import java.util.Set;
+import imop.ast.node.external.*;
 
-import imop.ast.node.external.Node;
+import java.util.Set;
 
 /**
  * Common interface for SCC components, such as {@link Node} and {@link SCC}.

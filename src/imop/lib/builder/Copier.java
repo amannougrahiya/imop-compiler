@@ -8,20 +8,17 @@
  */
 package imop.lib.builder;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import imop.ast.annotation.Label;
 import imop.ast.annotation.SimpleLabel;
 import imop.ast.info.StatementInfo;
 import imop.ast.node.external.*;
-import imop.ast.node.internal.CallStatement;
-import imop.ast.node.internal.PostCallNode;
-import imop.ast.node.internal.PreCallNode;
-import imop.ast.node.internal.SimplePrimaryExpression;
+import imop.ast.node.internal.*;
 import imop.baseVisitor.GJNoArguDepthFirstProcess;
 import imop.lib.cfg.CFGGenerator;
 import imop.lib.util.Misc;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Performs deep-copy of the visited node.

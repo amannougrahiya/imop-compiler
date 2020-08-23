@@ -8,16 +8,16 @@
  */
 package imop.deprecated;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-
-import imop.ast.node.external.Node;
+import imop.ast.node.external.*;
 import imop.baseVisitor.DepthFirstProcess;
 import imop.lib.analysis.flowanalysis.Definition;
 import imop.lib.analysis.flowanalysis.Usage;
 import imop.lib.util.CellList;
 import imop.lib.util.Misc;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
 
 /**
  * This class visits the CFG starting from all the uses, one-by-one and creates

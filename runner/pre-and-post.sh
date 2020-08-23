@@ -71,5 +71,5 @@ do
 	gtimeout 15m java -ea -Xms2048M -Xmx4096M -cp ${IMOPHOME}/third-party-tools/com.microsoft.z3.jar:.\
 		-Djava.library.path=${Z3HOME}/build imop.Main --noPrepass -dln -f $PREFILE 2>> $ERRFILE
 	echo -e "======================"
-	echo -e "DUMP: $(cat $ERRFILE)"
+	#echo -e "DUMP: $(cat $ERRFILE)"
 done

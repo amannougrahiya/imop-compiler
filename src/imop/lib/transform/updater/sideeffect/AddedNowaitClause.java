@@ -8,8 +8,7 @@
  */
 package imop.lib.transform.updater.sideeffect;
 
-import imop.ast.node.external.Node;
-import imop.ast.node.external.OmpConstruct;
+import imop.ast.node.external.*;
 import imop.parser.Program;
 
 public class AddedNowaitClause extends NodeUpdated {

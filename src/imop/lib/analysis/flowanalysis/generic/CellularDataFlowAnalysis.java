@@ -8,15 +8,15 @@
  */
 package imop.lib.analysis.flowanalysis.generic;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
-
 import imop.lib.analysis.flowanalysis.Cell;
 import imop.lib.util.CellSet;
 import imop.lib.util.ExtensibleCellMap;
 import imop.lib.util.Immutable;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
 
 public abstract class CellularDataFlowAnalysis<F extends CellularDataFlowAnalysis.CellularFlowMap<?>>
 		extends DataFlowAnalysis<F> {

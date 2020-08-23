@@ -8,14 +8,10 @@
  */
 package imop.lib.analysis.typeSystem;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import imop.ast.node.external.*;
+import imop.ast.node.internal.*;
 
-import imop.ast.node.external.Declaration;
-import imop.ast.node.internal.Scopeable;
+import java.util.*;
 
 public class StructType extends DerivedType implements Scopeable {
 

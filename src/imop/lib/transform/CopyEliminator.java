@@ -8,22 +8,9 @@
  */
 package imop.lib.transform;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
-
 import imop.ast.info.DataSharingAttribute;
-import imop.ast.node.external.CompoundStatement;
-import imop.ast.node.external.Declaration;
-import imop.ast.node.external.ExpressionStatement;
-import imop.ast.node.external.IterationStatement;
-import imop.ast.node.external.MasterConstruct;
-import imop.ast.node.external.Node;
-import imop.ast.node.external.SingleConstruct;
-import imop.ast.node.external.WhileStatement;
-import imop.ast.node.internal.BeginNode;
+import imop.ast.node.external.*;
+import imop.ast.node.internal.*;
 import imop.lib.analysis.Assignment;
 import imop.lib.analysis.AssignmentGetter;
 import imop.lib.analysis.flowanalysis.Cell;
@@ -38,6 +25,12 @@ import imop.lib.util.CellMap;
 import imop.lib.util.CellSet;
 import imop.lib.util.Misc;
 import imop.parser.Program;
+
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public class CopyEliminator {
 

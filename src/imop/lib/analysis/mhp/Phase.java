@@ -8,19 +8,10 @@
  */
 package imop.lib.analysis.mhp;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 import imop.ast.info.cfgNodeInfo.BarrierDirectiveInfo;
 import imop.ast.info.cfgNodeInfo.ParallelConstructInfo;
-import imop.ast.node.external.BarrierDirective;
-import imop.ast.node.external.IterationStatement;
-import imop.ast.node.external.Node;
-import imop.ast.node.external.ParallelConstruct;
-import imop.ast.node.internal.BeginNode;
-import imop.ast.node.internal.EndNode;
+import imop.ast.node.external.*;
+import imop.ast.node.internal.*;
 import imop.lib.analysis.CoExistenceChecker;
 import imop.lib.analysis.solver.FieldSensitivity;
 import imop.lib.cfg.link.autoupdater.AutomatedUpdater;
@@ -29,6 +20,11 @@ import imop.lib.util.Misc;
 import imop.lib.util.ProfileSS;
 import imop.parser.Program;
 import imop.parser.Program.UpdateCategory;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * This class corresponds to the information related to one parallel phase.

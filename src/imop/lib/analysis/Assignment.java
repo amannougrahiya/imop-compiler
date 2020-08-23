@@ -10,14 +10,7 @@ package imop.lib.analysis;
 
 import imop.ast.info.cfgNodeInfo.DeclarationInfo;
 import imop.ast.info.cfgNodeInfo.ExpressionInfo;
-import imop.ast.node.external.AdditiveOptionalExpression;
-import imop.ast.node.external.BracketExpression;
-import imop.ast.node.external.CastExpressionTyped;
-import imop.ast.node.external.Declarator;
-import imop.ast.node.external.Expression;
-import imop.ast.node.external.Node;
-import imop.ast.node.external.NodeToken;
-import imop.ast.node.external.UnaryExpression;
+import imop.ast.node.external.*;
 import imop.lib.analysis.flowanalysis.Cell;
 import imop.lib.analysis.flowanalysis.Symbol;
 import imop.lib.analysis.typeSystem.ArrayType;

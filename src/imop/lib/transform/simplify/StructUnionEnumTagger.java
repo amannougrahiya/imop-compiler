@@ -8,10 +8,7 @@
  */
 package imop.lib.transform.simplify;
 
-import imop.ast.node.external.EnumSpecifier;
-import imop.ast.node.external.EnumSpecifierWithList;
-import imop.ast.node.external.StructOrUnionSpecifier;
-import imop.ast.node.external.StructOrUnionSpecifierWithList;
+import imop.ast.node.external.*;
 import imop.baseVisitor.DepthFirstProcess;
 import imop.lib.builder.Builder;
 import imop.parser.FrontEnd;

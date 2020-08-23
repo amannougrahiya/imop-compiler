@@ -8,17 +8,13 @@
  */
 package imop.lib.analysis.solver;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import imop.ast.node.external.APostfixOperation;
-import imop.ast.node.external.BracketExpression;
-import imop.ast.node.external.CastExpression;
-import imop.ast.node.external.Node;
-import imop.ast.node.external.PrimaryExpression;
+import imop.ast.node.external.*;
 import imop.lib.analysis.solver.tokens.ExpressionTokenizer;
 import imop.lib.analysis.solver.tokens.Tokenizable;
 import imop.lib.util.Misc;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Wraps those nodes of the AST which logically represent {@code e1} for

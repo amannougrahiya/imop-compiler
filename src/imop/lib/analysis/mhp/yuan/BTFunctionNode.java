@@ -8,11 +8,10 @@
  */
 package imop.lib.analysis.mhp.yuan;
 
-import java.util.List;
+import imop.ast.node.external.*;
+import imop.ast.node.internal.*;
 
-import imop.ast.node.external.FunctionDefinition;
-import imop.ast.node.external.ParallelConstruct;
-import imop.ast.node.internal.CallStatement;
+import java.util.List;
 
 /**
  * Represents a function node in a Barrier Tree.

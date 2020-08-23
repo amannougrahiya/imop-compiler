@@ -8,11 +8,8 @@
  */
 package imop.lib.analysis.flowanalysis;
 
-import java.util.HashMap;
-
-import imop.ast.node.external.Node;
-import imop.ast.node.external.ParameterDeclaration;
-import imop.ast.node.internal.CallStatement;
+import imop.ast.node.external.*;
+import imop.ast.node.internal.*;
 import imop.lib.analysis.flowanalysis.dataflow.HeapValidityAnalysis;
 import imop.lib.analysis.flowanalysis.dataflow.HeapValidityAnalysis.ValidityFlowFact;
 import imop.lib.analysis.flowanalysis.dataflow.PointsToAnalysis.PointsToFlowMap;
@@ -24,6 +21,8 @@ import imop.lib.util.CellSet;
 import imop.lib.util.ImmutableCellSet;
 import imop.lib.util.Misc;
 import imop.parser.Program;
+
+import java.util.HashMap;
 
 public class HeapCell extends Cell {
 	public static enum Allocator {

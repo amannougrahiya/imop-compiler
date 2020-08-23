@@ -9,7 +9,7 @@
 package imop.lib.analysis.mhp.lock;
 
 import imop.ast.info.cfgNodeInfo.AtomicConstructInfo.AtomicClauseType;
-import imop.ast.node.external.AtomicConstruct;
+import imop.ast.node.external.*;
 import imop.lib.analysis.flowanalysis.Symbol;
 
 public class AtomicLock extends AbstractLock {

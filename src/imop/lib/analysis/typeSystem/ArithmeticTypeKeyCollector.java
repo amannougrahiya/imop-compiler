@@ -8,16 +8,12 @@
  */
 package imop.lib.analysis.typeSystem;
 
+import imop.ast.node.external.*;
+import imop.ast.node.internal.*;
+import imop.baseVisitor.DepthFirstProcess;
+
 import java.util.ArrayList;
 import java.util.List;
-
-import imop.ast.node.external.Node;
-import imop.ast.node.external.NodeToken;
-import imop.ast.node.external.StructOrUnionSpecifierWithList;
-import imop.ast.node.external.TypeSpecifier;
-import imop.ast.node.external.TypedefName;
-import imop.ast.node.internal.Scopeable;
-import imop.baseVisitor.DepthFirstProcess;
 
 /**
  * Collects the multiset of all the type-specifying keywords

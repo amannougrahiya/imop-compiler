@@ -8,7 +8,7 @@
  */
 package imop.deprecated;
 
-import imop.ast.node.external.SimpleLabeledStatement;
+import imop.ast.node.external.*;
 import imop.baseVisitor.GJVoidDepthFirst;
 
 /**

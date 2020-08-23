@@ -8,20 +8,15 @@
  */
 package imop.lib.analysis.solver;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Set;
-
-import imop.ast.node.external.Node;
-import imop.ast.node.external.NodeToken;
+import imop.ast.node.external.*;
 import imop.lib.analysis.flowanalysis.Symbol;
 import imop.lib.analysis.solver.tokens.ExpressionTokenizer;
 import imop.lib.analysis.solver.tokens.IdOrConstToken;
 import imop.lib.analysis.solver.tokens.OperatorToken;
 import imop.lib.analysis.solver.tokens.Tokenizable;
 import imop.parser.CParserConstants;
+
+import java.util.*;
 
 /**
  * Represents a row of a table which is used to ensure that there are no

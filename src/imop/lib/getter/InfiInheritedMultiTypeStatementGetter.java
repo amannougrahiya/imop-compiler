@@ -8,10 +8,10 @@
  */
 package imop.lib.getter;
 
+import imop.ast.node.external.*;
+
 import java.util.Collection;
 import java.util.Set;
-
-import imop.ast.node.external.*;
 
 /**
  * Collects statements of the given kind in post-order.

@@ -8,11 +8,11 @@
  */
 package imop.lib.getter;
 
+import imop.ast.node.external.*;
+import imop.baseVisitor.DepthFirstProcess;
+
 import java.util.LinkedList;
 import java.util.List;
-
-import imop.ast.node.external.Node;
-import imop.baseVisitor.DepthFirstProcess;
 
 /**
  * Populates the field astContents with all the internal AST nodes of any of the

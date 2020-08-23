@@ -8,55 +8,13 @@
  */
 package imop.lib.getter;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import imop.ast.node.external.ANDExpression;
-import imop.ast.node.external.APostfixOperation;
-import imop.ast.node.external.AdditiveExpression;
-import imop.ast.node.external.ArgumentList;
-import imop.ast.node.external.ArrowId;
-import imop.ast.node.external.AssignmentExpression;
-import imop.ast.node.external.BracketExpression;
-import imop.ast.node.external.CastExpression;
-import imop.ast.node.external.CastExpressionTyped;
-import imop.ast.node.external.ConditionalExpression;
-import imop.ast.node.external.ConstantExpression;
-import imop.ast.node.external.DotId;
-import imop.ast.node.external.EqualityExpression;
-import imop.ast.node.external.ExclusiveORExpression;
-import imop.ast.node.external.Expression;
-import imop.ast.node.external.ExpressionClosed;
-import imop.ast.node.external.ExpressionList;
-import imop.ast.node.external.InclusiveORExpression;
-import imop.ast.node.external.LogicalANDExpression;
-import imop.ast.node.external.LogicalORExpression;
-import imop.ast.node.external.MinusMinus;
-import imop.ast.node.external.MultiplicativeExpression;
-import imop.ast.node.external.Node;
-import imop.ast.node.external.NodeChoice;
-import imop.ast.node.external.NodeList;
-import imop.ast.node.external.NodeListOptional;
-import imop.ast.node.external.NodeOptional;
-import imop.ast.node.external.NodeSequence;
-import imop.ast.node.external.NodeToken;
-import imop.ast.node.external.NonConditionalExpression;
-import imop.ast.node.external.PlusPlus;
-import imop.ast.node.external.PostfixExpression;
-import imop.ast.node.external.PostfixOperationsList;
-import imop.ast.node.external.RelationalExpression;
-import imop.ast.node.external.ShiftExpression;
-import imop.ast.node.external.UnaryCastExpression;
-import imop.ast.node.external.UnaryExpression;
-import imop.ast.node.external.UnaryExpressionPreDecrement;
-import imop.ast.node.external.UnaryExpressionPreIncrement;
-import imop.ast.node.external.UnarySizeofExpression;
-import imop.ast.node.internal.CallStatement;
-import imop.ast.node.internal.PostCallNode;
-import imop.ast.node.internal.PreCallNode;
-import imop.ast.node.internal.SimplePrimaryExpression;
+import imop.ast.node.external.*;
+import imop.ast.node.internal.*;
 import imop.baseVisitor.GJNoArguDepthFirstProcess;
 import imop.lib.util.Misc;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class CallStatementGetter {
 	/**

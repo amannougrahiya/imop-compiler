@@ -8,16 +8,14 @@
  */
 package imop.lib.transform.percolate;
 
-import java.util.HashSet;
-import java.util.Set;
-
-import imop.ast.node.external.BarrierDirective;
-import imop.ast.node.external.Node;
-import imop.ast.node.internal.BeginNode;
-import imop.ast.node.internal.EndNode;
+import imop.ast.node.external.*;
+import imop.ast.node.internal.*;
 import imop.baseVisitor.cfgTraversals.DepthFirstCFG;
 import imop.lib.analysis.mhp.Phase;
 import imop.lib.util.Misc;
+
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * This visitor traverses the CFG nodes, on the barrier-free paths,

@@ -8,74 +8,17 @@
  */
 package imop.lib.analysis.typeSystem;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import imop.ast.info.cfgNodeInfo.DeclarationInfo;
 import imop.ast.info.cfgNodeInfo.ParameterDeclarationInfo;
-import imop.ast.node.external.ADeclarationSpecifier;
-import imop.ast.node.external.ADeclaratorOp;
-import imop.ast.node.external.ADimensionOrParameter;
-import imop.ast.node.external.ASpecifierQualifier;
-import imop.ast.node.external.AbstractDeclarator;
-import imop.ast.node.external.AbstractDeclaratorClosed;
-import imop.ast.node.external.AbstractDeclaratorWithPointer;
-import imop.ast.node.external.AbstractDimensionOrParameter;
-import imop.ast.node.external.AbstractOptionalDeclarator;
-import imop.ast.node.external.ConstantExpression;
-import imop.ast.node.external.Declaration;
-import imop.ast.node.external.DeclarationList;
-import imop.ast.node.external.DeclarationSpecifiers;
-import imop.ast.node.external.Declarator;
-import imop.ast.node.external.DeclaratorOpList;
-import imop.ast.node.external.DimensionOrParameterList;
-import imop.ast.node.external.DimensionSize;
-import imop.ast.node.external.DirectAbstractDeclarator;
-import imop.ast.node.external.DirectDeclarator;
-import imop.ast.node.external.EnumSpecifier;
-import imop.ast.node.external.EnumSpecifierWithId;
-import imop.ast.node.external.EnumSpecifierWithList;
-import imop.ast.node.external.Enumerator;
-import imop.ast.node.external.EnumeratorList;
-import imop.ast.node.external.IdentifierOrDeclarator;
-import imop.ast.node.external.InitDeclarator;
-import imop.ast.node.external.InitDeclaratorList;
-import imop.ast.node.external.Node;
-import imop.ast.node.external.NodeChoice;
-import imop.ast.node.external.NodeList;
-import imop.ast.node.external.NodeListOptional;
-import imop.ast.node.external.NodeOptional;
-import imop.ast.node.external.NodeSequence;
-import imop.ast.node.external.NodeToken;
-import imop.ast.node.external.OldParameterListClosed;
-import imop.ast.node.external.ParameterAbstraction;
-import imop.ast.node.external.ParameterDeclaration;
-import imop.ast.node.external.ParameterList;
-import imop.ast.node.external.ParameterTypeList;
-import imop.ast.node.external.ParameterTypeListClosed;
-import imop.ast.node.external.Pointer;
-import imop.ast.node.external.SpecifierQualifierList;
-import imop.ast.node.external.StorageClassSpecifier;
-import imop.ast.node.external.StructDeclaration;
-import imop.ast.node.external.StructDeclarationList;
-import imop.ast.node.external.StructDeclarator;
-import imop.ast.node.external.StructDeclaratorList;
-import imop.ast.node.external.StructDeclaratorWithBitField;
-import imop.ast.node.external.StructDeclaratorWithDeclarator;
-import imop.ast.node.external.StructOrUnion;
-import imop.ast.node.external.StructOrUnionSpecifier;
-import imop.ast.node.external.StructOrUnionSpecifierWithId;
-import imop.ast.node.external.StructOrUnionSpecifierWithList;
-import imop.ast.node.external.TypeName;
-import imop.ast.node.external.TypeQualifier;
-import imop.ast.node.external.TypeQualifierList;
-import imop.ast.node.external.TypeSpecifier;
-import imop.ast.node.external.TypedefName;
-import imop.ast.node.internal.Scopeable;
+import imop.ast.node.external.*;
+import imop.ast.node.internal.*;
 import imop.baseVisitor.GJDepthFirstProcess;
 import imop.lib.analysis.typeSystem.EnumType.EnumMember;
 import imop.lib.util.Misc;
 import imop.parser.FrontEnd;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Returns the root of the type-tree obtained by traversing the

@@ -8,27 +8,8 @@
  */
 package imop.lib.analysis.solver;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
-import com.microsoft.z3.ArithExpr;
-import com.microsoft.z3.BoolExpr;
-import com.microsoft.z3.Context;
-import com.microsoft.z3.Expr;
-import com.microsoft.z3.IntExpr;
-import com.microsoft.z3.Model;
-import com.microsoft.z3.Solver;
-import com.microsoft.z3.Sort;
-import com.microsoft.z3.Status;
-
-import imop.ast.node.external.Constant;
-import imop.ast.node.external.FunctionDefinition;
-import imop.ast.node.external.Node;
-import imop.ast.node.external.NodeToken;
+import com.microsoft.z3.*;
+import imop.ast.node.external.*;
 import imop.lib.analysis.SVEChecker;
 import imop.lib.analysis.flowanalysis.Definition;
 import imop.lib.analysis.flowanalysis.Symbol;
@@ -43,6 +24,8 @@ import imop.lib.builder.Builder;
 import imop.lib.util.Misc;
 import imop.parser.CParserConstants;
 import imop.parser.Program;
+
+import java.util.*;
 
 /**
  * This class contains various static methods used to generate and solve Z3

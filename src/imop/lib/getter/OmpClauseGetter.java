@@ -9,20 +9,12 @@
 
 package imop.lib.getter;
 
+import imop.ast.node.external.*;
+import imop.ast.node.internal.*;
+import imop.baseVisitor.DepthFirstProcess;
+
 import java.util.ArrayList;
 import java.util.List;
-
-import imop.ast.node.external.AtomicConstruct;
-import imop.ast.node.external.ForConstruct;
-import imop.ast.node.external.Node;
-import imop.ast.node.external.ParallelConstruct;
-import imop.ast.node.external.ParallelForConstruct;
-import imop.ast.node.external.ParallelSectionsConstruct;
-import imop.ast.node.external.SectionsConstruct;
-import imop.ast.node.external.SingleConstruct;
-import imop.ast.node.external.TaskConstruct;
-import imop.ast.node.internal.OmpClause;
-import imop.baseVisitor.DepthFirstProcess;
 
 /**
  * When this visitor is called upon an OmpConstruct,

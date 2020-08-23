@@ -8,19 +8,17 @@
  */
 package test;
 
-import static org.junit.Assert.assertEquals;
-
-import java.io.FileNotFoundException;
-
+import imop.ast.node.external.*;
+import imop.lib.analysis.flowanalysis.Symbol;
+import imop.parser.FrontEnd;
+import imop.parser.Program;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import imop.ast.node.external.FunctionDefinition;
-import imop.ast.node.external.Statement;
-import imop.lib.analysis.flowanalysis.Symbol;
-import imop.parser.FrontEnd;
-import imop.parser.Program;
+import java.io.FileNotFoundException;
+
+import static org.junit.Assert.assertEquals;
 
 public class TypeCopyTest {
 

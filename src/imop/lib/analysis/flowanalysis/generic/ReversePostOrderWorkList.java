@@ -8,25 +8,15 @@
  */
 package imop.lib.analysis.flowanalysis.generic;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
-
-import imop.ast.node.external.BarrierDirective;
-import imop.ast.node.external.Node;
-import imop.ast.node.external.ParallelConstruct;
-import imop.ast.node.internal.BeginNode;
-import imop.ast.node.internal.EndNode;
+import imop.ast.node.external.*;
+import imop.ast.node.internal.*;
 import imop.lib.analysis.flowanalysis.DFable;
 import imop.lib.analysis.flowanalysis.SCC;
 import imop.lib.cfg.info.CFGInfo;
 import imop.lib.util.Misc;
 import imop.parser.Program;
+
+import java.util.*;
 
 public class ReversePostOrderWorkList {
 	private static enum Stage {

@@ -8,13 +8,12 @@
  */
 package imop.lib.getter;
 
-import java.util.LinkedList;
-import java.util.List;
-
-import imop.ast.node.external.Expression;
-import imop.ast.node.external.Node;
+import imop.ast.node.external.*;
 import imop.baseVisitor.DepthFirstProcess;
 import imop.lib.util.Misc.TraverseExpressions;
+
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * Populates the list astContents with all the internal AST nodes of the type

@@ -8,24 +8,16 @@
  */
 package imop.lib.transform.percolate;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import imop.ast.info.cfgNodeInfo.ParallelConstructInfo;
-import imop.ast.node.external.CompoundStatement;
-import imop.ast.node.external.DoStatement;
-import imop.ast.node.external.ForStatement;
-import imop.ast.node.external.IfStatement;
-import imop.ast.node.external.Node;
-import imop.ast.node.external.ParallelConstruct;
-import imop.ast.node.external.SwitchStatement;
-import imop.ast.node.external.WhileStatement;
-import imop.ast.node.internal.BeginNode;
-import imop.ast.node.internal.EndNode;
+import imop.ast.node.external.*;
+import imop.ast.node.internal.*;
 import imop.lib.analysis.mhp.Phase;
 import imop.lib.transform.simplify.RedundantSynchronizationRemoval;
 import imop.lib.util.Misc;
 import imop.parser.Program;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class UpwardPercolater {
 	/**

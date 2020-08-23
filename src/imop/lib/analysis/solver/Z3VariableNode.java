@@ -8,16 +8,11 @@
  */
 package imop.lib.analysis.solver;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 import imop.lib.analysis.solver.tokens.ExpressionTokenizer;
 import imop.lib.analysis.solver.tokens.OperatorToken;
 import imop.lib.analysis.solver.tokens.Tokenizable;
+
+import java.util.*;
 
 public class Z3VariableNode {
 	private final String z3VarName;

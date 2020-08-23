@@ -8,10 +8,10 @@
  */
 package imop.lib.util;
 
+import imop.lib.analysis.flowanalysis.Cell;
+
 import java.util.HashMap;
 import java.util.Set;
-
-import imop.lib.analysis.flowanalysis.Cell;
 
 public class FunctionCellMap<T> extends CellMap<T> {
 
