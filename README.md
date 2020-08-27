@@ -39,7 +39,6 @@ cd imop-compiler
 ant clean
 ant
 ```
-After the build process is complete, set the environment variable `IMOPHOME` to point to the `imop-compiler` folder; this is used by the scripts in `runner`.
 
 Note that for the purpose of compilation, the ant-script automatically adds `third-party-tools/com.microsoft.z3.jar` to classpath.
 These commands should compile the project and generate the class files in `bin` folder.
