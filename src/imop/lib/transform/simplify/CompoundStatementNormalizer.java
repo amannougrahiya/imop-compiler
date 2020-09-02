@@ -42,6 +42,7 @@ public class CompoundStatementNormalizer {
 			/*
 			 * For now, we do not handle this case.
 			 */
+			Thread.dumpStack();
 			Misc.warnDueToLackOfFeature(
 					"Currently, we do not handle removal of scoping from within disconnected snippets of code.", null);
 			return;

@@ -116,6 +116,7 @@ public class Program {
     public static final long thresholdIDFAProcessingCount = (long) 1e6;
     public static DecimalFormat df2 = new DecimalFormat("#.##");
     public static boolean disableLineNumbers = false;
+    public static int numExpansionAllowed = 500; // Default. This is set again in the method {@link defaultCommandLineArguments()}.
 
     public static void rememberInitialPhasesIfRequired() {
         if (Program.getRoot() == null) {
@@ -155,6 +156,7 @@ public class Program {
         Program.maxThreads = 13;
         Program.z3TimeoutInMilliSecs = "5000"; // 5s timeout for each z3 query.
         Program.oneEntryPerFDInCallStack = true;
+        Program.disableLineNumbers = true; // Unless we need line numbers, keep this as true.
         Program.basePointsTo = true;
         Program.memoizeAccesses = 0;
         Program.preciseDFDEdges = false;
@@ -162,7 +164,7 @@ public class Program {
         Program.concurrencyAlgorithm = ConcurrencyAlgorithm.ICON;
         Program.mhpUpdateCategory = UpdateCategory.LZUPD; // Default is LZUPD.
         Program.sveNoCheck = true;
-        Program.disableLineNumbers = true; // Unless we need line numbers, keep this as true.
+        Program.numExpansionAllowed = 100;
 
         String filePath = "";
         filePath = ("../tests/classB-preproc/bt-b.i"); // SVE-all: 29s.
