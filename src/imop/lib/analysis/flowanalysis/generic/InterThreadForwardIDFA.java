@@ -22,8 +22,8 @@ import imop.lib.analysis.flowanalysis.dataflow.PointsToAnalysis.PointsToGlobalSt
 import imop.lib.analysis.flowanalysis.generic.AnalysisDimension.*;
 import imop.lib.analysis.flowanalysis.generic.CellularDataFlowAnalysis.CellularFlowMap;
 import imop.lib.analysis.flowanalysis.generic.FlowAnalysis.FlowFact;
-import imop.lib.analysis.mhp.Phase;
-import imop.lib.analysis.mhp.PhasePoint;
+import imop.lib.analysis.mhp.AbstractPhase;
+import imop.lib.analysis.mhp.AbstractPhasePointable;
 import imop.lib.analysis.typeSystem.ArrayType;
 import imop.lib.cg.CallStack;
 import imop.lib.cg.NodeWithStack;
@@ -664,12 +664,12 @@ public abstract class InterThreadForwardIDFA<F extends FlowFact> extends GJDepth
 	}
 
 	private void addAllSiblingBarriersToWorkList(BarrierDirective barrier) {
-		for (Phase ph : new HashSet<>(barrier.getInfo().getNodePhaseInfo().getPhaseSet())) {
-			for (PhasePoint endingPhasePoint : ph.getEndPoints()) {
-				if (!(endingPhasePoint.getNode() instanceof BarrierDirective)) {
+		for (AbstractPhase<?, ?> ph : new HashSet<>(barrier.getInfo().getNodePhaseInfo().getPhaseSet())) {
+			for (AbstractPhasePointable endingPhasePoint : ph.getEndPoints()) {
+				if (!(endingPhasePoint.getNodeFromInterface() instanceof BarrierDirective)) {
 					continue;
 				}
-				BarrierDirective siblingBarrier = (BarrierDirective) endingPhasePoint.getNode();
+				BarrierDirective siblingBarrier = (BarrierDirective) endingPhasePoint.getNodeFromInterface();
 				if (siblingBarrier == barrier) {
 					continue;
 				}
@@ -1457,13 +1457,13 @@ public abstract class InterThreadForwardIDFA<F extends FlowFact> extends GJDepth
 			}
 		}
 		boolean anyOUTignored = false;
-		for (Phase ph : new HashSet<>(n.getInfo().getNodePhaseInfo().getPhaseSet())) {
+		for (AbstractPhase<?, ?> ph : new HashSet<>(n.getInfo().getNodePhaseInfo().getPhaseSet())) {
 			//			for (PhasePoint endingPhasePoint : ph.getUnmodifiableEndPoints()) {}
-			for (PhasePoint endingPhasePoint : new HashSet<>(ph.getEndPoints())) {
-				if (!(endingPhasePoint.getNode() instanceof BarrierDirective)) {
+			for (AbstractPhasePointable endingPhasePoint : new HashSet<>(ph.getEndPoints())) {
+				if (!(endingPhasePoint.getNodeFromInterface() instanceof BarrierDirective)) {
 					continue;
 				}
-				BarrierDirective siblingBarrier = (BarrierDirective) endingPhasePoint.getNode();
+				BarrierDirective siblingBarrier = (BarrierDirective) endingPhasePoint.getNodeFromInterface();
 				//				if (!processedInThisUpdate.contains(siblingBarrier)) {
 				//					yetToBeFinalized.add(n);
 				//					continue;
@@ -1502,12 +1502,12 @@ public abstract class InterThreadForwardIDFA<F extends FlowFact> extends GJDepth
 		}
 		if (changed && first) {
 			CellSet myShared = n.getInfo().getSharedCellsAtNode();
-			for (Phase ph : new HashSet<>(n.getInfo().getNodePhaseInfo().getPhaseSet())) {
-				for (PhasePoint endingPhasePoint : ph.getEndPoints()) {
-					if (!(endingPhasePoint.getNode() instanceof BarrierDirective)) {
+			for (AbstractPhase<?, ?> ph : new HashSet<>(n.getInfo().getNodePhaseInfo().getPhaseSet())) {
+				for (AbstractPhasePointable endingPhasePoint : ph.getEndPoints()) {
+					if (!(endingPhasePoint.getNodeFromInterface() instanceof BarrierDirective)) {
 						continue;
 					}
-					BarrierDirective siblingBarrier = (BarrierDirective) endingPhasePoint.getNode();
+					BarrierDirective siblingBarrier = (BarrierDirective) endingPhasePoint.getNodeFromInterface();
 					if (siblingBarrier == n) {
 						continue;
 					}
@@ -1533,12 +1533,12 @@ public abstract class InterThreadForwardIDFA<F extends FlowFact> extends GJDepth
 			}
 		}
 		if (changed && !first) {
-			for (Phase ph : new HashSet<>(n.getInfo().getNodePhaseInfo().getPhaseSet())) {
-				for (PhasePoint endingPhasePoint : ph.getEndPoints()) {
-					if (!(endingPhasePoint.getNode() instanceof BarrierDirective)) {
+			for (AbstractPhase<?, ?> ph : new HashSet<>(n.getInfo().getNodePhaseInfo().getPhaseSet())) {
+				for (AbstractPhasePointable endingPhasePoint : ph.getEndPoints()) {
+					if (!(endingPhasePoint.getNodeFromInterface() instanceof BarrierDirective)) {
 						continue;
 					}
-					BarrierDirective siblingBarrier = (BarrierDirective) endingPhasePoint.getNode();
+					BarrierDirective siblingBarrier = (BarrierDirective) endingPhasePoint.getNodeFromInterface();
 					if (siblingBarrier == n) {
 						continue;
 					}
@@ -1574,12 +1574,12 @@ public abstract class InterThreadForwardIDFA<F extends FlowFact> extends GJDepth
 		}
 
 		///
-		for (Phase ph : new HashSet<>(n.getInfo().getNodePhaseInfo().getPhaseSet())) {
-			for (PhasePoint endingPhasePoint : ph.getEndPoints()) {
-				if (!(endingPhasePoint.getNode() instanceof BarrierDirective)) {
+		for (AbstractPhase<?, ?> ph : new HashSet<>(n.getInfo().getNodePhaseInfo().getPhaseSet())) {
+			for (AbstractPhasePointable endingPhasePoint : ph.getEndPoints()) {
+				if (!(endingPhasePoint.getNodeFromInterface() instanceof BarrierDirective)) {
 					continue;
 				}
-				BarrierDirective siblingBarrier = (BarrierDirective) endingPhasePoint.getNode();
+				BarrierDirective siblingBarrier = (BarrierDirective) endingPhasePoint.getNodeFromInterface();
 				F siblingFlowFactIN = (F) siblingBarrier.getInfo().getIN(analysisName);
 				if (siblingFlowFactIN == null) {
 					continue;

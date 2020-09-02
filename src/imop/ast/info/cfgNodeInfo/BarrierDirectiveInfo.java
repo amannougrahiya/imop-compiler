@@ -16,8 +16,9 @@ import imop.ast.node.internal.*;
 import imop.lib.analysis.CoExistenceChecker;
 import imop.lib.analysis.flowanalysis.Cell;
 import imop.lib.analysis.flowanalysis.generic.AnalysisDimension.SVEDimension;
-import imop.lib.analysis.mhp.Phase;
-import imop.lib.analysis.mhp.PhasePoint;
+import imop.lib.analysis.mhp.AbstractPhase;
+import imop.lib.analysis.mhp.AbstractPhasePointable;
+import imop.lib.analysis.mhp.incMHP.Phase;
 import imop.lib.cfg.CFGLinkFinder;
 import imop.lib.cfg.info.CompoundStatementCFGInfo;
 import imop.lib.cfg.info.IfStatementCFGInfo;
@@ -796,10 +797,10 @@ public class BarrierDirectiveInfo extends OmpDirectiveInfo {
 	public Set<Node> getExplicitSiblings() {
 		Set<Node> siblings = new HashSet<>();
 		BarrierDirective barrier = (BarrierDirective) this.getNode();
-		for (Phase ph : new HashSet<>(barrier.getInfo().getNodePhaseInfo().getPhaseSet())) {
+		for (AbstractPhase<?, ?> ph : new HashSet<>(barrier.getInfo().getNodePhaseInfo().getPhaseSet())) {
 			boolean found = false;
-			for (PhasePoint endingPhasePoint : ph.getEndPoints()) {
-				if (endingPhasePoint.getNode() == barrier) {
+			for (AbstractPhasePointable endingPhasePoint : ph.getEndPoints()) {
+				if (endingPhasePoint.getNodeFromInterface() == barrier) {
 					found = true;
 					break;
 				}
@@ -807,11 +808,11 @@ public class BarrierDirectiveInfo extends OmpDirectiveInfo {
 			if (!found) {
 				continue;
 			}
-			for (PhasePoint endingPhasePoint : ph.getEndPoints()) {
-				if (!(endingPhasePoint.getNode() instanceof BarrierDirective)) {
+			for (AbstractPhasePointable endingPhasePoint : ph.getEndPoints()) {
+				if (!(endingPhasePoint.getNodeFromInterface() instanceof BarrierDirective)) {
 					continue;
 				}
-				BarrierDirective siblingBarrier = (BarrierDirective) endingPhasePoint.getNode();
+				BarrierDirective siblingBarrier = (BarrierDirective) endingPhasePoint.getNodeFromInterface();
 				if (siblingBarrier == barrier) {
 					continue;
 				}
@@ -1115,12 +1116,12 @@ public class BarrierDirectiveInfo extends OmpDirectiveInfo {
 					// in the phase list. In such a case, we should work with all the CFG nodes present in the moved statement.
 
 					Set<Node> movedNodes = currentStmt.getInfo().getCFGInfo().getLexicalCFGContents();
-					for (Phase tempPh : currentStmt.getInfo().getNodePhaseInfo().getPhaseSet()) {
+					for (AbstractPhase<?, ?> tempPh : currentStmt.getInfo().getNodePhaseInfo().getPhaseSet()) {
 						for (Node movedNode : movedNodes) {
 							tempPh.deprecated_crudeRemoveNode(movedNode);
 						}
 					}
-					for (Phase tempPh : this.getNodePhaseInfo().getPhaseSet()) {
+					for (AbstractPhase<?, ?> tempPh : this.getNodePhaseInfo().getPhaseSet()) {
 						for (Node movedNode : movedNodes) {
 							tempPh.deprecated_crudeAddNode(movedNode);
 						}

@@ -11,7 +11,7 @@ package imop.lib.cfg.info;
 
 import imop.ast.node.external.*;
 import imop.lib.analysis.flowanalysis.dataflow.PointsToAnalysis;
-import imop.lib.analysis.mhp.BeginPhasePoint;
+import imop.lib.analysis.mhp.incMHP.BeginPhasePoint;
 import imop.lib.cfg.NestedCFG;
 import imop.lib.cfg.link.autoupdater.AutomatedUpdater;
 import imop.lib.transform.simplify.Normalization;

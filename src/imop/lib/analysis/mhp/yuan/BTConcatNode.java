@@ -28,6 +28,10 @@ public class BTConcatNode extends BTNode {
 		this.next.parent = this;
 	}
 
+	public Node getASTNode() {
+		return null;
+	}
+
 	@Override
 	public String getString(int tab) {
 		String str = this.printTabs(tab);

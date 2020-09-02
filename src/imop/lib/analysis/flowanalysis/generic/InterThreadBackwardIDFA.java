@@ -14,8 +14,8 @@ import imop.ast.node.internal.*;
 import imop.baseVisitor.cfgTraversals.GJDepthFirstCFG;
 import imop.lib.analysis.flowanalysis.generic.AnalysisDimension.*;
 import imop.lib.analysis.flowanalysis.generic.FlowAnalysis.FlowFact;
-import imop.lib.analysis.mhp.Phase;
-import imop.lib.analysis.mhp.PhasePoint;
+import imop.lib.analysis.mhp.AbstractPhase;
+import imop.lib.analysis.mhp.AbstractPhasePointable;
 import imop.lib.util.Misc;
 import imop.parser.Program;
 
@@ -767,12 +767,12 @@ public abstract class InterThreadBackwardIDFA<F extends FlowFact> extends GJDept
 		if (oldFactIN != null) {
 			flowFactIN.merge(oldFactIN, null);
 		}
-		for (Phase ph : new HashSet<>(n.getInfo().getNodePhaseInfo().getPhaseSet())) {
-			for (PhasePoint endingPhasePoint : ph.getEndPoints()) {
-				if (!(endingPhasePoint.getNode() instanceof BarrierDirective)) {
+		for (AbstractPhase<?, ?> ph : new HashSet<>(n.getInfo().getNodePhaseInfo().getPhaseSet())) {
+			for (AbstractPhasePointable endingPhasePoint : ph.getEndPoints()) {
+				if (!(endingPhasePoint.getNodeFromInterface() instanceof BarrierDirective)) {
 					continue;
 				}
-				BarrierDirective siblingBarrier = (BarrierDirective) endingPhasePoint.getNode();
+				BarrierDirective siblingBarrier = (BarrierDirective) endingPhasePoint.getNodeFromInterface();
 				F siblingFlowFactOUT = (F) siblingBarrier.getInfo().getOUT(analysisName);
 				if (siblingFlowFactOUT == null) {
 					continue;
@@ -786,12 +786,12 @@ public abstract class InterThreadBackwardIDFA<F extends FlowFact> extends GJDept
 			}
 		}
 		if (changed) {
-			for (Phase ph : new HashSet<>(n.getInfo().getNodePhaseInfo().getPhaseSet())) {
-				for (PhasePoint endingPhasePoint : ph.getEndPoints()) {
-					if (!(endingPhasePoint.getNode() instanceof BarrierDirective)) {
+			for (AbstractPhase<?, ?> ph : new HashSet<>(n.getInfo().getNodePhaseInfo().getPhaseSet())) {
+				for (AbstractPhasePointable endingPhasePoint : ph.getEndPoints()) {
+					if (!(endingPhasePoint.getNodeFromInterface() instanceof BarrierDirective)) {
 						continue;
 					}
-					BarrierDirective siblingBarrier = (BarrierDirective) endingPhasePoint.getNode();
+					BarrierDirective siblingBarrier = (BarrierDirective) endingPhasePoint.getNodeFromInterface();
 					if (siblingBarrier == n) {
 						continue;
 					}

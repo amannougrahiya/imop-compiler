@@ -2,7 +2,7 @@
  * Copyright (c) 2019 Aman Nougrahiya, V Krishna Nandivada, IIT Madras.
  * This file is a part of the project IMOP, licensed under the MIT license.
  * See LICENSE.md for the full text of the license.
- * 
+ *
  * The above notice shall be included in all copies or substantial
  * portions of this file.
  */
@@ -11,9 +11,10 @@ package imop.lib.transform.simplify;
 import imop.ast.node.external.*;
 import imop.ast.node.internal.*;
 import imop.lib.analysis.CoExistenceChecker;
-import imop.lib.analysis.mhp.BeginPhasePoint;
-import imop.lib.analysis.mhp.EndPhasePoint;
-import imop.lib.analysis.mhp.Phase;
+import imop.lib.analysis.mhp.AbstractPhase;
+import imop.lib.analysis.mhp.incMHP.BeginPhasePoint;
+import imop.lib.analysis.mhp.incMHP.EndPhasePoint;
+import imop.lib.analysis.mhp.incMHP.Phase;
 import imop.lib.analysis.solver.FieldSensitivity;
 import imop.lib.cfg.info.CompoundStatementCFGInfo;
 import imop.lib.transform.updater.NodeRemover;
@@ -24,12 +25,19 @@ import imop.lib.util.ProfileSS;
 import imop.parser.Program;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
 public class RedundantSynchronizationRemoval {
 	public static void mergePhasesOf(ParallelConstruct parCons) {
-		phaseLoop: for (Phase ph : new ArrayList<>(parCons.getInfo().getConnectedPhases())) {
+		if (Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.YUANMHP) {
+			Thread.dumpStack();
+			assert (false) :  "Unexpected path.";
+			return;
+		}
+		phaseLoop: for (AbstractPhase<?, ?> absPh : new ArrayList<>(parCons.getInfo().getConnectedPhases())) {
+			Phase ph = (Phase) absPh;
 			/*
 			 * Step 1: Check if there exists any barrier between ph and its
 			 * succ, which can NOT be removed.
@@ -107,9 +115,9 @@ public class RedundantSynchronizationRemoval {
 			Set<Phase> allPhaseSet = new HashSet<>();
 			for (ParallelConstruct parConsNode : Misc.getExactEnclosee(Program.getRoot(),
 					ParallelConstruct.class)) {
-				allPhaseSet.addAll(parConsNode.getInfo().getConnectedPhases());
+				allPhaseSet.addAll((Collection<? extends Phase>) parConsNode.getInfo().getConnectedPhases());
 			}
-			Set<Phase> phasesAbove = barrier.getInfo().getNodePhaseInfo().getPhaseSet();
+			Set<Phase> phasesAbove = (Set<Phase>) barrier.getInfo().getNodePhaseInfo().getPhaseSet();
 			Set<Phase> phasesBelow = new HashSet<>();
 			for (Phase ph : allPhaseSet) {
 				for (BeginPhasePoint bpp : ph.getBeginPoints()) {
@@ -309,7 +317,7 @@ public class RedundantSynchronizationRemoval {
 	}
 
 	public static boolean canBarrierBeRemoved(BarrierDirective barrier) {
-		Set<Phase> phasesAbove = barrier.getInfo().getNodePhaseInfo().getPhaseSet();
+		Set<Phase> phasesAbove = (Set<Phase>) barrier.getInfo().getNodePhaseInfo().getPhaseSet();
 		for (Phase phAbove : phasesAbove) {
 			Phase phBelow = phAbove.getSuccPhase();
 			if (phAbove == phBelow) {

@@ -16,8 +16,10 @@ import imop.lib.analysis.flowanalysis.controlflow.PredicateAnalysis.PredicateFlo
 import imop.lib.analysis.flowanalysis.controlflow.ReversePath;
 import imop.lib.analysis.flowanalysis.generic.AnalysisDimension.SVEDimension;
 import imop.lib.analysis.flowanalysis.generic.AnalysisName;
-import imop.lib.analysis.mhp.BeginPhasePoint;
-import imop.lib.analysis.mhp.Phase;
+import imop.lib.analysis.mhp.AbstractPhase;
+import imop.lib.analysis.mhp.incMHP.BeginPhasePoint;
+import imop.lib.analysis.mhp.incMHP.Phase;
+import imop.lib.analysis.mhp.yuan.YPhase;
 import imop.lib.cg.CallStack;
 import imop.lib.cg.NodeWithStack;
 import imop.lib.util.CollectorVisitor;
@@ -108,10 +110,15 @@ public class CoExistenceChecker {
 		if (knownNonCoExistingNodes.contains(nP)) {
 			return false;
 		}
-		Set<Phase> n1Phases = n1.getInfo().getNodePhaseInfo().getPhaseSet();
-		Set<Phase> n2Phases = n2.getInfo().getNodePhaseInfo().getPhaseSet();
-		Set<Phase> commonPhases = Misc.setIntersection(n1Phases, n2Phases);
-		for (Phase ph : commonPhases) {
+		Set<? extends AbstractPhase<?, ?>> n1Phases = n1.getInfo().getNodePhaseInfo().getPhaseSet();
+		Set<? extends AbstractPhase<?, ?>> n2Phases = n2.getInfo().getNodePhaseInfo().getPhaseSet();
+		Set<? extends AbstractPhase<?, ?>> commonPhases;
+		if (Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.YUANMHP) {
+			commonPhases = Misc.setIntersection((Set<YPhase>)n1Phases, (Set<YPhase>) n2Phases);
+		} else {
+			commonPhases = Misc.setIntersection((Set<Phase>)n1Phases, (Set<Phase>) n2Phases);
+		}
+		for (AbstractPhase<?, ?> ph : commonPhases) {
 			if (CoExistenceChecker.canCoExistInPhase(n1, n2, ph)) {
 				knownCoExistingNodes.add(nP);
 				return true;
@@ -121,7 +128,7 @@ public class CoExistenceChecker {
 		return false;
 	}
 
-	public static boolean canCoExistInPhase(Node n1, Node n2, Phase ph) {
+	public static boolean canCoExistInPhase(Node n1, Node n2, AbstractPhase<?, ?> ph) {
 		long sveTimerThis = System.nanoTime();
 		boolean retVal = CoExistenceChecker.canCoExistInPhase(n1, n2, ph, new HashSet<>(), new HashSet<>());
 		sveTimerThis = System.nanoTime() - sveTimerThis;
@@ -149,7 +156,7 @@ public class CoExistenceChecker {
 	 *         true, if both the nodes may be executed by different threads
 	 *         together in any runtime instance of phase {@code ph}.
 	 */
-	private static boolean canCoExistInPhase(Node n1, Node n2, Phase ph, Set<NodePair> nodePairs,
+	private static boolean canCoExistInPhase(Node n1, Node n2, AbstractPhase<?, ?> ph, Set<NodePair> nodePairs,
 			Set<Expression> expSet) {
 		if (Program.sveSensitive == SVEDimension.SVE_INSENSITIVE) {
 			return true;
@@ -246,7 +253,7 @@ public class CoExistenceChecker {
 		}
 	}
 
-	private static boolean haveAnyValidPathPairs(Set<ReversePath> pathsOfN1, Set<ReversePath> pathsOfN2, Phase ph,
+	private static boolean haveAnyValidPathPairs(Set<ReversePath> pathsOfN1, Set<ReversePath> pathsOfN2, AbstractPhase<?, ?> ph,
 			Set<NodePair> nodePairs, Set<Expression> expSet) {
 		for (ReversePath path1 : pathsOfN1) {
 			inner: for (ReversePath path2 : pathsOfN2) {
@@ -319,15 +326,23 @@ public class CoExistenceChecker {
 		return false;
 	}
 
-	private static boolean canBarriersCoExistInPhase(BeginPhasePoint bPP1, BeginPhasePoint bPP2, Phase ph,
+	private static boolean canBarriersCoExistInPhase(BeginPhasePoint bPP1, BeginPhasePoint bPP2, AbstractPhase<?, ?> absPh,
 			Set<NodePair> nodePairs, Set<Expression> expSet) {
+		assert (Program.concurrencyAlgorithm != Program.ConcurrencyAlgorithm.YUANMHP);
 		if (bPP1 == null || bPP2 == null) {
 			return true; // Conservatively.
 		}
-		boolean oneIsEntry = bPP1.getPhaseSet().contains(ph);
-		boolean twoIsEntry = bPP2.getPhaseSet().contains(ph);
+		boolean oneIsEntry = bPP1.getPhaseSet().contains(absPh);
+		boolean twoIsEntry = bPP2.getPhaseSet().contains(absPh);
 		if (oneIsEntry && twoIsEntry) {
-			for (Phase predPhase : ph.getPredPhases()) {
+			if (Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.YUANMHP) {
+				Thread.dumpStack();
+				assert (false):"Unexpected path.";
+				return true;
+			}
+			Phase ph = (Phase) absPh;
+			for (AbstractPhase<?, ?> predPhaseAbs : ph.getPredPhases()) {
+				Phase predPhase = (Phase) predPhaseAbs;
 				Set<Node> nodeSet = predPhase.getNodeSet();
 				if (nodeSet.contains(bPP1.getNode()) && nodeSet.contains(bPP2.getNode())) {
 					if (CoExistenceChecker.canCoExistInPhase(bPP1.getNode(), bPP2.getNode(), predPhase, nodePairs,
@@ -340,16 +355,16 @@ public class CoExistenceChecker {
 		} else if (oneIsEntry) {
 			// Check if a successor of the BPP1 can co-exist with BPP2 in ph.
 			return CoExistenceChecker.canCoExistInPhase(bPP2.getNode(),
-					bPP1.getNode().getInfo().getCFGInfo().getLeafSuccessors().get(0), ph, nodePairs, expSet);
+					bPP1.getNode().getInfo().getCFGInfo().getLeafSuccessors().get(0), absPh, nodePairs, expSet);
 		} else if (twoIsEntry) {
 			// Check if a successor of the BPP2 can co-exist with BPP3 in ph.
 			return CoExistenceChecker.canCoExistInPhase(bPP1.getNode(),
-					bPP2.getNode().getInfo().getCFGInfo().getLeafSuccessors().get(0), ph, nodePairs, expSet);
+					bPP2.getNode().getInfo().getCFGInfo().getLeafSuccessors().get(0), absPh, nodePairs, expSet);
 		} else {
-			Set<Node> phNodeSet = ph.getNodeSet();
+			Set<Node> phNodeSet = absPh.getNodeSet();
 			if (phNodeSet.contains(bPP1.getNode()) && phNodeSet.contains(bPP2.getNode())) {
 				// Here, both BPP1 and BPP2 belong to some internal parallel construct within ph.
-				return CoExistenceChecker.canCoExistInPhase(bPP1.getNode(), bPP2.getNode(), ph, nodePairs, expSet);
+				return CoExistenceChecker.canCoExistInPhase(bPP1.getNode(), bPP2.getNode(), absPh, nodePairs, expSet);
 			} else {
 				return true; // Conservatively.
 			}
@@ -376,7 +391,7 @@ public class CoExistenceChecker {
 	public static boolean isWrittenInPhase(Node node, Symbol variable, Set<Expression> expSet,
 			Set<NodePair> nodePairs) {
 		node = Misc.getCFGNodeFor(node);
-		for (Phase ph : node.getInfo().getNodePhaseInfo().getPhaseSet()) {
+		for (AbstractPhase<?, ?> ph : node.getInfo().getNodePhaseInfo().getPhaseSet()) {
 			for (Node other : ph.getNodeSet()) {
 				// Here, we will not skip the case other == node.
 				if (other.getInfo().getWrites().contains(variable)) {
@@ -414,14 +429,14 @@ public class CoExistenceChecker {
 			return false;
 		}
 		final Node cfgNode = Misc.getCFGNodeFor(rd);
-		for (Phase ph : cfgNode.getInfo().getNodePhaseInfo().getPhaseSet()) {
+		for (AbstractPhase<?, ?> ph : cfgNode.getInfo().getNodePhaseInfo().getPhaseSet()) {
 			/*
 			 * If there exists any BPP of ph from which cfgNode is unreachable,
 			 * but whose successor may co-exist with the cfgNode, then return
 			 * false.
 			 */
 			if (ph.getBeginPoints().stream().filter(bpp -> !bpp.getReachableNodes().contains(cfgNode))
-					.anyMatch(bpp -> canCoExistInPhase(bpp.getNode().getInfo().getCFGInfo().getLeafSuccessors().get(0),
+					.anyMatch(bpp -> canCoExistInPhase(bpp.getNodeFromInterface().getInfo().getCFGInfo().getLeafSuccessors().get(0),
 							cfgNode, ph, nodePairs, expSet))) {
 
 				doesNotExistForAll.add(rd);
@@ -503,6 +518,7 @@ public class CoExistenceChecker {
 	@Deprecated
 	static boolean deprecated_canCoExistInPhase(Node n1, Node n2, Phase ph, Set<NodePair> nodePairs,
 			Set<Expression> expSet) {
+	    assert (Program.concurrencyAlgorithm != Program.ConcurrencyAlgorithm.YUANMHP);
 		if (Program.sveSensitive == SVEDimension.SVE_INSENSITIVE) {
 			return true;
 		}
@@ -583,7 +599,8 @@ public class CoExistenceChecker {
 			Node prevB1 = n1Mn2BPP.getNode();
 			for (BeginPhasePoint n2Mn1BPP : Misc.setMinus(n2BPP, n1BPP)) {
 				Node prevB2 = n2Mn1BPP.getNode();
-				for (Phase prevPhase : ph.getPredPhases()) {
+				for (AbstractPhase<?, ?> prevPhaseAbs : ph.getPredPhases()) {
+					Phase prevPhase = (Phase) prevPhaseAbs;
 					if (prevPhase.getNodeSet().contains(prevB1) && prevPhase.getNodeSet().contains(prevB2)) {
 						if (CoExistenceChecker.deprecated_canCoExistInPhase(prevB1, prevB2, prevPhase, nodePairs,
 								expSet)) {
@@ -615,7 +632,8 @@ public class CoExistenceChecker {
 			Node prevB1 = n1Mn2BPP.getNode();
 			for (BeginPhasePoint interBPP : intersection) {
 				Node prevB2 = interBPP.getNode();
-				for (Phase prevPhase : ph.getPredPhases()) {
+				for (AbstractPhase<?, ?> prevPhaseAbs : ph.getPredPhases()) {
+					Phase prevPhase = (Phase) prevPhaseAbs;
 					if (prevPhase.getNodeSet().contains(prevB1) && prevPhase.getNodeSet().contains(prevB2)) {
 						if (CoExistenceChecker.deprecated_canCoExistInPhase(prevB1, prevB2, prevPhase, nodePairs,
 								expSet)) {
@@ -631,7 +649,8 @@ public class CoExistenceChecker {
 			Node prevB1 = n2Mn1BPP.getNode();
 			for (BeginPhasePoint interBPP : intersection) {
 				Node prevB2 = interBPP.getNode();
-				for (Phase prevPhase : ph.getPredPhases()) {
+				for (AbstractPhase<?, ?> prevPhaseAbs : ph.getPredPhases()) {
+					Phase prevPhase = (Phase) prevPhaseAbs;
 					if (prevPhase.getNodeSet().contains(prevB1) && prevPhase.getNodeSet().contains(prevB2)) {
 						if (CoExistenceChecker.deprecated_canCoExistInPhase(prevB1, prevB2, prevPhase, nodePairs,
 								expSet)) {

@@ -13,8 +13,8 @@ import imop.ast.node.external.*;
 import imop.ast.node.internal.*;
 import imop.lib.analysis.CoExistenceChecker;
 import imop.lib.analysis.flowanalysis.generic.AnalysisDimension.SVEDimension;
-import imop.lib.analysis.mhp.Phase;
-import imop.lib.analysis.mhp.PhasePoint;
+import imop.lib.analysis.mhp.AbstractPhase;
+import imop.lib.analysis.mhp.AbstractPhasePointable;
 import imop.lib.util.CellSet;
 import imop.lib.util.Misc;
 
@@ -278,12 +278,12 @@ public abstract class InterThreadBackwardNonCellularAnalysis<F extends FlowAnaly
 		}
 
 		///
-		for (Phase ph : new HashSet<>(n.getInfo().getNodePhaseInfo().getPhaseSet())) {
-			for (PhasePoint endingPhasePoint : ph.getEndPoints()) {
-				if (!(endingPhasePoint.getNode() instanceof BarrierDirective)) {
+		for (AbstractPhase<?, ?> ph : new HashSet<>(n.getInfo().getNodePhaseInfo().getPhaseSet())) {
+			for (AbstractPhasePointable endingPhasePoint : ph.getEndPoints()) {
+				if (!(endingPhasePoint.getNodeFromInterface() instanceof BarrierDirective)) {
 					continue;
 				}
-				BarrierDirective siblingBarrier = (BarrierDirective) endingPhasePoint.getNode();
+				BarrierDirective siblingBarrier = (BarrierDirective) endingPhasePoint.getNodeFromInterface();
 				F siblingFlowFactOUT = (F) siblingBarrier.getInfo().getOUT(analysisName);
 				if (siblingFlowFactOUT == null) {
 					continue;
@@ -336,13 +336,13 @@ public abstract class InterThreadBackwardNonCellularAnalysis<F extends FlowAnaly
 			}
 		}
 		boolean anyINignored = false;
-		for (Phase ph : new HashSet<>(n.getInfo().getNodePhaseInfo().getPhaseSet())) {
+		for (AbstractPhase<?, ?> ph : new HashSet<>(n.getInfo().getNodePhaseInfo().getPhaseSet())) {
 			//			for (PhasePoint endingPhasePoint : ph.getUnmodifiableEndPoints()) {}
-			for (PhasePoint endingPhasePoint : new HashSet<>(ph.getEndPoints())) {
-				if (!(endingPhasePoint.getNode() instanceof BarrierDirective)) {
+			for (AbstractPhasePointable endingPhasePoint : new HashSet<>(ph.getEndPoints())) {
+				if (!(endingPhasePoint.getNodeFromInterface() instanceof BarrierDirective)) {
 					continue;
 				}
-				BarrierDirective siblingBarrier = (BarrierDirective) endingPhasePoint.getNode();
+				BarrierDirective siblingBarrier = (BarrierDirective) endingPhasePoint.getNodeFromInterface();
 				//				if (!processedInThisUpdate.contains(siblingBarrier)) {
 				//					yetToBeFinalized.add(n);
 				//					continue;
@@ -381,12 +381,12 @@ public abstract class InterThreadBackwardNonCellularAnalysis<F extends FlowAnaly
 		}
 		if (changed && first) {
 			CellSet myShared = n.getInfo().getSharedCellsAtNode();
-			for (Phase ph : new HashSet<>(n.getInfo().getNodePhaseInfo().getPhaseSet())) {
-				for (PhasePoint endingPhasePoint : ph.getEndPoints()) {
-					if (!(endingPhasePoint.getNode() instanceof BarrierDirective)) {
+			for (AbstractPhase<?, ?> ph : new HashSet<>(n.getInfo().getNodePhaseInfo().getPhaseSet())) {
+				for (AbstractPhasePointable endingPhasePoint : ph.getEndPoints()) {
+					if (!(endingPhasePoint.getNodeFromInterface() instanceof BarrierDirective)) {
 						continue;
 					}
-					BarrierDirective siblingBarrier = (BarrierDirective) endingPhasePoint.getNode();
+					BarrierDirective siblingBarrier = (BarrierDirective) endingPhasePoint.getNodeFromInterface();
 					if (siblingBarrier == n) {
 						continue;
 					}
@@ -412,12 +412,12 @@ public abstract class InterThreadBackwardNonCellularAnalysis<F extends FlowAnaly
 			}
 		}
 		if (changed && !first) {
-			for (Phase ph : new HashSet<>(n.getInfo().getNodePhaseInfo().getPhaseSet())) {
-				for (PhasePoint endingPhasePoint : ph.getEndPoints()) {
-					if (!(endingPhasePoint.getNode() instanceof BarrierDirective)) {
+			for (AbstractPhase<?, ?> ph : new HashSet<>(n.getInfo().getNodePhaseInfo().getPhaseSet())) {
+				for (AbstractPhasePointable endingPhasePoint : ph.getEndPoints()) {
+					if (!(endingPhasePoint.getNodeFromInterface() instanceof BarrierDirective)) {
 						continue;
 					}
-					BarrierDirective siblingBarrier = (BarrierDirective) endingPhasePoint.getNode();
+					BarrierDirective siblingBarrier = (BarrierDirective) endingPhasePoint.getNodeFromInterface();
 					if (siblingBarrier == n) {
 						continue;
 					}

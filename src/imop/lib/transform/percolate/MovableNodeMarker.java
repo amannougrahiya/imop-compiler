@@ -11,7 +11,7 @@ package imop.lib.transform.percolate;
 import imop.ast.node.external.*;
 import imop.ast.node.internal.*;
 import imop.baseVisitor.cfgTraversals.DepthFirstCFG;
-import imop.lib.analysis.mhp.Phase;
+import imop.lib.analysis.mhp.incMHP.Phase;
 import imop.lib.util.Misc;
 
 import java.util.HashSet;

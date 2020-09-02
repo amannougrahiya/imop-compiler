@@ -9,14 +9,14 @@
 package imop.lib.util;
 
 import imop.ast.node.external.*;
-import imop.lib.analysis.mhp.Phase;
+import imop.lib.analysis.mhp.AbstractPhase;
 
 public class NodePhasePair {
 	public final Node one;
 	public final Node two;
-	public final Phase ph;
+	public final AbstractPhase<?, ?> ph;
 
-	public NodePhasePair(Node one, Node two, Phase ph) {
+	public NodePhasePair(Node one, Node two, AbstractPhase<?, ?> ph) {
 		this.one = one;
 		this.two = two;
 		this.ph = ph;

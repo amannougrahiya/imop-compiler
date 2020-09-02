@@ -11,14 +11,19 @@ package imop.ast.info.cfgNodeInfo;
 import imop.ast.info.OmpConstructInfo;
 import imop.ast.node.external.*;
 import imop.ast.node.internal.*;
-import imop.lib.analysis.mhp.BeginPhasePoint;
-import imop.lib.analysis.mhp.Phase;
+import imop.lib.analysis.mhp.AbstractPhase;
+import imop.lib.analysis.mhp.AbstractPhasePointable;
+import imop.lib.analysis.mhp.incMHP.BeginPhasePoint;
+import imop.lib.analysis.mhp.incMHP.Phase;
 import imop.lib.analysis.mhp.yuan.BTBarrierNode;
 import imop.lib.analysis.mhp.yuan.BTNode;
+import imop.lib.analysis.mhp.yuan.YPhase;
 import imop.lib.cfg.info.ParallelConstructCFGInfo;
 import imop.lib.util.CellSet;
+import imop.lib.util.CollectorVisitor;
 import imop.lib.util.Misc;
 import imop.lib.util.ProfileSS;
+import imop.parser.Program;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -26,7 +31,7 @@ import java.util.List;
 import java.util.Set;
 
 public class ParallelConstructInfo extends OmpConstructInfo {
-    private List<Phase> allPhaseList;
+    private List<? extends AbstractPhase<?, ?>> allPhaseList;
 
     public static class BTPair {
         public final BTNode first;
@@ -75,7 +80,11 @@ public class ParallelConstructInfo extends OmpConstructInfo {
 
     private ParallelConstructInfo(Node owner) {
         super(owner);
-        this.allPhaseList = new ArrayList<>();
+        if (Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.ICON) {
+            this.allPhaseList = new ArrayList<Phase>();
+        } else {
+            this.allPhaseList = new ArrayList<YPhase>();
+        }
     }
 
     /**
@@ -88,7 +97,8 @@ public class ParallelConstructInfo extends OmpConstructInfo {
      * @return an info object of the parallel-construct.
      */
     public static ParallelConstructInfo createParallelConstructInfo(ParallelConstruct owner) {
-        ParallelConstructInfo parConsInfo = new ParallelConstructInfo(owner);
+        ParallelConstructInfo parConsInfo;
+        parConsInfo = new ParallelConstructInfo(owner);
         // OLD CODE: We do not maintain entryBPP or entryPhase now.
         //		parConsInfo.entryPhase = new Phase(parConsInfo);
         //		NodeWithStack entryNWS = new NodeWithStack(parConsInfo.getCFGInfo().getNestedCFG().getBegin(), new CallStack());
@@ -111,15 +121,27 @@ public class ParallelConstructInfo extends OmpConstructInfo {
     }
 
     public void flushMHPData() {
-        for (Phase ph : new ArrayList<>(this.allPhaseList)) {
+        for (AbstractPhase<?, ?> ph : new ArrayList<>(this.allPhaseList)) {
             ph.flushMHPData();
+        }
+        if (Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.YUANMHP) {
+            if (btPairs == null) {
+                btPairs = new HashSet<>();
+            }
+            this.btPairs.clear();
         }
         this.allPhaseList.clear();
     }
 
     public void flushALLMHPData() {
-        for (Phase ph : this.allPhaseList) {
+        for (AbstractPhase<?, ?> ph : this.allPhaseList) {
             ph.flushALLMHPData();
+        }
+        if (Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.YUANMHP) {
+            if (btPairs == null) {
+                btPairs = new HashSet<>();
+            }
+            this.btPairs.clear();
         }
         this.allPhaseList.clear();
     }
@@ -132,35 +154,48 @@ public class ParallelConstructInfo extends OmpConstructInfo {
         return (ParallelConstructCFGInfo) cfgInfo;
     }
 
-    public List<Phase> getAllPhaseList() {
+    public List<? extends AbstractPhase<?, ?>> getAllPhaseList() {
         ProfileSS.addChangePoint(ProfileSS.phSet);
         return allPhaseList;
     }
 
-    public List<Phase> getConnectedPhases() {
-        /*
-         * Alternative code below.
-         */
-        List<Phase> reachablePhases = new ArrayList<>();
-        Phase tempPhase = this.getFirstPhase();
-        if (tempPhase == null) {
-            assert (false) : "Could not find the first phase of the parallel construct at line #" +
-                    Misc.getLineNum(this.getNode());
-            return null;
-        }
-        reachablePhases.add(tempPhase);
-        while (tempPhase.getSuccPhase() != null) {
-            tempPhase = tempPhase.getSuccPhase();
-            if (reachablePhases.contains(tempPhase)) {
-                break;
+    public List<? extends AbstractPhase<?, ?>> getConnectedPhases() {
+        if (Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.ICON) {
+            List<Phase> reachablePhases = new ArrayList<>();
+            Phase tempPhase = (Phase) this.getFirstPhase();
+            if (tempPhase == null) {
+                assert (false) : "Could not find the first phase of the parallel construct at line #" +
+                        Misc.getLineNum(this.getNode());
+                return null;
             }
             reachablePhases.add(tempPhase);
+            while (tempPhase.getSuccPhase() != null) {
+                tempPhase = tempPhase.getSuccPhase();
+                if (reachablePhases.contains(tempPhase)) {
+                    break;
+                }
+                reachablePhases.add(tempPhase);
+            }
+            return reachablePhases;
+        } else {
+            List<YPhase> reachablePhases = new ArrayList<>();
+            YPhase tempPhase = (YPhase) this.getFirstPhase();
+            if (tempPhase == null) {
+                assert (false) : "Could not find the first phase of the parallel construct at line #" +
+                        Misc.getLineNum(this.getNode());
+                return null;
+            }
+            reachablePhases.add(tempPhase);
+            Set<YPhase> endPoints = new HashSet<>();
+            reachablePhases.addAll(CollectorVisitor.collectNodeSetInGenericGraph(tempPhase, endPoints, n -> false, p -> (Set<YPhase>) p.getSuccPhases()));
+            reachablePhases.addAll(endPoints);
+            return reachablePhases;
+
         }
-        return reachablePhases;
     }
 
-    public Phase getFirstPhase() {
-        for (Phase ph : this.getCFGInfo().getNestedCFG().getBegin().getInfo().getNodePhaseInfo().getPhaseSet()) {
+    public AbstractPhase<?, ?> getFirstPhase() {
+        for (AbstractPhase<?, ?> ph : this.getCFGInfo().getNestedCFG().getBegin().getInfo().getNodePhaseInfo().getPhaseSet()) {
             if (ph.getParConstruct() == this.getNode()) {
                 return ph;
             }
@@ -168,19 +203,26 @@ public class ParallelConstructInfo extends OmpConstructInfo {
         return null;
     }
 
+    @Deprecated
     public void reinitAllPhaseList() {
-        this.allPhaseList = new ArrayList<>();
+        if (Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.ICON) {
+            this.allPhaseList = new ArrayList<Phase>();
+        } else {
+            this.allPhaseList = new ArrayList<YPhase>();
+        }
     }
 
-    public void removePhase(Phase phaseToBeRemoved) {
+    public void removePhase(AbstractPhase<?, ?> phaseToBeRemoved) {
         if (!this.allPhaseList.contains(phaseToBeRemoved)) {
             return;
         }
-        this.allPhaseList.remove(phaseToBeRemoved);
+        while (this.allPhaseList.remove(phaseToBeRemoved)) {
+            ;
+        }
         for (Node entry : new HashSet<>(phaseToBeRemoved.getNodeSet())) {
             entry.getInfo().getNodePhaseInfo().removePhase(phaseToBeRemoved);
         }
-        for (BeginPhasePoint bpp : new HashSet<>(phaseToBeRemoved.getBeginPoints())) {
+        for (AbstractPhasePointable bpp : new HashSet<>(phaseToBeRemoved.getBeginPoints())) {
             bpp.removePhase(phaseToBeRemoved);
         }
 

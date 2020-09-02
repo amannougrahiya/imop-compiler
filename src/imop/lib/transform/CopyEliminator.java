@@ -16,7 +16,8 @@ import imop.lib.analysis.AssignmentGetter;
 import imop.lib.analysis.flowanalysis.Cell;
 import imop.lib.analysis.flowanalysis.Definition;
 import imop.lib.analysis.flowanalysis.Symbol;
-import imop.lib.analysis.mhp.Phase;
+import imop.lib.analysis.mhp.AbstractPhase;
+import imop.lib.analysis.mhp.incMHP.Phase;
 import imop.lib.analysis.typeSystem.ArrayType;
 import imop.lib.transform.updater.NodeRemover;
 import imop.lib.transform.updater.sideeffect.SideEffect;
@@ -80,7 +81,8 @@ public class CopyEliminator {
 			 * uni-task Single and Master nodes in the phase.
 			 */
 			HashMap<Phase, Set<BeginNode>> uniNodeBegins = new HashMap<>();
-			for (Phase ph : leafNode.getInfo().getNodePhaseInfo().getPhaseSet()) {
+			for (AbstractPhase<?, ?> absPh : leafNode.getInfo().getNodePhaseInfo().getPhaseSet()) {
+				Phase ph = (Phase) absPh;
 				ph.getNodeSet().stream().forEach(n -> conflictingWrites.addAll(n.getInfo().getSharedWrites()));
 				Set<BeginNode> uniNodes = new HashSet<>();
 				for (Node internal : ph.getNodeSet()) {
@@ -133,7 +135,8 @@ public class CopyEliminator {
 					 * 2. leafNode and conflictingNode both belong to master
 					 * construct(s).
 					 */
-					for (Phase ph : leafNode.getInfo().getNodePhaseInfo().getPhaseSet()) {
+					for (AbstractPhase<?, ?> absPh : leafNode.getInfo().getNodePhaseInfo().getPhaseSet()) {
+						Phase ph = (Phase) absPh;
 						/*
 						 * Step 1: Ensure that no other node, apart from
 						 * those in uni-tasks write to the target.
@@ -761,7 +764,7 @@ public class CopyEliminator {
 			 * written to anywhere in the phases in which leafNode may exist.
 			 */
 			CellSet conflictingWrites = new CellSet();
-			for (Phase ph : leafNode.getInfo().getNodePhaseInfo().getPhaseSet()) {
+			for (AbstractPhase<?, ?> ph : leafNode.getInfo().getNodePhaseInfo().getPhaseSet()) {
 				ph.getNodeSet().stream().forEach(n -> conflictingWrites.addAll(n.getInfo().getSharedWrites()));
 			}
 

@@ -13,9 +13,10 @@ import imop.ast.node.external.*;
 import imop.ast.node.internal.*;
 import imop.lib.analysis.flowanalysis.Cell;
 import imop.lib.analysis.flowanalysis.Symbol;
-import imop.lib.analysis.mhp.BeginPhasePoint;
-import imop.lib.analysis.mhp.EndPhasePoint;
-import imop.lib.analysis.mhp.Phase;
+import imop.lib.analysis.mhp.AbstractPhase;
+import imop.lib.analysis.mhp.incMHP.BeginPhasePoint;
+import imop.lib.analysis.mhp.incMHP.EndPhasePoint;
+import imop.lib.analysis.mhp.incMHP.Phase;
 import imop.lib.analysis.typeSystem.ArrayType;
 import imop.lib.analysis.typeSystem.FunctionType;
 import imop.lib.cfg.CFGLinkFinder;
@@ -249,7 +250,7 @@ public class LoopInstructionsRescheduler {
 		 * Step B: Pick any phase that ends inside the loop and in which the
 		 * first leaf exists.
 		 */
-		Set<Phase> firstPhases = freeCFGNodes.get(firstFree).getInfo().getNodePhaseInfo().getPhaseSet();
+		Set<Phase> firstPhases = (Set<Phase>) freeCFGNodes.get(firstFree).getInfo().getNodePhaseInfo().getPhaseSet();
 		Phase insidePhase = null;
 		outer: for (Phase ph : firstPhases) {
 			for (EndPhasePoint epp : ph.getEndPoints()) {
@@ -385,7 +386,8 @@ public class LoopInstructionsRescheduler {
 		// Step A: Coming loop will collect all instructionNodes and constrainedNodes.
 		List<Node> loopElements = loopBody.getInfo().getCFGInfo().getElementList();
 		Set<Phase> visitedPhases = new HashSet<>();
-		for (Phase ph : predicate.getInfo().getNodePhaseInfo().getPhaseSet()) {
+		for (AbstractPhase<?, ?> absPh : predicate.getInfo().getNodePhaseInfo().getPhaseSet()) {
+			Phase ph = (Phase) absPh;
 			//			if (visitedPhases.contains(ph)) {
 			//				continue;
 			//			} else {
@@ -1280,7 +1282,8 @@ public class LoopInstructionsRescheduler {
 		Node leafFreeInst = Misc.getCFGNodeFor(freeInst);
 		leafFreeInst = Misc.isCFGLeafNode(leafFreeInst) ? leafFreeInst
 				: leafFreeInst.getInfo().getCFGInfo().getNestedCFG().getBegin();
-		for (Phase ph : predicate.getInfo().getNodePhaseInfo().getPhaseSet()) {
+		for (AbstractPhase<?, ?> absPh : predicate.getInfo().getNodePhaseInfo().getPhaseSet()) {
+			Phase ph = (Phase) absPh;
 			if (visitedPhases.contains(ph)) {
 				continue;
 			} else {
@@ -1381,14 +1384,14 @@ public class LoopInstructionsRescheduler {
 			assert (Misc.isCFGNode(inst));
 			cfgNode = inst.getInfo().getCFGInfo().getNestedCFG().getBegin();
 		}
-		Set<Phase> allPhases = cfgNode.getInfo().getNodePhaseInfo().getPhaseSet();
+		Set<Phase> allPhases = (Set<Phase>) cfgNode.getInfo().getNodePhaseInfo().getPhaseSet();
 		do {
 			boolean moved = moveInstructionAgainstControlFlow(inst, cell, multiAccessedCells);
 			if (!moved) {
 				break;
 			}
 
-			Set<Phase> thisPhases = cfgNode.getInfo().getNodePhaseInfo().getPhaseSet();
+			Set<Phase> thisPhases = (Set<Phase>) cfgNode.getInfo().getNodePhaseInfo().getPhaseSet();
 			if (Misc.doIntersect(allPhases, thisPhases)) {
 				return;
 			} else {
@@ -1670,7 +1673,8 @@ public class LoopInstructionsRescheduler {
 		 * NOTE: If these levels are not same, then we don't move the node.
 		 */
 		CompoundStatement barrLevelCompStmt = null;
-		for (Phase ph : compElement.getInfo().getNodePhaseInfo().getPhaseSet()) {
+		for (AbstractPhase<?, ?> absPh : compElement.getInfo().getNodePhaseInfo().getPhaseSet()) {
+			Phase ph = (Phase) absPh;
 			for (BeginPhasePoint bpp : ph.getBeginPoints()) {
 				if (!(bpp.getNode() instanceof BarrierDirective)) {
 					continue;

@@ -142,7 +142,7 @@ public class CollectorVisitor {
 	 * 
 	 * @param startPoint
 	 *            a node of type {@code T}, starting whose successors the
-	 *            traversals have to start. Note that the {@terminationCheck} is
+	 *            traversals have to start. Note that the {@code terminationCheck} is
 	 *            not carried out on this node, unless any traversed paths
 	 *            pass through it.
 	 * @param endPoints

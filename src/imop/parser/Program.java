@@ -18,8 +18,8 @@ import imop.lib.analysis.flowanalysis.dataflow.PointsToAnalysis;
 import imop.lib.analysis.flowanalysis.dataflow.PointsToAnalysis.PointsToGlobalState;
 import imop.lib.analysis.flowanalysis.generic.AnalysisDimension.SVEDimension;
 import imop.lib.analysis.flowanalysis.generic.FlowAnalysis;
-import imop.lib.analysis.mhp.BeginPhasePoint;
-import imop.lib.analysis.mhp.Phase;
+import imop.lib.analysis.mhp.AbstractPhasePointable;
+import imop.lib.analysis.mhp.incMHP.Phase;
 import imop.lib.analysis.mhp.lock.AbstractLock;
 import imop.lib.analysis.solver.ConstraintsGenerator;
 import imop.lib.cfg.info.CFGInfo;
@@ -37,12 +37,16 @@ public class Program {
         Program.loadZ3LibrariesInMac();
     }
 
-    public static enum UpdateCategory {
+    public enum UpdateCategory {
         EGINV,  // eager invalidation, upon each elementary transformation, with rerun of the analysis.
         EGUPD, // eager update, upon each elementary transformation, with incremental update to the analysis data.
         LZINV,  // lazy invalidation, involving rerun of the analysis, whenever first read is performed after transformation.
         LZUPD  // lazy update, with incremental update to the analysis data, whenever first read is performed after transformation.
 
+    }
+
+    public enum ConcurrencyAlgorithm {
+        ICON, YUANMHP
     }
 
     private static TranslationUnit root;
@@ -54,16 +58,24 @@ public class Program {
     public static boolean removeUnused;
     public static String fileName;
     public static boolean enableUnmodifiability;
-    /** Checks whether at least one symbol is required for communication. */
+    /**
+     * Checks whether at least one symbol is required for communication.
+     */
     public static boolean preciseDFDEdges = false;
-    /** Prints side-effects as comments on annotated nodes. */
+    /**
+     * Prints side-effects as comments on annotated nodes.
+     */
     public static boolean printSideEffects = true;
     public static boolean printDFDs = true;
     public static boolean printRWinDFDs = false;
-    /** Decides whether intermediate states of the program should be dumped. */
+    /**
+     * Decides whether intermediate states of the program should be dumped.
+     */
     public static boolean dumpIntermediateStates = false;
     public static boolean printNoFiles = false;
-    /** Decided whether the PTA-heuristic that looks at the cell being dereferenced, is enabled. */
+    /**
+     * Decided whether the PTA-heuristic that looks at the cell being dereferenced, is enabled.
+     */
     public static boolean ptaHeuristicEnabled = false;
     public static UpdateCategory updateCategory;
     public static UpdateCategory mhpUpdateCategory;
@@ -80,6 +92,8 @@ public class Program {
     private static CellSet cellsThatMayPointToSymbols;
     private static boolean postOrderValid = false;
     private static List<Node> reversePostOrderOfLeaves = new ArrayList<>();
+    public static ConcurrencyAlgorithm concurrencyAlgorithm = ConcurrencyAlgorithm.ICON;
+    public static boolean sveNoCheck = false;
     private static Set<Symbol> addressTakenSymbols;
     /*
      * When set to true, the call-stacks can never contain two call-statements
@@ -144,8 +158,10 @@ public class Program {
         Program.basePointsTo = true;
         Program.memoizeAccesses = 0;
         Program.preciseDFDEdges = false;
-        Program.updateCategory = UpdateCategory.LZUPD; // Default is LZINC.
-        Program.mhpUpdateCategory = UpdateCategory.LZUPD; // Default is LZINC.
+        Program.updateCategory = UpdateCategory.LZUPD; // Default is LZUPD.
+        Program.concurrencyAlgorithm = ConcurrencyAlgorithm.ICON;
+        Program.mhpUpdateCategory = UpdateCategory.LZUPD; // Default is LZUPD.
+        Program.sveNoCheck = true;
         Program.disableLineNumbers = true; // Unless we need line numbers, keep this as true.
 
         String filePath = "";
@@ -163,9 +179,9 @@ public class Program {
         //		filePath = ("../tests/npb-post/cg3-0.i"); // SVE-all: 2.50s.
         //        filePath = ("../tests/npb-post/ep3-0.i"); // SVE-all: 0.55s
         //        filePath = ("../tests/npb-post/ft3-0.i"); // SVE-all: 3.73s.
-        filePath = ("../tests/npb-post/is3-0.i"); // SVE-all: 0.69
-        //        filePath = ("../tests/npb-post/lu3-0.i"); // SVE-all: 16.26s.
-        //		filePath = ("../tests/npb-post/mg3-0.i"); // SVE-all: 9.88s;
+        //        filePath = ("../tests/npb-post/is3-0.i"); // SVE-all: 0.69
+        //                filePath = ("../tests/npb-post/lu3-0.i"); // SVE-all: 16.26s.
+        filePath = ("../tests/npb-post/mg3-0.i"); // SVE-all: 9.88s;
         //        filePath = ("../tests/npb-post/sp3-0.i"); // SVE-all: 23s.
 
         //		filePath = "../output-dump/imop_useful.i";
@@ -318,9 +334,9 @@ public class Program {
         //		filePath = ("../tests/fft_openmp.i");
         //		filePath = ("../tests/quake.i");
         //		filePath = ("../tests/sequoia/amgmk.i");
-        filePath = ("../tests/sequoia/clomp.i");
-        filePath = ("../tests/fsu/md_openmp.i");
-        filePath = ("../tests/alternate.i");
+        //        filePath = ("../tests/sequoia/clomp.i");
+        //        filePath = ("../tests/fsu/md_openmp.i");
+        //        filePath = ("../tests/alternate.i");
         //		filePath = ("../tests/parboil/lbm.i");
         //		filePath = ("../tests/insert.i");
         //		filePath = ("../tests/minebench/kmeans.i");
@@ -382,24 +398,24 @@ public class Program {
             if (str.equals("--category") || str.equals("-c")) {
                 String next = args[index + 1];
                 switch (next) {
-                    case "EGFF":
+                    case "EGINV":
                         Program.mhpUpdateCategory = UpdateCategory.EGINV;
                         Program.updateCategory = UpdateCategory.EGINV;
                         break;
-                    case "LZFF":
+                    case "LZINV":
                         Program.mhpUpdateCategory = UpdateCategory.LZINV;
                         Program.updateCategory = UpdateCategory.LZINV;
                         break;
-                    case "EGINC":
+                    case "EGUPD":
                         Program.mhpUpdateCategory = UpdateCategory.EGUPD;
                         Program.updateCategory = UpdateCategory.EGUPD;
                         break;
-                    case "LZINC":
+                    case "LZUPD":
                         Program.mhpUpdateCategory = UpdateCategory.LZUPD;
                         Program.updateCategory = UpdateCategory.LZUPD;
                         break;
                     default:
-                        System.out.println("Please use a valid identifier for category: EGFF, LZFF, EGINC, or LZINC.");
+                        System.out.println("Please use a valid identifier for category: EGINV, LZINV, EGUPD, or LZUPD.");
                         System.out.println("Read the documentation for more details. Exiting..");
                         System.exit(0);
                 }
@@ -472,7 +488,7 @@ public class Program {
         FlowAnalysis.resetStaticFields();
         PointsToAnalysis.stateOfPointsTo = PointsToGlobalState.NOT_INIT;
         AbstractLock.resetStaticFields();
-        BeginPhasePoint.resetStaticFields();
+        AbstractPhasePointable.resetStaticFields();
         Phase.resetStaticFields();
         SVEChecker.resetStaticFields();
         ConstraintsGenerator.resetStaticFields();

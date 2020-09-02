@@ -19,9 +19,10 @@ import imop.lib.analysis.flowanalysis.Symbol;
 import imop.lib.analysis.flowanalysis.generic.AnalysisDimension.SVEDimension;
 import imop.lib.analysis.flowanalysis.generic.AnalysisName;
 import imop.lib.analysis.flowanalysis.generic.FlowAnalysis;
-import imop.lib.analysis.mhp.BeginPhasePoint;
-import imop.lib.analysis.mhp.EndPhasePoint;
-import imop.lib.analysis.mhp.Phase;
+import imop.lib.analysis.mhp.AbstractPhase;
+import imop.lib.analysis.mhp.incMHP.BeginPhasePoint;
+import imop.lib.analysis.mhp.incMHP.EndPhasePoint;
+import imop.lib.analysis.mhp.incMHP.Phase;
 import imop.lib.analysis.solver.ConstraintsGenerator;
 import imop.lib.analysis.solver.FieldSensitivity;
 import imop.lib.analysis.typeSystem.ArrayType;
@@ -34,10 +35,7 @@ import imop.lib.cg.CallStack;
 import imop.lib.cg.NodeWithStack;
 import imop.lib.transform.BasicTransform;
 import imop.lib.transform.CopyEliminator;
-import imop.lib.transform.simplify.DeclarationEscalator;
-import imop.lib.transform.simplify.FunctionInliner;
-import imop.lib.transform.simplify.ParallelConstructExpander;
-import imop.lib.transform.simplify.RedundantSynchronizationRemoval;
+import imop.lib.transform.simplify.*;
 import imop.lib.transform.updater.InsertImmediatePredecessor;
 import imop.lib.transform.updater.InsertOnTheEdge;
 import imop.lib.util.*;
@@ -137,7 +135,11 @@ public class DriverModule {
             DumpSnapshot.dumpPhases("merged" + Program.mhpUpdateCategory);
         }
         //	OLD CODE: BasicTransform.removeUnusedFunctions(Program.getRoot());
-        RedundantSynchronizationRemoval.removeBarriers(Program.getRoot());
+        if (Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.ICON) {
+            RedundantSynchronizationRemoval.removeBarriers(Program.getRoot());
+        } else {
+            RedundantSynchronizationRemovalForYA.removeBarriers(Program.getRoot());
+        }
         //		RedundantSynchronizationRemoval.removeBarriersFromAllParConsWithin(Program.getRoot());
         if (dumpIntermediate) {
             DumpSnapshot.dumpRoot("merged-rem" + Program.updateCategory);
@@ -159,7 +161,11 @@ public class DriverModule {
             DumpSnapshot.dumpPhases("merged-rem-inlined-merged" + Program.mhpUpdateCategory);
         }
         //				Program.getRoot().getInfo().removeExtraScopes();
-        RedundantSynchronizationRemoval.removeBarriers(Program.getRoot());
+        if (Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.ICON) {
+            RedundantSynchronizationRemoval.removeBarriers(Program.getRoot());
+        } else {
+            RedundantSynchronizationRemovalForYA.removeBarriers(Program.getRoot());
+        }
         //		RedundantSynchronizationRemoval.removeBarriersFromAllParConsWithin(Program.getRoot());
         if (dumpIntermediate) {
             DumpSnapshot.dumpRoot("merged-rem-inlined-merged-rem" + Program.mhpUpdateCategory);
@@ -258,7 +264,7 @@ public class DriverModule {
         }
         System.err.println("Time spent in SVE queries: " + SVEChecker.sveTimer / (1e9 * 1.0) + "s.");
         System.err.println("Time spent in phase update: " +
-                (Phase.stabilizationTime + BeginPhasePoint.stabilizationTime) / (1e9 * 1.0) + "s.");
+                (AbstractPhase.stabilizationTime + BeginPhasePoint.stabilizationTime) / (1e9 * 1.0) + "s.");
         System.err.println("Time spent in inlining: " + FunctionInliner.inliningTimer / (1e9 * 1.0) + "s.");
         System.err.println("Time spent in having uni-task precision in IDFA edge creation: " +
                 CFGInfo.uniPrecisionTimer / (1e9 * 1.0) + "s.");
@@ -305,7 +311,7 @@ public class DriverModule {
         }
         System.err.println("Time spent in SVE queries: " + SVEChecker.sveTimer / (1e9 * 1.0) + "s.");
         System.err.println("Time spent in phase update: " +
-                (Phase.stabilizationTime + BeginPhasePoint.stabilizationTime) / (1e9 * 1.0) + "s.");
+                (AbstractPhase.stabilizationTime + BeginPhasePoint.stabilizationTime) / (1e9 * 1.0) + "s.");
         System.err.println("Time spent in inlining: " + FunctionInliner.inliningTimer / (1e9 * 1.0) + "s.");
         System.err.println("Time spent in having uni-task precision in IDFA edge creation: " +
                 CFGInfo.uniPrecisionTimer / (1e9 * 1.0) + "s.");
@@ -571,7 +577,8 @@ public class DriverModule {
          * belong to itStmt, and that start a phase of which borderNode is a
          * part.
          */
-        Set<Phase> borderPhases = borderNode.getInfo().getNodePhaseInfo().getPhaseSet();
+        assert (Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.ICON);
+        Set<Phase> borderPhases = (Set<Phase>) borderNode.getInfo().getNodePhaseInfo().getPhaseSet();
         cleanWrites.addAll(extractCleanWrites(itContents, borderPhases));
 
         /*
@@ -1059,7 +1066,7 @@ public class DriverModule {
         BeginNode beginOfLoop = itStmt.getInfo().getCFGInfo().getNestedCFG().getBegin();
 
         List<Phase> entryPhases = new ArrayList<>();
-        entryPhases.addAll(beginOfLoop.getInfo().getNodePhaseInfo().getPhaseSet());
+        entryPhases.addAll((Collection<? extends Phase>) beginOfLoop.getInfo().getNodePhaseInfo().getPhaseSet());
 
         Set<Node> cfgContents = new HashSet<>();
         for (NodeWithStack nodeWithStack : itStmt.getInfo().getCFGInfo().getIntraTaskCFGLeafContentsOfSameParLevel(new CallStack())) {
@@ -1173,13 +1180,13 @@ public class DriverModule {
         Node loopEntryPoint = itStmt.getInfo().getLoopEntryPoint();
         // TODO: Add code here for the case where loopEntryPoint is null.
         int thisOuterLength = 1;
-        for (Phase ph : loopEntryPoint.getInfo().getNodePhaseInfo().getPhaseSet()) {
+        for (AbstractPhase<?, ?> ph : loopEntryPoint.getInfo().getNodePhaseInfo().getPhaseSet()) {
             /*
              * If this phase does not have any end point that lies within
              * the loop, then continue.
              */
             if (!ph.getEndPoints().parallelStream().anyMatch(n -> internalNodes.parallelStream().anyMatch(iN ->
-                    iN.getNode() == n.getNode()))) {
+                    iN.getNode() == n.getNodeFromInterface()))) {
                 continue;
             }
 
@@ -1189,7 +1196,7 @@ public class DriverModule {
              * loop.
              */
             int thisLength = 1;
-            Phase nextPhase = ph.getSuccPhase();
+            Phase nextPhase = ((Phase) ph).getSuccPhase();
             Set<Phase> visitedPhases = new HashSet<>();
             while (nextPhase != null) {
                 if (visitedPhases.contains(nextPhase)) {
@@ -1276,7 +1283,8 @@ public class DriverModule {
         if (itStmt instanceof WhileStatement) {
             WhileStatement whileStmt = (WhileStatement) itStmt;
             Expression predicate = whileStmt.getInfo().getCFGInfo().getPredicate();
-            for (Phase ph : predicate.getInfo().getNodePhaseInfo().getPhaseSet()) {
+            for (AbstractPhase<?, ?> absPh : predicate.getInfo().getNodePhaseInfo().getPhaseSet()) {
+                Phase ph = (Phase) absPh;
                 returningSet.add(ph);
                 /*
                  * If this phase does not have any end point that lies within

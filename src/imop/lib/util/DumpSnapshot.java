@@ -14,9 +14,9 @@ import imop.lib.analysis.flowanalysis.Symbol;
 import imop.lib.analysis.flowanalysis.dataflow.DataDependenceForward.DataDependenceForwardFF;
 import imop.lib.analysis.flowanalysis.generic.AnalysisName;
 import imop.lib.analysis.flowanalysis.generic.FlowAnalysis.FlowFact;
-import imop.lib.analysis.mhp.ParallelPhaseDumper;
-import imop.lib.analysis.mhp.ParallelRegionDumper;
-import imop.lib.analysis.mhp.Phase;
+import imop.lib.analysis.mhp.AbstractPhase;
+import imop.lib.analysis.mhp.incMHP.ParallelPhaseDumper;
+import imop.lib.analysis.mhp.incMHP.ParallelRegionDumper;
 import imop.lib.analysis.solver.InductionRange;
 import imop.lib.analysis.solver.NaturalLoopAnalysis;
 import imop.lib.analysis.solver.tokens.IdOrConstToken;
@@ -249,7 +249,7 @@ public class DumpSnapshot {
 		});
 		commetors.add((n) -> {
 			String tempStr = "[";
-			for (Phase ph : n.getInfo().getNodePhaseInfo().getPhaseSet()) {
+			for (AbstractPhase<?, ?> ph : n.getInfo().getNodePhaseInfo().getPhaseSet()) {
 				tempStr += ph.getPhaseId() + "; ";
 			}
 			tempStr += "]";
@@ -289,7 +289,7 @@ public class DumpSnapshot {
 		}
 		List<Integer> newId = new ArrayList<>();
 		for (Node n : Program.getRoot().getInfo().getCFGInfo().getLexicalCFGContentsInPostOrder()) {
-			for (Phase ph : n.getInfo().getNodePhaseInfo().getPhaseSet()) {
+			for (AbstractPhase<?, ?> ph : n.getInfo().getNodePhaseInfo().getPhaseSet()) {
 				int thisPH = ph.getPhaseId();
 				if (!newId.contains(thisPH)) {
 					newId.add(thisPH);
@@ -299,7 +299,7 @@ public class DumpSnapshot {
 		List<Commentor> commetors = new ArrayList<>();
 		commetors.add((n) -> {
 			List<Integer> arr = new ArrayList<>();
-			for (Phase ph : n.getInfo().getNodePhaseInfo().getPhaseSet()) {
+			for (AbstractPhase<?, ?> ph : n.getInfo().getNodePhaseInfo().getPhaseSet()) {
 				arr.add(newId.indexOf(ph.getPhaseId()) + 1);
 			}
 			Collections.sort(arr);
@@ -348,6 +348,9 @@ public class DumpSnapshot {
 
 	public static void dumpPredicates(String string) {
 		if (Program.printNoFiles) {
+			return;
+		}
+		if (Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.YUANMHP) {
 			return;
 		}
 		List<Commentor> commetors = new ArrayList<>();

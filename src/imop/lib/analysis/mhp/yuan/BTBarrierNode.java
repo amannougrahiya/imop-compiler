@@ -29,6 +29,10 @@ public class BTBarrierNode extends BTNode {
 		this.barrierNode = barrierNode;
 	}
 
+	public Node getASTNode() {
+		return this.barrierNode;
+	}
+
 	@Override
 	public String getString(int tab) {
 		String str = this.printTabs(tab);

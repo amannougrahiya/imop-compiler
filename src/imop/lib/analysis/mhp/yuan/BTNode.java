@@ -25,6 +25,8 @@ public abstract class BTNode {
 		return parent;
 	}
 
+	public abstract Node getASTNode();
+
 	public abstract String getString(int tab);
 
 	public abstract Integer getFixedLength();

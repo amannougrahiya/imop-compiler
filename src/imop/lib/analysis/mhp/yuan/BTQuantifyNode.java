@@ -31,6 +31,10 @@ public class BTQuantifyNode extends BTNode {
 		this.loopBody = loopBody;
 	}
 
+	public Node getASTNode() {
+		return this.predicate;
+	}
+
 	public boolean isConcurrent() {
 		if (!SVEChecker.isSingleValuedPredicate(predicate)) {
 			return false; // Testing..

@@ -29,6 +29,10 @@ public class BTFunctionNode extends BTNode {
 		this.callStmt = callStmt;
 	}
 
+	public Node getASTNode() {
+		return this.callStmt;
+	}
+
 	public boolean isConcurrent() {
 		List<FunctionDefinition> calledFunctions = this.callStmt.getInfo().getCalledDefinitions();
 		if (calledFunctions.isEmpty() || calledFunctions.size() == 1) {

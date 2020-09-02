@@ -41,6 +41,10 @@ public class BTAlternateNode extends BTNode {
 		this.predicate = predicate;
 	}
 
+	public Node getASTNode() {
+		return this.predicate;
+	}
+
 	public boolean isConcurrent() {
 		if (!SVEChecker.isSingleValuedPredicate(predicate)) {
 			return true;

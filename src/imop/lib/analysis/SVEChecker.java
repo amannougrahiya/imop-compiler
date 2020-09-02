@@ -64,6 +64,9 @@ public class SVEChecker {
 	 *         true, if the given expression is single-valued.
 	 */
 	public static boolean isSingleValuedPredicate(Expression exp) {
+		if (Program.sveNoCheck) {
+			return true;
+		}
 		long timer = System.nanoTime();
 		if (!Misc.isAPredicate(exp)) {
 			SVEChecker.sveTimer += (System.nanoTime() - timer);

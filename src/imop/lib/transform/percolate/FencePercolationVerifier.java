@@ -9,7 +9,7 @@
 package imop.lib.transform.percolate;
 
 import imop.ast.node.external.*;
-import imop.lib.analysis.mhp.Phase;
+import imop.lib.analysis.mhp.incMHP.Phase;
 import imop.lib.cg.CallStack;
 import imop.lib.cg.NodeWithStack;
 import imop.lib.util.CellSet;

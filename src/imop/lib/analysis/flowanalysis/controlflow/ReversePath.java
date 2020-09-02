@@ -9,7 +9,7 @@
 package imop.lib.analysis.flowanalysis.controlflow;
 
 import imop.lib.analysis.flowanalysis.BranchEdge;
-import imop.lib.analysis.mhp.BeginPhasePoint;
+import imop.lib.analysis.mhp.incMHP.BeginPhasePoint;
 import imop.lib.util.ImmutableList;
 
 import java.util.ArrayList;

@@ -11,7 +11,8 @@ package imop.lib.transform.percolate;
 import imop.ast.info.cfgNodeInfo.ParallelConstructInfo;
 import imop.ast.node.external.*;
 import imop.ast.node.internal.*;
-import imop.lib.analysis.mhp.Phase;
+import imop.lib.analysis.mhp.AbstractPhase;
+import imop.lib.analysis.mhp.incMHP.Phase;
 import imop.lib.transform.simplify.RedundantSynchronizationRemoval;
 import imop.lib.util.Misc;
 import imop.parser.Program;
@@ -40,7 +41,8 @@ public class UpwardPercolater {
 		boolean percolateUp;
 		do {
 			percolateUp = false;
-			for (Phase phase : new ArrayList<>(parConsInfo.getConnectedPhases())) {
+			for (AbstractPhase<?, ?> absPhase : new ArrayList<>(parConsInfo.getConnectedPhases())) {
+				Phase phase = (Phase) absPhase;
 				//				System.err.println("Trying to percolate code upwards in phase #" + phase.getPhaseId());
 				boolean tempRet = phase.percolateCodeUpwardsInLoop(null);
 				if (tempRet) {

@@ -14,7 +14,7 @@ import imop.ast.node.internal.*;
 import imop.lib.analysis.flowanalysis.BranchEdge;
 import imop.lib.analysis.flowanalysis.generic.*;
 import imop.lib.analysis.flowanalysis.generic.AnalysisDimension.SVEDimension;
-import imop.lib.analysis.mhp.BeginPhasePoint;
+import imop.lib.analysis.mhp.incMHP.BeginPhasePoint;
 import imop.lib.cg.CallStack;
 import imop.lib.cg.NodeWithStack;
 import imop.lib.util.CellSet;

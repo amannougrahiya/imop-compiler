@@ -1,18 +1,22 @@
 /*
- * Copyright (c) 2019 Aman Nougrahiya, V Krishna Nandivada, IIT Madras.
- * This file is a part of the project IMOP, licensed under the MIT license.
- * See LICENSE.md for the full text of the license.
- * 
- * The above notice shall be included in all copies or substantial
- * portions of this file.
+ *   Copyright (c) 2020 Aman Nougrahiya, V Krishna Nandivada, IIT Madras.
+ *   This file is a part of the project IMOP, licensed under the MIT license.
+ *   See LICENSE.md for the full text of the license.
+ *
+ *   The above notice shall be included in all copies or substantial
+ *   portions of this file.
  */
-package imop.lib.analysis.mhp;
+package imop.lib.analysis.mhp.incMHP;
 
 import imop.ast.node.external.*;
 import imop.ast.node.internal.*;
+import imop.lib.analysis.mhp.AbstractPhase;
+import imop.lib.analysis.mhp.AbstractPhasePointable;
 import imop.lib.cg.CallStack;
 import imop.lib.cg.NodeWithStack;
 import imop.lib.util.Misc;
+
+import java.util.Set;
 
 public class EndPhasePoint extends PhasePoint {
 
@@ -60,4 +64,41 @@ public class EndPhasePoint extends PhasePoint {
 		}
 		return retString;
 	}
+
+	@Override
+	public Set<Node> getReachableNodes() {
+		Thread.dumpStack();
+	    Misc.exitDueToError("We don't require reachable nodes for an EndPhasePoint!");
+		return null;
+	}
+
+	@Override
+	public Set<? extends AbstractPhase<?, ?>> getPhaseSet() {
+		Thread.dumpStack();
+		Misc.exitDueToError("We don't require phase information for an EndPhasePoint!");
+		return null;
+	}
+
+	@Override
+	public Set<? extends AbstractPhasePointable> getNextBarriers() {
+		Thread.dumpStack();
+		Misc.exitDueToError("We don't require next set of barriers for an EndPhasePoint!");
+		return null;
+	}
+
+	@Override
+	public void flushMHPData(AbstractPhase<?, ?> phase) {
+		assert (false);
+	}
+
+	@Override
+	public void flushData() {
+		assert (false);
+	}
+
+	@Override
+	public <T extends AbstractPhase<?, ?>> void removePhase(T phaseToBeRemoved) {
+		assert (false) : "Unexpected path";
+	}
+
 }

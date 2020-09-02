@@ -10,7 +10,7 @@ package imop.lib.cfg.parallel;
 
 import imop.ast.node.external.*;
 import imop.ast.node.internal.*;
-import imop.lib.analysis.mhp.Phase;
+import imop.lib.analysis.mhp.AbstractPhase;
 import imop.lib.util.Misc;
 
 import java.util.HashSet;
@@ -23,7 +23,7 @@ public class DataFlowGraph {
 	 * 
 	 * @param parConstruct
 	 */
-	public static void populateInterTaskEdges(Node rootNode, Phase phase) {
+	public static void populateInterTaskEdges(Node rootNode, AbstractPhase<?, ?> phase) {
 		/*
 		 * Step 1: Obtain the set of all the DummyFlushDirectives.
 		 */

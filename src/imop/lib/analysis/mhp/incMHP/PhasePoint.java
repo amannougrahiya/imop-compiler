@@ -1,21 +1,22 @@
 /*
- * Copyright (c) 2019 Aman Nougrahiya, V Krishna Nandivada, IIT Madras.
- * This file is a part of the project IMOP, licensed under the MIT license.
- * See LICENSE.md for the full text of the license.
- * 
- * The above notice shall be included in all copies or substantial
- * portions of this file.
+ *   Copyright (c) 2020 Aman Nougrahiya, V Krishna Nandivada, IIT Madras.
+ *   This file is a part of the project IMOP, licensed under the MIT license.
+ *   See LICENSE.md for the full text of the license.
+ *
+ *   The above notice shall be included in all copies or substantial
+ *   portions of this file.
  */
-package imop.lib.analysis.mhp;
+package imop.lib.analysis.mhp.incMHP;
 
 import imop.ast.node.external.*;
+import imop.lib.analysis.mhp.AbstractPhasePointable;
 import imop.lib.cg.CallSite;
 import imop.lib.cg.CallStack;
 import imop.lib.cg.NodeWithStack;
 
 import java.util.Stack;
 
-public abstract class PhasePoint extends NodeWithStack {
+public abstract class PhasePoint extends NodeWithStack implements AbstractPhasePointable {
 	public PhasePoint(Node sink, CallStack callStack) {
 		super(sink, callStack);
 	}
@@ -56,4 +57,5 @@ public abstract class PhasePoint extends NodeWithStack {
 	public void setCallSiteStack(Stack<CallSite> callSiteStack) {
 		this.callSiteStack = callSiteStack;
 	}
+
 }

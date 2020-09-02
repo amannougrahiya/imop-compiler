@@ -13,7 +13,7 @@ import imop.ast.node.external.*;
 import imop.ast.node.internal.*;
 import imop.lib.analysis.flowanalysis.*;
 import imop.lib.analysis.flowanalysis.dataflow.PointsToAnalysis;
-import imop.lib.analysis.mhp.MHPAnalyzer;
+import imop.lib.analysis.mhp.incMHP.MHPAnalyzer;
 import imop.lib.analysis.typeSystem.Type;
 import imop.lib.builder.Builder;
 import imop.lib.cfg.CFGGenerator;
@@ -1007,8 +1007,8 @@ public class FrontEnd {
 		}
 
 		System.err.println("Pass: Marking the phases.");
-		timeStart = System.nanoTime();
 		MHPAnalyzer.performMHPAnalysis(root);
+		timeStart = System.nanoTime();
 		timeTaken = System.nanoTime() - timeStart;
 		System.err.println("\tTime taken: " + timeTaken / 1000000000.0 + "s.");
 		DumpSnapshot.dumpPhases("first");
