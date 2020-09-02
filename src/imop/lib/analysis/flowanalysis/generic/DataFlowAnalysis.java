@@ -46,7 +46,8 @@ public abstract class DataFlowAnalysis<F extends FlowAnalysis.FlowFact> extends 
                     if (siblingBarrier == barrier) {
                         continue;
                     }
-                    if (this.analysisDimension.getSVEDimension() == SVEDimension.SVE_SENSITIVE &&
+                    if (Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.ICON &&
+                            this.analysisDimension.getSVEDimension() == SVEDimension.SVE_SENSITIVE &&
                             !CoExistenceChecker.canCoExistInPhase(barrier, siblingBarrier, ph)) {
                         continue;
                     }
@@ -60,7 +61,8 @@ public abstract class DataFlowAnalysis<F extends FlowAnalysis.FlowFact> extends 
                     if (siblingBarrier == barrier) {
                         continue;
                     }
-                    if (this.analysisDimension.getSVEDimension() == SVEDimension.SVE_SENSITIVE &&
+                    if (Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.ICON &&
+                            this.analysisDimension.getSVEDimension() == SVEDimension.SVE_SENSITIVE &&
                             !CoExistenceChecker.canCoExistInPhase(barrier, siblingBarrier, ph)) {
                         continue;
                     }
