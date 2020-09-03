@@ -1281,15 +1281,16 @@ public class AutomatedUpdater {
     public static Set<BeginPhasePoint> updateBPPOrGetAffectedBPPSetUponRemoval(Node node) {
         if (Program.mhpUpdateCategory == UpdateCategory.EGINV) {
             return null;
-        } else if (Program.mhpUpdateCategory == UpdateCategory.LZINV ||
-                Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.YUANMHP) {
-            return null;
         }
         node = Misc.getCFGNodeFor(node);
         long timer = System.nanoTime();
         if (AutomatedUpdater.stabilizeMHPLocallyUponRemoval(node)) {
             BeginPhasePoint.stabilizationTime += (System.nanoTime() - timer);
             return new HashSet<>();
+        }
+        if (Program.mhpUpdateCategory == UpdateCategory.LZINV ||
+                Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.YUANMHP) {
+            return null;
         }
         Set<BeginPhasePoint> affectedBPPs = new HashSet<>();
         for (NodeWithStack predWithStack : node.getInfo().getCFGInfo().getParallelConstructFreeInterProceduralLeafPredecessors(new CallStack())) {
