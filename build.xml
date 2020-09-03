@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="imop-develop" default="all">
   
-  
   <property file="build.properties"/>
   <!-- Uncomment the following property if no tests compilation is needed -->
   <!-- 
@@ -217,4 +216,8 @@
   <target name="build.modules" depends="init, clean, compile.module.mainmodule" description="build all modules"/>
   
   <target name="all" depends="build.modules" description="build all"/>
+<<<<<<< HEAD
 </project>
+=======
+</project>
+>>>>>>> ed883b720458447e74325c18530e10dc2339b85b
