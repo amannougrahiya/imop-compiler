@@ -1101,34 +1101,57 @@ public class AutomatedUpdater {
         }
         // Take MHP information from all the predecessors.
         hasBeenOtimized++;
-        boolean oldVal = BeginPhasePoint.stabilizationInProgress;
-        BeginPhasePoint.stabilizationInProgress = true;
-        Set<Node> internalContents = node.getInfo().getCFGInfo().getIntraTaskCFGLeafContents();
-        for (Node pred : predSet) {
-            Set<BeginPhasePoint> bppsOfPred = BeginPhasePoint.getRelatedBPPsNoStaleRemoval(pred);
-            for (BeginPhasePoint bpp : bppsOfPred) {
-                for (Node n : internalContents) {
-                    bpp.getInternalReachables().add(n);
-                }
-            }
-            try {
-                for (AbstractPhase<?, ?> ph : pred.getInfo().getNodePhaseInfo().getStalePhaseSet()) {
+        if (Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.ICON) {
+            boolean oldVal = BeginPhasePoint.stabilizationInProgress;
+            BeginPhasePoint.stabilizationInProgress = true;
+            Set<Node> internalContents = node.getInfo().getCFGInfo().getIntraTaskCFGLeafContents();
+            for (Node pred : predSet) {
+                Set<BeginPhasePoint> bppsOfPred = BeginPhasePoint.getRelatedBPPsNoStaleRemoval(pred);
+                for (BeginPhasePoint bpp : bppsOfPred) {
                     for (Node n : internalContents) {
-                        ph.addNode(n);
+                        bpp.getInternalReachables().add(n);
                     }
                 }
-            } catch (ConcurrentModificationException e) {
-                System.err.println("While attempting to add " + node + " a" + node.getClass().getSimpleName() +
-                        " we found an issue while dealing with its predecessor " + pred + " a " +
-                        pred.getClass().getSimpleName() +
-                        ". It's worth noting that phaseSet of the predecessor is object " +
-                        pred.getInfo().getNodePhaseInfo().getStalePhaseSet().hashCode() +
-                        ", whereas that of the node is " +
-                        node.getInfo().getNodePhaseInfo().getStalePhaseSet().hashCode());
-                System.exit(0);
+                try {
+                    for (AbstractPhase<?, ?> ph : pred.getInfo().getNodePhaseInfo().getStalePhaseSet()) {
+                        for (Node n : internalContents) {
+                            ph.addNode(n);
+                        }
+                    }
+                } catch (ConcurrentModificationException e) {
+                    System.err.println("While attempting to add " + node + " a" + node.getClass().getSimpleName() +
+                            " we found an issue while dealing with its predecessor " + pred + " a " +
+                            pred.getClass().getSimpleName() +
+                            ". It's worth noting that phaseSet of the predecessor is object " +
+                            pred.getInfo().getNodePhaseInfo().getStalePhaseSet().hashCode() +
+                            ", whereas that of the node is " +
+                            node.getInfo().getNodePhaseInfo().getStalePhaseSet().hashCode());
+                    System.exit(0);
+                }
             }
+            BeginPhasePoint.stabilizationInProgress = oldVal;
+        } else {
+            Set<Node> internalContents = node.getInfo().getCFGInfo().getIntraTaskCFGLeafContents();
+            for (Node pred : predSet) {
+                try {
+                    for (AbstractPhase<?, ?> ph : pred.getInfo().getNodePhaseInfo().getStalePhaseSet()) {
+                        for (Node n : internalContents) {
+                            ph.addNode(n);
+                        }
+                    }
+                } catch (ConcurrentModificationException e) {
+                    System.err.println("While attempting to add " + node + " a" + node.getClass().getSimpleName() +
+                            " we found an issue while dealing with its predecessor " + pred + " a " +
+                            pred.getClass().getSimpleName() +
+                            ". It's worth noting that phaseSet of the predecessor is object " +
+                            pred.getInfo().getNodePhaseInfo().getStalePhaseSet().hashCode() +
+                            ", whereas that of the node is " +
+                            node.getInfo().getNodePhaseInfo().getStalePhaseSet().hashCode());
+                    System.exit(0);
+                }
+            }
+
         }
-        BeginPhasePoint.stabilizationInProgress = oldVal;
         return true;
     }
 
@@ -1142,11 +1165,6 @@ public class AutomatedUpdater {
      * @return {@code true}, if the MHP stabilization was successful.
      */
     public static boolean stabilizeMHPLocallyUponRemoval(Node node) {
-        if (Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.YUANMHP) {
-            Thread.dumpStack();
-            assert (false) : "Unexpected path.";
-            return false;
-        }
         node = Misc.getCFGNodeFor(node);
         assert (!(node instanceof EndNode));
         if (node instanceof BarrierDirective || !node.getInfo().isControlConfined() ||
@@ -1163,19 +1181,29 @@ public class AutomatedUpdater {
         }
         // Delete all MHP info for this node.
         hasBeenOtimized++;
-        boolean oldVal = BeginPhasePoint.stabilizationInProgress;
-        BeginPhasePoint.stabilizationInProgress = true;
-        Set<Node> internalContents = node.getInfo().getCFGInfo().getIntraTaskCFGLeafContents();
-        for (Node n : internalContents) {
-            for (AbstractPhase<?, ?> ph : new HashSet<>(node.getInfo().getNodePhaseInfo().getStalePhaseSet())) {
-                ph.removeNode(n);
-                for (AbstractPhasePointable bppAbs : new HashSet<>(ph.getStaleBeginPoints())) {
-                    BeginPhasePoint bpp = (BeginPhasePoint) bppAbs;
-                    bpp.getInternalReachables().remove(n);
+        if (Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.ICON) {
+            boolean oldVal = BeginPhasePoint.stabilizationInProgress;
+            BeginPhasePoint.stabilizationInProgress = true;
+            Set<Node> internalContents = node.getInfo().getCFGInfo().getIntraTaskCFGLeafContents();
+            for (Node n : internalContents) {
+                for (AbstractPhase<?, ?> ph : new HashSet<>(node.getInfo().getNodePhaseInfo().getStalePhaseSet())) {
+                    ph.removeNode(n);
+                    for (AbstractPhasePointable bppAbs : new HashSet<>(ph.getStaleBeginPoints())) {
+                        BeginPhasePoint bpp = (BeginPhasePoint) bppAbs;
+                        bpp.getInternalReachables().remove(n);
+                    }
                 }
             }
+            BeginPhasePoint.stabilizationInProgress = oldVal;
+        } else {
+            Set<Node> internalContents = node.getInfo().getCFGInfo().getIntraTaskCFGLeafContents();
+            for (Node n : internalContents) {
+                for (AbstractPhase<?, ?> ph : new HashSet<>(node.getInfo().getNodePhaseInfo().getStalePhaseSet())) {
+                    ph.removeNode(n);
+                }
+            }
+
         }
-        BeginPhasePoint.stabilizationInProgress = oldVal;
         return true;
     }
 
@@ -1192,15 +1220,16 @@ public class AutomatedUpdater {
         if (Program.mhpUpdateCategory == UpdateCategory.EGINV) {
             AutomatedUpdater.reinitMHP();
             return;
-        } else if (Program.mhpUpdateCategory == UpdateCategory.LZINV ||
-                Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.YUANMHP) {
-            AbstractPhase.globalMHPStale = true;
-            return;
         }
         node = Misc.getCFGNodeFor(node);
         long timer = System.nanoTime();
         if (AutomatedUpdater.stabilizeMHPLocallyUponAddition(node)) {
             BeginPhasePoint.stabilizationTime += (System.nanoTime() - timer);
+            return;
+        }
+        if (Program.mhpUpdateCategory == UpdateCategory.LZINV ||
+                Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.YUANMHP) {
+            AbstractPhase.globalMHPStale = true;
             return;
         }
         Set<BeginPhasePoint> affectedBPPs = new HashSet<>();
