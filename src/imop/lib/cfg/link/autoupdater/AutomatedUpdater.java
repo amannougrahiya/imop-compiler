@@ -1094,7 +1094,8 @@ public class AutomatedUpdater {
         Set<Node> predSet = node.getInfo().getCFGInfo().getInterProceduralLeafPredecessors();
         for (Node pred : predSet) {
             if (pred instanceof BarrierDirective ||
-                    (pred instanceof BeginNode && pred.getParent() instanceof ParallelConstruct)) {
+                    (pred instanceof BeginNode && pred.getParent() instanceof ParallelConstruct) ||
+                    (pred instanceof EndNode && pred.getParent() instanceof ParallelConstruct)) {
                 return false;
             }
         }
@@ -1155,7 +1156,8 @@ public class AutomatedUpdater {
         Set<Node> predSet = node.getInfo().getCFGInfo().getInterProceduralLeafPredecessors();
         for (Node pred : predSet) {
             if (pred instanceof BarrierDirective ||
-                    (pred instanceof BeginNode && pred.getParent() instanceof ParallelConstruct)) {
+                    (pred instanceof BeginNode && pred.getParent() instanceof ParallelConstruct) ||
+                    (pred instanceof EndNode && pred.getParent() instanceof ParallelConstruct)) {
                 return false;
             }
         }
