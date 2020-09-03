@@ -103,6 +103,7 @@ public class CoExistenceChecker {
 		if (Program.sveSensitive == SVEDimension.SVE_INSENSITIVE) {
 			return true;
 		}
+		assert Program.concurrencyAlgorithm != Program.ConcurrencyAlgorithm.YUANMHP : "Unexpected path";
 		NodePair nP = new NodePair(n1, n2);
 		if (knownCoExistingNodes.contains(nP)) {
 			return true;
@@ -129,6 +130,7 @@ public class CoExistenceChecker {
 	}
 
 	public static boolean canCoExistInPhase(Node n1, Node n2, AbstractPhase<?, ?> ph) {
+		assert Program.concurrencyAlgorithm != Program.ConcurrencyAlgorithm.YUANMHP : "Unexpected path";
 		long sveTimerThis = System.nanoTime();
 		boolean retVal = CoExistenceChecker.canCoExistInPhase(n1, n2, ph, new HashSet<>(), new HashSet<>());
 		sveTimerThis = System.nanoTime() - sveTimerThis;

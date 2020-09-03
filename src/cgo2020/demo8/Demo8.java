@@ -8,13 +8,13 @@
  */
 package cgo2020.demo8;
 
-import java.util.List;
-
-import imop.ast.node.external.ExpressionStatement;
-import imop.ast.node.external.ParallelConstruct;
-import imop.lib.analysis.mhp.Phase;
+import imop.ast.node.external.*;
+import imop.lib.analysis.mhp.AbstractPhase;
+import imop.lib.analysis.mhp.incMHP.Phase;
 import imop.lib.util.Misc;
 import imop.parser.Program;
+
+import java.util.List;
 
 public class Demo8 {
 
@@ -27,7 +27,7 @@ public class Demo8 {
 			 * Print the number of static phases in every
 			 * parallel-construct.
 			 */
-			List<Phase> phaseList = parCons.getInfo().getConnectedPhases();
+			List<Phase> phaseList = (List<Phase>) parCons.getInfo().getConnectedPhases();
 			System.out.println(phaseList.size());
 			/*
 			 * Print the highest number of statements in any static phase in the
@@ -47,7 +47,7 @@ public class Demo8 {
 		 */
 		for (ExpressionStatement expStmt : Misc.getInheritedEnclosee(Program.getRoot(), ExpressionStatement.class)) {
 			System.out.println("Statements that may run in parallel with the statement " + expStmt + ": ");
-			for (Phase ph : expStmt.getInfo().getNodePhaseInfo().getPhaseSet()) {
+			for (AbstractPhase<?, ?> ph : expStmt.getInfo().getNodePhaseInfo().getPhaseSet()) {
 				System.out.println(ph.getNodeSet());
 			}
 			break;

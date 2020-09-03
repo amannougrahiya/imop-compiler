@@ -8,19 +8,17 @@
  */
 package cgo2020.demo9;
 
-import java.util.HashSet;
-import java.util.Set;
-
-import imop.ast.node.external.BarrierDirective;
-import imop.ast.node.external.CompoundStatement;
-import imop.ast.node.external.Node;
-import imop.ast.node.external.ParallelConstruct;
-import imop.lib.analysis.mhp.BeginPhasePoint;
-import imop.lib.analysis.mhp.Phase;
+import imop.ast.node.external.*;
+import imop.lib.analysis.mhp.incMHP.BeginPhasePoint;
+import imop.lib.analysis.mhp.incMHP.Phase;
 import imop.lib.cfg.info.CompoundStatementCFGInfo;
 import imop.lib.util.CellSet;
 import imop.lib.util.Misc;
 import imop.parser.Program;
+
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 public class MainProject {
 
@@ -46,9 +44,9 @@ public class MainProject {
 			Set<Phase> allPhaseSet = new HashSet<>();
 			for (ParallelConstruct parConsNode : Misc.getInheritedEnclosee(Program.getRoot(),
 					ParallelConstruct.class)) {
-				allPhaseSet.addAll(parConsNode.getInfo().getConnectedPhases());
+				allPhaseSet.addAll((Collection<? extends Phase>) parConsNode.getInfo().getConnectedPhases());
 			}
-			Set<Phase> phasesAbove = barrier.getInfo().getNodePhaseInfo().getPhaseSet();
+			Set<Phase> phasesAbove = (Set<Phase>) barrier.getInfo().getNodePhaseInfo().getPhaseSet();
 			Set<Phase> phasesBelow = new HashSet<>();
 			for (Phase ph : allPhaseSet) {
 				for (BeginPhasePoint bpp : ph.getBeginPoints()) {
