@@ -10,15 +10,12 @@ package imop.lib.transform.simplify;
 
 import imop.ast.node.external.*;
 import imop.ast.node.internal.*;
-import imop.lib.analysis.CoExistenceChecker;
 import imop.lib.analysis.mhp.AbstractPhase;
 import imop.lib.analysis.mhp.AbstractPhasePointable;
 import imop.lib.analysis.mhp.YPhasePoint;
 import imop.lib.analysis.mhp.yuan.YPhase;
-import imop.lib.analysis.solver.FieldSensitivity;
 import imop.lib.cfg.info.CompoundStatementCFGInfo;
 import imop.lib.util.CellSet;
-import imop.lib.util.DumpSnapshot;
 import imop.lib.util.Misc;
 import imop.lib.util.ProfileSS;
 import imop.parser.Program;
@@ -46,12 +43,6 @@ public class RedundantSynchronizationRemovalForYA {
      *         Root AST node under which redundant barriers have to be removed.
      */
     public static void removeBarriers(Node root) {
-        if (1 == 2) {
-            DumpSnapshot.dumpPhases("rem" + Program.updateCategory + counter);
-            DumpSnapshot.dumpPointsTo("rem" + Program.updateCategory + counter);
-            DumpSnapshot.dumpVisibleSharedReadWrittenCells("rem" + Program.updateCategory + counter);
-            DumpSnapshot.dumpRoot("root" + Program.updateCategory + counter++);
-        }
         for (Node barrierNode : Misc.getInheritedEncloseeList(root, BarrierDirective.class)) {
             BarrierDirective barrier = (BarrierDirective) barrierNode;
             Set<YPhase> allPhaseSet = new HashSet<>();
@@ -196,12 +187,6 @@ public class RedundantSynchronizationRemovalForYA {
                 coExistBelow.add(nodeBelow);
                 continue;
             }
-            if (belowBPP.stream().filter(bpp -> bpp.getReachableNodes().contains(nodeBelow) &&
-                    bpp.getNode().getInfo().getNodePhaseInfo().getPhaseSet().contains(phAbove)).anyMatch(bpp -> CoExistenceChecker.canCoExistInPhase(bpp.getNode(), barrier, phAbove))) {
-                // Refer to rule #3 in "Synchronization elimination --> Modeling SVE-sensitivity."
-                coExistBelow.add(nodeBelow);
-                continue;
-            }
         }
 
         for (Node nAbove : nodesAbove) {
@@ -212,37 +197,15 @@ public class RedundantSynchronizationRemovalForYA {
             if (readAbove.isEmpty() && writtenAbove.isEmpty()) {
                 continue;
             }
-            if (!CoExistenceChecker.canCoExistInPhase(nAbove, barrier, phAbove)) {
-                continue;
-            }
-            if (Program.fieldSensitive) {
-                nonFieldReadsInSource = nAbove.getInfo().getNonFieldSharedReads();
-                nonFieldWritesInSource = nAbove.getInfo().getNonFieldSharedWrites();
-            }
-
             for (Node nBelow : nodesBelow) {
                 if (!coExistBelow.contains(nBelow)) {
                     continue;
                 }
-                if (Program.fieldSensitive) {
-                    CellSet nonFieldReadsInDestination = nBelow.getInfo().getNonFieldSharedReads();
-                    CellSet nonFieldWritesInDestination = nBelow.getInfo().getNonFieldSharedWrites();
-                    if (nonFieldWritesInSource.overlapsWith(nonFieldWritesInDestination) ||
-                            nonFieldWritesInSource.overlapsWith(nonFieldReadsInDestination) ||
-                            nonFieldReadsInSource.overlapsWith(nonFieldWritesInDestination)) {
-                        return true;
-                    } else {
-                        if (FieldSensitivity.canConflictWithTwoThreads(nAbove, nBelow)) {
-                            return true;
-                        }
-                    }
-                } else {
-                    CellSet readBelow = nBelow.getInfo().getSharedReads();
-                    CellSet writtenBelow = nBelow.getInfo().getSharedWrites();
-                    if (Misc.doIntersect(readAbove, writtenBelow) || Misc.doIntersect(readBelow, writtenAbove) ||
-                            Misc.doIntersect(writtenAbove, writtenBelow)) {
-                        return true;
-                    }
+                CellSet readBelow = nBelow.getInfo().getSharedReads();
+                CellSet writtenBelow = nBelow.getInfo().getSharedWrites();
+                if (Misc.doIntersect(readAbove, writtenBelow) || Misc.doIntersect(readBelow, writtenAbove) ||
+                        Misc.doIntersect(writtenAbove, writtenBelow)) {
+                    return true;
                 }
             }
         }
