@@ -80,5 +80,5 @@ npb
 /build_Sat_Aug_15_18-10-02_IST_2020.xml
 /imop-develop.iml
 /MainModule.iml
-/build.xml
-/build.properties
+/build-intellij.xml
+/build-intellij.properties
