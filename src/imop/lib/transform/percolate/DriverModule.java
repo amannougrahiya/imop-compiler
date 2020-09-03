@@ -239,7 +239,7 @@ public class DriverModule {
             DumpSnapshot.dumpNestedCFG(Program.getRoot(), "optimized" + Program.mhpUpdateCategory);
         }
         DecimalFormat df2 = Program.df2;
-        System.out.println(Program.fileName + " " + Program.updateCategory + " " + df2.format(totTime) + " " +
+        System.out.println(Program.fileName + " " + Program.mhpUpdateCategory + " " + df2.format(totTime) + " " +
                 df2.format(incMHPTime) + " " + df2.format(incIDFATime) + " " + incMHPTriggers + " " + incIDFATriggers +
                 " " + finalIncNodes + " " + tarjanCount + " " + df2.format(sccTime));
         System.err.println(

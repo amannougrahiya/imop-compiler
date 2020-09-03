@@ -162,7 +162,7 @@ public class Program {
         Program.preciseDFDEdges = false;
         Program.updateCategory = UpdateCategory.LZUPD; // Default is LZUPD.
         Program.concurrencyAlgorithm = ConcurrencyAlgorithm.ICON;
-        Program.mhpUpdateCategory = UpdateCategory.LZUPD; // Default is LZUPD.
+        Program.mhpUpdateCategory = UpdateCategory.LZINV; // Default is LZUPD.
         Program.sveNoCheck = true;
         Program.numExpansionAllowed = 100;
 
@@ -397,24 +397,44 @@ public class Program {
             if (str.equals("--disableLineNumbering") || str.equals("-dln")) {
                 Program.disableLineNumbers = true;
             }
+            if (str.equals("--yuan") || str.equals("-yuan")) {
+                Program.concurrencyAlgorithm = ConcurrencyAlgorithm.YUANMHP;
+            }
             if (str.equals("--category") || str.equals("-c")) {
                 String next = args[index + 1];
                 switch (next) {
                     case "EGINV":
-                        Program.mhpUpdateCategory = UpdateCategory.EGINV;
                         Program.updateCategory = UpdateCategory.EGINV;
                         break;
                     case "LZINV":
-                        Program.mhpUpdateCategory = UpdateCategory.LZINV;
                         Program.updateCategory = UpdateCategory.LZINV;
                         break;
                     case "EGUPD":
-                        Program.mhpUpdateCategory = UpdateCategory.EGUPD;
                         Program.updateCategory = UpdateCategory.EGUPD;
                         break;
                     case "LZUPD":
-                        Program.mhpUpdateCategory = UpdateCategory.LZUPD;
                         Program.updateCategory = UpdateCategory.LZUPD;
+                        break;
+                    default:
+                        System.out.println("Please use a valid identifier for category: EGINV, LZINV, EGUPD, or LZUPD.");
+                        System.out.println("Read the documentation for more details. Exiting..");
+                        System.exit(0);
+                }
+            }
+            if (str.equals("--categoryMHP") || str.equals("-cm")) {
+                String next = args[index + 1];
+                switch (next) {
+                    case "EGINV":
+                        Program.mhpUpdateCategory = UpdateCategory.EGINV;
+                        break;
+                    case "LZINV":
+                        Program.mhpUpdateCategory = UpdateCategory.LZINV;
+                        break;
+                    case "EGUPD":
+                        Program.mhpUpdateCategory = UpdateCategory.EGUPD;
+                        break;
+                    case "LZUPD":
+                        Program.mhpUpdateCategory = UpdateCategory.LZUPD;
                         break;
                     default:
                         System.out.println("Please use a valid identifier for category: EGINV, LZINV, EGUPD, or LZUPD.");
