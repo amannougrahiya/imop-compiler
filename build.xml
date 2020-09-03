@@ -216,8 +216,4 @@
   <target name="build.modules" depends="init, clean, compile.module.mainmodule" description="build all modules"/>
   
   <target name="all" depends="build.modules" description="build all"/>
-<<<<<<< HEAD
 </project>
-=======
-</project>
->>>>>>> ed883b720458447e74325c18530e10dc2339b85b
