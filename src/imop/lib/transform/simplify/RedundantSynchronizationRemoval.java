@@ -118,6 +118,9 @@ public class RedundantSynchronizationRemoval {
 				allPhaseSet.addAll((Collection<? extends Phase>) parConsNode.getInfo().getConnectedPhases());
 			}
 			Set<Phase> phasesAbove = (Set<Phase>) barrier.getInfo().getNodePhaseInfo().getPhaseSet();
+			if (phasesAbove.isEmpty()) {
+				Misc.exitDueToError("Found a barrier that does not possess any phase information.");
+			}
 			Set<Phase> phasesBelow = new HashSet<>();
 			for (Phase ph : allPhaseSet) {
 				for (BeginPhasePoint bpp : ph.getBeginPoints()) {
@@ -125,6 +128,9 @@ public class RedundantSynchronizationRemoval {
 						phasesBelow.add(ph);
 					}
 				}
+			}
+			if (phasesBelow.isEmpty()) {
+				Misc.exitDueToError("Found a barrier that does not start any phase!");
 			}
 
 			boolean removable = true;

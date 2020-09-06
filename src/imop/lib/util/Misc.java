@@ -2796,9 +2796,9 @@ public class Misc {
      *         string explaining the error message
      */
     public static void exitDueToError(String error) {
+        Thread.dumpStack();
         System.err.println("The pass had to exit upon encountering the following error: ");
         System.err.println("error: " + error);
-        Thread.dumpStack();
         System.exit(0);
     }
 
@@ -2809,9 +2809,9 @@ public class Misc {
      *         String explaining the feature that has not been implemented yet.
      */
     public static void exitDueToLackOfFeature(String feature) {
+        Thread.dumpStack();
         System.err.println("The pass had to exit upon encountering the following feature that has not been implemented yet: ");
         System.err.println("error: " + feature);
-        Thread.dumpStack();
         System.exit(0);
     }
 

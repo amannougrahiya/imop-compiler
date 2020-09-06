@@ -95,7 +95,7 @@ public class MHPAnalyzer {
          * any.
          */
         for (Node leafContent : parInfo.getCFGInfo().getIntraTaskCFGLeafContents()) {
-            for (AbstractPhase<?, ?> stalePhase : parInfo.getAllPhaseList()) {
+            for (AbstractPhase<?, ?> stalePhase : new HashSet<>(parInfo.getAllPhaseList())) {
                 leafContent.getInfo().getNodePhaseInfo().removePhase(stalePhase);
             }
         }

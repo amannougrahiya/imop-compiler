@@ -75,7 +75,8 @@ public class YPhasePoint implements AbstractPhasePointable {
         if (Program.mhpUpdateCategory == Program.UpdateCategory.EGINV ||
                 Program.mhpUpdateCategory == Program.UpdateCategory.EGUPD) {
             return this.getInternalReachables();
-        } else if (Program.mhpUpdateCategory == Program.UpdateCategory.LZINV || Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.YUANMHP) {
+        } else if (Program.mhpUpdateCategory == Program.UpdateCategory.LZINV ||
+                Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.YUANMHP) {
             if (AbstractPhase.globalMHPStale) {
                 AbstractPhase.globalMHPStale = false;
                 AutomatedUpdater.reinitMHP();
@@ -92,7 +93,8 @@ public class YPhasePoint implements AbstractPhasePointable {
         if (Program.mhpUpdateCategory == Program.UpdateCategory.EGINV ||
                 Program.mhpUpdateCategory == Program.UpdateCategory.EGUPD) {
             return this.phaseSet;
-        } else if (Program.mhpUpdateCategory == Program.UpdateCategory.LZINV || Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.YUANMHP) {
+        } else if (Program.mhpUpdateCategory == Program.UpdateCategory.LZINV ||
+                Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.YUANMHP) {
             if (AbstractPhase.globalMHPStale) {
                 AbstractPhase.globalMHPStale = false;
                 AutomatedUpdater.reinitMHP();
@@ -109,7 +111,8 @@ public class YPhasePoint implements AbstractPhasePointable {
         if (Program.mhpUpdateCategory == Program.UpdateCategory.EGINV ||
                 Program.mhpUpdateCategory == Program.UpdateCategory.EGUPD) {
             return this.getInternalNextBarriers();
-        } else if (Program.mhpUpdateCategory == Program.UpdateCategory.LZINV || Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.YUANMHP) {
+        } else if (Program.mhpUpdateCategory == Program.UpdateCategory.LZINV ||
+                Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.YUANMHP) {
             if (AbstractPhase.globalMHPStale) {
                 AbstractPhase.globalMHPStale = false;
                 AutomatedUpdater.reinitMHP();

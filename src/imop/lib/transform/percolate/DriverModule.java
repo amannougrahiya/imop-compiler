@@ -124,7 +124,9 @@ public class DriverModule {
 
     public static void clientAutoUpdate() {
         DumpSnapshot.dumpVisibleSharedReadWrittenCells("first" + Program.updateCategory);
-        boolean dumpIntermediate = Program.dumpIntermediateStates;
+        DumpSnapshot.dumpPhases("first" + Program.updateCategory);
+        //        boolean dumpIntermediate = Program.dumpIntermediateStates;
+        boolean dumpIntermediate = true;
         Program.sveSensitive = SVEDimension.SVE_INSENSITIVE; // Note: We keep SVE-sensitivity disabled for this client.
         ParallelConstructExpander.mergeParallelRegions(Program.getRoot());
         Program.getRoot().getInfo().removeUnusedElements();

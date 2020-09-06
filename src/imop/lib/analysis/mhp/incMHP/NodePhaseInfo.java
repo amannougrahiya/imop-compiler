@@ -80,7 +80,8 @@ public class NodePhaseInfo {
         ProfileSS.addChangePoint(ProfileSS.phSet);
         if (Program.mhpUpdateCategory == UpdateCategory.EGINV || Program.mhpUpdateCategory == UpdateCategory.EGUPD) {
             return this.phaseSet;
-        } else if (Program.mhpUpdateCategory == UpdateCategory.LZINV || Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.YUANMHP) {
+        } else if (Program.mhpUpdateCategory == UpdateCategory.LZINV ||
+                Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.YUANMHP) {
             if (AbstractPhase.globalMHPStale) {
                 AbstractPhase.globalMHPStale = false;
                 AutomatedUpdater.reinitMHP();

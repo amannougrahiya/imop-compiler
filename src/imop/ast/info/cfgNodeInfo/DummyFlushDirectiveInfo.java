@@ -111,7 +111,8 @@ public class DummyFlushDirectiveInfo extends FlushDirectiveInfo {
         }
         if (Program.mhpUpdateCategory == UpdateCategory.EGINV || Program.mhpUpdateCategory == UpdateCategory.EGUPD) {
             return this.incomingInterTaskEdges;
-        } else if (Program.mhpUpdateCategory == UpdateCategory.LZINV || Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.YUANMHP) {
+        } else if (Program.mhpUpdateCategory == UpdateCategory.LZINV ||
+                Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.YUANMHP) {
             if (AbstractPhase.globalMHPStale) {
                 AbstractPhase.globalMHPStale = false;
                 AutomatedUpdater.reinitMHP();

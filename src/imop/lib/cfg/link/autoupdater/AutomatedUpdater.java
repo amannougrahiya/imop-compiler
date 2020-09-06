@@ -1223,13 +1223,13 @@ public class AutomatedUpdater {
         }
         node = Misc.getCFGNodeFor(node);
         long timer = System.nanoTime();
-        if (AutomatedUpdater.stabilizeMHPLocallyUponAddition(node)) {
-            BeginPhasePoint.stabilizationTime += (System.nanoTime() - timer);
-            return;
-        }
         if (Program.mhpUpdateCategory == UpdateCategory.LZINV ||
                 Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.YUANMHP) {
             AbstractPhase.globalMHPStale = true;
+            return;
+        }
+        if (AutomatedUpdater.stabilizeMHPLocallyUponAddition(node)) {
+            BeginPhasePoint.stabilizationTime += (System.nanoTime() - timer);
             return;
         }
         Set<BeginPhasePoint> affectedBPPs = new HashSet<>();
@@ -1284,13 +1284,13 @@ public class AutomatedUpdater {
         }
         node = Misc.getCFGNodeFor(node);
         long timer = System.nanoTime();
-        if (AutomatedUpdater.stabilizeMHPLocallyUponRemoval(node)) {
-            BeginPhasePoint.stabilizationTime += (System.nanoTime() - timer);
-            return new HashSet<>();
-        }
         if (Program.mhpUpdateCategory == UpdateCategory.LZINV ||
                 Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.YUANMHP) {
             return null;
+        }
+        if (AutomatedUpdater.stabilizeMHPLocallyUponRemoval(node)) {
+            BeginPhasePoint.stabilizationTime += (System.nanoTime() - timer);
+            return new HashSet<>();
         }
         Set<BeginPhasePoint> affectedBPPs = new HashSet<>();
         for (NodeWithStack predWithStack : node.getInfo().getCFGInfo().getParallelConstructFreeInterProceduralLeafPredecessors(new CallStack())) {
@@ -1361,7 +1361,8 @@ public class AutomatedUpdater {
             AutomatedUpdater.reinitMHP();
             // The method above already calculates the time taken for stabilization.
             return;
-        } else if (Program.mhpUpdateCategory == UpdateCategory.LZINV) {
+        } else if (Program.mhpUpdateCategory == UpdateCategory.LZINV ||
+                Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.YUANMHP) {
             AbstractPhase.globalMHPStale = true;
             return;
         }

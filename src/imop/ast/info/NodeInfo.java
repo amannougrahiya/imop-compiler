@@ -533,9 +533,14 @@ public class NodeInfo implements Cloneable {
             if (Program.updateCategory == UpdateCategory.EGINV || Program.updateCategory == UpdateCategory.EGUPD) {
                 assert (!analysisHandle.stateIsInvalid());
             } else if (Program.updateCategory == UpdateCategory.LZINV) {
-                if (AbstractPhase.globalMHPStale) {
-                    AbstractPhase.globalMHPStale = false;
-                    AutomatedUpdater.reinitMHP();
+                if (Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.YUANMHP ||
+                        Program.mhpUpdateCategory == UpdateCategory.LZINV) {
+                    if (AbstractPhase.globalMHPStale) {
+                        AbstractPhase.globalMHPStale = false;
+                        AutomatedUpdater.reinitMHP();
+                    }
+                } else {
+                    BeginPhasePoint.stabilizeStaleBeginPhasePoints();
                 }
                 if (analysisHandle.stateIsInvalid()) {
                     analysisHandle.markStateToBeValid();
@@ -545,7 +550,8 @@ public class NodeInfo implements Cloneable {
                 assert (Program.updateCategory == UpdateCategory.LZUPD);
                 if (thisCell == null) {
                     if (analysisHandle.stateIsInvalid()) {
-                        if (Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.YUANMHP) {
+                        if (Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.YUANMHP ||
+                                Program.mhpUpdateCategory == UpdateCategory.LZINV) {
                             if (AbstractPhase.globalMHPStale) {
                                 AbstractPhase.globalMHPStale = false;
                                 AutomatedUpdater.reinitMHP();
@@ -567,7 +573,8 @@ public class NodeInfo implements Cloneable {
                     //					if (analysisHandle.stateIsInvalid()) {
                     if (analysisHandle.stateIsInvalid() && (!PointsToAnalysis.isHeuristicEnabled ||
                             PointsToAnalysis.affectedCellsInThisEpoch.contains(thisCell))) {
-                        if (Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.YUANMHP) {
+                        if (Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.YUANMHP ||
+                                Program.mhpUpdateCategory == UpdateCategory.LZINV) {
                             if (AbstractPhase.globalMHPStale) {
                                 AbstractPhase.globalMHPStale = false;
                                 AutomatedUpdater.reinitMHP();
@@ -690,9 +697,14 @@ public class NodeInfo implements Cloneable {
             if (Program.updateCategory == UpdateCategory.EGINV || Program.updateCategory == UpdateCategory.EGUPD) {
                 assert (!analysisHandle.stateIsInvalid());
             } else if (Program.updateCategory == UpdateCategory.LZINV) {
-                if (AbstractPhase.globalMHPStale) {
-                    AbstractPhase.globalMHPStale = false;
-                    AutomatedUpdater.reinitMHP();
+                if (Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.YUANMHP ||
+                        Program.mhpUpdateCategory == UpdateCategory.LZINV) {
+                    if (AbstractPhase.globalMHPStale) {
+                        AbstractPhase.globalMHPStale = false;
+                        AutomatedUpdater.reinitMHP();
+                    }
+                } else {
+                    BeginPhasePoint.stabilizeStaleBeginPhasePoints();
                 }
                 if (analysisHandle.stateIsInvalid()) {
                     analysisHandle.markStateToBeValid();
@@ -701,7 +713,8 @@ public class NodeInfo implements Cloneable {
             } else {
                 assert (Program.updateCategory == UpdateCategory.LZUPD);
                 if (analysisHandle.stateIsInvalid()) {
-                    if (Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.YUANMHP) {
+                    if (Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.YUANMHP ||
+                            Program.mhpUpdateCategory == UpdateCategory.LZINV) {
                         if (AbstractPhase.globalMHPStale) {
                             AbstractPhase.globalMHPStale = false;
                             AutomatedUpdater.reinitMHP();
@@ -2388,6 +2401,13 @@ public class NodeInfo implements Cloneable {
                 tempStr += ph.getPhaseId() + "; ";
             }
             tempStr += "]";
+            if (Program.mhpUpdateCategory == UpdateCategory.LZINV) {
+                if (AbstractPhase.globalMHPStale) {
+                    tempStr += "(Stale)";
+                }
+            } else if (!BeginPhasePoint.getStaleBeginPhasePoints().isEmpty()) {
+                tempStr += "(Stale)";
+            }
             return tempStr;
         });
         Node node = this.getNode();

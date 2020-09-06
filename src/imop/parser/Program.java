@@ -161,10 +161,17 @@ public class Program {
         Program.memoizeAccesses = 0;
         Program.preciseDFDEdges = false;
         Program.updateCategory = UpdateCategory.LZUPD; // Default is LZUPD.
-        Program.concurrencyAlgorithm = ConcurrencyAlgorithm.ICON;
-        Program.mhpUpdateCategory = UpdateCategory.LZINV; // Default is LZUPD.
+        Program.concurrencyAlgorithm = ConcurrencyAlgorithm.YUANMHP;
+        Program.mhpUpdateCategory = UpdateCategory.LZUPD; // Default is LZUPD.
         Program.sveNoCheck = true;
         Program.numExpansionAllowed = 100;
+
+        // Just a safety check below.
+        if (Program.concurrencyAlgorithm == ConcurrencyAlgorithm.YUANMHP) {
+            Program.mhpUpdateCategory = UpdateCategory.LZINV;
+            Program.sveNoCheck = true;
+            Program.updateCategory = UpdateCategory.LZUPD;
+        }
 
         String filePath = "";
         filePath = ("../tests/classB-preproc/bt-b.i"); // SVE-all: 29s.
@@ -180,7 +187,7 @@ public class Program {
         filePath = ("../tests/npb-post/bt3-0.i"); // SVE-all: 29s.
         //		filePath = ("../tests/npb-post/cg3-0.i"); // SVE-all: 2.50s.
         //        filePath = ("../tests/npb-post/ep3-0.i"); // SVE-all: 0.55s
-        //        filePath = ("../tests/npb-post/ft3-0.i"); // SVE-all: 3.73s.
+        filePath = ("../tests/npb-post/ft3-0.i"); // SVE-all: 3.73s.
         //        filePath = ("../tests/npb-post/is3-0.i"); // SVE-all: 0.69
         //        filePath = ("../tests/npb-post/lu3-0.i"); // SVE-all: 16.26s.
         //        filePath = ("../tests/npb-post/mg3-0.i"); // SVE-all: 9.88s;
@@ -305,7 +312,7 @@ public class Program {
         //		filePath = ("../tests/ocean6868-k2.i");
         //		filePath = ("../tests/ocean6868-virgo.i");
         //		filePath = ("../tests/mdljcell.i");
-        //		filePath = ("../tests/heated_plate_openmp.i");
+        //        filePath = ("../tests/barr-opt-tests/heated_plate_openmp.i");
         //		filePath = ("../tests/heated_plate_pointer.i");
         //		filePath = ("../tests/heated_plate_pointer-merged-swapped.i");
         //		filePath = ("../tests/temp.i");
@@ -342,7 +349,8 @@ public class Program {
         //		filePath = ("../tests/parboil/lbm.i");
         //		filePath = ("../tests/insert.i");
         //		filePath = ("../tests/minebench/kmeans.i");
-        //		filePath = ("../tests/barr-opt-tests/c_jacobi01.i");
+        //        filePath = ("../tests/barr-opt-tests/c_jacobi01.i");
+        //        filePath = ("../tests/c_jacobi01-postpass.i");
         //		filePath = ("../tests/barr-opt-tests/adi.i");
         //		filePath = ("../tests/barr-opt-tests/amgmk.i");
         //		filePath = ("../tests/barr-opt-tests/clomp.i");
