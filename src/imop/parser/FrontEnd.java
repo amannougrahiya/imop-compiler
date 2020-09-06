@@ -710,7 +710,7 @@ public class FrontEnd {
 			compStmt.getInfo().getCFGInfo().initializeDummyFlushes();
 		}
 
-		// OLD CODE: Now, in order to remove spurious MHP relations, we do not invoke initMHP on new/disconnected snippets.
+		// OLD CODE: Now, in order to remove spurious MHP relations, we do not invoke initMHP on new/disconnected snippetss
 		//		for (ParallelConstruct parCons : Misc.getInheritedPostOrderEnclosee(newNode, ParallelConstruct.class)) { // for all parCons
 		//			MHPAnalyzer mhp = new MHPAnalyzer(parCons);
 		//			mhp.initMHP(); // perform MHP Analysis
@@ -1011,7 +1011,7 @@ public class FrontEnd {
 		timeStart = System.nanoTime();
 		timeTaken = System.nanoTime() - timeStart;
 		System.err.println("\tTime taken: " + timeTaken / 1000000000.0 + "s.");
-		DumpSnapshot.dumpPhases("first");
+		DumpSnapshot.dumpPhases(Program.mhpUpdateCategory + "first");
 		DumpSnapshot.dumpPhaseListOfAllParCons("first");
 
 		System.err.println("Pass: Creating the inter-task data-flow graph.");
