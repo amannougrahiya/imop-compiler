@@ -65,7 +65,7 @@ public class Program {
     /**
      * Prints side-effects as comments on annotated nodes.
      */
-    public static boolean printSideEffects = true;
+    public static boolean printSideEffects = false;
     public static boolean printDFDs = true;
     public static boolean printRWinDFDs = false;
     /**
@@ -77,23 +77,23 @@ public class Program {
      * Decided whether the PTA-heuristic that looks at the cell being dereferenced, is enabled.
      */
     public static boolean ptaHeuristicEnabled = false;
-    public static UpdateCategory updateCategory;
-    public static UpdateCategory mhpUpdateCategory;
+    public static UpdateCategory updateCategory = UpdateCategory.LZUPD;
+    public static UpdateCategory mhpUpdateCategory = UpdateCategory.LZUPD;
 
     /**
      * Set the default SVE sensitivity for the whole program.<br> Note that IDFA's <i>may</i> have their fixed SVE
      * sensitivity values, defined in their constructors.
      */
-    public static SVEDimension sveSensitive;
-    public static SVEDimension sveSensitivityOfIDFAEdges;
-    public static boolean fieldSensitive;
+    public static SVEDimension sveSensitive = SVEDimension.SVE_SENSITIVE;
+    public static SVEDimension sveSensitivityOfIDFAEdges = SVEDimension.SVE_SENSITIVE;
+    public static boolean fieldSensitive = false;
     public static int maxThreads;
-    public static String z3TimeoutInMilliSecs;
+    public static String z3TimeoutInMilliSecs = "5000";
     private static CellSet cellsThatMayPointToSymbols;
     private static boolean postOrderValid = false;
     private static List<Node> reversePostOrderOfLeaves = new ArrayList<>();
     public static ConcurrencyAlgorithm concurrencyAlgorithm = ConcurrencyAlgorithm.ICON;
-    public static boolean sveNoCheck = false;
+    public static boolean sveNoCheck = true;
     private static Set<Symbol> addressTakenSymbols;
     /*
      * When set to true, the call-stacks can never contain two call-statements
@@ -116,7 +116,7 @@ public class Program {
     public static final long thresholdIDFAProcessingCount = (long) 1e6;
     public static DecimalFormat df2 = new DecimalFormat("#.##");
     public static boolean disableLineNumbers = false;
-    public static int numExpansionAllowed = 500; // Default. This is set again in the method {@link defaultCommandLineArguments()}.
+    public static int numExpansionAllowed = 300; // Default. This is set again in the method {@link defaultCommandLineArguments()}.
 
     public static void rememberInitialPhasesIfRequired() {
         if (Program.getRoot() == null) {
