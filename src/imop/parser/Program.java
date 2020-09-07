@@ -161,7 +161,7 @@ public class Program {
         Program.memoizeAccesses = 0;
         Program.preciseDFDEdges = false;
         Program.updateCategory = UpdateCategory.LZUPD; // Default is LZUPD.
-        Program.concurrencyAlgorithm = ConcurrencyAlgorithm.ICON;
+        Program.concurrencyAlgorithm = ConcurrencyAlgorithm.YUANMHP;
         Program.mhpUpdateCategory = UpdateCategory.LZUPD; // Default is LZUPD.
         Program.sveNoCheck = true;
         Program.numExpansionAllowed = 100;
@@ -350,7 +350,7 @@ public class Program {
         //		filePath = ("../tests/insert.i");
         //		filePath = ("../tests/minebench/kmeans.i");
         //        filePath = ("../tests/barr-opt-tests/c_jacobi01.i");
-        filePath = ("../tests/c_jacobi01-postpass.i");
+        //        filePath = ("../tests/c_jacobi01-postpass.i");
         //		filePath = ("../tests/barr-opt-tests/adi.i");
         //		filePath = ("../tests/barr-opt-tests/amgmk.i");
         //		filePath = ("../tests/barr-opt-tests/clomp.i");

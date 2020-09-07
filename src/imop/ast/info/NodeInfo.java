@@ -216,6 +216,9 @@ public class NodeInfo implements Cloneable {
     private Set<Node> backwardReachableBarriers = null;
 
     public Set<Node> getFWRNodes() {
+        if (this.node instanceof EndNode && this.node.getParent() instanceof ParallelConstruct) {
+            return new HashSet<>();
+        }
         //        if (this.forwardReachableNodes == null) {
         populateForward();
         //        }
@@ -223,6 +226,9 @@ public class NodeInfo implements Cloneable {
     }
 
     public Set<Node> getFWRBarriers() {
+        if (this.node instanceof EndNode && this.node.getParent() instanceof ParallelConstruct) {
+            return new HashSet<>();
+        }
         //        if (this.forwardReachableBarriers == null) {
         populateForward();
         //        }
@@ -230,6 +236,9 @@ public class NodeInfo implements Cloneable {
     }
 
     public Set<Node> getBWRNodes() {
+        if (this.node instanceof BeginNode && this.node.getParent() instanceof ParallelConstruct) {
+            return new HashSet<>();
+        }
         //        if (this.backwardReachableNodes == null) {
         populateBackward();
         //        }
@@ -237,6 +246,9 @@ public class NodeInfo implements Cloneable {
     }
 
     public Set<Node> getBWRBarriers() {
+        if (this.node instanceof BeginNode && this.node.getParent() instanceof ParallelConstruct) {
+            return new HashSet<>();
+        }
         //        if (this.backwardReachableBarriers == null) {
         populateBackward();
         //        }

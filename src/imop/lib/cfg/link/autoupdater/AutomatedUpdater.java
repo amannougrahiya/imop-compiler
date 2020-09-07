@@ -21,6 +21,7 @@ import imop.lib.analysis.mhp.incMHP.BeginPhasePoint;
 import imop.lib.analysis.mhp.incMHP.MHPAnalyzer;
 import imop.lib.analysis.mhp.incMHP.NodePhaseInfo;
 import imop.lib.analysis.mhp.incMHP.EndPhasePoint;
+import imop.lib.analysis.mhp.yuan.YuanConcurrencyAnalysis;
 import imop.lib.analysis.solver.ConstraintsGenerator;
 import imop.lib.cfg.info.CFGInfo;
 import imop.lib.cfg.info.ProgramElementExactCaches;
@@ -1223,13 +1224,22 @@ public class AutomatedUpdater {
         }
         node = Misc.getCFGNodeFor(node);
         long timer = System.nanoTime();
-        if (Program.mhpUpdateCategory == UpdateCategory.LZINV ||
-                Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.YUANMHP) {
+        if (Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.YUANMHP) {
+            if (YuanConcurrencyAnalysis.useHeuristicWithYuan) {
+                if (AutomatedUpdater.stabilizeMHPLocallyUponAddition(node)) {
+                    BeginPhasePoint.stabilizationTime += (System.nanoTime() - timer);
+                    return;
+                }
+            }
             AbstractPhase.globalMHPStale = true;
             return;
         }
         if (AutomatedUpdater.stabilizeMHPLocallyUponAddition(node)) {
             BeginPhasePoint.stabilizationTime += (System.nanoTime() - timer);
+            return;
+        }
+        if (Program.mhpUpdateCategory == UpdateCategory.LZINV) {
+            AbstractPhase.globalMHPStale = true;
             return;
         }
         Set<BeginPhasePoint> affectedBPPs = new HashSet<>();
@@ -1284,13 +1294,23 @@ public class AutomatedUpdater {
         }
         node = Misc.getCFGNodeFor(node);
         long timer = System.nanoTime();
-        if (Program.mhpUpdateCategory == UpdateCategory.LZINV ||
-                Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.YUANMHP) {
+        if (Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.YUANMHP) {
+            if (YuanConcurrencyAnalysis.useHeuristicWithYuan) {
+                if (AutomatedUpdater.stabilizeMHPLocallyUponRemoval(node)) {
+                    BeginPhasePoint.stabilizationTime += (System.nanoTime() - timer);
+                    return new HashSet<>();
+                }
+            }
+            AbstractPhase.globalMHPStale = true;
             return null;
         }
         if (AutomatedUpdater.stabilizeMHPLocallyUponRemoval(node)) {
             BeginPhasePoint.stabilizationTime += (System.nanoTime() - timer);
             return new HashSet<>();
+        }
+        if (Program.mhpUpdateCategory == UpdateCategory.LZINV) {
+            AbstractPhase.globalMHPStale = true;
+            return null;
         }
         Set<BeginPhasePoint> affectedBPPs = new HashSet<>();
         for (NodeWithStack predWithStack : node.getInfo().getCFGInfo().getParallelConstructFreeInterProceduralLeafPredecessors(new CallStack())) {
@@ -1333,8 +1353,12 @@ public class AutomatedUpdater {
             AutomatedUpdater.reinitMHP();
             // The method above already calculates the time taken in stabilization.
             return;
-        } else if (Program.mhpUpdateCategory == UpdateCategory.LZINV ||
-                Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.YUANMHP) {
+        } else if (Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.YUANMHP) {
+            if (!YuanConcurrencyAnalysis.useHeuristicWithYuan) {
+                AbstractPhase.globalMHPStale = true;
+            }
+            return;
+        } else if (Program.mhpUpdateCategory == UpdateCategory.LZINV) {
             AbstractPhase.globalMHPStale = true;
             return;
         } else if (Program.mhpUpdateCategory == UpdateCategory.EGUPD) {
