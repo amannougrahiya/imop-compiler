@@ -312,7 +312,7 @@ public class Program {
         //		filePath = ("../tests/ocean6868-k2.i");
         //		filePath = ("../tests/ocean6868-virgo.i");
         //		filePath = ("../tests/mdljcell.i");
-        //        filePath = ("../tests/barr-opt-tests/heated_plate_openmp.i");
+        filePath = ("../tests/barr-opt-tests/heated_plate_openmp.i");
         //		filePath = ("../tests/heated_plate_pointer.i");
         //		filePath = ("../tests/heated_plate_pointer-merged-swapped.i");
         //		filePath = ("../tests/temp.i");

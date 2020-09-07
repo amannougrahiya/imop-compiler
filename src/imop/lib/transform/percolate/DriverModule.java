@@ -157,6 +157,8 @@ public class DriverModule {
             DumpSnapshot.dumpPhases("merged-rem-inlined" + Program.mhpUpdateCategory);
         }
         ParallelConstructExpander.mergeParallelRegions(Program.getRoot());
+        //        Program.getRoot().getInfo().removeUnusedElements();
+        //        ProfileSS.nextCP();
         if (dumpIntermediate) {
             DumpSnapshot.dumpRoot("merged-rem-inlined-merged" + Program.mhpUpdateCategory);
             DumpSnapshot.dumpPointsTo("merged-rem-inlined-merged" + Program.updateCategory);
