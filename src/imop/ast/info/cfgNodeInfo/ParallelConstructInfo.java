@@ -179,22 +179,30 @@ public class ParallelConstructInfo extends OmpConstructInfo {
             return reachablePhases;
         } else {
             List<YPhase> reachablePhases = new ArrayList<>();
-            YPhase tempPhase = (YPhase) this.getFirstPhase();
-            if (tempPhase == null) {
+            boolean found = false;
+            for (AbstractPhase<?, ?> tempPhaseAbs : this.getFirstPhaseSet()) {
+                found = true;
+                YPhase tempPhase = (YPhase) tempPhaseAbs;
+                reachablePhases.add(tempPhase);
+                Set<YPhase> endPoints = new HashSet<>();
+                reachablePhases.addAll(CollectorVisitor.collectNodeSetInGenericGraph(tempPhase, endPoints, n -> false, p -> (Set<YPhase>) p.getSuccPhases()));
+                reachablePhases.addAll(endPoints);
+            }
+            if (!found) {
                 assert (false) : "Could not find the first phase of the parallel construct at line #" +
                         Misc.getLineNum(this.getNode());
                 return null;
             }
-            reachablePhases.add(tempPhase);
-            Set<YPhase> endPoints = new HashSet<>();
-            reachablePhases.addAll(CollectorVisitor.collectNodeSetInGenericGraph(tempPhase, endPoints, n -> false, p -> (Set<YPhase>) p.getSuccPhases()));
-            reachablePhases.addAll(endPoints);
             return reachablePhases;
-
         }
     }
 
+    public Set<AbstractPhase<?, ?>> getFirstPhaseSet() {
+        return (Set<AbstractPhase<?, ?>>) this.getCFGInfo().getNestedCFG().getBegin().getInfo().getNodePhaseInfo().getPhaseSet();
+    }
+
     public AbstractPhase<?, ?> getFirstPhase() {
+        assert (Program.concurrencyAlgorithm != Program.ConcurrencyAlgorithm.YUANMHP) : "Unexpected path.";
         for (AbstractPhase<?, ?> ph : this.getCFGInfo().getNestedCFG().getBegin().getInfo().getNodePhaseInfo().getPhaseSet()) {
             if (ph.getParConstruct() == this.getNode()) {
                 return ph;

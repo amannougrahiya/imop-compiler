@@ -518,6 +518,7 @@ public class BeginPhasePoint extends PhasePoint {
     public boolean recomputeSets() {
         Set<NodeWithStack> endPoints = new HashSet<>();
         Set<NodeWithStack> reachablesWithStack = new HashSet<>();
+        assert (!(this.getNode() instanceof EndNode && this.getNode().getParent() instanceof ParallelConstruct));
         for (NodeWithStack succ : this.getNode().getInfo().getCFGInfo().getInterProceduralLeafSuccessors(this.getCallStack())) {
             Set<NodeWithStack> someEndPoints = new HashSet<>();
             reachablesWithStack.addAll(CollectorVisitor.collectNodesIntraTaskForwardBarrierFreePath(succ, someEndPoints));
@@ -562,6 +563,7 @@ public class BeginPhasePoint extends PhasePoint {
         }
         Set<NodeWithStack> endPoints = new HashSet<>();
         Set<NodeWithStack> reachablesWithStack = new HashSet<>();
+        assert (!(this.getNode() instanceof EndNode && this.getNode().getParent() instanceof ParallelConstruct));
         for (NodeWithStack succ : this.getNode().getInfo().getCFGInfo().getInterProceduralLeafSuccessors(this.getCallStack())) {
             Set<NodeWithStack> someEndPoints = new HashSet<>();
             reachablesWithStack.addAll(CollectorVisitor.collectNodesIntraTaskForwardBarrierFreePath(succ, someEndPoints));

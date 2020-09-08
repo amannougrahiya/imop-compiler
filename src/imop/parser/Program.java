@@ -33,6 +33,7 @@ import java.util.*;
 
 public class Program {
 
+
     static {
         Program.loadZ3LibrariesInMac();
     }
@@ -73,13 +74,23 @@ public class Program {
      */
     public static boolean dumpIntermediateStates = false;
     public static boolean printNoFiles = false;
+    /*
+     * When set, certain checks are performed regarding phase-set of a barrier while it is being tested for removal.
+     */
+    public static boolean phaseEmptySetChecker = false;
     /**
      * Decided whether the PTA-heuristic that looks at the cell being dereferenced, is enabled.
      */
     public static boolean ptaHeuristicEnabled = false;
     public static UpdateCategory updateCategory = UpdateCategory.LZUPD;
     public static UpdateCategory mhpUpdateCategory = UpdateCategory.LZUPD;
-
+    /*
+     * Decides whether the local-stabilization heuristic is used with Yuan
+     * (where we simply assume that no changes impact the SVEness of any of the predicates.)
+     * Note that in the absence of any special checks validating our assumption,
+     * this heuristic would not be correct for Yuan's concurrency analysis.
+     */
+    public static boolean useHeuristicWithYuan = false;
     /**
      * Set the default SVE sensitivity for the whole program.<br> Note that IDFA's <i>may</i> have their fixed SVE
      * sensitivity values, defined in their constructors.
@@ -93,6 +104,10 @@ public class Program {
     private static boolean postOrderValid = false;
     private static List<Node> reversePostOrderOfLeaves = new ArrayList<>();
     public static ConcurrencyAlgorithm concurrencyAlgorithm = ConcurrencyAlgorithm.ICON;
+    /*
+     * Decides whether all predicates are assumed to be SVE; note that this flag does not impact
+     * the way that the co-existence checks are handled.
+     */
     public static boolean sveNoCheck = true;
     private static Set<Symbol> addressTakenSymbols;
     /*
@@ -116,7 +131,7 @@ public class Program {
     public static final long thresholdIDFAProcessingCount = (long) 1e6;
     public static DecimalFormat df2 = new DecimalFormat("#.##");
     public static boolean disableLineNumbers = false;
-    public static int numExpansionAllowed = 300; // Default. This is set again in the method {@link defaultCommandLineArguments()}.
+    public static int numExpansionAllowed = 100; // Default, applicable for the command-line arguments. This is set again in the method {@link defaultCommandLineArguments()}.
 
     public static void rememberInitialPhasesIfRequired() {
         if (Program.getRoot() == null) {
@@ -161,10 +176,13 @@ public class Program {
         Program.memoizeAccesses = 0;
         Program.preciseDFDEdges = false;
         Program.updateCategory = UpdateCategory.LZUPD; // Default is LZUPD.
-        Program.concurrencyAlgorithm = ConcurrencyAlgorithm.YUANMHP;
+        Program.concurrencyAlgorithm = ConcurrencyAlgorithm.ICON;
         Program.mhpUpdateCategory = UpdateCategory.LZUPD; // Default is LZUPD.
         Program.sveNoCheck = true;
         Program.numExpansionAllowed = 100;
+        Program.useHeuristicWithYuan = false;
+        Program.phaseEmptySetChecker = false;
+        Program.ptaHeuristicEnabled = false;
 
         // Just a safety check below.
         if (Program.concurrencyAlgorithm == ConcurrencyAlgorithm.YUANMHP) {
@@ -350,6 +368,8 @@ public class Program {
         //		filePath = ("../tests/insert.i");
         //		filePath = ("../tests/minebench/kmeans.i");
         //        filePath = ("../tests/barr-opt-tests/c_jacobi01.i");
+        filePath = ("../tests/barr-opt-tests/c_jacobi03.i");
+        filePath = ("../tests/c_jacobi03-postpass.i");
         //        filePath = ("../tests/c_jacobi01-postpass.i");
         //		filePath = ("../tests/barr-opt-tests/adi.i");
         //		filePath = ("../tests/barr-opt-tests/amgmk.i");

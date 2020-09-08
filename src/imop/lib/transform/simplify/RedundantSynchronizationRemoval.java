@@ -85,7 +85,7 @@ public class RedundantSynchronizationRemoval {
     }
 
     private static int counter = 0;
-    private static boolean phaseEmptySetChecker = true;
+
     /**
      * This method removes redundant barriers from the root. A barrier <i>b</i> is redundant, if there exists no pair of
      * phases,
@@ -115,7 +115,7 @@ public class RedundantSynchronizationRemoval {
                 allPhaseSet.addAll((Collection<? extends Phase>) parConsNode.getInfo().getConnectedPhases());
             }
             Set<Phase> phasesAbove = (Set<Phase>) barrier.getInfo().getNodePhaseInfo().getPhaseSet();
-            if (phaseEmptySetChecker && phasesAbove.isEmpty()) {
+            if (Program.phaseEmptySetChecker && phasesAbove.isEmpty()) {
                 if (!Misc.getEnclosingFunction(barrier).getInfo().getCallersOfThis().isEmpty()) {
                     Misc.exitDueToError("Found a barrier that does not possess any phase information.");
                 }
@@ -128,7 +128,7 @@ public class RedundantSynchronizationRemoval {
                     }
                 }
             }
-            if (phaseEmptySetChecker && phasesBelow.isEmpty()) {
+            if (Program.phaseEmptySetChecker && phasesBelow.isEmpty()) {
                 if (!Misc.getEnclosingFunction(barrier).getInfo().getCallersOfThis().isEmpty()) {
                     Misc.exitDueToError("Found a barrier that does not start any phase!");
                 }

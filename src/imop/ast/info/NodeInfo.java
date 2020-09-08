@@ -216,42 +216,42 @@ public class NodeInfo implements Cloneable {
     private Set<Node> backwardReachableBarriers = null;
 
     public Set<Node> getFWRNodes() {
-        if (this.node instanceof EndNode && this.node.getParent() instanceof ParallelConstruct) {
-            return new HashSet<>();
-        }
         //        if (this.forwardReachableNodes == null) {
         populateForward();
         //        }
+        if (this.node instanceof EndNode && this.node.getParent() instanceof ParallelConstruct) {
+            return new HashSet<>();
+        }
         return this.forwardReachableNodes;
     }
 
     public Set<Node> getFWRBarriers() {
-        if (this.node instanceof EndNode && this.node.getParent() instanceof ParallelConstruct) {
-            return new HashSet<>();
-        }
         //        if (this.forwardReachableBarriers == null) {
         populateForward();
         //        }
+        if (this.node instanceof EndNode && this.node.getParent() instanceof ParallelConstruct) {
+            return new HashSet<>();
+        }
         return this.forwardReachableBarriers;
     }
 
     public Set<Node> getBWRNodes() {
-        if (this.node instanceof BeginNode && this.node.getParent() instanceof ParallelConstruct) {
-            return new HashSet<>();
-        }
         //        if (this.backwardReachableNodes == null) {
         populateBackward();
         //        }
+        if (this.node instanceof BeginNode && this.node.getParent() instanceof ParallelConstruct) {
+            return new HashSet<>();
+        }
         return this.backwardReachableNodes;
     }
 
     public Set<Node> getBWRBarriers() {
-        if (this.node instanceof BeginNode && this.node.getParent() instanceof ParallelConstruct) {
-            return new HashSet<>();
-        }
         //        if (this.backwardReachableBarriers == null) {
         populateBackward();
         //        }
+        if (this.node instanceof BeginNode && this.node.getParent() instanceof ParallelConstruct) {
+            return new HashSet<>();
+        }
         return this.backwardReachableBarriers;
     }
     /*

@@ -21,7 +21,6 @@ import imop.lib.analysis.mhp.incMHP.BeginPhasePoint;
 import imop.lib.analysis.mhp.incMHP.MHPAnalyzer;
 import imop.lib.analysis.mhp.incMHP.NodePhaseInfo;
 import imop.lib.analysis.mhp.incMHP.EndPhasePoint;
-import imop.lib.analysis.mhp.yuan.YuanConcurrencyAnalysis;
 import imop.lib.analysis.solver.ConstraintsGenerator;
 import imop.lib.cfg.info.CFGInfo;
 import imop.lib.cfg.info.ProgramElementExactCaches;
@@ -1225,7 +1224,7 @@ public class AutomatedUpdater {
         node = Misc.getCFGNodeFor(node);
         long timer = System.nanoTime();
         if (Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.YUANMHP) {
-            if (YuanConcurrencyAnalysis.useHeuristicWithYuan) {
+            if (Program.useHeuristicWithYuan) {
                 if (AutomatedUpdater.stabilizeMHPLocallyUponAddition(node)) {
                     BeginPhasePoint.stabilizationTime += (System.nanoTime() - timer);
                     return;
@@ -1295,7 +1294,7 @@ public class AutomatedUpdater {
         node = Misc.getCFGNodeFor(node);
         long timer = System.nanoTime();
         if (Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.YUANMHP) {
-            if (YuanConcurrencyAnalysis.useHeuristicWithYuan) {
+            if (Program.useHeuristicWithYuan) {
                 if (AutomatedUpdater.stabilizeMHPLocallyUponRemoval(node)) {
                     BeginPhasePoint.stabilizationTime += (System.nanoTime() - timer);
                     return new HashSet<>();
@@ -1354,7 +1353,7 @@ public class AutomatedUpdater {
             // The method above already calculates the time taken in stabilization.
             return;
         } else if (Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.YUANMHP) {
-            if (!YuanConcurrencyAnalysis.useHeuristicWithYuan) {
+            if (!Program.useHeuristicWithYuan) {
                 AbstractPhase.globalMHPStale = true;
             }
             return;

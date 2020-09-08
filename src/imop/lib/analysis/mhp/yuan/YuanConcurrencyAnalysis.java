@@ -23,8 +23,6 @@ import java.util.stream.Collectors;
 
 public class YuanConcurrencyAnalysis {
 
-    public static boolean useHeuristicWithYuan = false;
-
     /**
      * Construct all aggregate phases within the given parCons. Note that there is no reuse from the existing set of
      * phases or phase-points.

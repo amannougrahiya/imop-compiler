@@ -124,10 +124,9 @@ public class DriverModule {
 
     public static void clientAutoUpdate() {
         DumpSnapshot.dumpVisibleSharedReadWrittenCells("first" + Program.updateCategory);
-        DumpSnapshot.dumpPhases("first" + Program.updateCategory);
+        DumpSnapshot.dumpPhases("first_" + Program.concurrencyAlgorithm + "_" + Program.updateCategory);
         //        boolean dumpIntermediate = Program.dumpIntermediateStates;
-        boolean dumpIntermediate = true;
-        Program.sveSensitive = SVEDimension.SVE_INSENSITIVE; // Note: We keep SVE-sensitivity disabled for this client.
+        boolean dumpIntermediate = false;
         ParallelConstructExpander.mergeParallelRegions(Program.getRoot());
         Program.getRoot().getInfo().removeUnusedElements();
         ProfileSS.nextCP();
@@ -235,19 +234,21 @@ public class DriverModule {
         System.err.println("This execution ran in " + Program.updateCategory + " mode for IDFA update, and in " +
                 Program.mhpUpdateCategory + " mode for MHP update.");
         System.err.println("Optimized a total of " + AutomatedUpdater.hasBeenOtimized + " stale markings.");
-        DumpSnapshot.printToFile(Program.getRoot(), (Program.fileName + "imop_output_" + Program.mhpUpdateCategory +
-                ".i").trim());
+        System.err.println(
+                "Number of times PTA would have had to run in semi-eager mode: " + ProfileSS.flagSwitchCount);
+        DumpSnapshot.printToFile(Program.getRoot(), (Program.fileName + "imop_output_" + Program.concurrencyAlgorithm +
+                "_" + Program.mhpUpdateCategory + ".i").trim());
         DumpSnapshot.dumpPointsTo("final" + Program.updateCategory);
-        DumpSnapshot.dumpPhases("final" + Program.mhpUpdateCategory);
+        DumpSnapshot.dumpPhases("final" + Program.concurrencyAlgorithm + "_" + Program.mhpUpdateCategory);
         if (dumpIntermediate) {
             DumpSnapshot.dumpNestedCFG(Program.getRoot(), "optimized" + Program.mhpUpdateCategory);
         }
         DecimalFormat df2 = Program.df2;
-        System.out.println(Program.fileName + " " + Program.mhpUpdateCategory + " " + df2.format(totTime) + " " +
-                df2.format(incMHPTime) + " " + df2.format(incIDFATime) + " " + incMHPTriggers + " " + incIDFATriggers +
-                " " + finalIncNodes + " " + tarjanCount + " " + df2.format(sccTime));
-        System.err.println(
-                "Number of times PTA would have had to run in semi-eager mode: " + ProfileSS.flagSwitchCount);
+        System.out.println(
+                Program.fileName + " " + Program.concurrencyAlgorithm + " " + Program.mhpUpdateCategory + " " +
+                        df2.format(totTime) + " " + df2.format(incMHPTime) + " " + df2.format(incIDFATime) + " " +
+                        incMHPTriggers + " " + incIDFATriggers + " " + finalIncNodes + " " + tarjanCount + " " +
+                        df2.format(sccTime));
         //		System.err.println("Trigger count: " + triggerSizeCountList);
         System.exit(0);
     }
