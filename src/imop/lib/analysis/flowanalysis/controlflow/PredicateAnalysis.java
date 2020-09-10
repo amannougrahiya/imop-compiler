@@ -12,9 +12,11 @@ import imop.ast.info.cfgNodeInfo.ExpressionInfo;
 import imop.ast.node.external.*;
 import imop.ast.node.internal.*;
 import imop.lib.analysis.flowanalysis.BranchEdge;
+import imop.lib.analysis.flowanalysis.dataflow.PointsToAnalysis;
 import imop.lib.analysis.flowanalysis.generic.*;
 import imop.lib.analysis.flowanalysis.generic.AnalysisDimension.SVEDimension;
 import imop.lib.analysis.mhp.incMHP.BeginPhasePoint;
+import imop.lib.cfg.info.CFGInfo;
 import imop.lib.cg.CallStack;
 import imop.lib.cg.NodeWithStack;
 import imop.lib.util.CellSet;
@@ -253,6 +255,58 @@ public class PredicateAnalysis extends IntraProceduralControlFlowAnalysis<Predic
 			//			return new PredicateFlowFact(new ImmutableSet<>(newPathSet));
 		}
 		return edgeIN;
+	}
+
+	public void restartAnalysisFromStoredNodes() {
+		this.autoUpdateTriggerCounter++;
+		PointsToAnalysis.enableHeuristic(); // Mark start of next epoch.
+		long localTimer = System.nanoTime();
+
+		/*
+		 * From the set of nodes to be updated, we obtain the workList to be
+		 * processed.
+		 * We add all the entry points of the SCC of each node.
+		 */
+		this.workList.recreate();
+		Set<Node> remSet = new HashSet<>();
+		for (Node n : nodesToBeUpdated) {
+			boolean added = this.workList.add(n);
+			if (added) {
+				remSet.add(n);
+			}
+			// OLD CODE: Now we do not add the entry points of SCCs to be processed.
+			//			SCC nSCC = n.getInfo().getCFGInfo().getSCC();
+			//			if (nSCC != null) {
+			//				this.workList.addAll(nSCC.getEntryNodes());
+			//			}
+		}
+		// OLD CODE: Now, if we ever find that a node is unconnected to the program, we remove it from processing.
+		this.nodesToBeUpdated.removeAll(remSet);
+		//		this.nodesToBeUpdated.clear();
+
+		this.processedInThisUpdate = new HashSet<>();
+		this.yetToBeFinalized = new HashSet<>();
+		while (!workList.isEmpty()) {
+			Node nodeToBeAnalyzed = workList.removeFirstElement();
+			CFGInfo nInfo = nodeToBeAnalyzed.getInfo().getCFGInfo();
+			if (nInfo.getSCC() == null) {
+				// Here, node itself is an SCC. We do not require two rounds.
+				this.nodesProcessedDuringUpdate++;
+				this.debugRecursion(nodeToBeAnalyzed);
+				this.processWhenNotUpdated(nodeToBeAnalyzed); // Directly invoke the second round processing.
+				continue;
+			} else {
+				/*
+				 * This node belongs to an SCC. We should process the whole of
+				 * SCC in the first phase, followed by its processing in the
+				 * second phase, and only then shall we move on to the next SCC.
+				 */
+				stabilizeSCCOf(nodeToBeAnalyzed);
+			}
+		}
+
+		localTimer = System.nanoTime() - localTimer;
+		this.flowAnalysisUpdateTimer += localTimer;
 	}
 
 	@Override

@@ -18,9 +18,9 @@ import imop.lib.analysis.flowanalysis.generic.*;
 import imop.lib.analysis.mhp.AbstractPhase;
 import imop.lib.analysis.mhp.AbstractPhasePointable;
 import imop.lib.analysis.mhp.incMHP.BeginPhasePoint;
+import imop.lib.analysis.mhp.incMHP.EndPhasePoint;
 import imop.lib.analysis.mhp.incMHP.MHPAnalyzer;
 import imop.lib.analysis.mhp.incMHP.NodePhaseInfo;
-import imop.lib.analysis.mhp.incMHP.EndPhasePoint;
 import imop.lib.analysis.solver.ConstraintsGenerator;
 import imop.lib.cfg.info.CFGInfo;
 import imop.lib.cfg.info.ProgramElementExactCaches;
@@ -658,7 +658,8 @@ public class AutomatedUpdater {
         } else if (Program.updateCategory == UpdateCategory.LZINV) {
             assert (nodeSet == null || nodeSet.isEmpty());
             for (FlowAnalysis<?> analysis : FlowAnalysis.getAllAnalyses().values()) {
-                if (analysis instanceof InterThreadForwardCellularAnalysis ||
+                if (analysis.getAnalysisName() == AnalysisName.PREDICATE_ANALYSIS ||
+                        analysis instanceof InterThreadForwardCellularAnalysis ||
                         analysis instanceof InterThreadForwardNonCellularAnalysis) {
                     analysis.storeNodesToBeUpdated(new HashSet<>()); // This will just mark the IDFA as invalid.
                 }
@@ -687,7 +688,8 @@ public class AutomatedUpdater {
             }
         } else if (Program.updateCategory == UpdateCategory.LZUPD) {
             for (FlowAnalysis<?> analysis : FlowAnalysis.getAllAnalyses().values()) {
-                if (analysis instanceof InterThreadForwardCellularAnalysis ||
+                if (analysis.getAnalysisName() == AnalysisName.PREDICATE_ANALYSIS ||
+                        analysis instanceof InterThreadForwardCellularAnalysis ||
                         analysis instanceof InterThreadForwardNonCellularAnalysis) {
                     analysis.storeNodesToBeUpdated(nodeSet);
                 }

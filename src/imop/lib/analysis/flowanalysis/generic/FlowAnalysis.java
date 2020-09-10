@@ -11,6 +11,7 @@ package imop.lib.analysis.flowanalysis.generic;
 import imop.ast.node.external.*;
 import imop.ast.node.internal.*;
 import imop.baseVisitor.GJDepthFirstProcess;
+import imop.lib.analysis.flowanalysis.SCC;
 import imop.lib.analysis.flowanalysis.dataflow.PointsToAnalysis.PointsToGlobalState;
 import imop.lib.analysis.flowanalysis.generic.AnalysisDimension.ContextDimension;
 import imop.lib.analysis.flowanalysis.generic.AnalysisDimension.FieldDimension;
@@ -156,6 +157,69 @@ public abstract class FlowAnalysis<F extends FlowAnalysis.FlowFact> extends GJDe
         this.flowAnalysisUpdateTimer += localTimer;
     }
 
+    /**
+     * This method starts with the given node, and stabilizes the SCC corresponding to it before returning back.
+     *
+     * @param node
+     *         node whose SCC has to be stabilized. Note that the node has already been removed from the workList.
+     */
+    protected void stabilizeSCCOf(Node node) {
+        this.processedInThisUpdate.clear();
+        this.yetToBeFinalized.clear();
+
+        SCC thisSCC = node.getInfo().getCFGInfo().getSCC();
+        int thisSCCNum = node.getInfo().getCFGInfo().getSCCRPOIndex();
+        //		System.err.println("*** PROCESSING SCC #" + thisSCCNum);
+
+        assert (thisSCC != null);
+        do {
+            this.nodesProcessedDuringUpdate++;
+            this.debugRecursion(node);
+            this.processWhenUpdated(node);
+            node = this.workList.peekFirstElementOfSameSCC(thisSCCNum);
+            if (node == null) {
+                break;
+            }
+            SCC nextSCC = node.getInfo().getCFGInfo().getSCC();
+            if (nextSCC == null || nextSCC != thisSCC) {
+                // The next node belongs to a different SCC. Break from the first phase.
+                break;
+            } else {
+                // Extract the next node and process it next.
+                node = this.workList.removeFirstElementOfSameSCC(thisSCCNum);
+            }
+        } while (true);
+        // Now, the set processedInThisUpdate is not required anymore. Clear it.
+        this.processedInThisUpdate.clear();
+        /*
+         * Next, let's start with the second phase, with all elements of
+         * yetToBeFinalized in the workList, where we proceed as usual.
+         */
+        this.workList.addAll(this.yetToBeFinalized);
+        this.yetToBeFinalized.clear();
+        do {
+            node = this.workList.peekFirstElementOfSameSCC(thisSCCNum);
+            if (node == null) {
+                break;
+            }
+            SCC nextSCC = node.getInfo().getCFGInfo().getSCC();
+            if (nextSCC == null || nextSCC != thisSCC) {
+                // The next node belongs to a different SCC. Break from the second phase.
+                break;
+            } else {
+                // Extract the next node and process it in the second phase.
+                node = this.workList.removeFirstElementOfSameSCC(thisSCCNum);
+            }
+            this.nodesProcessedDuringUpdate++;
+            this.debugRecursion(node);
+            this.processWhenNotUpdated(node); // Note that this is a call to normal processing.
+        } while (true);
+
+        //		if (node != null) {
+        //			int nextSCCNum = node.getInfo().getCFGInfo().getSCCRPOIndex();
+        //			System.err.println("*** ENCOUNTERED NEXT SCC with ID #" + nextSCCNum);
+        //		}
+    }
     /**
      * Given a node connected to the program, this method ensures that the IN and OUT of all the leaf nodes within the
      * given node are set to be the meet of OUT of all the predecessors of the entry point of the node (there must be
