@@ -95,7 +95,7 @@ public class RedundantSynchronizationRemoval {
      * dependence on <i>s</i> between <i>p1</i> and <i>p2</i>.
      *
      * <br>
-     * UPDATE: 07-Dec-2017 11:27:10 PM (Edited by: aman) <br> We replace barriers with a flush, to be safe. Note that
+     * UPDATE: 07-Dec-2017 11:27:10 PM (Edited by: Aman) <br> We replace barriers with a flush, to be safe. Note that
      * this replacement may not be required.
      *
      * @param root

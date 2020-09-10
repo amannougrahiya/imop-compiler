@@ -65,6 +65,13 @@ public class PointsToAnalysis extends InterThreadForwardCellularAnalysis<PointsT
 			return;
 		}
 		this.autoUpdateTriggerCounter++;
+		if (Program.stabilizationStackDump != null) {
+			StringBuilder tempStr = new StringBuilder();
+			for (StackTraceElement ste : Thread.currentThread().getStackTrace()) {
+				Program.stabilizationStackDump.append(ste.toString() + "\n");
+			}
+			Program.stabilizationStackDump.append("#######\n\n");
+		}
 		PointsToAnalysis.enableHeuristic(); // Mark start of next epoch.
 		long localTimer = System.nanoTime();
 

@@ -216,42 +216,42 @@ public class NodeInfo implements Cloneable {
     private Set<Node> backwardReachableBarriers = null;
 
     public Set<Node> getFWRNodes() {
-        //        if (this.forwardReachableNodes == null) {
         populateForward();
-        //        }
         if (this.node instanceof EndNode && this.node.getParent() instanceof ParallelConstruct) {
             return new HashSet<>();
         }
+        //        if (this.forwardReachableNodes == null) {
+        //        }
         return this.forwardReachableNodes;
     }
 
     public Set<Node> getFWRBarriers() {
-        //        if (this.forwardReachableBarriers == null) {
         populateForward();
-        //        }
         if (this.node instanceof EndNode && this.node.getParent() instanceof ParallelConstruct) {
             return new HashSet<>();
         }
+        //        if (this.forwardReachableBarriers == null) {
+        //        }
         return this.forwardReachableBarriers;
     }
 
     public Set<Node> getBWRNodes() {
-        //        if (this.backwardReachableNodes == null) {
         populateBackward();
-        //        }
         if (this.node instanceof BeginNode && this.node.getParent() instanceof ParallelConstruct) {
             return new HashSet<>();
         }
+        //        if (this.backwardReachableNodes == null) {
+        //        }
         return this.backwardReachableNodes;
     }
 
     public Set<Node> getBWRBarriers() {
-        //        if (this.backwardReachableBarriers == null) {
         populateBackward();
-        //        }
         if (this.node instanceof BeginNode && this.node.getParent() instanceof ParallelConstruct) {
             return new HashSet<>();
         }
+        //        if (this.backwardReachableBarriers == null) {
+        //        }
         return this.backwardReachableBarriers;
     }
     /*
@@ -389,33 +389,28 @@ public class NodeInfo implements Cloneable {
                 NodeInfo.paDone = true;
                 performPredicateAnalysis();
             }
-        }
-        if (analysisName == AnalysisName.LIVENESS) {
+        } else if (analysisName == AnalysisName.LIVENESS) {
             if (!NodeInfo.livenessDone) {
                 NodeInfo.livenessDone = true;
                 performLivenessAnalysis();
             }
-        }
-        if (analysisName == AnalysisName.DATA_DEPENDENCE_FORWARD) {
+        } else if (analysisName == AnalysisName.DATA_DEPENDENCE_FORWARD) {
             if (!NodeInfo.ddfDone) {
                 NodeInfo.ddfDone = true;
                 performDDF();
             }
-        }
-        if (analysisName == AnalysisName.REACHING_DEFINITION) {
+        } else if (analysisName == AnalysisName.REACHING_DEFINITION) {
             if (!NodeInfo.rdDone) {
                 NodeInfo.rdDone = true;
                 performRDA();
                 //				Main.dumpReachingDefinitions("");
             }
-        }
-        if (analysisName == AnalysisName.DOMINANCE) {
+        } else if (analysisName == AnalysisName.DOMINANCE) {
             if (!NodeInfo.daDone) {
                 NodeInfo.daDone = true;
                 performDominanceAnalysis();
             }
-        }
-        if (analysisName == AnalysisName.HEAP_VALIDITY) {
+        } else if (analysisName == AnalysisName.HEAP_VALIDITY) {
             if (!NodeInfo.hvDone) {
                 NodeInfo.hvDone = true;
                 performHeapValidityAnalysis();

@@ -156,8 +156,8 @@ public class DriverModule {
             DumpSnapshot.dumpPhases("merged-rem-inlined" + Program.mhpUpdateCategory);
         }
         ParallelConstructExpander.mergeParallelRegions(Program.getRoot());
-        //        Program.getRoot().getInfo().removeUnusedElements();
-        //        ProfileSS.nextCP();
+        Program.getRoot().getInfo().removeUnusedElements();
+        ProfileSS.nextCP();
         if (dumpIntermediate) {
             DumpSnapshot.dumpRoot("merged-rem-inlined-merged" + Program.mhpUpdateCategory);
             DumpSnapshot.dumpPointsTo("merged-rem-inlined-merged" + Program.updateCategory);
@@ -244,11 +244,29 @@ public class DriverModule {
             DumpSnapshot.dumpNestedCFG(Program.getRoot(), "optimized" + Program.mhpUpdateCategory);
         }
         DecimalFormat df2 = Program.df2;
-        System.out.println(
-                Program.fileName + " " + Program.concurrencyAlgorithm + " " + Program.mhpUpdateCategory + " " +
-                        df2.format(totTime) + " " + df2.format(incMHPTime) + " " + df2.format(incIDFATime) + " " +
-                        incMHPTriggers + " " + incIDFATriggers + " " + finalIncNodes + " " + tarjanCount + " " +
-                        df2.format(sccTime));
+
+        // Count the number of aggregate phases
+        int numPhases = 0;
+        for (ParallelConstruct parCons : Misc.getExactEnclosee(Program.getRoot(), ParallelConstruct.class)) {
+            numPhases += parCons.getInfo().getConnectedPhases().size();
+        }
+
+        // Count the number of explicit barriers.
+        int numExplicitBarriers = Misc.getExactEnclosee(Program.getRoot(), BarrierDirective.class).size();
+        StringBuilder resultString = new StringBuilder(Program.fileName + " " +
+                ((Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.YUANMHP) ? "YUAN" : "ICON") + " " +
+                Program.mhpUpdateCategory + " " +
+                ((Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.YUANMHP) ? "SVE-sensitive" : ((
+                        Program.sveSensitive == SVEDimension.SVE_SENSITIVE) ? ("SVE-sensitive (" +
+                        df2.format(SVEChecker.sveTimer * 1.0 / 1e9) + ")") : "SVE-insensitive (0)")) + " " +
+                df2.format(totTime) + " " + df2.format(incMHPTime) + " " + df2.format(incIDFATime) + " " +
+                incMHPTriggers + " " + incIDFATriggers + " " + finalIncNodes + " " + tarjanCount + " " +
+                df2.format(sccTime) + " " + numPhases + " " + numExplicitBarriers);
+        System.out.println(resultString);
+        System.err.println(resultString);
+        DumpSnapshot.printToFile(Program.stabilizationStackDump.toString(),
+                "stabilization-dump" + Program.concurrencyAlgorithm + Program.mhpUpdateCategory + Program.sveSensitive +
+                        ".txt");
         //		System.err.println("Trigger count: " + triggerSizeCountList);
         System.exit(0);
     }
