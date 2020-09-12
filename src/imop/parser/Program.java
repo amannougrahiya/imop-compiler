@@ -177,7 +177,7 @@ public class Program {
         Program.memoizeAccesses = 0;
         Program.preciseDFDEdges = false;
         Program.updateCategory = UpdateCategory.LZUPD; // Default is LZUPD.
-        Program.concurrencyAlgorithm = ConcurrencyAlgorithm.YUANMHP;
+        Program.concurrencyAlgorithm = ConcurrencyAlgorithm.ICON;
         Program.mhpUpdateCategory = UpdateCategory.LZINV; // Default is LZUPD.
         Program.sveSensitive = SVEDimension.SVE_SENSITIVE;
         Program.sveSensitivityOfIDFAEdges = Program.sveSensitive;
@@ -331,6 +331,7 @@ public class Program {
         //        filePath = ("../tests/predicate.c");
         //        filePath = ("../tests/strassen.i");
         filePath = ("../tests/ocean6868-k2.i");
+        //        filePath = ("../tests/ocean6868-mini.i");
         //        filePath = ("../tests/ocean6868-virgo.i");
         //        filePath = ("../tests/mdljcell.i");
         //        filePath = ("../tests/barr-opt-tests/heated_plate_openmp.i");

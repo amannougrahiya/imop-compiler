@@ -2399,24 +2399,32 @@ public class NodeInfo implements Cloneable {
     public String getDebugString() {
         List<Commentor> commentors = new ArrayList<>();
         commentors.add((n) -> {
-            String tempStr = "[";
-            //			FlowFact flow = n.getInfo().getStaleOUT(AnalysisName.POINTSTO);
-            //			if (flow != null) {
-            //				tempStr += "OUT: " + flow.getString();
-            //			}
-            for (AbstractPhase<?, ?> ph : n.getInfo().getNodePhaseInfo().getStalePhaseSet()) {
-                tempStr += ph.getPhaseId() + "; ";
+            String tempStr = "";
+            FlowFact flow = n.getInfo().getCurrentIN(AnalysisName.PREDICATE_ANALYSIS);
+            if (flow != null) {
+                tempStr += "IN: " + flow.getString();
             }
-            tempStr += "]";
-            if (Program.mhpUpdateCategory == UpdateCategory.LZINV) {
-                if (AbstractPhase.globalMHPStale) {
-                    tempStr += "(Stale)";
-                }
-            } else if (!BeginPhasePoint.getStaleBeginPhasePoints().isEmpty()) {
-                tempStr += "(Stale)";
+            flow = n.getInfo().getCurrentOUT(AnalysisName.PREDICATE_ANALYSIS);
+            if (flow != null) {
+                tempStr += "OUT: " + flow.getString();
             }
             return tempStr;
         });
+        //        commentors.add((n) -> {
+        //            String tempStr = "[";
+        //            for (AbstractPhase<?, ?> ph : n.getInfo().getNodePhaseInfo().getStalePhaseSet()) {
+        //                tempStr += ph.getPhaseId() + "; ";
+        //            }
+        //            tempStr += "]";
+        //            if (Program.mhpUpdateCategory == UpdateCategory.LZINV) {
+        //                if (AbstractPhase.globalMHPStale) {
+        //                    tempStr += "(Stale)";
+        //                }
+        //            } else if (!BeginPhasePoint.getStaleBeginPhasePoints().isEmpty()) {
+        //                tempStr += "(Stale)";
+        //            }
+        //            return tempStr;
+        //        });
         Node node = this.getNode();
         if (!Misc.isCFGNode(node)) {
             return this.getString(commentors);

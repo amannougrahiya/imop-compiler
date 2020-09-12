@@ -75,10 +75,10 @@ public class PredicateAnalysis extends IntraProceduralControlFlowAnalysis<Predic
 
         @Override
         public String getString() {
-            String retString = "predFlowFact";
             if (this.controlPredicatePaths.isEmpty()) {
-                return retString;
+                return "";
             }
+            String retString = "predFlowFact";
             retString = "{";
             for (ReversePath path : this.controlPredicatePaths) {
                 retString += path.toString();
@@ -268,22 +268,13 @@ public class PredicateAnalysis extends IntraProceduralControlFlowAnalysis<Predic
          * We add all the entry points of the SCC of each node.
          */
         this.workList.recreate();
-        Set<Node> remSet = new HashSet<>();
         for (Node n : nodesToBeUpdated) {
-            boolean added = this.workList.add(n);
-            if (added) {
-                if (n.getInfo().isConnectedToProgram()) {
-                    remSet.add(n);
-                }
+            if (n.getInfo().isConnectedToProgram()) {
+                boolean added = this.workList.add(n);
             }
-            // OLD CODE: Now we do not add the entry points of SCCs to be processed.
-            //			SCC nSCC = n.getInfo().getCFGInfo().getSCC();
-            //			if (nSCC != null) {
-            //				this.workList.addAll(nSCC.getEntryNodes());
-            //			}
         }
         // OLD CODE: Now, if we ever find that a node is unconnected to the program, we remove it from processing.
-        this.nodesToBeUpdated.removeAll(remSet);
+        this.nodesToBeUpdated.clear();
         //		this.nodesToBeUpdated.clear();
 
         this.processedInThisUpdate = new HashSet<>();

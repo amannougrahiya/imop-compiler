@@ -236,7 +236,8 @@ public abstract class IntraProceduralControlFlowAnalysis<F extends FlowAnalysis.
         this.processedInThisUpdate.add(node); // Mark a node as processed only after its OUT has been "purified".
 
         // Step 3: Process the successors.
-        if (oldOUT == null || !newOUT.isEqualTo(oldOUT)) {
+        propagateFurther |= inChanged;
+        if (propagateFurther) {
             this.workList.addAll(nodeInfo.getCFGInfo().getLeafSuccessors());
         }
     }

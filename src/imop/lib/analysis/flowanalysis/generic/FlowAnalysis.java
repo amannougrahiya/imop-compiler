@@ -234,6 +234,10 @@ public abstract class FlowAnalysis<F extends FlowAnalysis.FlowFact> extends GJDe
      */
     public abstract void cloneFlowFactsToAllWithin(Node affectedNode);
 
+    public boolean hasUnprocessedNodes() {
+        return !this.nodesToBeUpdated.isEmpty() || !this.workList.isEmpty();
+    }
+
     protected abstract void processWhenNotUpdated(Node node);
 
     protected abstract void processWhenUpdated(Node node);

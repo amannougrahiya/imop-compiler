@@ -236,15 +236,15 @@ public class DriverModule {
         System.err.println("Optimized a total of " + AutomatedUpdater.hasBeenOtimized + " stale markings.");
         System.err.println(
                 "Number of times PTA would have had to run in semi-eager mode: " + ProfileSS.flagSwitchCount);
+        String s = (Program.sveSensitive == SVEDimension.SVE_SENSITIVE) ? "S" : "U";
         DumpSnapshot.printToFile(Program.getRoot(), (Program.fileName + "imop_output_" + Program.concurrencyAlgorithm +
-                "_" + Program.mhpUpdateCategory + ".i").trim());
+                "_" + Program.mhpUpdateCategory + s + ".i").trim());
         DumpSnapshot.dumpPointsTo("final" + Program.updateCategory);
-        DumpSnapshot.dumpPhases("final" + Program.concurrencyAlgorithm + "_" + Program.mhpUpdateCategory);
+        DumpSnapshot.dumpPhases("final" + Program.concurrencyAlgorithm + "_" + Program.mhpUpdateCategory + s);
         if (dumpIntermediate) {
-            DumpSnapshot.dumpNestedCFG(Program.getRoot(), "optimized" + Program.mhpUpdateCategory);
+            DumpSnapshot.dumpNestedCFG(Program.getRoot(), "optimized" + Program.mhpUpdateCategory + s);
         }
         DecimalFormat df2 = Program.df2;
-
         // Count the number of aggregate phases
         int numPhases = 0;
         for (ParallelConstruct parCons : Misc.getExactEnclosee(Program.getRoot(), ParallelConstruct.class)) {
@@ -265,8 +265,7 @@ public class DriverModule {
         System.out.println(resultString);
         System.err.println(resultString);
         DumpSnapshot.printToFile(Program.stabilizationStackDump.toString(),
-                "stabilization-dump" + Program.concurrencyAlgorithm + Program.mhpUpdateCategory + Program.sveSensitive +
-                        ".txt");
+                "stabilization-dump" + Program.concurrencyAlgorithm + Program.mhpUpdateCategory + s + ".txt");
         //		System.err.println("Trigger count: " + triggerSizeCountList);
         System.exit(0);
     }
