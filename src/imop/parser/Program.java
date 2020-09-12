@@ -56,7 +56,7 @@ public class Program {
 
     public static boolean isPrePassPhase;
     public static boolean proceedBeyond;
-    public static boolean removeUnused;
+    public static boolean removeUnused = true;
     public static String fileName;
     public static boolean enableUnmodifiability;
     /**
@@ -177,7 +177,7 @@ public class Program {
         Program.memoizeAccesses = 0;
         Program.preciseDFDEdges = false;
         Program.updateCategory = UpdateCategory.LZUPD; // Default is LZUPD.
-        Program.concurrencyAlgorithm = ConcurrencyAlgorithm.ICON;
+        Program.concurrencyAlgorithm = ConcurrencyAlgorithm.YUANMHP;
         Program.mhpUpdateCategory = UpdateCategory.LZINV; // Default is LZUPD.
         Program.sveSensitive = SVEDimension.SVE_SENSITIVE;
         Program.sveSensitivityOfIDFAEdges = Program.sveSensitive;
@@ -357,9 +357,9 @@ public class Program {
         //        filePath = ("../tests/struct-issue.c");
         //        filePath = ("../tests/atomic-test.c");
         //        filePath = ("../tests/ocean/kinst-k2input.i");
-        filePath = ("../tests/dijkstra_openmp.i");
-        filePath = ("../tests/barr-opt-tests/jacobi-1d-imper.i");
-        filePath = ("../tests/jacobi-1d-imper-postpass.i");
+        //        filePath = ("../tests/dijkstra_openmp.i");
+        //        filePath = ("../tests/barr-opt-tests/jacobi-1d-imper.i");
+        //        filePath = ("../tests/jacobi-1d-imper-postpass.i");
         //        filePath = ("../tests/dijkstra_while_openmp.i");
         //        filePath = ("../tests/jacobi-while.i");
         //        filePath = ("../tests/ziggurat_openmp.i");
@@ -374,6 +374,7 @@ public class Program {
         //        filePath = ("../tests/minebench/kmeans.i");
         //        filePath = ("../tests/barr-opt-tests/c_jacobi01.i");
         //        filePath = ("../tests/barr-opt-tests/c_jacobi03.i");
+        //        filePath = ("../tests/barr-opt-tests/c_md.i");
         //        filePath = ("../tests/c_jacobi03-postpass.i");
         //        filePath = ("../tests/c_jacobi01-postpass.i");
         //        filePath = ("../tests/barr-opt-tests/adi.i");
@@ -434,6 +435,9 @@ public class Program {
                 Program.concurrencyAlgorithm = ConcurrencyAlgorithm.YUANMHP;
                 Program.sveSensitive = SVEDimension.SVE_SENSITIVE;
                 Program.sveSensitivityOfIDFAEdges = SVEDimension.SVE_SENSITIVE;
+            }
+            if (str.equals("--icon") || str.equals("-icon")) {
+                Program.concurrencyAlgorithm = ConcurrencyAlgorithm.ICON;
             }
             if (str.equals("--category") || str.equals("-c")) {
                 String next = args[index + 1];

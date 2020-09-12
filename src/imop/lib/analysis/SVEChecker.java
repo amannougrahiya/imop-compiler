@@ -44,7 +44,7 @@ public class SVEChecker {
 	private static Set<Node> singleValuedExpressions = new HashSet<>();
 	private static Set<Node> multiValuedExpressions = new HashSet<>();
 
-	private static boolean disable = false;
+	private static boolean disable = true;
 
 	public static long sveTimer = 0;
 
