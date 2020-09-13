@@ -81,7 +81,7 @@ public class Program {
     /**
      * Decided whether the PTA-heuristic that looks at the cell being dereferenced, is enabled.
      */
-    public static boolean ptaHeuristicEnabled = false;
+    public static boolean ptaHeuristicEnabled = true;
     public static UpdateCategory updateCategory = UpdateCategory.LZUPD;
     public static UpdateCategory mhpUpdateCategory = UpdateCategory.LZUPD;
     /*
@@ -180,7 +180,7 @@ public class Program {
         Program.concurrencyAlgorithm = ConcurrencyAlgorithm.ICON;
         Program.mhpUpdateCategory = UpdateCategory.LZINV; // Default is LZUPD.
         Program.sveSensitive = SVEDimension.SVE_SENSITIVE;
-        Program.sveSensitivityOfIDFAEdges = Program.sveSensitive;
+        Program.sveSensitivityOfIDFAEdges = SVEDimension.SVE_SENSITIVE;
         Program.sveNoCheck = true;
         Program.numExpansionAllowed = 100;
         Program.useHeuristicWithYuan = false;
@@ -359,7 +359,7 @@ public class Program {
         //        filePath = ("../tests/atomic-test.c");
         //        filePath = ("../tests/ocean/kinst-k2input.i");
         //        filePath = ("../tests/dijkstra_openmp.i");
-        //        filePath = ("../tests/barr-opt-tests/jacobi-1d-imper.i");
+        filePath = ("../tests/barr-opt-tests/jacobi-1d-imper.i");
         //        filePath = ("../tests/jacobi-1d-imper-postpass.i");
         //        filePath = ("../tests/dijkstra_while_openmp.i");
         //        filePath = ("../tests/jacobi-while.i");

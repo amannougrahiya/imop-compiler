@@ -54,7 +54,9 @@ public class PointsToAnalysis extends InterThreadForwardCellularAnalysis<PointsT
 	}
 
 	public static void enableHeuristic() {
-		PointsToAnalysis.isHeuristicEnabled = true;
+		if (Program.ptaHeuristicEnabled) {
+			PointsToAnalysis.isHeuristicEnabled = true;
+		}
 		affectedCellsInThisEpoch.clear();
 	}
 

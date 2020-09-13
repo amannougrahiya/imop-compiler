@@ -241,6 +241,7 @@ public class DriverModule {
                 "_" + Program.mhpUpdateCategory + s + ".i").trim());
         DumpSnapshot.dumpPointsTo("final" + Program.updateCategory);
         DumpSnapshot.dumpPhases("final" + Program.concurrencyAlgorithm + "_" + Program.mhpUpdateCategory + s);
+        DumpSnapshot.dumpPredicates("final" + Program.concurrencyAlgorithm + "_" + Program.mhpUpdateCategory + s);
         if (dumpIntermediate) {
             DumpSnapshot.dumpNestedCFG(Program.getRoot(), "optimized" + Program.mhpUpdateCategory + s);
         }

@@ -103,9 +103,10 @@ public class RedundantSynchronizationRemoval {
      */
     public static void removeBarriers(Node root) {
         if (1 == 2) {
-            DumpSnapshot.dumpPhases("rem" + Program.updateCategory + counter);
-            DumpSnapshot.dumpPointsTo("rem" + Program.updateCategory + counter);
-            DumpSnapshot.dumpVisibleSharedReadWrittenCells("rem" + Program.updateCategory + counter);
+            DumpSnapshot.dumpPhases("rem" + Program.mhpUpdateCategory + counter);
+            DumpSnapshot.dumpPointsTo("rem" + Program.mhpUpdateCategory + counter);
+            DumpSnapshot.dumpPredicates("rem" + Program.mhpUpdateCategory + counter);
+            DumpSnapshot.dumpVisibleSharedReadWrittenCells("rem" + Program.mhpUpdateCategory + counter);
             DumpSnapshot.dumpRoot("root" + Program.updateCategory + counter++);
         }
         for (Node barrierNode : Misc.getInheritedEncloseeList(root, BarrierDirective.class)) {
@@ -141,6 +142,7 @@ public class RedundantSynchronizationRemoval {
                     if (phAbove == phBelow) {
                         continue;
                     }
+
                     if (RedundantSynchronizationRemoval.phasesConflictForBarrier(phAbove, phBelow, barrier)) {
                         removable = false;
                         break outer;
@@ -269,7 +271,6 @@ public class RedundantSynchronizationRemoval {
                 continue;
             }
         }
-
         for (Node nAbove : nodesAbove) {
             CellSet readAbove = nAbove.getInfo().getSharedReads();
             CellSet writtenAbove = nAbove.getInfo().getSharedWrites();
