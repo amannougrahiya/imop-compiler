@@ -63,7 +63,6 @@ public class SCC implements DFable {
     public int getReversePostOrder() {
         //		Program.stabilizeReversePostOrderOfLeaves();
         if (CFGInfo.isSCCStale) {
-            CFGInfo.isSCCStale = false;
             SCC.initializeSCC();
         }
         return reversePostOrderId;
@@ -185,6 +184,9 @@ public class SCC implements DFable {
     }
 
     public static void initializeSCC() {
+        // TODO: Check whether the next line should be here (risking incorrect recursive radings until the end of this method),
+        // or whether it should be at the end (risking infinite recursive calls of this method from appropriate getters)?
+        CFGInfo.isSCCStale = false;
         SCC.internalStack = new Stack<>();
         SCC.tarjanI = 0;
         FunctionDefinition main = Program.getRoot().getInfo().getMainFunction();

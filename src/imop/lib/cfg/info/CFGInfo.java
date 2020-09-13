@@ -12,6 +12,7 @@ import imop.ast.info.NodeInfo;
 import imop.ast.node.external.*;
 import imop.ast.node.internal.*;
 import imop.lib.analysis.CoExistenceChecker;
+import imop.lib.analysis.flowanalysis.Cell;
 import imop.lib.analysis.flowanalysis.DFable;
 import imop.lib.analysis.flowanalysis.SCC;
 import imop.lib.analysis.flowanalysis.generic.AnalysisDimension.SVEDimension;
@@ -1321,6 +1322,19 @@ public class CFGInfo {
     public static CellSet getCommunicationVariables(DummyFlushDirective tailFlush, DummyFlushDirective headFlush) {
         CellSet commVars = new CellSet();
 
+        if (Program.memoizeAccesses > 0) {
+            /*
+             * This scenario implies that during the processing of PTA information,
+             * there was an attempt to obtain precise inter-task edges.
+             * Note that such precision, in turn, may require points-to analysis.
+             * Do handle such recursive issue, we simply return a set with global cell in it.
+             * This would give us a conservatively correct set of communication variables.
+             * NOTE: Extra inter-task edges would not negatively impact the precision,
+             * but efficiency, of the PTA.
+             */
+            commVars.add(Cell.genericCell);
+            return commVars;
+        }
         // Backup code: For when things get too slow.
         //		if (1 < 2) {
         //			commVars.addAll(Misc.setIntersection(tailFlush.getWrittenBeforeCells(), headFlush.getReadAfterCells()));
