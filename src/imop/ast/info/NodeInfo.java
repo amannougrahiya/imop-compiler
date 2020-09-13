@@ -2397,18 +2397,18 @@ public class NodeInfo implements Cloneable {
 
     public String getDebugString() {
         List<Commentor> commentors = new ArrayList<>();
-        //        commentors.add((n) -> {
-        //            String tempStr = "";
-        //            FlowFact flow = n.getInfo().getCurrentIN(AnalysisName.PREDICATE_ANALYSIS);
-        //            if (flow != null) {
-        //                tempStr += "IN: " + flow.getString();
-        //            }
-        //            flow = n.getInfo().getCurrentOUT(AnalysisName.PREDICATE_ANALYSIS);
-        //            if (flow != null) {
-        //                tempStr += "OUT: " + flow.getString();
-        //            }
-        //            return tempStr;
-        //        });
+        commentors.add((n) -> {
+            String tempStr = "";
+            FlowFact flow = n.getInfo().getCurrentIN(AnalysisName.PREDICATE_ANALYSIS);
+            if (flow != null) {
+                tempStr += "IN: " + flow.getString();
+            }
+            flow = n.getInfo().getCurrentOUT(AnalysisName.PREDICATE_ANALYSIS);
+            if (flow != null) {
+                tempStr += "OUT: " + flow.getString();
+            }
+            return tempStr;
+        });
         //        commentors.add((n) -> {
         //            String tempStr = "";
         //            FlowFact flow;
