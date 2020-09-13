@@ -63,7 +63,6 @@ public class CFGInfo {
 
     public SCC getSCC() {
         if (isSCCStale) {
-            isSCCStale = false;
             SCC.initializeSCC();
         }
         return scc;
@@ -76,13 +75,12 @@ public class CFGInfo {
 
     public Set<DFable> getDataFlowPredecessors() {
         if (isSCCStale) {
-            isSCCStale = false;
             SCC.initializeSCC();
         }
         if (this.dataFlowPredecessors == null) {
             this.dataFlowPredecessors = new HashSet<>();
-            assert (this.getSCC() == null) : "An internal node should not be treated as a DFable node!";
-            for (Node pred : this.getInterTaskLeafPredecessorNodes()) {
+            Node node = this.owner;
+            for (Node pred : SCC.getInterTaskLeafPredecessorNodes(node, SVEDimension.SVE_INSENSITIVE)) {
                 SCC predSCC = pred.getInfo().getCFGInfo().getSCC();
                 if (predSCC == null) {
                     this.dataFlowPredecessors.add(pred);
@@ -96,13 +94,12 @@ public class CFGInfo {
 
     public Set<DFable> getDataFlowSuccessors() {
         if (isSCCStale) {
-            isSCCStale = false;
             SCC.initializeSCC();
         }
         if (this.dataFlowSuccessors == null) {
             this.dataFlowSuccessors = new HashSet<>();
-            assert (this.getSCC() == null) : "An internal node should not be treated as a DFable node!";
-            for (Node succ : this.getInterTaskLeafSuccessorNodes()) {
+            Node node = this.owner;
+            for (Node succ : SCC.getInterTaskLeafSuccessorNodes(node, SVEDimension.SVE_INSENSITIVE)) {
                 SCC succSCC = succ.getInfo().getCFGInfo().getSCC();
                 if (succSCC == null) {
                     this.dataFlowSuccessors.add(succ);

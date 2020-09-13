@@ -310,7 +310,6 @@ public class NodeInfo implements Cloneable {
     public int getReversePostOrder() {
         //		Program.stabilizeReversePostOrderOfLeaves();
         if (CFGInfo.isSCCStale) {
-            CFGInfo.isSCCStale = false;
             SCC.initializeSCC();
         }
         SCC scc = this.getCFGInfo().getSCC();
