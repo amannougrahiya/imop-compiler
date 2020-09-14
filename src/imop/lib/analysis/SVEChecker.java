@@ -85,7 +85,7 @@ public class SVEChecker {
                 return false;
             } else if (parent instanceof IfStatement || parent instanceof SwitchStatement) {
                 // Consider all conditional predicates to be an MVE.
-                return false;
+                return true; // ? Or false? Check it out.
             } else if (parent instanceof WhileStatement || parent instanceof DoStatement) {
                 // Consider all loop predicates to be an SVE.
                 return true;
