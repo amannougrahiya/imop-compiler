@@ -98,7 +98,7 @@ public class Program {
     public static SVEDimension sveSensitive = SVEDimension.SVE_SENSITIVE;
     public static SVEDimension sveSensitivityOfIDFAEdges = SVEDimension.SVE_SENSITIVE;
 
-    public static final StringBuilder stabilizationStackDump = new StringBuilder();
+    public static final StringBuilder stabilizationStackDump = null; // new StringBuilder();
 
     public static boolean fieldSensitive = false;
     public static int maxThreads;
@@ -209,7 +209,7 @@ public class Program {
         //        filePath = ("../tests/npb-post/cg3-0.i"); // SVE-all: 2.50s.
         //        filePath = ("../tests/npb-post/ep3-0.i"); // SVE-all: 0.55s
         filePath = ("../tests/npb-post/ft3-0.i"); // SVE-all: 3.73s.
-        //        filePath = ("../tests/npb-post/is3-0.i"); // SVE-all: 0.69
+        filePath = ("../tests/npb-post/is3-0.i"); // SVE-all: 0.69
         //        filePath = ("../tests/npb-post/lu3-0.i"); // SVE-all: 16.26s.
         //        filePath = ("../tests/npb-post/mg3-0.i"); // SVE-all: 9.88s;
         //        filePath = ("../tests/npb-post/sp3-0.i"); // SVE-all: 23s.
@@ -330,7 +330,7 @@ public class Program {
         //        filePath = ("../tests/cfg-rem.c");
         //        filePath = ("../tests/predicate.c");
         //        filePath = ("../tests/strassen.i");
-        filePath = ("../tests/ocean6868-k2.i");
+        //        filePath = ("../tests/ocean6868-k2.i");
         //        filePath = ("../tests/ocean6868-mini.i");
         //        filePath = ("../tests/ocean6868-virgo.i");
         //        filePath = ("../tests/mdljcell.i");
@@ -359,14 +359,14 @@ public class Program {
         //        filePath = ("../tests/atomic-test.c");
         //        filePath = ("../tests/ocean/kinst-k2input.i");
         //        filePath = ("../tests/dijkstra_openmp.i");
-        filePath = ("../tests/barr-opt-tests/jacobi-1d-imper.i");
+        //        filePath = ("../tests/barr-opt-tests/jacobi-1d-imper.i");
         //        filePath = ("../tests/jacobi-1d-imper-postpass.i");
         //        filePath = ("../tests/dijkstra_while_openmp.i");
         //        filePath = ("../tests/jacobi-while.i");
         //        filePath = ("../tests/ziggurat_openmp.i");
         //        filePath = ("../tests/fft_openmp.i");
         //        filePath = ("../tests/quake.i");
-        //        filePath = ("../tests/sequoia/amgmk.i");
+        //        filePath = ("../tests/amgmk-postpass.i");
         //        filePath = ("../tests/sequoia/clomp.i");
         //        filePath = ("../tests/fsu/md_openmp.i");
         //        filePath = ("../tests/alternate.i");
@@ -376,10 +376,13 @@ public class Program {
         //        filePath = ("../tests/barr-opt-tests/c_jacobi01.i");
         //        filePath = ("../tests/barr-opt-tests/c_jacobi03.i");
         //        filePath = ("../tests/barr-opt-tests/c_md.i");
+        //        filePath = ("../tests/barr-opt-tests/histo.i");
+        //        filePath = ("../tests/barr-opt-tests/dijkstra_openmp.i");
         //        filePath = ("../tests/c_jacobi03-postpass.i");
         //        filePath = ("../tests/c_jacobi01-postpass.i");
         //        filePath = ("../tests/barr-opt-tests/adi.i");
         //        filePath = ("../tests/barr-opt-tests/amgmk.i");
+        //        filePath = ("../tests/barr-opt-tests/kmeans.i");
         //        filePath = ("../tests/barr-opt-tests/clomp.i");
         //        filePath = ("../tests/barr-opt-tests/stream.i");
         //        filePath = ("../tests/barr-opt-tests/quake.i");

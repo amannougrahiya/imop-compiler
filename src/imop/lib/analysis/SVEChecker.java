@@ -81,22 +81,28 @@ public class SVEChecker {
     static boolean isSingleValuedPredicate(Expression exp, Set<Expression> expSet, Set<NodePair> nodePairs) {
         if (disable) {
             Node parent = exp.getParent();
-            if (parent instanceof IfClause || parent instanceof NumThreadsClause || parent instanceof FinalClause) {
-                return false;
-            } else if (parent instanceof IfStatement || parent instanceof SwitchStatement) {
-                // Consider all conditional predicates to be an MVE.
-                return true; // ? Or false? Check it out.
-            } else if (parent instanceof WhileStatement || parent instanceof DoStatement) {
-                // Consider all loop predicates to be an SVE.
+            if (parent instanceof IfStatement || parent instanceof SwitchStatement) {
+                // Consider all conditional predicates to be an SVE.
                 return true;
+            } else if (parent instanceof WhileStatement || parent instanceof DoStatement) {
+                // Implicit valuation of parent.
             } else if (parent instanceof NodeOptional) {
                 Node grandParent = parent.getParent();
                 if (grandParent instanceof ForStatement) {
                     ForStatement forStmt = (ForStatement) grandParent;
                     if (forStmt.getInfo().getCFGInfo().getTerminationExpression() == exp) {
-                        // Consider all loop predicates to be an SVE.
-                        return true;
+                        parent = forStmt;
                     }
+                }
+            }
+            if (parent != null) {
+                if (exp.getInfo().getNodePhaseInfo().getPhaseSet().size() == 1) {
+                    return false;
+                }
+                if (!Misc.getExactEnclosee(parent, BarrierDirective.class).isEmpty()) {
+                    return true;
+                } else {
+                    return false;
                 }
             }
         }

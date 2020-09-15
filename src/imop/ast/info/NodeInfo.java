@@ -577,8 +577,9 @@ public class NodeInfo implements Cloneable {
                     }
                 } else {
                     //					if (analysisHandle.stateIsInvalid()) {
-                    if (analysisHandle.stateIsInvalid() && (!PointsToAnalysis.isHeuristicEnabled ||
-                            PointsToAnalysis.affectedCellsInThisEpoch.contains(thisCell))) {
+                    if (analysisHandle.stateIsInvalid() &&
+                            (analysisName != AnalysisName.POINTSTO || !PointsToAnalysis.isHeuristicEnabled ||
+                                    PointsToAnalysis.affectedCellsInThisEpoch.contains(thisCell))) {
                         if (Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.YUANMHP ||
                                 Program.mhpUpdateCategory == UpdateCategory.LZINV) {
                             if (AbstractPhase.globalMHPStale) {
@@ -2397,18 +2398,18 @@ public class NodeInfo implements Cloneable {
 
     public String getDebugString() {
         List<Commentor> commentors = new ArrayList<>();
-        commentors.add((n) -> {
-            String tempStr = "";
-            FlowFact flow = n.getInfo().getCurrentIN(AnalysisName.PREDICATE_ANALYSIS);
-            if (flow != null) {
-                tempStr += "IN: " + flow.getString();
-            }
-            flow = n.getInfo().getCurrentOUT(AnalysisName.PREDICATE_ANALYSIS);
-            if (flow != null) {
-                tempStr += "OUT: " + flow.getString();
-            }
-            return tempStr;
-        });
+        //        commentors.add((n) -> {
+        //            String tempStr = "";
+        //            FlowFact flow = n.getInfo().getCurrentIN(AnalysisName.PREDICATE_ANALYSIS);
+        //            if (flow != null) {
+        //                tempStr += "IN: " + flow.getString();
+        //            }
+        //            flow = n.getInfo().getCurrentOUT(AnalysisName.PREDICATE_ANALYSIS);
+        //            if (flow != null) {
+        //                tempStr += "OUT: " + flow.getString();
+        //            }
+        //            return tempStr;
+        //        });
         //        commentors.add((n) -> {
         //            String tempStr = "";
         //            FlowFact flow;

@@ -71,14 +71,14 @@ do
 	mv ../output-dump/${FILENAME}-useful.i $PREFILE
 	echo -e "\n\t\t *** After pre-pass ***"
 	timeout 20m java -ea -Xms2048M -Xmx40960M -cp ${IMOPHOME}/third-party-tools/com.microsoft.z3.jar:.\
-		-Djava.library.path=${Z3HOME}/build imop.Main --noPrepass -dln --yuan -cm LZINV -sve -f $PREFILE 2>> $ERRFILE
+		-Djava.library.path=${Z3HOME}/build imop.Main --noPrepass -ru -dln --yuan -cm LZINV -sve -f $PREFILE 2>> $ERRFILE
 	timeout 20m java -ea -Xms2048M -Xmx40960M -cp ${IMOPHOME}/third-party-tools/com.microsoft.z3.jar:.\
-		-Djava.library.path=${Z3HOME}/build imop.Main --noPrepass -dln -cm LZINV -sve -f $PREFILE 2>> $ERRFILE
+		-Djava.library.path=${Z3HOME}/build imop.Main --noPrepass -ru -dln --icon -cm LZINV -sve -f $PREFILE 2>> $ERRFILE
 	timeout 20m java -ea -Xms2048M -Xmx40960M -cp ${IMOPHOME}/third-party-tools/com.microsoft.z3.jar:.\
-		-Djava.library.path=${Z3HOME}/build imop.Main --noPrepass -dln -cm LZUPD -sve -f $PREFILE 2>> $ERRFILE
+		-Djava.library.path=${Z3HOME}/build imop.Main --noPrepass -ru -dln --icon -cm LZUPD -sve -f $PREFILE 2>> $ERRFILE
 	timeout 20m java -ea -Xms2048M -Xmx40960M -cp ${IMOPHOME}/third-party-tools/com.microsoft.z3.jar:.\
-		-Djava.library.path=${Z3HOME}/build imop.Main --noPrepass -dln -cm LZINV -nsve -f $PREFILE 2>> $ERRFILE
+		-Djava.library.path=${Z3HOME}/build imop.Main --noPrepass -ru -dln --icon -cm LZINV -nsve -f $PREFILE 2>> $ERRFILE
 	timeout 20m java -ea -Xms2048M -Xmx40960M -cp ${IMOPHOME}/third-party-tools/com.microsoft.z3.jar:.\
-		-Djava.library.path=${Z3HOME}/build imop.Main --noPrepass -dln -cm LZUPD -nsve -f $PREFILE 2>> $ERRFILE
+		-Djava.library.path=${Z3HOME}/build imop.Main --noPrepass -ru -dln --icon -cm LZUPD -nsve -f $PREFILE 2>> $ERRFILE
 	echo -e "======================"
 done

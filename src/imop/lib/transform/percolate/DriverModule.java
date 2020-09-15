@@ -123,8 +123,8 @@ public class DriverModule {
     }
 
     public static void clientAutoUpdate() {
-        DumpSnapshot.dumpVisibleSharedReadWrittenCells("first" + Program.updateCategory);
-        DumpSnapshot.dumpPhases("first_" + Program.concurrencyAlgorithm + "_" + Program.updateCategory);
+        //        DumpSnapshot.dumpVisibleSharedReadWrittenCells("first" + Program.updateCategory);
+        //        DumpSnapshot.dumpPhases("first_" + Program.concurrencyAlgorithm + "_" + Program.updateCategory);
         //        boolean dumpIntermediate = Program.dumpIntermediateStates;
         boolean dumpIntermediate = false;
         ParallelConstructExpander.mergeParallelRegions(Program.getRoot());
@@ -174,7 +174,7 @@ public class DriverModule {
             DumpSnapshot.dumpRoot("merged-rem-inlined-merged-rem" + Program.mhpUpdateCategory);
         }
         //		 TODO: Uncomment till here.
-        double totTime = 0.0;
+        double totTime = (System.nanoTime() - Main.totalTime) / (1.0 * 1e9);
         double incMHPTime = 0.0;
         double incIDFATime = 0.0;
         long incMHPTriggers = 0;
@@ -229,7 +229,6 @@ public class DriverModule {
         //		if (Program.fieldSensitive) {
         //			Misc.printToFile(ConstraintsGenerator.allConstraintString, Program.fileName + "_z3_queries.txt");
         //		}
-        totTime = (System.nanoTime() - Main.totalTime) / (1.0 * 1e9);
         System.err.println("TOTAL TIME (including disk I/O time): " + totTime + "s.");
         System.err.println("This execution ran in " + Program.updateCategory + " mode for IDFA update, and in " +
                 Program.mhpUpdateCategory + " mode for MHP update.");
@@ -265,8 +264,8 @@ public class DriverModule {
                 df2.format(sccTime) + " " + numPhases + " " + numExplicitBarriers);
         System.out.println(resultString);
         System.err.println(resultString);
-        DumpSnapshot.printToFile(Program.stabilizationStackDump.toString(),
-                "stabilization-dump" + Program.concurrencyAlgorithm + Program.mhpUpdateCategory + s + ".txt");
+        //        DumpSnapshot.printToFile(Program.stabilizationStackDump.toString(),
+        //                "stabilization-dump" + Program.concurrencyAlgorithm + Program.mhpUpdateCategory + s + ".txt");
         //		System.err.println("Trigger count: " + triggerSizeCountList);
         System.exit(0);
     }
