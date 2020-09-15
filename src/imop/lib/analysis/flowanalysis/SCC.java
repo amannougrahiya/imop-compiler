@@ -13,11 +13,10 @@ import imop.ast.node.external.*;
 import imop.ast.node.internal.*;
 import imop.lib.analysis.CoExistenceChecker;
 import imop.lib.analysis.flowanalysis.generic.AnalysisDimension.SVEDimension;
-import imop.lib.analysis.flowanalysis.generic.IDFAEdge;
+import imop.lib.analysis.mhp.AbstractPhase;
+import imop.lib.analysis.mhp.AbstractPhasePointable;
 import imop.lib.cfg.info.CFGInfo;
 import imop.lib.cfg.parallel.InterTaskEdge;
-import imop.lib.util.CellSet;
-import imop.lib.util.Misc;
 import imop.lib.util.TraversalOrderObtainer;
 import imop.parser.Program;
 
@@ -250,8 +249,30 @@ public class SCC implements DFable {
 
         Set<Node> neighbours;
         if (v instanceof BarrierDirective) {
+            BarrierDirective barrier = (BarrierDirective) ((BarrierDirectiveInfo) v.getInfo()).getNode();
             neighbours = new HashSet<>(SCC.getInterTaskLeafSuccessorNodes(v, SVEDimension.SVE_INSENSITIVE));
-            neighbours.addAll(((BarrierDirectiveInfo) v.getInfo()).getExplicitSiblings());
+            for (AbstractPhase<?, ?> ph : new HashSet<>(barrier.getInfo().getNodePhaseInfo().getPhaseSet())) {
+                boolean found = false;
+                for (AbstractPhasePointable endingPhasePoint : ph.getEndPoints()) {
+                    if (endingPhasePoint.getNodeFromInterface() == barrier) {
+                        found = true;
+                        break;
+                    }
+                }
+                if (!found) {
+                    continue;
+                }
+                for (AbstractPhasePointable endingPhasePoint : ph.getEndPoints()) {
+                    if (!(endingPhasePoint.getNodeFromInterface() instanceof BarrierDirective)) {
+                        continue;
+                    }
+                    BarrierDirective siblingBarrier = (BarrierDirective) endingPhasePoint.getNodeFromInterface();
+                    if (siblingBarrier == barrier) {
+                        continue;
+                    }
+                    neighbours.add(siblingBarrier);
+                }
+            }
         } else {
             neighbours = SCC.getInterTaskLeafSuccessorNodes(v, SVEDimension.SVE_INSENSITIVE);
         }

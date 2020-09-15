@@ -259,7 +259,6 @@ public class PredicateAnalysis extends IntraProceduralControlFlowAnalysis<Predic
 
     public void restartAnalysisFromStoredNodes() {
         this.autoUpdateTriggerCounter++;
-        PointsToAnalysis.enableHeuristic(); // Mark start of next epoch.
         long localTimer = System.nanoTime();
 
         /*
