@@ -38,6 +38,7 @@ public class SCC implements DFable {
     private boolean internalRPOStabilized = false;
     public static long SCCTimer = 0;
     public static int tarjanCount = 0;
+    public static boolean processingTarjan = false; // Used to ensure that no IDFA stabilization are invoked during application of Tarjan's algorithm.
 
     private static Stack<Node> internalStack;
     private static int tarjanI;
@@ -210,7 +211,9 @@ public class SCC implements DFable {
         // Now, invoke the Tarjan's algorithm.
         BeginNode begin = main.getInfo().getCFGInfo().getNestedCFG().getBegin();
         Set<Node> visitedSet = new HashSet<>();
+        SCC.processingTarjan = true;
         tarjan(begin, visitedSet);
+        SCC.processingTarjan = false;
         SCCTimer += System.nanoTime() - timer;
         SCC.tarjanCount++;
         assert (SCC.internalStack.isEmpty()) :
@@ -233,6 +236,7 @@ public class SCC implements DFable {
             n.getInfo().getCFGInfo().setDFSIndex(-1);
         }
     }
+
 
     private static void tarjan(Node v, Set<Node> visited) {
         if (visited.contains(v)) {

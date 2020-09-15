@@ -177,7 +177,8 @@ public abstract class InterThreadBackwardCellularAnalysis<F extends CellularData
                 Node n = idfaEdge.getNode();
                 this.workList.add(n);
             }
-            // TODO: Write code for handling CallStatement scoping edges.
+            // TODO: Write code for handling CallStatement scoping edges. While doing so, also take care of the extra if-conditional for
+            // BeginNode of a FunctionDefinition that is present in the equivalent code for forward analyses.
         }
         return;
     }
@@ -376,6 +377,8 @@ public abstract class InterThreadBackwardCellularAnalysis<F extends CellularData
         if (oldIN == null || !newIN.isEqualTo(oldIN)) {
             for (IDFAEdge idfaEdge : nodeInfo.getCFGInfo().getInterTaskLeafPredecessorEdges(this.analysisDimension.getSVEDimension())) {
                 this.workList.add(idfaEdge.getNode());
+                // TODO: Write code for handling CallStatement scoping edges. While doing so, also take care of the extra if-conditional for
+                // BeginNode of a FunctionDefinition that is present in the equivalent code for forward analyses.
             }
         }
     }

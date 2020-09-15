@@ -61,6 +61,7 @@ public class PointsToAnalysis extends InterThreadForwardCellularAnalysis<PointsT
 	}
 
 	public void restartAnalysisFromStoredNodes() {
+		assert (!SCC.processingTarjan);
 		if (this.analysisName == AnalysisName.POINTSTO
 				&& PointsToAnalysis.stateOfPointsTo != PointsToGlobalState.STALE) {
 			nodesToBeUpdated.clear();

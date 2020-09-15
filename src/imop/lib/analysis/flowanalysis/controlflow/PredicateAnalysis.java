@@ -12,6 +12,7 @@ import imop.ast.info.cfgNodeInfo.ExpressionInfo;
 import imop.ast.node.external.*;
 import imop.ast.node.internal.*;
 import imop.lib.analysis.flowanalysis.BranchEdge;
+import imop.lib.analysis.flowanalysis.SCC;
 import imop.lib.analysis.flowanalysis.dataflow.PointsToAnalysis;
 import imop.lib.analysis.flowanalysis.generic.*;
 import imop.lib.analysis.flowanalysis.generic.AnalysisDimension.SVEDimension;
@@ -258,6 +259,7 @@ public class PredicateAnalysis extends IntraProceduralControlFlowAnalysis<Predic
     }
 
     public void restartAnalysisFromStoredNodes() {
+        assert (!SCC.processingTarjan);
         this.autoUpdateTriggerCounter++;
         long localTimer = System.nanoTime();
 

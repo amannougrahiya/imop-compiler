@@ -112,6 +112,7 @@ public abstract class FlowAnalysis<F extends FlowAnalysis.FlowFact> extends GJDe
      * unless the state of points-to analysis is marked as {@link PointsToGlobalState#STALE}.
      */
     public void restartAnalysisFromStoredNodes() {
+        assert (!SCC.processingTarjan);
         this.autoUpdateTriggerCounter++;
         long localTimer = System.nanoTime();
 
@@ -347,7 +348,7 @@ public abstract class FlowAnalysis<F extends FlowAnalysis.FlowFact> extends GJDe
     public long nodesProcessedDuringUpdate = 0;
     public int autoUpdateTriggerCounter = 0;
     public long flowAnalysisUpdateTimer = 0;
-    protected Set<Node> nodesToBeUpdated = new HashSet<>();
+    public Set<Node> nodesToBeUpdated = new HashSet<>();
     protected Set<Node> processedInThisUpdate = new HashSet<>();
     protected Set<Node> yetToBeFinalized = new HashSet<>();
     protected HashMap<Node, Set<Node>> reachablePredecessorsOfSeeds = new HashMap<>();

@@ -177,7 +177,7 @@ public class Program {
         Program.memoizeAccesses = 0;
         Program.preciseDFDEdges = false;
         Program.updateCategory = UpdateCategory.LZUPD; // Default is LZUPD.
-        Program.concurrencyAlgorithm = ConcurrencyAlgorithm.ICON;
+        Program.concurrencyAlgorithm = ConcurrencyAlgorithm.YUANMHP;
         Program.mhpUpdateCategory = UpdateCategory.LZINV; // Default is LZUPD.
         Program.sveSensitive = SVEDimension.SVE_SENSITIVE;
         Program.sveSensitivityOfIDFAEdges = SVEDimension.SVE_SENSITIVE;
@@ -210,7 +210,7 @@ public class Program {
         //        filePath = ("../tests/npb-post/ep3-0.i"); // SVE-all: 0.55s
         filePath = ("../tests/npb-post/ft3-0.i"); // SVE-all: 3.73s.
         filePath = ("../tests/npb-post/is3-0.i"); // SVE-all: 0.69
-        //        filePath = ("../tests/npb-post/lu3-0.i"); // SVE-all: 16.26s.
+        filePath = ("../tests/npb-post/lu3-0.i"); // SVE-all: 16.26s.
         //        filePath = ("../tests/npb-post/mg3-0.i"); // SVE-all: 9.88s;
         //        filePath = ("../tests/npb-post/sp3-0.i"); // SVE-all: 23s.
         //
@@ -384,7 +384,7 @@ public class Program {
         //        filePath = ("../tests/barr-opt-tests/amgmk.i");
         //        filePath = ("../tests/barr-opt-tests/kmeans.i");
         //        filePath = ("../tests/barr-opt-tests/clomp.i");
-        //        filePath = ("../tests/barr-opt-tests/stream.i");
+        filePath = ("../tests/barr-opt-tests/stream.i");
         //        filePath = ("../tests/barr-opt-tests/quake.i");
         //        filePath = ("../src/imop/lib/testcases/allKnown.c");
         //        filePath = ("../output-dump/imop_output.i");
@@ -734,6 +734,8 @@ public class Program {
         return Program.addressTakenSymbols;
     }
 
+    private static boolean disableCellPointees = true;
+
     /**
      * Obtain a set of all those cells that may point to a symbol.
      *
@@ -741,6 +743,10 @@ public class Program {
      */
     private static CellSet getCellsWithSymbolPointees() {
         CellSet retSet = new CellSet();
+        if (disableCellPointees) {
+            retSet.add(Cell.genericCell);
+            return retSet;
+        }
         TranslationUnit root = getRoot();
         FunctionDefinition mainFunc = root.getInfo().getMainFunction();
         if (mainFunc == null) {

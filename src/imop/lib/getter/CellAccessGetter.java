@@ -709,12 +709,12 @@ public class CellAccessGetter {
 							} else {
 								e1List.applyAllExpanded(cell -> {
 									if (Program.getCellsThatMayPointToSymbols().contains(cell)) {
-										if (cell instanceof Symbol) {
-											Symbol sym = (Symbol) cell;
-											if (sym.getType() instanceof PointerType) {
-												System.err.println("Following pointer at " + cfgNode + ": " + sym);
-											}
-										}
+										//if (cell instanceof Symbol) {
+										//	Symbol sym = (Symbol) cell;
+										//	 if (sym.getType() instanceof PointerType) {
+										//	 	System.err.println("Following pointer at " + cfgNode + ": " + sym);
+										//	 }
+										//}
 										tempList.addAll(cell.getPointsTo(cfgNode));
 									}
 								});
@@ -726,12 +726,12 @@ public class CellAccessGetter {
 							} else {
 								e2List.applyAllExpanded(cell -> {
 									if (Program.getCellsThatMayPointToSymbols().contains(cell)) {
-										if (cell instanceof Symbol) {
-											Symbol sym = (Symbol) cell;
-											if (sym.getType() instanceof PointerType) {
-												System.err.println("Following pointer at " + cfgNode + ": " + sym);
-											}
-										}
+										//if (cell instanceof Symbol) {
+										//	Symbol sym = (Symbol) cell;
+										//	if (sym.getType() instanceof PointerType) {
+										//		System.err.println("Following pointer at " + cfgNode + ": " + sym);
+										//	}
+										//}
 										tempList.addAll(cell.getPointsTo(cfgNode));
 									}
 								});

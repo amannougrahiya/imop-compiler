@@ -255,8 +255,14 @@ public abstract class InterThreadForwardCellularAnalysis<F extends CellularDataF
                 PreCallNode pre = (PreCallNode) node;
                 this.workList.add(pre.getParent().getPostCallNode());
             }
+            // If we are adding successors of a BeginNode of a FunctionDefinition, we should add all the ParameterDeclarations.
+            if (node instanceof BeginNode && node.getParent() instanceof FunctionDefinition) {
+               FunctionDefinition func = (FunctionDefinition) node.getParent();
+               for (ParameterDeclaration paramDecl : func.getInfo().getCFGInfo().getParameterDeclarationList()) {
+                   this.workList.add(paramDecl);
+               }
+            }
         }
-        return;
     }
 
     /**
@@ -510,6 +516,7 @@ public abstract class InterThreadForwardCellularAnalysis<F extends CellularDataF
 
     @Override
     public void restartAnalysisFromStoredNodes() {
+        assert (!SCC.processingTarjan);
         if (this.analysisName == AnalysisName.POINTSTO &&
                 PointsToAnalysis.stateOfPointsTo != PointsToGlobalState.STALE) {
             nodesToBeUpdated.clear();
@@ -712,6 +719,13 @@ public abstract class InterThreadForwardCellularAnalysis<F extends CellularDataF
             if (node instanceof PreCallNode) {
                 PreCallNode pre = (PreCallNode) node;
                 this.workList.add(pre.getParent().getPostCallNode());
+            }
+            // If we are adding successors of a BeginNode of a FunctionDefinition, we should add all the ParameterDeclarations.
+            if (node instanceof BeginNode && node.getParent() instanceof FunctionDefinition) {
+                FunctionDefinition func = (FunctionDefinition) node.getParent();
+                for (ParameterDeclaration paramDecl : func.getInfo().getCFGInfo().getParameterDeclarationList()) {
+                    this.workList.add(paramDecl);
+                }
             }
         }
         return;

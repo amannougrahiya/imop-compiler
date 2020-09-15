@@ -149,7 +149,6 @@ public abstract class InterProceduralControlFlowAnalysis<F extends FlowAnalysis.
 		if (propagateFurther) {
 			workList.addAll(nodeInfo.getCFGInfo().getInterProceduralLeafSuccessors());
 		}
-		return;
 	}
 
 	/**
