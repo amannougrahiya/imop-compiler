@@ -345,7 +345,8 @@ public class Symbol extends Cell {
             } else {
                 retSet = opff.flowMap.get(this);
                 if (retSet == null) {
-                    assert (Program.memoizeAccesses > 0) :
+                    assert (Program.memoizeAccesses > 0 || (this.type instanceof PointerType &&
+                            ((PointerType) this.type).getPointeeType() instanceof CharType)) :
                             "Is it correct to not have any points-to information for the symbol " + this.getName() +
                                     " at the node " + node + "\n. Note that the state of stale flag of PTA is " +
                                     FlowAnalysis.getAllAnalyses().get(AnalysisName.POINTSTO).stateIsInvalid() +

@@ -892,6 +892,9 @@ public class NodeInfo implements Cloneable {
         } else if (cell instanceof FieldCell) {
             return this.getSharingAttribute(((FieldCell) cell).getAggregateElement());
         } else if (!(cell instanceof Symbol)) {
+            if (cell == Cell.getNullCell()) {
+                return DataSharingAttribute.PRIVATE; // Or should it be UNDEFINED?
+            }
             return DataSharingAttribute.SHARED;
         }
         Symbol sym = (Symbol) cell;

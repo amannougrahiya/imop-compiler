@@ -883,6 +883,9 @@ public class PointsToAnalysis extends InterThreadForwardCellularAnalysis<PointsT
 
 			if (strongUpdate) {
 				Cell lhsCell = lhsSet.getAnyElement();
+				if (lhsCell == Cell.getNullCell()) {
+					return updateMap;
+				}
 				updateMap.put(lhsCell, rhsPtsToSet);
 				return updateMap;
 			} else {
@@ -895,6 +898,9 @@ public class PointsToAnalysis extends InterThreadForwardCellularAnalysis<PointsT
 					return updateMap;
 				} else {
 					for (Cell lhsCell : lhsSet) {
+						if (lhsCell == Cell.getNullCell()) {
+							continue;
+						}
 						ImmutableCellSet lhsOldPtsToSet = new ImmutableCellSet(lhsCell.getPointsTo(n));
 						CellSet newPtsToSet = new CellSet(lhsOldPtsToSet);
 						newPtsToSet.addAll(rhsPtsToSet);
