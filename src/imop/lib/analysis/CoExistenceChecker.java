@@ -339,8 +339,10 @@ public class CoExistenceChecker {
         if (bPP1.getNode() == bPP2.getNode()) {
             return true;
         }
-        boolean oneIsEntry = bPP1.getPhaseSet().contains(absPh);
-        boolean twoIsEntry = bPP2.getPhaseSet().contains(absPh);
+        boolean oneIsEntry = absPh.getBeginPoints().stream().anyMatch(b -> b.getNodeFromInterface() ==
+                bPP1.getNode());// OLD Code: bPP1.getPhaseSet().contains(absPh);
+        boolean twoIsEntry = absPh.getBeginPoints().stream().anyMatch(b -> b.getNodeFromInterface() ==
+                bPP2.getNode());// OLD Code: bPP2.getPhaseSet().contains(absPh);
         if (oneIsEntry && twoIsEntry) {
             if (Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.YUANMHP) {
                 Thread.dumpStack();

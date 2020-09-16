@@ -89,6 +89,8 @@ public class HeapCell extends Cell {
 						} else if (funcName.equals("realloc")) {
 							// Change this later.
 							cellList.add(new HeapCell(Allocator.REALLOC, callStmt));
+						} else if (funcName.equals("polybench_alloc_data")) {
+							cellList.add(new HeapCell(Allocator.MALLOC, callStmt));
 						}
 					}
 				}
