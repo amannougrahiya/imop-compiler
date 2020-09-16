@@ -1410,6 +1410,8 @@ public class AutomatedUpdater {
         }
     }
 
+    private static final boolean localCoExistenceCheck = false;
+
     /**
      * Remove any caching of co-existence data for {@code element} node (and its successors), if {@code element} is a
      * {@link BarrierDirective}.
@@ -1421,9 +1423,13 @@ public class AutomatedUpdater {
         Node cfgNode = Misc.getCFGNodeFor(element);
         if (cfgNode instanceof BarrierDirective) {
             BarrierDirective barrier = (BarrierDirective) cfgNode;
-            CoExistenceChecker.removeNodeCache(barrier);
-            for (Node succ : barrier.getInfo().getCFGInfo().getLeafSuccessors()) {
-                CoExistenceChecker.removeNodeCache(succ);
+            if (AutomatedUpdater.localCoExistenceCheck) {
+                CoExistenceChecker.flushCoExistenceCaches();
+            } else {
+                CoExistenceChecker.removeNodeCache(barrier);
+                for (Node succ : barrier.getInfo().getCFGInfo().getLeafSuccessors()) {
+                    CoExistenceChecker.removeNodeCache(succ);
+                }
             }
         }
     }
