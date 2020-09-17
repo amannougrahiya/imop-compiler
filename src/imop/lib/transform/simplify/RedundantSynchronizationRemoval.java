@@ -142,7 +142,7 @@ public class RedundantSynchronizationRemoval {
                     if (phAbove == phBelow) {
                         continue;
                     }
-
+                    // TODO: Try adding a check where which stops processing of two phases unless one is the predecessor of another.
                     if (RedundantSynchronizationRemoval.phasesConflictForBarrier(phAbove, phBelow, barrier)) {
                         removable = false;
                         break outer;

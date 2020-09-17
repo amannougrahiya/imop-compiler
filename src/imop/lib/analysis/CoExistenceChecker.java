@@ -17,6 +17,7 @@ import imop.lib.analysis.flowanalysis.controlflow.ReversePath;
 import imop.lib.analysis.flowanalysis.generic.AnalysisDimension.SVEDimension;
 import imop.lib.analysis.flowanalysis.generic.AnalysisName;
 import imop.lib.analysis.mhp.AbstractPhase;
+import imop.lib.analysis.mhp.AbstractPhasePointable;
 import imop.lib.analysis.mhp.incMHP.BeginPhasePoint;
 import imop.lib.analysis.mhp.incMHP.Phase;
 import imop.lib.analysis.mhp.yuan.YPhase;
@@ -132,7 +133,7 @@ public class CoExistenceChecker {
     public static boolean canCoExistInPhase(Node n1, Node n2, AbstractPhase<?, ?> ph) {
         assert Program.concurrencyAlgorithm != Program.ConcurrencyAlgorithm.YUANMHP : "Unexpected path";
         // TODO: Check the following heuristic.
-        if (n1 instanceof BarrierDirective && n2 instanceof BarrierDirective) {
+        if (Program.sveNoCheck && n1 instanceof BarrierDirective && n2 instanceof BarrierDirective) {
             return false;
         }
         long sveTimerThis = System.nanoTime();
@@ -162,6 +163,9 @@ public class CoExistenceChecker {
     private static boolean canCoExistInPhase(Node n1, Node n2, AbstractPhase<?, ?> ph, Set<NodePair> nodePairs, Set<Expression> expSet) {
         if (Program.sveSensitive == SVEDimension.SVE_INSENSITIVE) {
             return true;
+        }
+        if (Program.sveNoCheck && n1 instanceof BarrierDirective && n2 instanceof BarrierDirective) {
+            return false;
         }
         // TODO: This is newly added if statement to take care of queries during phase updates.
         if (!n1.getInfo().getNodePhaseInfo().getPhaseSet().contains(ph)) {
@@ -237,6 +241,20 @@ public class CoExistenceChecker {
                     rp.bPP.getNode().getInfo().getNodePhaseInfo().getPhaseSet().contains(ph)) { // i.e., the BPP of this path is present
                 // in some internal parallel construct of the phase ph.
                 pathsOfN2.add(rp);
+            }
+        }
+
+        if (Program.sveNoCheck) {
+            // Here, we rely on the assumption that there are no matching barriers (which is indeed the case for all benchmarks under study.)
+            BeginPhasePoint commonBPP = null;
+            for (AbstractPhasePointable bppAbs : ph.getBeginPoints()) {
+                BeginPhasePoint bpp = (BeginPhasePoint) bppAbs;
+                if (bpp.getReachableNodes().contains(n1) && bpp.getReachableNodes().contains(n2)) {
+                    commonBPP = bpp;
+                }
+            }
+            if (commonBPP == null) {
+                return false;
             }
         }
 
@@ -324,7 +342,7 @@ public class CoExistenceChecker {
                 /*
                  * If we reach this point, then it implies that (path1, path2)
                  * is a consistent/valid pair.
-                */
+                 */
                 // TODO: Test where this code should be at.
                 //                 * OR is it???
                 //                 * Well, we can try to gain more precision if either of the paths may start at the BeginNode
@@ -356,6 +374,12 @@ public class CoExistenceChecker {
         }
         if (bPP1.getNode() == bPP2.getNode()) {
             return true;
+        }
+        if (Program.sveNoCheck && (bPP1.getNode() instanceof BarrierDirective ||
+                (bPP1.getNode() instanceof BeginNode && bPP1.getNode().getParent() instanceof ParallelConstruct)) &&
+                (bPP2.getNode() instanceof BarrierDirective || (bPP2.getNode() instanceof BeginNode &&
+                        bPP2.getNode().getParent() instanceof ParallelConstruct))) {
+            return false;
         }
         boolean oneIsEntry = absPh.getBeginPoints().stream().anyMatch(b -> b.getNodeFromInterface() ==
                 bPP1.getNode());// OLD Code: bPP1.getPhaseSet().contains(absPh);

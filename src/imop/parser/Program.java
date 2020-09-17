@@ -178,7 +178,7 @@ public class Program {
         Program.preciseDFDEdges = false;
         Program.updateCategory = UpdateCategory.LZUPD; // Default is LZUPD.
         Program.concurrencyAlgorithm = ConcurrencyAlgorithm.ICON;
-        Program.mhpUpdateCategory = UpdateCategory.LZINV; // Default is LZUPD.
+        Program.mhpUpdateCategory = UpdateCategory.LZUPD; // Default is LZUPD.
         Program.sveSensitive = SVEDimension.SVE_SENSITIVE;
         Program.sveSensitivityOfIDFAEdges = SVEDimension.SVE_SENSITIVE;
         Program.sveNoCheck = true;
@@ -208,12 +208,11 @@ public class Program {
         filePath = ("../tests/npb-post/bt3-0.i"); // SVE-all: 29s.
         //        filePath = ("../tests/npb-post/cg3-0.i"); // SVE-all: 2.50s.
         //        filePath = ("../tests/npb-post/ep3-0.i"); // SVE-all: 0.55s
-        filePath = ("../tests/npb-post/ft3-0.i"); // SVE-all: 3.73s.
-        filePath = ("../tests/npb-post/is3-0.i"); // SVE-all: 0.69
-        filePath = ("../tests/npb-post/lu3-0.i"); // SVE-all: 16.26s.
-        filePath = ("../tests/lu3-0-postpass.i"); // SVE-all: 16.26s.
+        //        filePath = ("../tests/npb-post/ft3-0.i"); // SVE-all: 3.73s.
+        //        filePath = ("../tests/npb-post/is3-0.i"); // SVE-all: 0.69
+        //        filePath = ("../tests/npb-post/lu3-0.i"); // SVE-all: 16.26s.
         //        filePath = ("../tests/npb-post/mg3-0.i"); // SVE-all: 9.88s;
-        //        filePath = ("../tests/npb-post/sp3-0.i"); // SVE-all: 23s.
+        filePath = ("../tests/npb-post/sp3-0.i"); // SVE-all: 23s.
         //
         //        filePath = "../output-dump/imop_useful.i";
         //        filePath = ("../src/imop/lib/testcases/cfgTests/singleLooping.c");
