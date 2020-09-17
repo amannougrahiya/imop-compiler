@@ -257,18 +257,22 @@ public class RedundantSynchronizationRemoval {
          */
         Set<Node> coExistBelow = new HashSet<>();
         Set<BeginPhasePoint> belowBPP = phBelow.getBeginPoints();
-        for (Node nodeBelow : nodesBelow) {
-            if (belowBPP.stream().filter(bpp -> bpp.getNode() ==
-                    barrier).anyMatch(bpp -> bpp.getReachableNodes().contains(nodeBelow))) {
-                // Refer to rule #3 in "Synchronization elimination --> Modeling SVE-sensitivity."
-                coExistBelow.add(nodeBelow);
+        for (Node nBelow : nodesBelow) {
+            CellSet readBelow = nBelow.getInfo().getSharedReads();
+            CellSet writtenBelow = nBelow.getInfo().getSharedWrites();
+            if (readBelow.isEmpty() && writtenBelow.isEmpty()) {
                 continue;
             }
-            if (belowBPP.stream().filter(bpp -> bpp.getReachableNodes().contains(nodeBelow) &&
+            if (belowBPP.stream().filter(bpp -> bpp.getNode() ==
+                    barrier).anyMatch(bpp -> bpp.getReachableNodes().contains(nBelow))) {
+                // Refer to rule #3 in "Synchronization elimination --> Modeling SVE-sensitivity."
+                coExistBelow.add(nBelow);
+                continue;
+            }
+            if (belowBPP.stream().filter(bpp -> bpp.getReachableNodes().contains(nBelow) &&
                     bpp.getNode().getInfo().getNodePhaseInfo().getPhaseSet().contains(phAbove)).anyMatch(bpp -> CoExistenceChecker.canCoExistInPhase(bpp.getNode(), barrier, phAbove))) {
                 // Refer to rule #3 in "Synchronization elimination --> Modeling SVE-sensitivity."
-                coExistBelow.add(nodeBelow);
-                continue;
+                coExistBelow.add(nBelow);
             }
         }
         for (Node nAbove : nodesAbove) {
@@ -287,10 +291,7 @@ public class RedundantSynchronizationRemoval {
                 nonFieldWritesInSource = nAbove.getInfo().getNonFieldSharedWrites();
             }
 
-            for (Node nBelow : nodesBelow) {
-                if (!coExistBelow.contains(nBelow)) {
-                    continue;
-                }
+            for (Node nBelow : coExistBelow) {
                 if (Program.fieldSensitive) {
                     CellSet nonFieldReadsInDestination = nBelow.getInfo().getNonFieldSharedReads();
                     CellSet nonFieldWritesInDestination = nBelow.getInfo().getNonFieldSharedWrites();
@@ -304,8 +305,8 @@ public class RedundantSynchronizationRemoval {
                         }
                     }
                 } else {
-                    CellSet readBelow = nBelow.getInfo().getSharedReads();
-                    CellSet writtenBelow = nBelow.getInfo().getSharedWrites();
+                    CellSet readBelow = nBelow.getInfo().getSharedReads(); // Note: These shared-reads would always be from cached values.
+                    CellSet writtenBelow = nBelow.getInfo().getSharedWrites(); // Note: These shared-writes would always be from cached values.
                     if (Misc.doIntersect(readAbove, writtenBelow) || Misc.doIntersect(readBelow, writtenAbove) ||
                             Misc.doIntersect(writtenAbove, writtenBelow)) {
                         return true;

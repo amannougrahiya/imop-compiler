@@ -2096,8 +2096,7 @@ public class NodeInfo implements Cloneable {
      * @return the outermost enclosing node for a given node.
      */
     public Node getOuterMostEncloser() {
-        List<Node> outerList = (CollectorVisitor.collectNodeListInGenericGraph(this.node, null, (n) -> (n ==
-                null), (n) -> {
+        List<Node> outerList = (CollectorVisitor.collectNodeListInGenericGraph(this.node, null, Objects::isNull, (n) -> {
             List<Node> neighbourSet = new LinkedList<>();
             neighbourSet.add(n.getParent());
             return neighbourSet;

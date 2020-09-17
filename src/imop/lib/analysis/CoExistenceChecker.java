@@ -324,7 +324,17 @@ public class CoExistenceChecker {
                 /*
                  * If we reach this point, then it implies that (path1, path2)
                  * is a consistent/valid pair.
-                 */
+                */
+                // TODO: Test where this code should be at.
+                //                 * OR is it???
+                //                 * Well, we can try to gain more precision if either of the paths may start at the BeginNode
+                //                 * of a FunctionDefinition.
+                //                 * Note that getting a contradiction should help us skip returning true (by just letting us continue
+                //                 * to the next pair, if any.)
+                //                 */
+                //                if (CoExistenceChecker.extendedChecksOfCoExistence(path1, path2, ph, nodePairs, expSet)) {
+                //                    continue inner;
+                //                }
                 return true;
             }
         }
@@ -332,6 +342,10 @@ public class CoExistenceChecker {
          * If we were not able to find a consistent pair, then n1 and n2 cannot
          * co-exist.
          */
+        return false;
+    }
+
+    private static boolean extendedChecksOfCoExistence(ReversePath path1, ReversePath path2, AbstractPhase<?, ?> ph, Set<NodePair> nodePairs, Set<Expression> expSet) {
         return false;
     }
 
