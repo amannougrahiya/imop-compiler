@@ -213,6 +213,20 @@ public class CoExistenceChecker {
             }
         }
 
+        if (Program.sveNoCheck) {
+            // Here, we rely on the assumption that there are no matching barriers (which is indeed the case for all benchmarks under study.)
+            BeginPhasePoint commonBPP = null;
+            for (AbstractPhasePointable bppAbs : ph.getBeginPoints()) {
+                BeginPhasePoint bpp = (BeginPhasePoint) bppAbs;
+                if (bpp.getReachableNodes().contains(n1) && bpp.getReachableNodes().contains(n2)) {
+                    commonBPP = bpp;
+                }
+            }
+            if (commonBPP == null) {
+                return false;
+            }
+        }
+
         /*
          * Now, use the following method to check if any valid pair of paths may
          * exist such that n1 and n2 may co-exist.
@@ -231,14 +245,13 @@ public class CoExistenceChecker {
 
     private static boolean haveAnyValidPathPairs(Node n1, Collection<ReversePath> pathsOfN1, Node n2, Collection<ReversePath> pathsOfN2, AbstractPhase<?, ?> ph, Set<NodePair> nodePairs, Set<Expression> expSet) {
         assert (Program.concurrencyAlgorithm != Program.ConcurrencyAlgorithm.YUANMHP);
-        boolean goInterProcedural = true;
         if (pathsOfN1 == null || pathsOfN2 == null) {
             return true;
         }
         if (pathsOfN1.isEmpty() && pathsOfN2.isEmpty()) {
             return true;
         }
-        if (goInterProcedural) {
+        if (Program.interProceduralCoExistence) {
             assert (Program.sveNoCheck) : "The BPP_loop present in CoExistenceChecker.haveAnyValidPathPairs would not check all possible cases if the sve-check is enabled.";
             for (AbstractPhasePointable bppAbs : ph.getBeginPoints()) {
                 BeginPhasePoint bpp = (BeginPhasePoint) bppAbs;

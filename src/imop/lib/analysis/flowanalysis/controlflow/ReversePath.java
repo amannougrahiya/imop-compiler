@@ -106,12 +106,19 @@ public class ReversePath {
     }
 
     public void getExtendedPaths(BeginPhasePoint bpp, Set<Set<BranchEdge>> setOfSetsOfEdges) {
+        this.getExtendedPaths(bpp, setOfSetsOfEdges, new HashSet<>());
+    }
+
+    private void getExtendedPaths(BeginPhasePoint bpp, Set<Set<BranchEdge>> setOfSetsOfEdges, Set<Node> workSet) {
+        if (!workSet.add(this.startingNode)) {
+           return;
+        }
         if (this.pathStartsAtABarrier()) {
             if (this.startingNode == bpp.getNode()) {
                 Set<BranchEdge> set = new HashSet<>(this.edgesOnPath);
                 setOfSetsOfEdges.add(set);
             }
-            return;
+
         } else if (this.pathStartsAtAFunctionBeginNode()) {
             FunctionDefinition func = (FunctionDefinition) this.startingNode.getParent();
             for (CallStatement caller : func.getInfo().getCallersOfThis()) {
@@ -123,7 +130,7 @@ public class ReversePath {
                 PredicateAnalysis.PredicateFlowFact preFlowFact = (PredicateAnalysis.PredicateFlowFact) pre.getInfo().getIN(AnalysisName.PREDICATE_ANALYSIS);
                 Set<Set<BranchEdge>> preSetOfSetOfEdges = new HashSet<>();
                 for (ReversePath preRE : preFlowFact.controlPredicatePaths) {
-                    preRE.getExtendedPaths(bpp, preSetOfSetOfEdges);
+                    preRE.getExtendedPaths(bpp, preSetOfSetOfEdges, workSet);
                 }
                 if (!preSetOfSetOfEdges.isEmpty()) {
                     for (Set<BranchEdge> setOfEdges : preSetOfSetOfEdges) {
@@ -142,7 +149,7 @@ public class ReversePath {
                 PredicateAnalysis.PredicateFlowFact endFlowFact = (PredicateAnalysis.PredicateFlowFact) endNode.getInfo().getIN(AnalysisName.PREDICATE_ANALYSIS);
                 Set<Set<BranchEdge>> endSetOfSetOfEdges = new HashSet<>();
                 for (ReversePath preRE : endFlowFact.controlPredicatePaths) {
-                    preRE.getExtendedPaths(bpp, endSetOfSetOfEdges);
+                    preRE.getExtendedPaths(bpp, endSetOfSetOfEdges, workSet);
                 }
                 if (!endSetOfSetOfEdges.isEmpty()) {
                     for (Set<BranchEdge> setOfEdges : endSetOfSetOfEdges) {
