@@ -34,7 +34,6 @@ import java.util.*;
 public class Program {
 
 
-
     static {
         Program.loadZ3LibrariesInMac();
     }
@@ -54,6 +53,7 @@ public class Program {
         ICON, YUANMHP;
 
     }
+
     private static TranslationUnit root;
     public static boolean invalidLineNum;
     public static boolean invalidColumnNum;
@@ -88,7 +88,7 @@ public class Program {
     public static boolean ptaHeuristicEnabled = true;
     public static UpdateCategory updateCategory = UpdateCategory.LZUPD;
     public static UpdateCategory mhpUpdateCategory = UpdateCategory.LZUPD;
-    public static boolean interProceduralCoExistence = true;
+    public static boolean interProceduralCoExistence = false;
     /*
      * Decides whether the local-stabilization heuristic is used with Yuan
      * (where we simply assume that no changes impact the SVEness of any of the predicates.)
@@ -215,7 +215,7 @@ public class Program {
         //        filePath = ("../tests/npb-post/ep3-0.i"); // SVE-all: 0.55s
         //        filePath = ("../tests/npb-post/ft3-0.i"); // SVE-all: 3.73s.
         //        filePath = ("../tests/npb-post/is3-0.i"); // SVE-all: 0.69
-        //        filePath = ("../tests/npb-post/lu3-0.i"); // SVE-all: 16.26s.
+        filePath = ("../tests/npb-post/lu3-0.i"); // SVE-all: 16.26s.
         //        filePath = ("../tests/npb-post/mg3-0.i"); // SVE-all: 9.88s;
         //        filePath = ("../tests/npb-post/sp3-0.i"); // SVE-all: 23s.
         //

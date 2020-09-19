@@ -23,6 +23,7 @@ import imop.lib.util.CellSet;
 import imop.lib.util.ImmutableList;
 import imop.lib.util.ImmutableSet;
 import imop.lib.util.Misc;
+import imop.parser.Program;
 
 import java.util.*;
 
@@ -315,7 +316,7 @@ public class PredicateAnalysis extends IntraProceduralControlFlowAnalysis<Predic
             newPathSet.add(newPath);
             this.workList.add(n.getParent().getInfo().getCFGInfo().getNestedCFG().getEnd()); // TODO: Verify.
             return new PredicateFlowFact(new ImmutableSet<>(newPathSet));
-        } else if (n.getParent() instanceof FunctionDefinition) {
+        } else if (n.getParent() instanceof FunctionDefinition && Program.interProceduralCoExistence) {
             ReversePath newPath = new ReversePath(n, new ImmutableList<>(new LinkedList<>()));
             Set<ReversePath> newPathSet = new HashSet<>();
             newPathSet.add(newPath);
@@ -329,7 +330,7 @@ public class PredicateAnalysis extends IntraProceduralControlFlowAnalysis<Predic
     public PredicateFlowFact visit(PostCallNode n, PredicateFlowFact flowFactOne) {
         // Do not terminate the incoming path (and do not start a new path) here if the call-statement does
         // not have an associated function definition.
-        if (n.getParent().getInfo().getCalledDefinitions().isEmpty()) {
+        if (n.getParent().getInfo().getCalledDefinitions().isEmpty() || !Program.interProceduralCoExistence) {
             return flowFactOne;
         }
         ReversePath newPath = new ReversePath(n, new ImmutableList<>(new LinkedList<>()));

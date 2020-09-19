@@ -52,7 +52,7 @@ public class ReversePath {
         if (this.pathStartsAtABarrier()) {
             return ph.getBeginPoints().contains(this.startingNode);
         }
-        return this.startingNode.getInfo().getNodePhaseInfo().getPhaseSet().contains(ph);
+        return this.startingNode == null || this.startingNode.getInfo().getNodePhaseInfo().getPhaseSet().contains(ph);
     }
 
     public boolean pathStartsAtAFunctionBeginNode() {
@@ -64,7 +64,7 @@ public class ReversePath {
     }
 
     public boolean pathStartsAtABarrier() {
-        return !this.pathStartsAtAFunctionBeginNode() && !this.pathStartsAtAPostCallNode();
+        return !this.pathStartsAtAFunctionBeginNode() && !this.pathStartsAtAPostCallNode() && this.startingNode != null;
     }
 
     private int getPredicateIndexOf(BranchEdge be) {
@@ -86,9 +86,21 @@ public class ReversePath {
      * @return
      */
     public boolean isStrictlySubsumedAsSuffixOf(ReversePath other) {
-        if (!this.startingNode.equals(other.startingNode)) {
-            return false;
-        }
+		if (this.startingNode == null) {
+			if (other.startingNode == null) {
+				// Do nothing.
+			} else {
+				return false;
+			}
+		} else {
+			if (other.startingNode == null) {
+				return false;
+			} else {
+				if (!this.startingNode.equals(other.startingNode)) {
+					return false;
+				}
+			}
+		}
         if (this.edgesOnPath.size() >= other.edgesOnPath.size()) {
             return false;
         }
@@ -113,7 +125,11 @@ public class ReversePath {
         if (!workSet.add(this.startingNode)) {
            return;
         }
-        if (this.pathStartsAtABarrier()) {
+        if (this.startingNode == null) {
+            Set<BranchEdge> set = new HashSet<>(this.edgesOnPath);
+            setOfSetsOfEdges.add(set);
+
+        } else if (this.pathStartsAtABarrier()) {
             if (this.startingNode == bpp.getNode()) {
                 Set<BranchEdge> set = new HashSet<>(this.edgesOnPath);
                 setOfSetsOfEdges.add(set);
@@ -176,9 +192,13 @@ public class ReversePath {
             return false;
         }
         ReversePath other = (ReversePath) obj;
-        if (!startingNode.equals(other.startingNode)) {
-            return false;
-        }
+		if (startingNode == null) {
+			if (other.startingNode != null) {
+				return false;
+			}
+		} else if (!startingNode.equals(other.startingNode)) {
+			return false;
+		}
         if (edgesOnPath == null) {
             if (other.edgesOnPath != null) {
                 return false;
@@ -207,7 +227,7 @@ public class ReversePath {
         } else if (this.pathStartsAtAPostCallNode()) {
             str += "C-" + startingNode.getNodeId() + ",";
         } else {
-            assert (false);
+            str += "--,";
         }
         for (BranchEdge edge : edgesOnPath) {
             str += " " + edge.toString() + ";";

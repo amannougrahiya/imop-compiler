@@ -332,7 +332,7 @@ public class CoExistenceChecker {
                      * In this loop, we attempt to return true from this method if
                      * the pair (path1, path2) can be consistent.
                      */
-                    if (path1.startingNode != null && path2.startingNode != null) {
+                    if (path1.pathStartsAtABarrier() && path2.pathStartsAtABarrier()) {
                         /*
                          * If the paths are inconsistent due to co-existence checks
                          * on their BPPs, then ignore these paths.
