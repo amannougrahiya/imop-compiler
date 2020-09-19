@@ -177,7 +177,7 @@ public class Program {
         Program.memoizeAccesses = 0;
         Program.preciseDFDEdges = false;
         Program.updateCategory = UpdateCategory.LZUPD; // Default is LZUPD.
-        Program.concurrencyAlgorithm = ConcurrencyAlgorithm.ICON;
+        Program.concurrencyAlgorithm = ConcurrencyAlgorithm.YUANMHP;
         Program.mhpUpdateCategory = UpdateCategory.LZUPD; // Default is LZUPD.
         Program.sveSensitive = SVEDimension.SVE_SENSITIVE;
         Program.sveSensitivityOfIDFAEdges = SVEDimension.SVE_SENSITIVE;
@@ -381,7 +381,7 @@ public class Program {
         //        filePath = ("../tests/c_jacobi03-postpass.i");
         //        filePath = ("../tests/c_jacobi01-postpass.i");
         //        filePath = ("../tests/barr-opt-tests/adi.i");
-        //        filePath = ("../tests/barr-opt-tests/amgmk.i");
+        filePath = ("../tests/barr-opt-tests/amgmk.i");
         //        filePath = ("../tests/barr-opt-tests/kmeans.i");
         //        filePath = ("../tests/barr-opt-tests/clomp.i");
         //        filePath = ("../tests/barr-opt-tests/stream.i");
