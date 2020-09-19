@@ -24,7 +24,7 @@ public class ReversePath {
     private static int maxSizeOfPath = 0;
 
     public ReversePath(Node startingBPP, ImmutableList<BranchEdge> edgesOnPath) {
-        assert (startingBPP != null &&
+        assert (startingBPP == null ||
                 (startingBPP instanceof BarrierDirective || startingBPP instanceof PostCallNode ||
                         (startingBPP instanceof BeginNode && (startingBPP.getParent() instanceof ParallelConstruct ||
                                 startingBPP.getParent() instanceof FunctionDefinition))));
@@ -133,7 +133,7 @@ public class ReversePath {
                 }
             }
         } else if (this.pathStartsAtAPostCallNode()) {
-            for (FunctionDefinition func : ((PreCallNode) this.startingNode).getParent().getInfo().getCalledDefinitions()) {
+            for (FunctionDefinition func : ((PostCallNode) this.startingNode).getParent().getInfo().getCalledDefinitions()) {
                 EndNode endNode = func.getInfo().getCFGInfo().getNestedCFG().getEnd();
                 if (!bpp.getReachableNodes().contains(endNode)) {
                     continue;
