@@ -88,7 +88,7 @@ public class Program {
     public static boolean ptaHeuristicEnabled = true;
     public static UpdateCategory updateCategory = UpdateCategory.LZUPD;
     public static UpdateCategory mhpUpdateCategory = UpdateCategory.LZUPD;
-    public static boolean interProceduralCoExistence = false;
+    public static boolean interProceduralCoExistence = true;
     /*
      * Decides whether the local-stabilization heuristic is used with Yuan
      * (where we simply assume that no changes impact the SVEness of any of the predicates.)

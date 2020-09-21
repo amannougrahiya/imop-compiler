@@ -48,6 +48,23 @@ public class ReversePath {
         return newList;
     }
 
+    static void prependToList(BranchEdge be, List<BranchEdge> edgesOnPath) {
+        int predicateIndex = -1;
+        int i = -1;
+        for (BranchEdge b : edgesOnPath) {
+            i++;
+            if (b.predicate == be.predicate) {
+                predicateIndex = i;
+            }
+        }
+        if (predicateIndex != -1) {
+            if (predicateIndex >= 0) {
+                edgesOnPath.subList(0, predicateIndex + 1).clear();
+            }
+        }
+        edgesOnPath.add(0, be);
+    }
+
     public boolean pathStartsAtThePhase(AbstractPhase<?, ?> ph) {
         if (this.pathStartsAtABarrier()) {
             return ph.getBeginPoints().contains(this.startingNode);
@@ -117,24 +134,85 @@ public class ReversePath {
         return true;
     }
 
-    public void getExtendedPaths(BeginPhasePoint bpp, Set<Set<BranchEdge>> setOfSetsOfEdges) {
-        this.getExtendedPaths(bpp, setOfSetsOfEdges, new HashSet<>());
+    public static boolean isSIMPLEStrictlySubsumedAsSuffixOf(List<BranchEdge> thisEdgesOnPath, List<BranchEdge> otherEdgesOnPath) {
+        if (thisEdgesOnPath.size() >= otherEdgesOnPath.size()) {
+            return false;
+        }
+        ListIterator<BranchEdge> thisIterator = thisEdgesOnPath.listIterator(thisEdgesOnPath.size());
+        ListIterator<BranchEdge> thatIterator = otherEdgesOnPath.listIterator(otherEdgesOnPath.size());
+        while (thisIterator.hasPrevious()) {
+            BranchEdge thisEdge = thisIterator.previous();
+            BranchEdge thatEdge = thatIterator.previous();
+            if (!thisEdge.equals(thatEdge)) {
+                return false;
+            }
+        }
+        //		System.err.println("The path " + this + " is subsumed by the bigger path " + other);
+        return true;
     }
 
-    private void getExtendedPaths(BeginPhasePoint bpp, Set<Set<BranchEdge>> setOfSetsOfEdges, Set<Node> workSet) {
+    private static void simplifyPrefixPaths(Set<List<BranchEdge>> pathSet) {
+        Set<List<BranchEdge>> pathsToBeRemoved = new HashSet<>();
+        for (List<BranchEdge> shorterPath : pathSet) {
+            if (pathsToBeRemoved.contains(shorterPath)) {
+                continue;
+            }
+            for (List<BranchEdge> longerPath : pathSet) {
+                if (pathsToBeRemoved.contains(longerPath)) {
+                    continue;
+                }
+                if (isSIMPLEStrictlySubsumedAsSuffixOf(shorterPath, longerPath)) {
+                    // Remove longer path.
+                    pathsToBeRemoved.add(longerPath);
+                }
+            }
+        }
+        if (pathsToBeRemoved.isEmpty()) {
+            return;
+        }
+        pathSet.removeAll(pathsToBeRemoved);
+    }
+
+    public void getExtendedPaths(BeginPhasePoint bpp, Set<List<BranchEdge>> setOfSetsOfEdges) {
+        this.getExtendedPaths(bpp, setOfSetsOfEdges, new HashSet<>());
+        simplifyPrefixPaths(setOfSetsOfEdges);
+        // Sanity check below
+        for (List<BranchEdge> beSet1 : setOfSetsOfEdges) {
+            // Requirement for getNewList?
+            for (BranchEdge b1 : beSet1) {
+                for (BranchEdge b2: beSet1) {
+                    if (!(b1.predicate != b2.predicate || b1.equals(b2))) {
+                        System.out.println("");
+                    }
+                }
+            }
+            // Requirement for fusing?
+            for (List<BranchEdge> beSet2 : setOfSetsOfEdges) {
+                if (beSet1 == beSet2) {
+                    continue;
+                }
+                for (BranchEdge b1 : beSet1) {
+                    for (BranchEdge b2 : beSet1) {
+                        if (!(b1.predicate != b2.predicate || b1.equals(b2))) {
+                            System.out.println("");
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private void getExtendedPaths(BeginPhasePoint bpp, Set<List<BranchEdge>> setOfSetsOfEdges, Set<Node> workSet) {
         if (!workSet.add(this.startingNode)) {
            return;
         }
         if (this.startingNode == null) {
-            Set<BranchEdge> set = new HashSet<>(this.edgesOnPath);
-            setOfSetsOfEdges.add(set);
-
+            setOfSetsOfEdges.add(this.edgesOnPath);
         } else if (this.pathStartsAtABarrier()) {
             if (this.startingNode == bpp.getNode()) {
                 Set<BranchEdge> set = new HashSet<>(this.edgesOnPath);
-                setOfSetsOfEdges.add(set);
+                setOfSetsOfEdges.add(this.edgesOnPath);
             }
-
         } else if (this.pathStartsAtAFunctionBeginNode()) {
             FunctionDefinition func = (FunctionDefinition) this.startingNode.getParent();
             for (CallStatement caller : func.getInfo().getCallersOfThis()) {
@@ -144,15 +222,20 @@ public class ReversePath {
                 }
 
                 PredicateAnalysis.PredicateFlowFact preFlowFact = (PredicateAnalysis.PredicateFlowFact) pre.getInfo().getIN(AnalysisName.PREDICATE_ANALYSIS);
-                Set<Set<BranchEdge>> preSetOfSetOfEdges = new HashSet<>();
+                Set<List<BranchEdge>> preSetOfSetOfEdges = new HashSet<>();
+                Set<List<BranchEdge>> finalSet = new HashSet<>();
                 for (ReversePath preRE : preFlowFact.controlPredicatePaths) {
                     preRE.getExtendedPaths(bpp, preSetOfSetOfEdges, workSet);
                 }
                 if (!preSetOfSetOfEdges.isEmpty()) {
-                    for (Set<BranchEdge> setOfEdges : preSetOfSetOfEdges) {
-                        setOfEdges.addAll(this.edgesOnPath);
+                    for (List<BranchEdge> setOfEdges : preSetOfSetOfEdges) {
+                        List<BranchEdge> newEdgeList = new ArrayList<>(setOfEdges);
+                        for (BranchEdge be : this.edgesOnPath) {
+                            ReversePath.prependToList(be, newEdgeList);
+                        }
+                        finalSet.add(newEdgeList);
                     }
-                    setOfSetsOfEdges.addAll(preSetOfSetOfEdges);
+                    setOfSetsOfEdges.addAll(finalSet);
                 }
             }
         } else if (this.pathStartsAtAPostCallNode()) {
@@ -163,15 +246,20 @@ public class ReversePath {
                 }
 
                 PredicateAnalysis.PredicateFlowFact endFlowFact = (PredicateAnalysis.PredicateFlowFact) endNode.getInfo().getIN(AnalysisName.PREDICATE_ANALYSIS);
-                Set<Set<BranchEdge>> endSetOfSetOfEdges = new HashSet<>();
+                Set<List<BranchEdge>> endSetOfSetOfEdges = new HashSet<>();
+                Set<List<BranchEdge>> finalSet = new HashSet<>();
                 for (ReversePath preRE : endFlowFact.controlPredicatePaths) {
                     preRE.getExtendedPaths(bpp, endSetOfSetOfEdges, workSet);
                 }
                 if (!endSetOfSetOfEdges.isEmpty()) {
-                    for (Set<BranchEdge> setOfEdges : endSetOfSetOfEdges) {
-                        setOfEdges.addAll(this.edgesOnPath);
+                    for (List<BranchEdge> setOfEdges : endSetOfSetOfEdges) {
+                        List<BranchEdge> newEdgeList = new ArrayList<>(setOfEdges);
+                        for (BranchEdge be : this.edgesOnPath) {
+                            ReversePath.prependToList(be, newEdgeList);
+                        }
+                        finalSet.add(newEdgeList);
                     }
-                    setOfSetsOfEdges.addAll(endSetOfSetOfEdges);
+                    setOfSetsOfEdges.addAll(finalSet);
                 }
             }
         } else {

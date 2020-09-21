@@ -31,6 +31,7 @@ import imop.parser.Program;
 
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -258,17 +259,17 @@ public class CoExistenceChecker {
                 if (!bpp.getReachableNodes().contains(n1) || !bpp.getReachableNodes().contains(n2)) {
                     continue;
                 }
-                Set<Set<BranchEdge>> setOfCompletePathsN1 = new HashSet<>();
-                Set<Set<BranchEdge>> setOfCompletePathsN2 = new HashSet<>();
+                Set<List<BranchEdge>> setOfCompletePathsN1 = new HashSet<>();
+                Set<List<BranchEdge>> setOfCompletePathsN2 = new HashSet<>();
                 for (ReversePath rp : pathsOfN1) {
                     rp.getExtendedPaths(bpp, setOfCompletePathsN1);
                 }
                 for (ReversePath rp : pathsOfN2) {
                     rp.getExtendedPaths(bpp, setOfCompletePathsN2);
                 }
-                for (Set<BranchEdge> path1 : setOfCompletePathsN1) {
+                for (List<BranchEdge> path1 : setOfCompletePathsN1) {
                     innerComplete:
-                    for (Set<BranchEdge> path2 : setOfCompletePathsN2) {
+                    for (List<BranchEdge> path2 : setOfCompletePathsN2) {
 
                         /*
                          * If there exists any branch in path1 that has a contradicting

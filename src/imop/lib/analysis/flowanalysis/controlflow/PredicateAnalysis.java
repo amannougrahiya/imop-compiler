@@ -90,7 +90,7 @@ public class PredicateAnalysis extends IntraProceduralControlFlowAnalysis<Predic
 
         @Override
         public boolean merge(FlowFact other, CellSet cellSet) {
-            if (other == null || !(other instanceof PredicateFlowFact)) {
+            if (!(other instanceof PredicateFlowFact)) {
                 return false;
             }
             PredicateFlowFact that = (PredicateFlowFact) other;
