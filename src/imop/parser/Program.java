@@ -34,6 +34,7 @@ import java.util.*;
 public class Program {
 
 
+
     static {
         Program.loadZ3LibrariesInMac();
     }
@@ -49,7 +50,6 @@ public class Program {
     public enum ConcurrencyAlgorithm {
         ICON, YUANMHP
     }
-
     private static TranslationUnit root;
     public static boolean invalidLineNum;
     public static boolean invalidColumnNum;
