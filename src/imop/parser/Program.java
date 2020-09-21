@@ -91,7 +91,7 @@ public class Program {
      * this heuristic would not be correct for Yuan's concurrency analysis.
      */
     public static boolean useHeuristicWithYuan = false;
-    public static boolean useInterProceduralPredicateAnalysis = true;
+    public static boolean useInterProceduralPredicateAnalysis;
     /**
      * Set the default SVE sensitivity for the whole program.<br> Note that IDFA's <i>may</i> have their fixed SVE
      * sensitivity values, defined in their constructors.
@@ -182,7 +182,6 @@ public class Program {
         Program.mhpUpdateCategory = UpdateCategory.LZUPD; // Default is LZUPD.
         Program.sveSensitive = SVEDimension.SVE_SENSITIVE;
         Program.sveSensitivityOfIDFAEdges = SVEDimension.SVE_SENSITIVE;
-        Program.useInterProceduralPredicateAnalysis = true;
         Program.sveNoCheck = true;
         Program.numExpansionAllowed = 100;
         Program.useHeuristicWithYuan = false;
@@ -383,8 +382,8 @@ public class Program {
         //        filePath = ("../tests/c_jacobi03-postpass.i");
         //        filePath = ("../tests/c_jacobi01-postpass.i");
         //        filePath = ("../tests/barr-opt-tests/adi.i");
-        //        filePath = ("../tests/barr-opt-tests/amgmk.i");
-        //        filePath = ("../tests/barr-opt-tests/kmeans.i");
+        filePath = ("../tests/barr-opt-tests/amgmk.i");
+        filePath = ("../tests/barr-opt-tests/kmeans.i");
         //        filePath = ("../tests/barr-opt-tests/clomp.i");
         //        filePath = ("../tests/barr-opt-tests/stream.i");
         //        filePath = ("../tests/barr-opt-tests/quake.i");
@@ -444,6 +443,9 @@ public class Program {
             }
             if (str.equals("--icon") || str.equals("-icon")) {
                 Program.concurrencyAlgorithm = ConcurrencyAlgorithm.ICON;
+            }
+            if (str.equals("--intra-cp") || str.equals("-icp")) {
+                Program.useInterProceduralPredicateAnalysis = false;
             }
             if (str.equals("--category") || str.equals("-c")) {
                 String next = args[index + 1];
