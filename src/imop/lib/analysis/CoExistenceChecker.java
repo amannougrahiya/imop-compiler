@@ -244,20 +244,6 @@ public class CoExistenceChecker {
             }
         }
 
-        if (Program.sveNoCheck) {
-            // Here, we rely on the assumption that there are no matching barriers (which is indeed the case for all benchmarks under study.)
-            BeginPhasePoint commonBPP = null;
-            for (AbstractPhasePointable bppAbs : ph.getBeginPoints()) {
-                BeginPhasePoint bpp = (BeginPhasePoint) bppAbs;
-                if (bpp.getReachableNodes().contains(n1) && bpp.getReachableNodes().contains(n2)) {
-                    commonBPP = bpp;
-                }
-            }
-            if (commonBPP == null) {
-                return false;
-            }
-        }
-
         /*
          * Now, use the following method to check if any valid pair of paths may
          * exist such that n1 and n2 may co-exist.
@@ -275,6 +261,7 @@ public class CoExistenceChecker {
     }
 
     private static boolean haveAnyValidPathPairs(Set<ReversePath> pathsOfN1, Set<ReversePath> pathsOfN2, AbstractPhase<?, ?> ph, Set<NodePair> nodePairs, Set<Expression> expSet) {
+        assert (Program.concurrencyAlgorithm != Program.ConcurrencyAlgorithm.YUANMHP);
         if (pathsOfN1 == null || pathsOfN2 == null) {
             return true;
         }
