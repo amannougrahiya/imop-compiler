@@ -120,6 +120,11 @@ public class DominanceAnalysis extends InterProceduralControlFlowAnalysis<Domina
 	}
 
 	@Override
+	protected boolean processPostCallNodesIN(PostCallNode node, DominatorFlowFact incompleteIN) {
+		return false;
+	}
+
+	@Override
 	public DominatorFlowFact writeToParameter(ParameterDeclaration parameter, SimplePrimaryExpression argument,
 			DominatorFlowFact flowFactIN) {
 		if (flowFactIN.dominators == null) {

@@ -23,5 +23,6 @@ public enum AnalysisName {
 	, COPYPROPAGATION // Optimized copy propagation for symbols.
 	, DOMINANCE // IDFA pass to obtain dominator information.
 	, HEAP_VALIDITY // IDFA to check if a heap element is valid at a given location (i.e., not freed).
-	, PREDICATE_ANALYSIS // IDFA to obtain a set of paths in the current phase(s) in terms of BranchEdges.
+	, INTRA_PREDICATE_ANALYSIS // Intra-procedural IDFA to obtain a set of paths in the current phase(s) in terms of BranchEdges.
+	, PREDICATE_ANALYSIS // Inter-procedural IDFA to obtain a set of paths in the current phase(s) in terms of BranchEdges.
 }

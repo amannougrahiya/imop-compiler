@@ -34,26 +34,22 @@ import java.util.*;
 public class Program {
 
 
-
     static {
         Program.loadZ3LibrariesInMac();
     }
-
 
     public enum UpdateCategory {
         EGINV,  // eager invalidation, upon each elementary transformation, with rerun of the analysis.
         EGUPD, // eager update, upon each elementary transformation, with incremental update to the analysis data.
         LZINV,  // lazy invalidation, involving rerun of the analysis, whenever first read is performed after transformation.
         LZUPD  // lazy update, with incremental update to the analysis data, whenever first read is performed after transformation.
-        ;
-
 
     }
 
     public enum ConcurrencyAlgorithm {
-        ICON, YUANMHP;
-
+        ICON, YUANMHP
     }
+
     private static TranslationUnit root;
     public static boolean invalidLineNum;
     public static boolean invalidColumnNum;
@@ -88,7 +84,6 @@ public class Program {
     public static boolean ptaHeuristicEnabled = true;
     public static UpdateCategory updateCategory = UpdateCategory.LZUPD;
     public static UpdateCategory mhpUpdateCategory = UpdateCategory.LZUPD;
-    public static boolean interProceduralCoExistence = true;
     /*
      * Decides whether the local-stabilization heuristic is used with Yuan
      * (where we simply assume that no changes impact the SVEness of any of the predicates.)
@@ -96,6 +91,7 @@ public class Program {
      * this heuristic would not be correct for Yuan's concurrency analysis.
      */
     public static boolean useHeuristicWithYuan = false;
+    public static boolean useInterProceduralPredicateAnalysis = true;
     /**
      * Set the default SVE sensitivity for the whole program.<br> Note that IDFA's <i>may</i> have their fixed SVE
      * sensitivity values, defined in their constructors.
@@ -182,10 +178,11 @@ public class Program {
         Program.memoizeAccesses = 0;
         Program.preciseDFDEdges = false;
         Program.updateCategory = UpdateCategory.LZUPD; // Default is LZUPD.
-        Program.concurrencyAlgorithm = ConcurrencyAlgorithm.YUANMHP;
+        Program.concurrencyAlgorithm = ConcurrencyAlgorithm.ICON;
         Program.mhpUpdateCategory = UpdateCategory.LZUPD; // Default is LZUPD.
         Program.sveSensitive = SVEDimension.SVE_SENSITIVE;
         Program.sveSensitivityOfIDFAEdges = SVEDimension.SVE_SENSITIVE;
+        Program.useInterProceduralPredicateAnalysis = true;
         Program.sveNoCheck = true;
         Program.numExpansionAllowed = 100;
         Program.useHeuristicWithYuan = false;
@@ -215,9 +212,9 @@ public class Program {
         //        filePath = ("../tests/npb-post/ep3-0.i"); // SVE-all: 0.55s
         //        filePath = ("../tests/npb-post/ft3-0.i"); // SVE-all: 3.73s.
         //        filePath = ("../tests/npb-post/is3-0.i"); // SVE-all: 0.69
-        filePath = ("../tests/npb-post/lu3-0.i"); // SVE-all: 16.26s.
+        //        filePath = ("../tests/npb-post/lu3-0.i"); // SVE-all: 16.26s.
         //        filePath = ("../tests/npb-post/mg3-0.i"); // SVE-all: 9.88s;
-        //        filePath = ("../tests/npb-post/sp3-0.i"); // SVE-all: 23s.
+        filePath = ("../tests/npb-post/sp3-0.i"); // SVE-all: 23s.
         //
         //        filePath = "../output-dump/imop_useful.i";
         //        filePath = ("../src/imop/lib/testcases/cfgTests/singleLooping.c");
@@ -386,7 +383,7 @@ public class Program {
         //        filePath = ("../tests/c_jacobi03-postpass.i");
         //        filePath = ("../tests/c_jacobi01-postpass.i");
         //        filePath = ("../tests/barr-opt-tests/adi.i");
-        filePath = ("../tests/barr-opt-tests/amgmk.i");
+        //        filePath = ("../tests/barr-opt-tests/amgmk.i");
         //        filePath = ("../tests/barr-opt-tests/kmeans.i");
         //        filePath = ("../tests/barr-opt-tests/clomp.i");
         //        filePath = ("../tests/barr-opt-tests/stream.i");

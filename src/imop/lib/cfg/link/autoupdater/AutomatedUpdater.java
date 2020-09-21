@@ -658,7 +658,8 @@ public class AutomatedUpdater {
         } else if (Program.updateCategory == UpdateCategory.LZINV) {
             assert (nodeSet == null || nodeSet.isEmpty());
             for (FlowAnalysis<?> analysis : FlowAnalysis.getAllAnalyses().values()) {
-                if (analysis.getAnalysisName() == AnalysisName.PREDICATE_ANALYSIS ||
+                if (analysis.getAnalysisName() ==
+                        (Program.useInterProceduralPredicateAnalysis ? AnalysisName.PREDICATE_ANALYSIS : AnalysisName.INTRA_PREDICATE_ANALYSIS) ||
                         analysis instanceof InterThreadForwardCellularAnalysis ||
                         analysis instanceof InterThreadForwardNonCellularAnalysis) {
                     analysis.storeNodesToBeUpdated(new HashSet<>()); // This will just mark the IDFA as invalid.
@@ -688,7 +689,8 @@ public class AutomatedUpdater {
             }
         } else if (Program.updateCategory == UpdateCategory.LZUPD) {
             for (FlowAnalysis<?> analysis : FlowAnalysis.getAllAnalyses().values()) {
-                if (analysis.getAnalysisName() == AnalysisName.PREDICATE_ANALYSIS ||
+                if (analysis.getAnalysisName() ==
+                        (Program.useInterProceduralPredicateAnalysis ? AnalysisName.PREDICATE_ANALYSIS : AnalysisName.INTRA_PREDICATE_ANALYSIS) ||
                         analysis instanceof InterThreadForwardCellularAnalysis ||
                         analysis instanceof InterThreadForwardNonCellularAnalysis) {
                     analysis.storeNodesToBeUpdated(nodeSet);

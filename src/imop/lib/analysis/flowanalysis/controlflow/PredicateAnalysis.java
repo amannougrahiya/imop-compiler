@@ -17,17 +17,19 @@ import imop.lib.analysis.flowanalysis.generic.AnalysisDimension;
 import imop.lib.analysis.flowanalysis.generic.AnalysisDimension.SVEDimension;
 import imop.lib.analysis.flowanalysis.generic.AnalysisName;
 import imop.lib.analysis.flowanalysis.generic.FlowAnalysis;
-import imop.lib.analysis.flowanalysis.generic.IntraProceduralControlFlowAnalysis;
+import imop.lib.analysis.flowanalysis.generic.InterProceduralControlFlowAnalysis;
+import imop.lib.analysis.mhp.incMHP.BeginPhasePoint;
 import imop.lib.cfg.info.CFGInfo;
+import imop.lib.cg.CallStack;
+import imop.lib.cg.NodeWithStack;
 import imop.lib.util.CellSet;
 import imop.lib.util.ImmutableList;
 import imop.lib.util.ImmutableSet;
 import imop.lib.util.Misc;
-import imop.parser.Program;
 
 import java.util.*;
 
-public class PredicateAnalysis extends IntraProceduralControlFlowAnalysis<PredicateAnalysis.PredicateFlowFact> {
+public class PredicateAnalysis extends InterProceduralControlFlowAnalysis<PredicateAnalysis.PredicateFlowFact> {
 
     public PredicateAnalysis() {
         super(AnalysisName.PREDICATE_ANALYSIS, new AnalysisDimension(SVEDimension.SVE_INSENSITIVE));
@@ -90,7 +92,7 @@ public class PredicateAnalysis extends IntraProceduralControlFlowAnalysis<Predic
 
         @Override
         public boolean merge(FlowFact other, CellSet cellSet) {
-            if (!(other instanceof PredicateFlowFact)) {
+            if (other == null || !(other instanceof PredicateFlowFact)) {
                 return false;
             }
             PredicateFlowFact that = (PredicateFlowFact) other;
@@ -205,7 +207,7 @@ public class PredicateAnalysis extends IntraProceduralControlFlowAnalysis<Predic
                 List<BranchEdge> newList = new LinkedList<>(path.edgesOnPath);
                 newList.remove(0);
                 ImmutableList<BranchEdge> newEdgePath = new ImmutableList<>(newList);
-                ReversePath newPath = new ReversePath(path.startingNode, newEdgePath);
+                ReversePath newPath = new ReversePath(path.bPP, newEdgePath);
                 returnSet.add(newPath);
             }
             return PredicateFlowFact.fusePredicateBranches(returnSet);
@@ -236,7 +238,7 @@ public class PredicateAnalysis extends IntraProceduralControlFlowAnalysis<Predic
                     continue;
                 }
                 List<BranchEdge> newList = path.getNewList(be);
-                ReversePath newPath = new ReversePath(path.startingNode, new ImmutableList<>(newList));
+                ReversePath newPath = new ReversePath(path.bPP, new ImmutableList<>(newList));
                 newPathSet.add(newPath);
             }
             return new PredicateFlowFact(new ImmutableSet<>(newPathSet));
@@ -256,6 +258,11 @@ public class PredicateAnalysis extends IntraProceduralControlFlowAnalysis<Predic
             //			return new PredicateFlowFact(new ImmutableSet<>(newPathSet));
         }
         return edgeIN;
+    }
+
+    @Override
+    protected boolean processPostCallNodesIN(PostCallNode node, PredicateFlowFact incompleteIN) {
+        return false;
     }
 
     public void restartAnalysisFromStoredNodes() {
@@ -304,22 +311,17 @@ public class PredicateAnalysis extends IntraProceduralControlFlowAnalysis<Predic
     }
 
     @Override
-    public PredicateFlowFact assignBottomToParameter(ParameterDeclaration parameter, PredicateFlowFact flowFactOne) {
+    public PredicateFlowFact writeToParameter(ParameterDeclaration parameter, SimplePrimaryExpression argument, PredicateFlowFact flowFactOne) {
         return flowFactOne;
     }
 
     @Override
     public PredicateFlowFact visit(BeginNode n, PredicateFlowFact flowFactOne) {
         if (n.getParent() instanceof ParallelConstruct) {
-            ReversePath newPath = new ReversePath(n, new ImmutableList<>(new LinkedList<>()));
+            ReversePath newPath = new ReversePath(BeginPhasePoint.getBeginPhasePoint(new NodeWithStack(n, new CallStack())), new ImmutableList<>(new LinkedList<>()));
             Set<ReversePath> newPathSet = new HashSet<>();
             newPathSet.add(newPath);
             this.workList.add(n.getParent().getInfo().getCFGInfo().getNestedCFG().getEnd()); // TODO: Verify.
-            return new PredicateFlowFact(new ImmutableSet<>(newPathSet));
-        } else if (n.getParent() instanceof FunctionDefinition && Program.interProceduralCoExistence) {
-            ReversePath newPath = new ReversePath(n, new ImmutableList<>(new LinkedList<>()));
-            Set<ReversePath> newPathSet = new HashSet<>();
-            newPathSet.add(newPath);
             return new PredicateFlowFact(new ImmutableSet<>(newPathSet));
         } else {
             return flowFactOne;
@@ -327,21 +329,8 @@ public class PredicateAnalysis extends IntraProceduralControlFlowAnalysis<Predic
     }
 
     @Override
-    public PredicateFlowFact visit(PostCallNode n, PredicateFlowFact flowFactOne) {
-        // Do not terminate the incoming path (and do not start a new path) here if the call-statement does
-        // not have an associated function definition.
-        if (n.getParent().getInfo().getCalledDefinitions().isEmpty() || !Program.interProceduralCoExistence) {
-            return flowFactOne;
-        }
-        ReversePath newPath = new ReversePath(n, new ImmutableList<>(new LinkedList<>()));
-        Set<ReversePath> newPathSet = new HashSet<>();
-        newPathSet.add(newPath);
-        return new PredicateFlowFact(new ImmutableSet<>(newPathSet));
-    }
-
-    @Override
     public PredicateFlowFact visit(BarrierDirective n, PredicateFlowFact flowFactOne) {
-        ReversePath newPath = new ReversePath(n, new ImmutableList<>(new LinkedList<>()));
+        ReversePath newPath = new ReversePath(BeginPhasePoint.getBeginPhasePoint(new NodeWithStack(n, new CallStack())), new ImmutableList<>(new LinkedList<>()));
         Set<ReversePath> newPathSet = new HashSet<>();
         newPathSet.add(newPath);
         return new PredicateFlowFact(new ImmutableSet<>(newPathSet));
@@ -353,9 +342,6 @@ public class PredicateAnalysis extends IntraProceduralControlFlowAnalysis<Predic
             BeginNode begin = n.getParent().getInfo().getCFGInfo().getNestedCFG().getBegin();
             PredicateFlowFact beginIN = (PredicateFlowFact) begin.getInfo().getIN(AnalysisName.PREDICATE_ANALYSIS);
             if (beginIN == null) {
-                // assert (!(this.workList instanceof ReversePostOrderWorkList)); TODO: Why did we have this assert?
-                //                this.workList.add(begin);
-                //                this.workList.add(n); // This may lead to an infinite recursion in the context of stabilization.
                 return new PredicateFlowFact(new ImmutableSet<>());
             } else {
                 return new PredicateFlowFact(beginIN);

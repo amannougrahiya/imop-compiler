@@ -29,9 +29,7 @@ import imop.lib.util.NodePair;
 import imop.lib.util.NodePhasePair;
 import imop.parser.Program;
 
-import java.util.Collection;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -135,7 +133,7 @@ public class CoExistenceChecker {
     public static boolean canCoExistInPhase(Node n1, Node n2, AbstractPhase<?, ?> ph) {
         assert Program.concurrencyAlgorithm != Program.ConcurrencyAlgorithm.YUANMHP : "Unexpected path";
         // TODO: Check the following heuristic.
-        if (n1 instanceof BarrierDirective && n2 instanceof BarrierDirective) {
+        if (Program.sveNoCheck && n1 instanceof BarrierDirective && n2 instanceof BarrierDirective) {
             return false;
         }
         long sveTimerThis = System.nanoTime();
@@ -166,6 +164,22 @@ public class CoExistenceChecker {
         if (Program.sveSensitive == SVEDimension.SVE_INSENSITIVE) {
             return true;
         }
+        if (Program.sveNoCheck && n1 instanceof BarrierDirective && n2 instanceof BarrierDirective) {
+            return false;
+        }
+        // TODO: This is newly added if statement to take care of queries during phase updates.
+        if (!n1.getInfo().getNodePhaseInfo().getPhaseSet().contains(ph)) {
+            Misc.warnDueToLackOfFeature("Could not find a node in the given phase, while invoking CoExistenceChecker.canCoExistInPhase()", null);
+            return true;
+        } else if (!n2.getInfo().getNodePhaseInfo().getPhaseSet().contains(ph)) {
+            Misc.warnDueToLackOfFeature("Could not find a node in the given phase, while invoking CoExistenceChecker.canCoExistInPhase()", null);
+            return true;
+        }
+        assert (n1.getInfo().getNodePhaseInfo().getPhaseSet().contains(ph)) :
+                n1 + " does not belong to phase #" + ph.getPhaseId() + ". It\'s phases are " +
+                        n1.getInfo().getNodePhaseInfo().getPhaseString() + " as compared to " + n2 +
+                        " whose phases are " + n2.getInfo().getNodePhaseInfo().getPhaseString();
+        assert (n2.getInfo().getNodePhaseInfo().getPhaseSet().contains(ph));
 
         NodePhasePair nodePhasePair = new NodePhasePair(n1, n2, ph);
         NodePair nodePair = new NodePair(n1, n2);
@@ -187,10 +201,16 @@ public class CoExistenceChecker {
             nodePairs.add(nodePair);
         }
 
-        PredicateFlowFact n1Paths = (PredicateFlowFact) n1.getInfo().getIN(AnalysisName.PREDICATE_ANALYSIS);
-        PredicateFlowFact n2Paths = (PredicateFlowFact) n2.getInfo().getIN(AnalysisName.PREDICATE_ANALYSIS);
+        PredicateFlowFact n1Paths = (PredicateFlowFact) n1.getInfo().getIN(Program.useInterProceduralPredicateAnalysis?AnalysisName.PREDICATE_ANALYSIS:AnalysisName.INTRA_PREDICATE_ANALYSIS);
+        PredicateFlowFact n2Paths = (PredicateFlowFact) n2.getInfo().getIN(Program.useInterProceduralPredicateAnalysis?AnalysisName.PREDICATE_ANALYSIS:AnalysisName.INTRA_PREDICATE_ANALYSIS);
 
         if (n1Paths == null || n2Paths == null) {
+            // TODO: Uncomment the following code, after re-inspecting the logic here.
+            //			System.err.println("FOUND AN INTERESTING CASE, where the following nodes do not have any paths:\n"
+            //					+ n1.getInfo().getDebugString() + "\n and \n" + n2.getInfo().getDebugString());
+            //			DumpSnapshot.dumpPredicates("erroneous");
+            //			Thread.dumpStack();
+            //			System.exit(0);
             return true; // conservatively.
         }
 
@@ -200,17 +220,41 @@ public class CoExistenceChecker {
          * In other words, the BPP of any selected path should either start the
          * phase ph, or it should be present within the phase ph.
          */
-        Collection<ReversePath> pathsOfN1 = new HashSet<>();
+        Set<ReversePath> pathsOfN1 = new HashSet<>();
         for (ReversePath rp : n1Paths.controlPredicatePaths) {
-            if (rp.pathStartsAtThePhase(ph)) {
+            if (rp.bPP == null // i.e., the path starts at the entry point of a function.
+                    || ph.getBeginPoints().contains(rp.bPP)
+                    // i.e., the BPP corresponding to the path starts the phase ph.
+                    ||
+                    rp.bPP.getNode().getInfo().getNodePhaseInfo().getPhaseSet().contains(ph)) { // i.e., the BPP of this path is present
+                // in some internal parallel construct of the phase ph.
                 pathsOfN1.add(rp);
             }
         }
 
-        Collection<ReversePath> pathsOfN2 = new HashSet<>();
+        Set<ReversePath> pathsOfN2 = new HashSet<>();
         for (ReversePath rp : n2Paths.controlPredicatePaths) {
-            if (rp.pathStartsAtThePhase(ph)) {
+            if (rp.bPP == null    // i.e., the path starts at the entry point of a function.
+                    || ph.getBeginPoints().contains(rp.bPP)
+                    // i.e., the BPP corresponding to the path starts the phase ph.
+                    ||
+                    rp.bPP.getNode().getInfo().getNodePhaseInfo().getPhaseSet().contains(ph)) { // i.e., the BPP of this path is present
+                // in some internal parallel construct of the phase ph.
                 pathsOfN2.add(rp);
+            }
+        }
+
+        if (Program.sveNoCheck) {
+            // Here, we rely on the assumption that there are no matching barriers (which is indeed the case for all benchmarks under study.)
+            BeginPhasePoint commonBPP = null;
+            for (AbstractPhasePointable bppAbs : ph.getBeginPoints()) {
+                BeginPhasePoint bpp = (BeginPhasePoint) bppAbs;
+                if (bpp.getReachableNodes().contains(n1) && bpp.getReachableNodes().contains(n2)) {
+                    commonBPP = bpp;
+                }
+            }
+            if (commonBPP == null) {
+                return false;
             }
         }
 
@@ -218,7 +262,7 @@ public class CoExistenceChecker {
          * Now, use the following method to check if any valid pair of paths may
          * exist such that n1 and n2 may co-exist.
          */
-        if (CoExistenceChecker.haveAnyValidPathPairs(n1, pathsOfN1, n2, pathsOfN2, ph, nodePairs, expSet)) {
+        if (CoExistenceChecker.haveAnyValidPathPairs(pathsOfN1, pathsOfN2, ph, nodePairs, expSet)) {
             knownCoExistingNodesInPhase.add(nodePhasePair);
             knownCoExistingNodes.add(nodePair);
             nodePairs.remove(nodePair);
@@ -231,200 +275,149 @@ public class CoExistenceChecker {
     }
 
     private static boolean haveAnyValidPathPairs(Set<ReversePath> pathsOfN1, Set<ReversePath> pathsOfN2, AbstractPhase<?, ?> ph, Set<NodePair> nodePairs, Set<Expression> expSet) {
-        assert (Program.concurrencyAlgorithm != Program.ConcurrencyAlgorithm.YUANMHP);
         if (pathsOfN1 == null || pathsOfN2 == null) {
             return true;
         }
         if (pathsOfN1.isEmpty() && pathsOfN2.isEmpty()) {
             return true;
         }
-        if (Program.interProceduralCoExistence) {
-            assert (Program.sveNoCheck) : "The BPP_loop present in CoExistenceChecker.haveAnyValidPathPairs would not check all possible cases if the sve-check is enabled.";
-            for (AbstractPhasePointable bppAbs : ph.getBeginPoints()) {
-                BeginPhasePoint bpp = (BeginPhasePoint) bppAbs;
-                if (!bpp.getReachableNodes().contains(n1) || !bpp.getReachableNodes().contains(n2)) {
-                    continue;
+        for (ReversePath path1 : pathsOfN1) {
+            inner:
+            for (ReversePath path2 : pathsOfN2) {
+                /*
+                 * In this loop, we attempt to return true from this method if
+                 * the pair (path1, path2) can be consistent.
+                 */
+                if (path1.bPP != null && path2.bPP != null) {
+                    /*
+                     * If the paths are inconsistent due to co-existence checks
+                     * on their BPPs, then ignore these paths.
+                     * If any of the BPPs are not available, then we can simply
+                     * assume that the paths are not inconsistent due to BPPs.
+                     */
+                    if (!CoExistenceChecker.canBarriersCoExistInPhase(path1.bPP, path2.bPP, ph, nodePairs, expSet)) {
+                        continue inner;
+                    }
                 }
-                Set<List<BranchEdge>> setOfCompletePathsN1 = new HashSet<>();
-                Set<List<BranchEdge>> setOfCompletePathsN2 = new HashSet<>();
-                for (ReversePath rp : pathsOfN1) {
-                    rp.getExtendedPaths(bpp, setOfCompletePathsN1);
-                }
-                for (ReversePath rp : pathsOfN2) {
-                    rp.getExtendedPaths(bpp, setOfCompletePathsN2);
-                }
-                for (List<BranchEdge> path1 : setOfCompletePathsN1) {
-                    innerComplete:
-                    for (List<BranchEdge> path2 : setOfCompletePathsN2) {
 
-                        /*
-                         * If there exists any branch in path1 that has a contradicting
-                         * branch in path2, AND if the predicate corresponding to the
-                         * branch is an SVE, then we should ignore this pair of paths,
-                         * as the pair cannot be consistent.
-                         */
-                        for (BranchEdge be1 : path1) {
-                            for (BranchEdge be2 : path2) {
-                                if (be1.predicate == be2.predicate && !be1.equals(be2)) {
-                                    // be2 is contradicting to be1, if predicate is an SVE.
-                                    Expression exp = be1.predicate;
-                                    boolean isSVE = false;
-                                    if (exp.getInfo().isSVEAnnotated()) {
-                                        isSVE = true;
-                                    } else if (exp.getInfo().getCFGInfo().getSuccBlocks().size() <= 1) {
-                                        /*
-                                         * If this expression has exactly one successor,
-                                         * consider it to be an SVE.
-                                         */
-                                        isSVE = true;
-                                    } else {
-                                        /*
-                                         * Else, apply some simple heuristics to check
-                                         * the SVEness of
-                                         * this expression.
-                                         */
-                                        isSVE = SVEChecker.isSingleValuedPredicate(exp, expSet, nodePairs);
-                                    }
-                                    if (isSVE) {
-                                        /*
-                                         * Here, we have found a proof that (path1,
-                                         * path2) is an inconsistent pair. Ignore this
-                                         * pair.
-                                         */
-                                        continue innerComplete;
-                                    }
-                                }
+                /*
+                 * If there exists any branch in path1 that has a contradicting
+                 * branch in path2, AND if the predicate corresponding to the
+                 * branch is an SVE, then we should ignore this pair of paths,
+                 * as the pair cannot be consistent.
+                 */
+                for (BranchEdge be1 : path1.edgesOnPath) {
+                    for (BranchEdge be2 : path2.edgesOnPath) {
+                        if (be1.predicate == be2.predicate && !be1.equals(be2)) {
+                            // be2 is contradicting to be1, if predicate is an SVE.
+                            Expression exp = be1.predicate;
+                            boolean isSVE = false;
+                            if (exp.getInfo().isSVEAnnotated()) {
+                                isSVE = true;
+                            } else if (exp.getInfo().getCFGInfo().getSuccBlocks().size() <= 1) {
+                                /*
+                                 * If this expression has exactly one successor,
+                                 * consider it to be an SVE.
+                                 */
+                                isSVE = true;
+                            } else {
+                                /*
+                                 * Else, apply some simple heuristics to check
+                                 * the SVEness of
+                                 * this expression.
+                                 */
+                                isSVE = SVEChecker.isSingleValuedPredicate(exp, expSet, nodePairs);
+                            }
+                            if (isSVE) {
+                                /*
+                                 * Here, we have found a proof that (path1,
+                                 * path2) is an inconsistent pair. Ignore this
+                                 * pair.
+                                 */
+                                continue inner;
                             }
                         }
-                        /*
-                         * If we reach this point, then it implies that (path1, path2)
-                         * is a consistent/valid pair.
-                         */
+                    }
+                }
+                /*
+                 * If we reach this point, then it implies that (path1, path2)
+                 * is a consistent/valid pair.
+                 */
+                // TODO: Test where this code should be at.
+                //                 * OR is it???
+                //                 * Well, we can try to gain more precision if either of the paths may start at the BeginNode
+                //                 * of a FunctionDefinition.
+                //                 * Note that getting a contradiction should help us skip returning true (by just letting us continue
+                //                 * to the next pair, if any.)
+                //                 */
+                //                if (CoExistenceChecker.extendedChecksOfCoExistence(path1, path2, ph, nodePairs, expSet)) {
+                //                    continue inner;
+                //                }
+                return true;
+            }
+        }
+        /*
+         * If we were not able to find a consistent pair, then n1 and n2 cannot
+         * co-exist.
+         */
+        return false;
+    }
+
+    private static boolean extendedChecksOfCoExistence(ReversePath path1, ReversePath path2, AbstractPhase<?, ?> ph, Set<NodePair> nodePairs, Set<Expression> expSet) {
+        return false;
+    }
+
+    private static boolean canBarriersCoExistInPhase(BeginPhasePoint bPP1, BeginPhasePoint bPP2, AbstractPhase<?, ?> absPh, Set<NodePair> nodePairs, Set<Expression> expSet) {
+        assert (Program.concurrencyAlgorithm != Program.ConcurrencyAlgorithm.YUANMHP);
+        if (bPP1 == null || bPP2 == null) {
+            return true; // Conservatively.
+        }
+        if (bPP1.getNode() == bPP2.getNode()) {
+            return true;
+        }
+        if (Program.sveNoCheck && (bPP1.getNode() instanceof BarrierDirective ||
+                (bPP1.getNode() instanceof BeginNode && bPP1.getNode().getParent() instanceof ParallelConstruct)) &&
+                (bPP2.getNode() instanceof BarrierDirective || (bPP2.getNode() instanceof BeginNode &&
+                        bPP2.getNode().getParent() instanceof ParallelConstruct))) {
+            return false;
+        }
+        boolean oneIsEntry = absPh.getBeginPoints().stream().anyMatch(b -> b.getNodeFromInterface() ==
+                bPP1.getNode());// OLD Code: bPP1.getPhaseSet().contains(absPh);
+        boolean twoIsEntry = absPh.getBeginPoints().stream().anyMatch(b -> b.getNodeFromInterface() ==
+                bPP2.getNode());// OLD Code: bPP2.getPhaseSet().contains(absPh);
+        if (oneIsEntry && twoIsEntry) {
+            if (Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.YUANMHP) {
+                Thread.dumpStack();
+                assert (false) : "Unexpected path.";
+                return true;
+            }
+            Phase ph = (Phase) absPh;
+            for (AbstractPhase<?, ?> predPhaseAbs : ph.getPredPhases()) {
+                Phase predPhase = (Phase) predPhaseAbs;
+                Set<Node> nodeSet = predPhase.getNodeSet();
+                if (nodeSet.contains(bPP1.getNode()) && nodeSet.contains(bPP2.getNode())) {
+                    if (CoExistenceChecker.canCoExistInPhase(bPP1.getNode(), bPP2.getNode(), predPhase, nodePairs, expSet)) {
                         return true;
                     }
                 }
             }
-            /*
-             * If we were not able to find a consistent pair, then n1 and n2 cannot
-             * co-exist.
-             */
-            return false;
-
+            return false; // There does not exist any pred-phase in which barriers may co-exist.
+        } else if (oneIsEntry) {
+            // Check if a successor of the BPP1 can co-exist with BPP2 in ph.
+            return CoExistenceChecker.canCoExistInPhase(bPP2.getNode(), bPP1.getNode().getInfo().getCFGInfo().getLeafSuccessors().get(0), absPh, nodePairs, expSet);
+        } else if (twoIsEntry) {
+            // Check if a successor of the BPP2 can co-exist with BPP3 in ph.
+            return CoExistenceChecker.canCoExistInPhase(bPP1.getNode(), bPP2.getNode().getInfo().getCFGInfo().getLeafSuccessors().get(0), absPh, nodePairs, expSet);
         } else {
-            // OLD CODE BELOW, for intraprocedural case.
-            for (ReversePath path1 : pathsOfN1) {
-                inner:
-                for (ReversePath path2 : pathsOfN2) {
-                    /*
-                     * In this loop, we attempt to return true from this method if
-                     * the pair (path1, path2) can be consistent.
-                     */
-                    if (path1.pathStartsAtABarrier() && path2.pathStartsAtABarrier()) {
-                        /*
-                         * If the paths are inconsistent due to co-existence checks
-                         * on their BPPs, then ignore these paths.
-                         * If any of the BPPs are not available, then we can simply
-                         * assume that the paths are not inconsistent due to BPPs.
-                         */
-                        boolean result = true;
-                        boolean finished = false;
-                        if (path1.startingNode != path2.startingNode) {
-                            boolean oneIsEntry = ph.getBeginPoints().stream().anyMatch(b -> b.getNodeFromInterface() ==
-                                    path1.startingNode);
-                            boolean twoIsEntry = ph.getBeginPoints().stream().anyMatch(b -> b.getNodeFromInterface() ==
-                                    path2.startingNode);
-                            if (oneIsEntry && twoIsEntry) {
-                                if (Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.YUANMHP) {
-                                    Thread.dumpStack();
-                                    assert (false) : "Unexpected path.";
-                                } else {
-                                    Phase ph1 = (Phase) ph;
-                                    for (AbstractPhase<?, ?> predPhaseAbs : ph1.getPredPhases()) {
-                                        Phase predPhase = (Phase) predPhaseAbs;
-                                        Set<Node> nodeSet = predPhase.getNodeSet();
-                                        if (nodeSet.contains(path1.startingNode) &&
-                                                nodeSet.contains(path2.startingNode)) {
-                                            if (CoExistenceChecker.canCoExistInPhase(path1.startingNode, path2.startingNode, predPhase, nodePairs, expSet)) {
-                                                finished = true;
-                                                break;
-                                            }
-                                        }
-                                    }
-                                    if (!finished) {
-                                        result = false;// There does not exist any pred-phase in which barriers may co-exist.
-                                    }
-                                }
-                            } else if (oneIsEntry) {
-                                // Check if a successor of the BPP1 can co-exist with BPP2 in ph.
-                                result = CoExistenceChecker.canCoExistInPhase(path2.startingNode, path1.startingNode.getInfo().getCFGInfo().getLeafSuccessors().get(0), ph, nodePairs, expSet);
-                            } else if (twoIsEntry) {
-                                // Check if a successor of the BPP2 can co-exist with BPP3 in ph.
-                                result = CoExistenceChecker.canCoExistInPhase(path1.startingNode, path2.startingNode.getInfo().getCFGInfo().getLeafSuccessors().get(0), ph, nodePairs, expSet);
-                            } else {
-                                Set<Node> phNodeSet = ph.getNodeSet();
-                                if (phNodeSet.contains(path1.startingNode) && phNodeSet.contains(path2.startingNode)) {
-                                    // Here, both BPP1 and BPP2 belong to some internal parallel construct within ph.
-                                    result = CoExistenceChecker.canCoExistInPhase(path1.startingNode, path2.startingNode, ph, nodePairs, expSet);
-                                }  // Conservatively.
-                            }
-                        }
-                        if (!result) {
-                            continue inner;
-                        }
-                    }
-
-                    /*
-                     * If there exists any branch in path1 that has a contradicting
-                     * branch in path2, AND if the predicate corresponding to the
-                     * branch is an SVE, then we should ignore this pair of paths,
-                     * as the pair cannot be consistent.
-                     */
-                    for (BranchEdge be1 : path1.edgesOnPath) {
-                        for (BranchEdge be2 : path2.edgesOnPath) {
-                            if (be1.predicate == be2.predicate && !be1.equals(be2)) {
-                                // be2 is contradicting to be1, if predicate is an SVE.
-                                Expression exp = be1.predicate;
-                                boolean isSVE = false;
-                                if (exp.getInfo().isSVEAnnotated()) {
-                                    isSVE = true;
-                                } else if (exp.getInfo().getCFGInfo().getSuccBlocks().size() <= 1) {
-                                    /*
-                                     * If this expression has exactly one successor,
-                                     * consider it to be an SVE.
-                                     */
-                                    isSVE = true;
-                                } else {
-                                    /*
-                                     * Else, apply some simple heuristics to check
-                                     * the SVEness of
-                                     * this expression.
-                                     */
-                                    isSVE = SVEChecker.isSingleValuedPredicate(exp, expSet, nodePairs);
-                                }
-                                if (isSVE) {
-                                    /*
-                                     * Here, we have found a proof that (path1,
-                                     * path2) is an inconsistent pair. Ignore this
-                                     * pair.
-                                     */
-                                    continue inner;
-                                }
-                            }
-                        }
-                    }
-                    /*
-                     * If we reach this point, then it implies that (path1, path2)
-                     * is a consistent/valid pair.
-                     */
-                    return true;
-                }
+            Set<Node> phNodeSet = absPh.getNodeSet();
+            if (phNodeSet.contains(bPP1.getNode()) && phNodeSet.contains(bPP2.getNode())) {
+                // Here, both BPP1 and BPP2 belong to some internal parallel construct within ph.
+                return CoExistenceChecker.canCoExistInPhase(bPP1.getNode(), bPP2.getNode(), absPh, nodePairs, expSet);
+            } else {
+                return true; // Conservatively.
             }
-            /*
-             * If we were not able to find a consistent pair, then n1 and n2 cannot
-             * co-exist.
-             */
-            return false;
         }
+
     }
 
     /**
@@ -845,48 +838,6 @@ public class CoExistenceChecker {
         }
         nodePairs.remove(pair);
         return false;
-    }
-
-    @Deprecated
-    private static boolean deprecated_canBarriersCoExistInPhase(BarrierDirective n1, BarrierDirective n2, AbstractPhase<?, ?> absPh, Set<NodePair> nodePairs, Set<Expression> expSet) {
-        assert (Program.concurrencyAlgorithm != Program.ConcurrencyAlgorithm.YUANMHP);
-        if (n1 == null || n2 == null || n1 == n2) {
-            return true; // Conservatively.
-        }
-        boolean oneIsEntry = absPh.getBeginPoints().stream().anyMatch(b -> b.getNodeFromInterface() == n1);
-        boolean twoIsEntry = absPh.getBeginPoints().stream().anyMatch(b -> b.getNodeFromInterface() == n2);
-        if (oneIsEntry && twoIsEntry) {
-            if (Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.YUANMHP) {
-                Thread.dumpStack();
-                assert (false) : "Unexpected path.";
-                return true;
-            }
-            Phase ph = (Phase) absPh;
-            for (AbstractPhase<?, ?> predPhaseAbs : ph.getPredPhases()) {
-                Phase predPhase = (Phase) predPhaseAbs;
-                Set<Node> nodeSet = predPhase.getNodeSet();
-                if (nodeSet.contains(n1) && nodeSet.contains(n2)) {
-                    if (CoExistenceChecker.canCoExistInPhase(n1, n2, predPhase, nodePairs, expSet)) {
-                        return true;
-                    }
-                }
-            }
-            return false; // There does not exist any pred-phase in which barriers may co-exist.
-        } else if (oneIsEntry) {
-            // Check if a successor of the BPP1 can co-exist with BPP2 in ph.
-            return CoExistenceChecker.canCoExistInPhase(n2, n1.getInfo().getCFGInfo().getLeafSuccessors().get(0), absPh, nodePairs, expSet);
-        } else if (twoIsEntry) {
-            // Check if a successor of the BPP2 can co-exist with BPP3 in ph.
-            return CoExistenceChecker.canCoExistInPhase(n1, n2.getInfo().getCFGInfo().getLeafSuccessors().get(0), absPh, nodePairs, expSet);
-        } else {
-            Set<Node> phNodeSet = absPh.getNodeSet();
-            if (phNodeSet.contains(n1) && phNodeSet.contains(n2)) {
-                // Here, both BPP1 and BPP2 belong to some internal parallel construct within ph.
-                return CoExistenceChecker.canCoExistInPhase(n1, n2, absPh, nodePairs, expSet);
-            } else {
-                return true; // Conservatively.
-            }
-        }
     }
 
 }

@@ -116,11 +116,11 @@ public abstract class FlowAnalysis<F extends FlowAnalysis.FlowFact> extends GJDe
         this.autoUpdateTriggerCounter++;
         long localTimer = System.nanoTime();
 
-        /*
-         * Step 0: Collect information about reachable predecessor for seed
-         * nodes.
-         */
-        this.populateReachablePredecessorMap();
+        //        /*
+        //         * Step 0: Collect information about reachable predecessor for seed
+        //         * nodes.
+        //         */
+        //        this.populateReachablePredecessorMap();
         /*
          * Step 1: Start processing from the leaf elements of updateSeedSet in
          * "update" mode.
@@ -221,6 +221,7 @@ public abstract class FlowAnalysis<F extends FlowAnalysis.FlowFact> extends GJDe
         //			System.err.println("*** ENCOUNTERED NEXT SCC with ID #" + nextSCCNum);
         //		}
     }
+
     /**
      * Given a node connected to the program, this method ensures that the IN and OUT of all the leaf nodes within the
      * given node are set to be the meet of OUT of all the predecessors of the entry point of the node (there must be
@@ -434,6 +435,7 @@ public abstract class FlowAnalysis<F extends FlowAnalysis.FlowFact> extends GJDe
      * set of predecessor nodes that are reachable from the seed-node. UPDATE: This method has been intentionally made
      * intra-task, for efficiency purposes.
      */
+    @Deprecated
     protected final void populateReachablePredecessorMap() {
         reachablePredecessorsOfSeeds.clear();
         for (Node node : this.nodesToBeUpdated) {

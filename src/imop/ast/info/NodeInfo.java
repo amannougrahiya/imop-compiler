@@ -23,12 +23,14 @@ import imop.lib.analysis.AssignmentGetter;
 import imop.lib.analysis.flowanalysis.*;
 import imop.lib.analysis.flowanalysis.controlflow.DominanceAnalysis;
 import imop.lib.analysis.flowanalysis.controlflow.DominanceAnalysis.DominatorFlowFact;
+import imop.lib.analysis.flowanalysis.controlflow.IntraProceduralPredicateAnalysis;
 import imop.lib.analysis.flowanalysis.controlflow.PredicateAnalysis;
 import imop.lib.analysis.flowanalysis.dataflow.*;
 import imop.lib.analysis.flowanalysis.dataflow.CopyPropagationAnalysis.CopyPropagationFlowMap;
 import imop.lib.analysis.flowanalysis.dataflow.DataDependenceForward.DataDependenceForwardFF;
 import imop.lib.analysis.flowanalysis.dataflow.ReachingDefinitionAnalysis.ReachingDefinitionFlowMap;
 import imop.lib.analysis.flowanalysis.generic.AnalysisName;
+import imop.lib.analysis.flowanalysis.generic.ControlFlowAnalysis;
 import imop.lib.analysis.flowanalysis.generic.FlowAnalysis;
 import imop.lib.analysis.flowanalysis.generic.FlowAnalysis.FlowFact;
 import imop.lib.analysis.mhp.AbstractPhase;
@@ -383,7 +385,7 @@ public class NodeInfo implements Cloneable {
      *         an analysis name; check the method body to add more analyses to the list of allowed analyses here.
      */
     private static void checkFirstRun(AnalysisName analysisName) {
-        if (analysisName == AnalysisName.PREDICATE_ANALYSIS) {
+        if (analysisName == AnalysisName.INTRA_PREDICATE_ANALYSIS || analysisName == AnalysisName.PREDICATE_ANALYSIS) {
             if (!NodeInfo.paDone) {
                 NodeInfo.paDone = true;
                 performPredicateAnalysis();
@@ -424,8 +426,14 @@ public class NodeInfo implements Cloneable {
         }
         System.err.println("Pass: Performing predicate analysis.");
         long timeStart = System.nanoTime();
-        PredicateAnalysis pa = new PredicateAnalysis();
-        pa.run(mainFunc);
+        ControlFlowAnalysis<?> pa;
+        if (Program.useInterProceduralPredicateAnalysis) {
+            pa = new PredicateAnalysis();
+            pa.run(mainFunc);
+        } else {
+            pa = new IntraProceduralPredicateAnalysis();
+            pa.run(mainFunc);
+        }
         long timeTaken = System.nanoTime() - timeStart;
         System.err.println("\tNodes processed " + pa.nodesProcessed + " times.");
         System.err.println("\tTime taken: " + timeTaken / 1000000000.0 + "s.");

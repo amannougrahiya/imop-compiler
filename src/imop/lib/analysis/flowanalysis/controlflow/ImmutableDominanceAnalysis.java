@@ -29,6 +29,11 @@ public class ImmutableDominanceAnalysis
 		super(analysisName, analysisDimension);
 	}
 
+	@Override
+	protected boolean processPostCallNodesIN(PostCallNode node, DominatorFlowFact incompleteIN) {
+		return false;
+	}
+
 	public static class DominatorFlowFact extends FlowAnalysis.FlowFact {
 		public ImmutableSet<Node> dominators;
 

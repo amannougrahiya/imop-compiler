@@ -657,7 +657,6 @@ public abstract class InterThreadForwardCellularAnalysis<F extends CellularDataF
             if (!doNotProcess) {
                 inChanged |= processPostCallNodes((PostCallNode) node, newIN);
             }
-
         }
         if (anyPredMissed) {
             this.yetToBeFinalized.add(node);
@@ -728,7 +727,6 @@ public abstract class InterThreadForwardCellularAnalysis<F extends CellularDataF
                 }
             }
         }
-        return;
     }
 
     @SuppressWarnings("unchecked")
