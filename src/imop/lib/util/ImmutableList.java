@@ -143,9 +143,14 @@ public class ImmutableList<V> extends AbstractList<V> {
 		this.internalList.forEach(action);
 	}
 
+	private int hashCode = -1;
+
 	@Override
 	public int hashCode() {
-		return this.internalList.hashCode();
+		if (hashCode == -1) {
+			hashCode = this.internalList.hashCode();
+		}
+		return hashCode;
 	}
 
 	@Override

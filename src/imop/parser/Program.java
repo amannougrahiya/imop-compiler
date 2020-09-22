@@ -181,7 +181,8 @@ public class Program {
         Program.concurrencyAlgorithm = ConcurrencyAlgorithm.ICON;
         Program.mhpUpdateCategory = UpdateCategory.LZUPD; // Default is LZUPD.
         Program.sveSensitive = SVEDimension.SVE_SENSITIVE;
-        Program.sveSensitivityOfIDFAEdges = SVEDimension.SVE_SENSITIVE;
+        Program.sveSensitivityOfIDFAEdges = SVEDimension.SVE_INSENSITIVE;
+        Program.useInterProceduralPredicateAnalysis = true;
         Program.sveNoCheck = true;
         Program.numExpansionAllowed = 100;
         Program.useHeuristicWithYuan = false;

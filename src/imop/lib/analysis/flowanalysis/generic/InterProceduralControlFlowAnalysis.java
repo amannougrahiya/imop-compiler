@@ -14,6 +14,7 @@ import imop.ast.node.internal.*;
 import imop.lib.analysis.flowanalysis.SCC;
 import imop.lib.cfg.info.CFGInfo;
 import imop.lib.util.Misc;
+import imop.parser.Program;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -26,6 +27,8 @@ public abstract class InterProceduralControlFlowAnalysis<F extends FlowAnalysis.
         super(analysisName, analysisDimension);
     }
 
+    protected Set<FunctionDefinition> functionWithBarrier = new HashSet<>();
+
     /**
      * Perform the analysis, starting at the begin node of the function {@code funcDef}.<br>
      * <i>Note that this method does not clear the analysis information, if
@@ -36,6 +39,14 @@ public abstract class InterProceduralControlFlowAnalysis<F extends FlowAnalysis.
      */
     @Override
     public final void run(FunctionDefinition funcDef) {
+        if (this.analysisName == AnalysisName.PREDICATE_ANALYSIS) {
+            functionWithBarrier.clear();
+            for (FunctionDefinition foo : Misc.getExactEnclosee(Program.getRoot(), FunctionDefinition.class)) {
+                if (foo.getInfo().hasBarrierInCFG()) {
+                    functionWithBarrier.add(foo);
+                }
+            }
+        }
         BeginNode beginNode = funcDef.getInfo().getCFGInfo().getNestedCFG().getBegin();
         this.workList.recreate();
         this.workList.add(beginNode);
@@ -125,7 +136,7 @@ public abstract class InterProceduralControlFlowAnalysis<F extends FlowAnalysis.
             // A small hack here.
             PostCallNode postNode = (PostCallNode) node;
             List<FunctionDefinition> funcDef = postNode.getParent().getInfo().getCalledDefinitions();
-            if (funcDef.isEmpty() || funcDef.stream().noneMatch(f -> f.getInfo().hasBarrierInCFG())) {
+            if (funcDef.isEmpty() || funcDef.stream().noneMatch(f -> this.functionWithBarrier.contains(f))) {
                 predecessors = new HashSet<>();
                 predecessors.add(postNode.getParent().getPreCallNode());
             }
@@ -181,6 +192,14 @@ public abstract class InterProceduralControlFlowAnalysis<F extends FlowAnalysis.
     public void restartAnalysisFromStoredNodes() {
         assert (!SCC.processingTarjan);
         this.autoUpdateTriggerCounter++;
+        if (this.analysisName == AnalysisName.PREDICATE_ANALYSIS) {
+            functionWithBarrier.clear();
+            for (FunctionDefinition foo : Misc.getExactEnclosee(Program.getRoot(), FunctionDefinition.class)) {
+                if (foo.getInfo().hasBarrierInCFG()) {
+                    functionWithBarrier.add(foo);
+                }
+            }
+        }
         long localTimer = System.nanoTime();
 
         /*
