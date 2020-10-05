@@ -20,6 +20,7 @@ import imop.lib.util.Misc;
 import imop.parser.Program;
 import imop.parser.Program.UpdateCategory;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;

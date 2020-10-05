@@ -218,40 +218,40 @@ public class NodeInfo implements Cloneable {
     private Set<Node> backwardReachableBarriers = null;
 
     public Set<Node> getFWRNodes() {
-        populateForward();
         if (this.node instanceof EndNode && this.node.getParent() instanceof ParallelConstruct) {
             return new HashSet<>();
         }
+        populateForward();
         //        if (this.forwardReachableNodes == null) {
         //        }
         return this.forwardReachableNodes;
     }
 
     public Set<Node> getFWRBarriers() {
-        populateForward();
         if (this.node instanceof EndNode && this.node.getParent() instanceof ParallelConstruct) {
             return new HashSet<>();
         }
+        populateForward();
         //        if (this.forwardReachableBarriers == null) {
         //        }
         return this.forwardReachableBarriers;
     }
 
     public Set<Node> getBWRNodes() {
-        populateBackward();
         if (this.node instanceof BeginNode && this.node.getParent() instanceof ParallelConstruct) {
             return new HashSet<>();
         }
+        populateBackward();
         //        if (this.backwardReachableNodes == null) {
         //        }
         return this.backwardReachableNodes;
     }
 
     public Set<Node> getBWRBarriers() {
-        populateBackward();
         if (this.node instanceof BeginNode && this.node.getParent() instanceof ParallelConstruct) {
             return new HashSet<>();
         }
+        populateBackward();
         //        if (this.backwardReachableBarriers == null) {
         //        }
         return this.backwardReachableBarriers;

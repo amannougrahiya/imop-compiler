@@ -1237,7 +1237,7 @@ public class AutomatedUpdater {
             AbstractPhase.globalMHPStale = true;
             return;
         }
-        if (AutomatedUpdater.stabilizeMHPLocallyUponAddition(node)) {
+        if (Program.useHeuristicWithIcon && AutomatedUpdater.stabilizeMHPLocallyUponAddition(node)) {
             BeginPhasePoint.stabilizationTime += (System.nanoTime() - timer);
             return;
         }
@@ -1307,7 +1307,7 @@ public class AutomatedUpdater {
             AbstractPhase.globalMHPStale = true;
             return null;
         }
-        if (AutomatedUpdater.stabilizeMHPLocallyUponRemoval(node)) {
+        if (Program.useHeuristicWithIcon && AutomatedUpdater.stabilizeMHPLocallyUponRemoval(node)) {
             BeginPhasePoint.stabilizationTime += (System.nanoTime() - timer);
             return new HashSet<>();
         }

@@ -91,6 +91,7 @@ public class Program {
      * this heuristic would not be correct for Yuan's concurrency analysis.
      */
     public static boolean useHeuristicWithYuan = false;
+    public static boolean useHeuristicWithIcon = false;
     public static boolean useInterProceduralPredicateAnalysis;
     /**
      * Set the default SVE sensitivity for the whole program.<br> Note that IDFA's <i>may</i> have their fixed SVE
@@ -181,8 +182,9 @@ public class Program {
         Program.concurrencyAlgorithm = ConcurrencyAlgorithm.ICON;
         Program.mhpUpdateCategory = UpdateCategory.LZUPD; // Default is LZUPD.
         Program.sveSensitive = SVEDimension.SVE_SENSITIVE;
-        Program.sveSensitivityOfIDFAEdges = SVEDimension.SVE_INSENSITIVE;
-        Program.useInterProceduralPredicateAnalysis = true;
+        Program.sveSensitivityOfIDFAEdges = SVEDimension.SVE_SENSITIVE;
+        Program.useInterProceduralPredicateAnalysis = false;
+        Program.useHeuristicWithIcon = true;
         Program.sveNoCheck = true;
         Program.numExpansionAllowed = 100;
         Program.useHeuristicWithYuan = false;
@@ -369,7 +371,7 @@ public class Program {
         //        filePath = ("../tests/fft_openmp.i");
         //        filePath = ("../tests/quake.i");
         //        filePath = ("../tests/amgmk-postpass.i");
-        //        filePath = ("../tests/sequoia/clomp.i");
+        filePath = ("../tests/sequoia/clomp.i");
         //        filePath = ("../tests/fsu/md_openmp.i");
         //        filePath = ("../tests/alternate.i");
         //        filePath = ("../tests/parboil/lbm.i");
@@ -383,8 +385,8 @@ public class Program {
         //        filePath = ("../tests/c_jacobi03-postpass.i");
         //        filePath = ("../tests/c_jacobi01-postpass.i");
         //        filePath = ("../tests/barr-opt-tests/adi.i");
-        filePath = ("../tests/barr-opt-tests/amgmk.i");
-        filePath = ("../tests/barr-opt-tests/kmeans.i");
+        //        filePath = ("../tests/barr-opt-tests/amgmk.i");
+        //        filePath = ("../tests/barr-opt-tests/kmeans.i");
         //        filePath = ("../tests/barr-opt-tests/clomp.i");
         //        filePath = ("../tests/barr-opt-tests/stream.i");
         //        filePath = ("../tests/barr-opt-tests/quake.i");
