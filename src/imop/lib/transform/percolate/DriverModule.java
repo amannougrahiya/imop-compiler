@@ -238,6 +238,9 @@ public class DriverModule {
         //        boolean dumpIntermediate = Program.dumpIntermediateStates;
         boolean dumpIntermediate = false;
         ParallelConstructExpander.mergeParallelRegions(Program.getRoot());
+        DriverModule.searchExample();
+        System.exit(0);
+
         Program.getRoot().getInfo().removeUnusedElements();
         ProfileSS.nextCP();
         if (dumpIntermediate) {
@@ -378,6 +381,33 @@ public class DriverModule {
         //                "stabilization-dump" + Program.concurrencyAlgorithm + Program.mhpUpdateCategory + s + ".txt");
         //		System.err.println("Trigger count: " + triggerSizeCountList);
         System.exit(0);
+    }
+
+    public static void searchExample() {
+        if (Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.YUANMHP) {
+            return;
+        }
+        for (ParallelConstruct parCons : Misc.getExactEnclosee(Program.getRoot(), ParallelConstruct.class)) {
+            Set<BeginPhasePoint> bppSet = new HashSet<>();
+            for (AbstractPhase<?, ?> absPh : parCons.getInfo().getConnectedPhases()) {
+                Phase ph = (Phase) absPh;
+                bppSet.addAll(ph.getBeginPoints());
+            }
+            for (BeginPhasePoint bpp1 : bppSet) {
+                for (BeginPhasePoint bpp2 : bppSet) {
+                    if (bpp1.getNode() == bpp2.getNode()) {
+                        continue;
+                    }
+                    for (EndPhasePoint epp : Misc.setIntersection(bpp1.getNextBarriers(), bpp2.getNextBarriers())) {
+                        Node n = epp.getNode();
+                        if (n instanceof BarrierDirective &&
+                                Misc.getEnclosingFunction(n) != Misc.getEnclosingFunction(bpp1.getNode())) {
+                            System.out.println("Found n!");
+                        }
+                    }
+                }
+            }
+        }
     }
 
     private static void change() {
