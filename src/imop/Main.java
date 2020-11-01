@@ -108,6 +108,7 @@ public class Main {
         //		dumpLoopHeadersOnSTDOUT();
         // ********* Those methods that never return.*********
         totalTime = System.nanoTime();
+        DriverModule.askQueries();
         DriverModule.clientAutoUpdate();
         //        DriverModule.mergeParRegs();
         //		DriverModule.optimizeBarriers();

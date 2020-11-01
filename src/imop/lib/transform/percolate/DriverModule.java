@@ -12,6 +12,7 @@ import imop.Main;
 import imop.ast.info.DataSharingAttribute;
 import imop.ast.node.external.*;
 import imop.ast.node.internal.*;
+import imop.lib.analysis.CoExistenceChecker;
 import imop.lib.analysis.SVEChecker;
 import imop.lib.analysis.flowanalysis.Cell;
 import imop.lib.analysis.flowanalysis.SCC;
@@ -119,6 +120,115 @@ public class DriverModule {
         }
         //		change();
         DriverModule.optimizeBarriers(); // This method does not return;
+        System.exit(0);
+    }
+
+    public static void askQueries() {
+        int counter = 0;
+        long tim = 0;
+        for (int i = 0; i < 100; i++) {
+            for (DummyFlushDirective dfd1 : Misc.getExactEncloseeList(Program.getRoot(), DummyFlushDirective.class)) {
+                for (DummyFlushDirective dfd2 : Misc.getExactEncloseeList(Program.getRoot(), DummyFlushDirective.class)) {
+                    long timLoc = System.nanoTime();
+                    if (Misc.doIntersect(new HashSet<>(dfd1.getInfo().getNodePhaseInfo().getPhaseSet()), new HashSet<>(dfd2.getInfo().getNodePhaseInfo().getPhaseSet())) &&
+                            Program.concurrencyAlgorithm != Program.ConcurrencyAlgorithm.YUANMHP) {
+                        CoExistenceChecker.canCoExistInAnyPhase(dfd1, dfd2);
+                    }
+                    tim += System.nanoTime() - timLoc;
+                    counter++;
+                }
+            }
+        }
+        double totTime = (System.nanoTime() - Main.totalTime) / (1.0 * 1e9);
+        double incMHPTime = 0.0;
+        double incIDFATime = 0.0;
+        long incMHPTriggers = 0;
+        long incIDFATriggers = 0;
+        long finalIncNodes = 0;
+        long tarjanCount = 0;
+        double sccTime = 0.0;
+        //		List<Long> triggerSizeCountList = null;
+        System.err.println("Number of times IDFA update were triggered -- ");
+        for (FlowAnalysis<?> analysis : FlowAnalysis.getAllAnalyses().values()) {
+            System.err.println("\t For " + analysis.getAnalysisName() + ": " + analysis.autoUpdateTriggerCounter);
+            if (analysis.getAnalysisName() == AnalysisName.POINTSTO) {
+                incIDFATriggers = analysis.autoUpdateTriggerCounter;
+                //				triggerSizeCountList = analysis.localList;
+            }
+        }
+        System.err.println("Total number of times nodes were processed during automated IDFA update -- ");
+        for (FlowAnalysis<?> analysis : FlowAnalysis.getAllAnalyses().values()) {
+            System.err.println("\t For " + analysis.getAnalysisName() + ": " + analysis.nodesProcessedDuringUpdate);
+            if (analysis.getAnalysisName() == AnalysisName.POINTSTO) {
+                finalIncNodes = analysis.nodesProcessed;
+            }
+        }
+        System.err.println("Time spent in forward IDFA updates -- ");
+        for (FlowAnalysis<?> analysis : FlowAnalysis.getAllAnalyses().values()) {
+            System.err.println(
+                    "\t For " + analysis.getAnalysisName() + ": " + analysis.flowAnalysisUpdateTimer / (1e9) + "s.");
+            if (analysis.getAnalysisName() == AnalysisName.POINTSTO) {
+                incIDFATime = analysis.flowAnalysisUpdateTimer / (1e9 * 1.0);
+            }
+        }
+        //		System.err.println("Time spent in SVE queries: " + SVEChecker.sveTimer / (1e9 * 1.0) + "s.");
+        System.err.println("Time spent in phase update: " + BeginPhasePoint.stabilizationTime / (1e9 * 1.0) + "s.");
+        incMHPTime = BeginPhasePoint.stabilizationTime / (1e9 * 1.0);
+        System.err.println("Number of stabilizations of phase analysis: " + AutomatedUpdater.reinitMHPCounter);
+        incMHPTriggers = AutomatedUpdater.reinitMHPCounter;
+        System.err.println("Time spent generating SCCs: " + SCC.SCCTimer / (1e9 * 1.0) + "s.");
+        sccTime = SCC.SCCTimer / (1e9 * 1.0);
+        System.err.println("Total invocations of Tarjan's algorithm: " + SCC.tarjanCount);
+        tarjanCount = SCC.tarjanCount;
+        if (Program.fieldSensitive) {
+            System.err.println("Number of field-sensitive queries: " + FieldSensitivity.counter);
+            System.err.println("Time spent in field-sensitive queries: " + FieldSensitivity.timer / (1e9 * 1.0) + "s.");
+        }
+        //		System.err.println("Time spent in inlining: " + FunctionInliner.inliningTimer / (1e9 * 1.0) + "s.");
+        //		System.err.println("Time spent in having uni-task precision in IDFA edge creation: "
+        //				+ CFGInfo.uniPrecisionTimer / (1e9 * 1.0) + "s.");
+        //		System.err.println("Number of field-sensitive queries: " + FieldSensitivity.counter);
+        //		System.err.println("Time spent in field-sensitive queries: " + FieldSensitivity.timer / (1e9 * 1.0) + "s.");
+        //		System.err.println("Time spent in generating reverse postordering of the program nodes: "
+        //				+ TraversalOrderObtainer.orderGenerationTime / (1e9 * 1.0) + "s.");
+        //		if (Program.fieldSensitive) {
+        //			Misc.printToFile(ConstraintsGenerator.allConstraintString, Program.fileName + "_z3_queries.txt");
+        //		}
+        System.err.println("TOTAL TIME (including disk I/O time): " + totTime + "s.");
+        System.err.println("This execution ran in " + Program.updateCategory + " mode for IDFA update, and in " +
+                Program.mhpUpdateCategory + " mode for MHP update.");
+        System.err.println("Optimized a total of " + AutomatedUpdater.hasBeenOtimized + " stale markings.");
+        System.err.println(
+                "Number of times PTA would have had to run in semi-eager mode: " + ProfileSS.flagSwitchCount);
+        String s = (Program.sveSensitive == SVEDimension.SVE_SENSITIVE) ? "S" : "U";
+        DumpSnapshot.printToFile(Program.getRoot(), (Program.fileName + "imop_output_" + Program.concurrencyAlgorithm +
+                "_" + Program.mhpUpdateCategory + s + ".i").trim());
+        DumpSnapshot.dumpPointsTo("final" + Program.updateCategory);
+        DumpSnapshot.dumpPhases("final" + Program.concurrencyAlgorithm + "_" + Program.mhpUpdateCategory + s);
+        DumpSnapshot.dumpPredicates("final" + Program.concurrencyAlgorithm + "_" + Program.mhpUpdateCategory + s);
+        DecimalFormat df2 = Program.df2;
+        // Count the number of aggregate phases
+        int numPhases = 0;
+        for (ParallelConstruct parCons : Misc.getExactEnclosee(Program.getRoot(), ParallelConstruct.class)) {
+            numPhases += parCons.getInfo().getConnectedPhases().size();
+        }
+
+        // Count the number of explicit barriers.
+        int numExplicitBarriers = Misc.getExactEnclosee(Program.getRoot(), BarrierDirective.class).size();
+        StringBuilder resultString = new StringBuilder(Program.fileName + " " +
+                ((Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.YUANMHP) ? "YUAN" : "ICON") + " " +
+                Program.mhpUpdateCategory + " " +
+                ((Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.YUANMHP) ? "SVE-sensitive" : ((
+                        Program.sveSensitive == SVEDimension.SVE_SENSITIVE) ? ("SVE-sensitive (" +
+                        df2.format(SVEChecker.sveTimer * 1.0 / 1e9) + ")") : "SVE-insensitive (0)")) + " " +
+                df2.format(totTime) + " " + df2.format(incMHPTime) + " " + df2.format(incIDFATime) + " " +
+                incMHPTriggers + " " + incIDFATriggers + " " + finalIncNodes + " " + tarjanCount + " " +
+                df2.format(sccTime) + " " + numPhases + " " + numExplicitBarriers + " " + counter + " " + tim + "s.");
+        System.out.println(resultString);
+        System.err.println(resultString);
+        //        DumpSnapshot.printToFile(Program.stabilizationStackDump.toString(),
+        //                "stabilization-dump" + Program.concurrencyAlgorithm + Program.mhpUpdateCategory + s + ".txt");
+        //		System.err.println("Trigger count: " + triggerSizeCountList);
         System.exit(0);
     }
 
