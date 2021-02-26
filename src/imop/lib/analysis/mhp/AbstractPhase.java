@@ -192,6 +192,7 @@ public abstract class AbstractPhase<B extends AbstractPhasePointable, E extends 
      * @param destination
      *         destination of the new edge to be created in the PFG.
      */
+    @SuppressWarnings("unchecked")
     public static void connectPhases(AbstractPhase<?, ?> source, AbstractPhase<?, ?> destination) {
         if (Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.ICON) {
             source.succPhases.clear(); // ICON supports only one successor phase per phase.
@@ -225,7 +226,7 @@ public abstract class AbstractPhase<B extends AbstractPhasePointable, E extends 
      * <br>
      * Note that updates to inter-task edges are implicit in this method.
      *
-     * @param nodeToBeRemoved
+     * @param beginPoints
      *         node that has to be removed.
      */
     public void setBeginPointsNoUpdate(List<B> beginPoints) {
