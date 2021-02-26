@@ -11,8 +11,6 @@ package imop.lib.analysis.mhp;
 
 import imop.ast.node.external.*;
 import imop.lib.analysis.mhp.incMHP.BeginPhasePoint;
-import imop.lib.analysis.mhp.incMHP.Phase;
-import imop.lib.analysis.mhp.yuan.YPhase;
 import imop.lib.cfg.link.autoupdater.AutomatedUpdater;
 import imop.lib.util.CellSet;
 import imop.lib.util.ProfileSS;
@@ -193,15 +191,12 @@ public abstract class AbstractPhase<B extends AbstractPhasePointable, E extends 
      *         destination of the new edge to be created in the PFG.
      */
     @SuppressWarnings("unchecked")
-    public static void connectPhases(AbstractPhase<?, ?> source, AbstractPhase<?, ?> destination) {
+    public static <P extends AbstractPhasePointable, Q extends AbstractPhasePointable, R extends AbstractPhase<P, Q>> void connectPhases(R source, R destination) {
         if (Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.ICON) {
             source.succPhases.clear(); // ICON supports only one successor phase per phase.
-            ((Set<Phase>) source.succPhases).add((Phase) destination);
-            ((Set<Phase>) destination.predPhases).add((Phase) source);
-        } else {
-            ((Set<YPhase>) source.succPhases).add((YPhase) destination);
-            ((Set<YPhase>) destination.predPhases).add((YPhase) source);
         }
+        ((Set<R>) source.succPhases).add(destination);
+        ((Set<R>) destination.predPhases).add(source);
     }
 
     /**
