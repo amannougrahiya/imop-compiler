@@ -6,7 +6,7 @@
  * The above notice shall be included in all copies or substantial
  * portions of this file.
  */
-package cgo2020.demo8;
+package demo.demo8;
 
 import imop.ast.node.external.*;
 import imop.lib.analysis.mhp.AbstractPhase;

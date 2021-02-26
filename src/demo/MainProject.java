@@ -6,14 +6,13 @@
  * The above notice shall be included in all copies or substantial
  * portions of this file.
  */
-package cgo2020.demo9;
+package demo;
 
 import imop.ast.node.external.*;
-import imop.lib.analysis.mhp.AbstractPhasePointable;
+import imop.lib.analysis.mhp.incMHP.BeginPhasePoint;
 import imop.lib.analysis.mhp.incMHP.Phase;
 import imop.lib.cfg.info.CompoundStatementCFGInfo;
 import imop.lib.util.CellSet;
-import imop.lib.util.DumpSnapshot;
 import imop.lib.util.Misc;
 import imop.parser.Program;
 
@@ -21,10 +20,10 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
-public class Demo9 {
+public class MainProject {
 
 	public static void main(String[] args) {
-		args = new String[] { "-f", "runner/cgo-eg/example.c", "-nru" };
+		args = new String[] { "-f", "runner/cgo-eg/example.c", "-nru"};
 		Program.parseNormalizeInput(args);
 		/*
 		 * Check if a barrier-directive is required to preserve
@@ -39,22 +38,21 @@ public class Demo9 {
 		 * program.
 		 */
 		demo9();
-		DumpSnapshot.dumpRoot("final");
 		System.out.println(Program.getRoot());
 	}
 
 	public static void demo9() {
 		for (BarrierDirective barrier : Misc.getInheritedEncloseeList(Program.getRoot(), BarrierDirective.class)) {
 			Set<Phase> allPhaseSet = new HashSet<>();
-			for (ParallelConstruct parConsNode : Misc.getInheritedEnclosee(Program.getRoot(),
+			for (ParallelConstruct parConsNode : Misc.getExactEnclosee(Program.getRoot(),
 					ParallelConstruct.class)) {
 				allPhaseSet.addAll((Collection<? extends Phase>) parConsNode.getInfo().getConnectedPhases());
 			}
 			Set<Phase> phasesAbove = (Set<Phase>) barrier.getInfo().getNodePhaseInfo().getPhaseSet();
 			Set<Phase> phasesBelow = new HashSet<>();
 			for (Phase ph : allPhaseSet) {
-				for (AbstractPhasePointable bpp : ph.getBeginPoints()) {
-					if (bpp.getNodeFromInterface() == barrier) {
+				for (BeginPhasePoint bpp : ph.getBeginPoints()) {
+					if (bpp.getNode() == barrier) {
 						phasesBelow.add(ph);
 					}
 				}
@@ -84,6 +82,7 @@ public class Demo9 {
 			if (removable) {
 				CompoundStatement enclosingCS = (CompoundStatement) Misc.getEnclosingBlock(barrier);
 				CompoundStatementCFGInfo csCFGInfo = enclosingCS.getInfo().getCFGInfo();
+				System.out.println("Removing a barrier.");
 				csCFGInfo.removeElement(barrier);
 				demo9();
 				return;

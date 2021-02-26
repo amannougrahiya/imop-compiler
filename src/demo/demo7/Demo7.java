@@ -6,7 +6,7 @@
  * The above notice shall be included in all copies or substantial
  * portions of this file.
  */
-package cgo2020.demo7;
+package demo.demo7;
 
 import imop.ast.node.external.FunctionDefinition;
 import imop.ast.node.external.Node;

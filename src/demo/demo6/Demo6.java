@@ -6,7 +6,7 @@
  * The above notice shall be included in all copies or substantial
  * portions of this file.
  */
-package cgo2020.demo6;
+package demo.demo6;
 
 import imop.ast.node.external.DoStatement;
 import imop.ast.node.external.Statement;

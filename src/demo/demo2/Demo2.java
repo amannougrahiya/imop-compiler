@@ -6,7 +6,7 @@
  * The above notice shall be included in all copies or substantial
  * portions of this file.
  */
-package cgo2020.demo2;
+package demo.demo2;
 
 import imop.ast.node.external.IfStatement;
 import imop.ast.node.external.WhileStatement;
@@ -19,11 +19,11 @@ public class Demo2 {
 		args = new String[] { "-f", "runner/cgo-eg/example.c", "-nru" };
 		Program.parseNormalizeInput(args);
 
-		for (WhileStatement whileStmt : Misc.getInheritedEnclosee(Program.getRoot(), WhileStatement.class)) {
+		for (WhileStatement whileStmt : Misc.getExactEnclosee(Program.getRoot(), WhileStatement.class)) {
 			System.out.println(whileStmt.getInfo().getCFGInfo().getPredicate());
 			System.out.println(whileStmt.getInfo().getCFGInfo().getBody());
 		}
-		for (IfStatement ifStmt : Misc.getInheritedEnclosee(Program.getRoot(), IfStatement.class)) {
+		for (IfStatement ifStmt : Misc.getExactEnclosee(Program.getRoot(), IfStatement.class)) {
 			if (!ifStmt.getInfo().getCFGInfo().hasElseBody()) {
 				System.out.println(ifStmt.getInfo().getCFGInfo().getSuccessors());
 			}

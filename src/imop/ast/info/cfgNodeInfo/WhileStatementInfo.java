@@ -53,9 +53,7 @@ public class WhileStatementInfo extends IterationStatementInfo {
      * Unroll this owner loop to achieve the given {@code unrollingFactor}.
      *
      * @param unrollingFactor
-     *         number of copies of iteration-body in the final state.
-     *         <p>
-     *         Note: Unrolling factor of 1 would mean no unrolling.
+     *         number of <i>new</i> copies of iteration-body in the final state.
      */
     @Override
     public void unrollLoop(int unrollingFactor) {
