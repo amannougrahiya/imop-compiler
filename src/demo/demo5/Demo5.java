@@ -20,16 +20,11 @@ public class Demo5 {
     /**
      * Driver method for Demo #5.
      * TODO OPTIONS:
-     *      1. CellSet writes1 = new CellSet(stmt1.getInfo().getWrites());
-     *      2. Statement stmt = func.getInfo().getStatementWithLabel("thisStmt");
-     *      3. stmt.getInfo().getAccesses()
-     *      4. sym.getName().equals("thisVar")
-     *      5. Statement stmt1 = func.getInfo().getStatementWithLabel("l1"); Statement stmt2 = func.getInfo().getStatementWithLabel("l2");
-     *      6. node.getInfo().getWrites())
-     *      7. System.out.println(((Symbol) c).getName());
-     *      8. CellSet reads1 = new CellSet(stmt1.getInfo().getReads());
-     *      9. reads2.overlapsWith(writes1) || writes1.overlapsWith(writes2)
-     *      10. !(c instanceof Symbol)
+     *      1. stmt.getInfo().getAccesses()
+     *      2. sym.getName().equals("thisVar")
+     *      3. node.getInfo().getWrites())
+     *      4. Statement stmt = func.getInfo().getStatementWithLabel("thisStmt");
+     *      5. System.out.println(((Symbol) c).getName());
      */
     public static void main(String[] args) {
         args = new String[]{"-f", "runner/cgo-eg/example.c", "-nru"};
@@ -46,25 +41,23 @@ public class Demo5 {
         //            for (Cell c :
         //  TODO T2
         //            ) {
-        //              if (
-        //  TODO T3
-        //              ) {
+        //              if(!(c instanceof Symbol)) {
         //                    continue;
-        //                }
-        //  TODO T4
+        //               }
+        //  TODO T3
         //            }
         //        }
         //        for (FunctionDefinition func : Program.getRoot().getInfo().getAllFunctionDefinitions()) {
         //            for (ExpressionStatement node : Misc.getInheritedEnclosee(func, ExpressionStatement.class)) {
         //                for (Cell c :
-        //  TODO T5
+        //  TODO T4
         //                ) {
         //                    if (!(c instanceof Symbol)) {
         //                        continue;
         //                    }
         //                    Symbol sym = (Symbol) c;
         //                    if (
-        //  TODO T6
+        //  TODO T5
         //                    ) {
         //                        System.out.println(node);
         //                    }
@@ -72,7 +65,8 @@ public class Demo5 {
         //            }
         //        }
         //        for (FunctionDefinition func : Program.getRoot().getInfo().getAllFunctionDefinitions()) {
-        // TODO T7
+        //            Statement stmt1 = func.getInfo().getStatementWithLabel("l1");
+        //            Statement stmt2 = func.getInfo().getStatementWithLabel("l2");
         //            if (stmt1 != null && stmt2 != null) {
         //                Demo5.demo5c(stmt1, stmt2);
         //            }
@@ -80,13 +74,18 @@ public class Demo5 {
         //
     }
 
+    /**
+     * TODO OPTIONS:
+     *      1. reads2.overlapsWith(writes1) || writes1.overlapsWith(writes2)
+     *      2. CellSet reads1 = new CellSet(stmt1.getInfo().getReads());
+     */
     public static boolean demo5c(Statement stmt1, Statement stmt2) {
-        // TODO T8
+        // TODO T1
         //        CellSet reads2 = new CellSet(stmt2.getInfo().getReads());
-        // TODO T9
+        //        CellSet writes1 = new CellSet(stmt1.getInfo().getWrites());
         //        CellSet writes2 = new CellSet(stmt2.getInfo().getWrites());
         //        if (reads1.overlapsWith(writes2) ||
-        // TODO T10
+        // TODO T2
         //        ) {
         //            System.out.println("Conflict detected between " + stmt1 + " and " + stmt2);
         //            return true;
