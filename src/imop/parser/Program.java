@@ -34,9 +34,9 @@ import java.util.*;
 public class Program {
 
 
-    static {
-        Program.loadZ3LibrariesInMac();
-    }
+    //    static {
+    //        Program.loadZ3LibrariesInMac();
+    //    }
 
     public enum UpdateCategory {
         EGINV,  // eager invalidation, upon each elementary transformation, with rerun of the analysis.
@@ -215,8 +215,8 @@ public class Program {
         //        filePath = ("../tests/npb-post/ft3-0.i"); // SVE-all: 3.73s.
         //        filePath = ("../tests/npb-post/is3-0.i"); // SVE-all: 0.69
         //        filePath = ("../tests/npb-post/lu3-0.i"); // SVE-all: 16.26s.
-        //        filePath = ("../tests/npb-post/mg3-0.i"); // SVE-all: 9.88s;
-        filePath = ("../tests/npb-post/sp3-0.i"); // SVE-all: 23s.
+        filePath = ("../tests/npb-post/mg3-0.i"); // SVE-all: 9.88s;
+        //        filePath = ("../tests/npb-post/sp3-0.i"); // SVE-all: 23s.
         //
         //        filePath = "../output-dump/imop_useful.i";
         //        filePath = ("../src/imop/lib/testcases/cfgTests/singleLooping.c");
@@ -366,12 +366,13 @@ public class Program {
         //        filePath = ("../tests/barr-opt-tests/jacobi-1d-imper.i");
         //        filePath = ("../tests/jacobi-1d-imper-postpass.i");
         //        filePath = ("../tests/dijkstra_while_openmp.i");
-        //        filePath = ("../tests/jacobi-while.i");
+        filePath = ("../tests/jacobi-while.i");
+        filePath = ("../runner/cgo-eg/example.c");
         //        filePath = ("../tests/ziggurat_openmp.i");
         //        filePath = ("../tests/fft_openmp.i");
         //        filePath = ("../tests/quake.i");
         //        filePath = ("../tests/amgmk-postpass.i");
-        filePath = ("../tests/sequoia/clomp.i");
+        //        filePath = ("../tests/sequoia/clomp.i");
         //        filePath = ("../tests/fsu/md_openmp.i");
         //        filePath = ("../tests/alternate.i");
         //        filePath = ("../tests/parboil/lbm.i");
