@@ -36,7 +36,6 @@ public class Demo2 {
         //		for (IfStatement ifStmt : Misc.getInheritedEnclosee(Program.getRoot(), IfStatement.class)) {
         //			if (
         // TODO T4
-        //			!ifStmt.getInfo().CFG.ELSE?()
         //			) {
         // TODO T5
         //			}
