@@ -8,25 +8,44 @@
  */
 package demo.demo4;
 
+import imop.ast.node.external.*;
+import imop.ast.node.internal.*;
+import imop.lib.analysis.flowanalysis.Symbol;
+import imop.lib.util.Misc;
 import imop.parser.Program;
 
 public class Demo4 {
 
+    /**
+     * Driver method for Demo #4.
+     * TODO OPTIONS:
+     *      1.  System.out.println(Misc.getSymbolEntry(spe.toString(), callStmt).getDefiningScope());
+     *      2. !spe.isAnIdentifier()
+     *      3. System.out.println(sym.getName() + " has type " + sym.getType());
+     *      4. callStmt.getPreCallNode().getArgumentList()
+     *      5. func.getInfo().getSymbolTable().values()
+     */
     public static void main(String[] args) {
         args = new String[]{"-f", "runner/cgo-eg/example.c", "-nru"};
         Program.parseNormalizeInput(args);
 
         //		for (FunctionDefinition func : Misc.getInheritedEnclosee(Program.getRoot(), FunctionDefinition.class)) {
-        //			TODO: for (Symbol sym : func.getInfo().TABLE.values()) {
-        //			TODO:	System.out.println(sym.NAME() + " has type " + sym.TYPE());
+        //			for (Symbol sym :
+        //	TODO T1
+        //	         ) {
+        //	TODO T2
         //			}
         //		}
         //		for (CallStatement callStmt : Misc.getInheritedEnclosee(Program.getRoot(), CallStatement.class)) {
-        //			TODO: for (SimplePrimaryExpression spe : callStmt.PRE.ARG) {
-        //			TODO:	if (!spe.isAnIdentifier()) {
+        //		    for (SimplePrimaryExpression spe :
+        //	TODO T3
+        //	        ) {
+        //              if (
+        //  TODO T4
+        //              ) {
         //					continue;
         //				}
-        //			TODO: System.out.println(Misc.SYM(X, Y).SCOPE());
+        //	TODO T5
         //			}
         //		}
     }

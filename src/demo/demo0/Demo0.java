@@ -8,11 +8,13 @@
  */
 package demo.demo0;
 
+import imop.parser.Program;
+
 public class Demo0 {
 
 	public static void main(String[] args) {
 		args = new String[] { "-f", "runner/cgo-eg/example.c", "-nru" };
-		// TODO: Add code here: XXX.YYY(args);
+	    Program.parseNormalizeInput(args);
 		System.out.println("Setup successful!");
 	}
 

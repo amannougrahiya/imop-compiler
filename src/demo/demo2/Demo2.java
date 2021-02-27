@@ -8,21 +8,37 @@
  */
 package demo.demo2;
 
+import imop.ast.node.external.*;
+import imop.lib.util.Misc;
 import imop.parser.Program;
 
 public class Demo2 {
 
+    /**
+     * Driver method for Demo #2.
+     * TODO OPTIONS:
+     *      1. System.out.println(whileStmt.getInfo().getCFGInfo().getBody());
+     *      2. Misc.getInheritedEnclosee(Program.getRoot(), WhileStatement.class)
+     *      3. System.out.println(ifStmt.getInfo().getCFGInfo().getSuccessors());
+     *      4. !ifStmt.getInfo().getCFGInfo().hasElseBody()
+     *      5. System.out.println(whileStmt.getInfo().getCFGInfo().getPredicate());
+     */
     public static void main(String[] args) {
         args = new String[]{"-f", "runner/cgo-eg/example.c", "-nru"};
         Program.parseNormalizeInput(args);
 
-        //		TODO: for (WhileStatement whileStmt : Misc.ENCL(Program.getRoot(), WhileStatement.class)) {
-        //			TODO: System.out.println(whileStmt.getInfo().CFG.PRED());
-        //			TODO: System.out.println(whileStmt.getInfo().CFG.BODY());
+        //		for (WhileStatement whileStmt :
+        // TODO T1
+        //	    ) {
+        // TODO T2
+        // TODO T3
         //		}
         //		for (IfStatement ifStmt : Misc.getInheritedEnclosee(Program.getRoot(), IfStatement.class)) {
-        //			TODO: if (!ifStmt.getInfo().CFG.ELSE?()) {
-        //			TODO: System.out.println(ifStmt.getInfo().CFG.SUCC());
+        //			if (
+        // TODO T4
+        //			!ifStmt.getInfo().CFG.ELSE?()
+        //			) {
+        // TODO T5
         //			}
         //		}
     }

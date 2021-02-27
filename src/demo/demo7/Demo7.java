@@ -8,10 +8,22 @@
  */
 package demo.demo7;
 
+import imop.ast.node.external.*;
+import imop.lib.analysis.flowanalysis.Cell;
+import imop.lib.analysis.flowanalysis.Symbol;
+import imop.lib.transform.updater.InsertImmediatePredecessor;
+import imop.parser.FrontEnd;
 import imop.parser.Program;
 
 public class Demo7 {
 
+    /**
+     * Driver method for Demo #7.
+     * TODO OPTIONS:
+     *      1. Statement newStmt = FrontEnd.parseAndNormalize(newStr, Statement.class);
+     *      2. InsertImmediatePredecessor.insert(node, newStmt);
+     *      3. func.getInfo().getCFGInfo().getLexicalCFGLeafContents()
+     */
     public static void main(String[] args) {
         args = new String[]{"-f", "runner/cgo-eg/example.c", "-nru"};
         Program.parseNormalizeInput(args);
@@ -21,7 +33,9 @@ public class Demo7 {
          * notification is displayed.
          */
         //		for (FunctionDefinition func : Program.getRoot().getInfo().getAllFunctionDefinitions()) {
-        //			TODO: for (Node node : func.getInfo().getCFGInfo().LEXICAL-LEAF()) {
+        //			for (Node node :
+        //	TODO T1
+        //	        ) {
         //				for (Cell c : node.getInfo().getWrites()) {
         //					if (!(c instanceof Symbol)) {
         //						continue;
@@ -31,8 +45,8 @@ public class Demo7 {
         //						continue;
         //					}
         //					String newStr = "printf(\"About to write to thisVar.\");";
-        //					TODO: Statement newStmt = TODO;
-        //					TODO: INSERTPRED.INSERT();
+        //	TODO T2
+        //	TODO T3
         //				}
         //			}
         //		}

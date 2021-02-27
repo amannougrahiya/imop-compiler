@@ -8,24 +8,39 @@
  */
 package demo.demo3;
 
+import imop.ast.node.external.*;
+import imop.ast.node.internal.*;
+import imop.lib.util.Misc;
 import imop.parser.Program;
 
 public class Demo3 {
 
+    /**
+     * Driver method for Demo #3.
+     * TODO OPTIONS:
+     *      1. System.out.println(callStmt.getInfo().getCalledDefinitions()); System.out.print(callStmt.getPreCallNode().getArgumentList());
+     *      2. Misc.getInheritedEnclosee(func, CallStatement.class)
+     *      3. System.out.println("Recursive?" + (func.getInfo().isRecursive() ? "Yes" : "No"));
+     *      4. System.out.println(func.getInfo().getCallersOfThis());
+     *      5. Program.getRoot().getInfo().getAllFunctionDefinitions()
+     */
     public static void main(String[] args) {
         args = new String[]{"-f", "runner/cgo-eg/example.c", "-nru"};
         Program.parseNormalizeInput(args);
 
-        //		TODO: for (FunctionDefinition func : Program.getRoot().getInfo().ALLFUNC()) {
-        //			TODO: for (CallStatement callStmt : Misc.ENCLOSEE(func, CallStatement.class)) {
+        //		for (FunctionDefinition func :
+        //	TODO T1
+        //	    ) {
+        //			for (CallStatement callStmt :
+        //	TODO T2
+        //	        ) {
         //				System.out.println(callStmt);
         //			}
-        //			TODO: System.out.println(func.getInfo().CALLERS());
+        //	TODO T3
         //			for (CallStatement callStmt : Misc.getInheritedEnclosee(func, CallStatement.class)) {
-        //				TODO: System.out.println(callStmt.getInfo().DEFS());
-        //				TODO: System.out.print(callStmt.PRE.ARGS());
+        //	TODO T4
         //			}
-        //			TODO: System.out.println("Recursive?" + (func.getInfo().REC() ? "Yes" : "No"));
+        //	TODO T5
         //		}
     }
 
