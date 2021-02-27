@@ -1335,10 +1335,11 @@ public class Misc {
         if (n == null) {
             return new HashSet<>();
         }
-        if (classId == 897) {
-            Misc.warnDueToLackOfFeature("Handling of ParCons via Misc.getInheritedEnclosee is not efficient. Use getExactEnclosee IF it is correct to do so.", null);
-            Thread.dumpStack();
-        }
+        // TODO: Enable this warning later.
+        //        if (classId == 897) {
+        //            Misc.warnDueToLackOfFeature("Handling of ParCons via Misc.getInheritedEnclosee is not efficient. Use getExactEnclosee IF it is correct to do so.", null);
+        //            Thread.dumpStack();
+        //        }
         if (classId % 3 == 0) {
             Collection<T> returnSet = new HashSet<>();
             if (Node.stmtSuperClassIds.contains(classId)) {

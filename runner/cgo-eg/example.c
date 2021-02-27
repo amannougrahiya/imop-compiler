@@ -39,29 +39,28 @@ int main() {
 #pragma omp atomic update
 		x++;
 	}
-
-
 	int thisVar = 14;
 test: x++;
-	while (x > 8) {
+	  while (x > 8) {
 l2: x--;
-		if (x == 1) {
+	if (x == 1) {
 thisStmt: x = 3 + x++ + thisVar;
-			foo();
-			int z = 10;
+		  foo();
+		  int z = 10;
 l1: x = 10;
-			bar(z);
-		}
-		bar(10);
+	bar(z);
 	}
-	do {
-		x--;
-		x = x + 2;
-		x = x - g1;
-	} while (x > 0);
-	while (thisVar++ < 5) {
-		if (thisVar == 10) {
-			continue;
-		}
-	}
+	bar(10);
+	  }
+	  do {
+		  x--;
+		  x = x + 2;
+		  x = x - g1;
+		  thisVar++;
+	  } while (x > 0);
+	  while (thisVar++ < 5) {
+		  if (thisVar == 10) {
+			  continue;
+		  }
+	  }
 }

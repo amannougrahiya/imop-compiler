@@ -6,10 +6,10 @@
  * The above notice shall be included in all copies or substantial
  * portions of this file.
  */
-package demo;
+package demo.backup.demo9;
 
 import imop.ast.node.external.*;
-import imop.lib.analysis.mhp.incMHP.BeginPhasePoint;
+import imop.lib.analysis.mhp.AbstractPhasePointable;
 import imop.lib.analysis.mhp.incMHP.Phase;
 import imop.lib.cfg.info.CompoundStatementCFGInfo;
 import imop.lib.util.CellSet;
@@ -21,10 +21,10 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
-public class MainProject {
+public class Demo9 {
 
 	public static void main(String[] args) {
-		args = new String[] { "-f", "runner/cgo-eg/example.c", "-nru"};
+		args = new String[] { "-f", "runner/cgo-eg/example.c", "-nru" };
 		Program.parseNormalizeInput(args);
 		/*
 		 * Check if a barrier-directive is required to preserve
@@ -53,8 +53,8 @@ public class MainProject {
 			Set<Phase> phasesAbove = (Set<Phase>) barrier.getInfo().getNodePhaseInfo().getPhaseSet();
 			Set<Phase> phasesBelow = new HashSet<>();
 			for (Phase ph : allPhaseSet) {
-				for (BeginPhasePoint bpp : ph.getBeginPoints()) {
-					if (bpp.getNode() == barrier) {
+				for (AbstractPhasePointable bpp : ph.getBeginPoints()) {
+					if (bpp.getNodeFromInterface() == barrier) {
 						phasesBelow.add(ph);
 					}
 				}
@@ -84,7 +84,6 @@ public class MainProject {
 			if (removable) {
 				CompoundStatement enclosingCS = (CompoundStatement) Misc.getEnclosingBlock(barrier);
 				CompoundStatementCFGInfo csCFGInfo = enclosingCS.getInfo().getCFGInfo();
-				System.out.println("Removing a barrier.");
 				csCFGInfo.removeElement(barrier);
 				demo9();
 				return;
