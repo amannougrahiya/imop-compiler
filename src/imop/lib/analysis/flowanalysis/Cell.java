@@ -125,7 +125,7 @@ public class Cell implements Accessible, Immutable, Comparable<Cell> {
 	 * Cell collections.
 	 * 
 	 * @param cell
-	 *            cell that has to be removed from the set of deleted cells.
+	 *             cell that has to be removed from the set of deleted cells.
 	 */
 	public static void addCell(Cell cell) {
 		deletedCells.remove(cell);
@@ -137,7 +137,7 @@ public class Cell implements Accessible, Immutable, Comparable<Cell> {
 	 * Cell collections.
 	 * 
 	 * @param cell
-	 *            cell that has to be added to the set of deleted cells.
+	 *             cell that has to be added to the set of deleted cells.
 	 */
 	public static void removeCell(Cell cell) {
 		deletedCells.add(cell);

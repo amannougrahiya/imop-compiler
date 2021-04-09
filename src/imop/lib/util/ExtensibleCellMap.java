@@ -26,8 +26,10 @@ import java.util.function.BinaryOperator;
  * @param <V>
  */
 public class ExtensibleCellMap<V extends Immutable> extends CellMap<V> {
-	protected CellSet keysNotPresent; // Set of keys which are assumed to be not present; shouldn't accept a universal element.
-	protected ExtensibleCellMap<V> fallBackMap;// Backup map which this map extends; used when keys are not found in this map.
+	protected CellSet keysNotPresent; // Set of keys which are assumed to be not present; shouldn't accept a universal
+										// element.
+	protected ExtensibleCellMap<V> fallBackMap;// Backup map which this map extends; used when keys are not found in
+												// this map.
 	private List<ExtensibleCellMap<V>> extensionMaps = new ArrayList<>(); // Those maps which extend upon this map.
 	private final int maxLinkLength;
 	private static int LINKLENGTH = 2;
@@ -47,9 +49,10 @@ public class ExtensibleCellMap<V extends Immutable> extends CellMap<V> {
 	/**
 	 * 
 	 * @param fallBackMap
-	 *            map, which this map would extend.
+	 *                      map, which this map would extend.
 	 * @param maxLinkLength
-	 *            maximum permissible number of elements in any extension chain.
+	 *                      maximum permissible number of elements in any extension
+	 *                      chain.
 	 */
 	public ExtensibleCellMap(ExtensibleCellMap<V> fallBackMap, int maxLinkLength) {
 		this.maxLinkLength = maxLinkLength;
@@ -346,9 +349,9 @@ public class ExtensibleCellMap<V extends Immutable> extends CellMap<V> {
 	 * then the internal map is cleared and the new mapping is added to the map.
 	 * 
 	 * @param key
-	 *            key for the mapping to be added.
+	 *                 key for the mapping to be added.
 	 * @param newValue
-	 *            value for the mapping to be added.
+	 *                 value for the mapping to be added.
 	 * @return
 	 *         the value that is mapped to {@code key}. If no such mapping
 	 *         exists, then the value mapped to {@link getGenericCell()},
@@ -484,43 +487,44 @@ public class ExtensibleCellMap<V extends Immutable> extends CellMap<V> {
 		}
 		return retVal;
 		// OLD CODE BELOW:
-		//			if (this.isUniversal()) {
-		//				this.containsUniversal = false;
-		//				V globalVal = this.internalRepresentation.remove(Cell.getGenericCell());
-		//				this.freeVariableCount = this.nonGenericKeySet(convertMode).stream().filter((x) -> {
-		//					return x instanceof FreeVariable;
-		//				}).toArray().length;
-		//				Set<Cell> existingKeys = this.internalRepresentation.keySet();
-		//				for (Cell otherCell : Cell.allCells) {
-		//					if (!(otherCell.equals(key) || existingKeys.contains(otherCell))) {
-		//						if (!this.internalRepresentation.containsKey(otherCell)) {
-		//							if (otherCell instanceof FreeVariable) {
-		//								this.freeVariableCount++;
-		//							}
-		//						}
-		//						this.internalRepresentation.put(otherCell, globalVal);
-		//					}
-		//				}
-		//				if (convertMode == ConvertMode.ON) {
-		//					key = this.testAndConvert(key);
-		//				}
-		//				V old = this.internalRepresentation.remove(key);
-		//				if (old != null) {
-		//					if (key instanceof FreeVariable) {
-		//						freeVariableCount--;
-		//					}
-		//				}
-		//			} else {
-		//				if (convertMode == ConvertMode.ON) {
-		//					key = this.testAndConvert(key);
-		//				}
-		//				V old = this.internalRepresentation.remove(key);
-		//				if (old != null) {
-		//					if (key instanceof FreeVariable) {
-		//						freeVariableCount--;
-		//					}
-		//				}
-		//			}
+		// if (this.isUniversal()) {
+		// this.containsUniversal = false;
+		// V globalVal = this.internalRepresentation.remove(Cell.getGenericCell());
+		// this.freeVariableCount =
+		// this.nonGenericKeySet(convertMode).stream().filter((x) -> {
+		// return x instanceof FreeVariable;
+		// }).toArray().length;
+		// Set<Cell> existingKeys = this.internalRepresentation.keySet();
+		// for (Cell otherCell : Cell.allCells) {
+		// if (!(otherCell.equals(key) || existingKeys.contains(otherCell))) {
+		// if (!this.internalRepresentation.containsKey(otherCell)) {
+		// if (otherCell instanceof FreeVariable) {
+		// this.freeVariableCount++;
+		// }
+		// }
+		// this.internalRepresentation.put(otherCell, globalVal);
+		// }
+		// }
+		// if (convertMode == ConvertMode.ON) {
+		// key = this.testAndConvert(key);
+		// }
+		// V old = this.internalRepresentation.remove(key);
+		// if (old != null) {
+		// if (key instanceof FreeVariable) {
+		// freeVariableCount--;
+		// }
+		// }
+		// } else {
+		// if (convertMode == ConvertMode.ON) {
+		// key = this.testAndConvert(key);
+		// }
+		// V old = this.internalRepresentation.remove(key);
+		// if (old != null) {
+		// if (key instanceof FreeVariable) {
+		// freeVariableCount--;
+		// }
+		// }
+		// }
 	}
 
 	private void addKeyToKeysNotPresent(Cell key, ConvertMode convertMode) {
@@ -569,12 +573,12 @@ public class ExtensibleCellMap<V extends Immutable> extends CellMap<V> {
 
 	@Override
 	public int hashCode() {
-		//		final int prime = 31;
+		// final int prime = 31;
 		int result = this.size();
-		//		for (Cell key : this.keySetExpanded()) {
-		//			result += key.hashCode();
-		//		}
-		//		result = prime * result;
+		// for (Cell key : this.keySetExpanded()) {
+		// result += key.hashCode();
+		// }
+		// result = prime * result;
 		return result;
 	}
 
@@ -637,17 +641,22 @@ public class ExtensibleCellMap<V extends Immutable> extends CellMap<V> {
 	 * provided by {@code mergeMethod}.
 	 * 
 	 * @param thatMap
-	 *            map, of same value type, which needs to be merged into this
-	 *            map.
+	 *                      map, of same value type, which needs to be merged into
+	 *                      this
+	 *                      map.
 	 * @param mergeMethod
-	 *            a binary operator, that takes two arguments and returns a
-	 *            value of the same type. This lambda is used to specify the
-	 *            merge operation given two elements from the co-domain of this
-	 *            map. Note that this method should take care of {@code null}
-	 *            values as well (for the first argument).
+	 *                      a binary operator, that takes two arguments and returns
+	 *                      a
+	 *                      value of the same type. This lambda is used to specify
+	 *                      the
+	 *                      merge operation given two elements from the co-domain of
+	 *                      this
+	 *                      map. Note that this method should take care of
+	 *                      {@code null}
+	 *                      values as well (for the first argument).
 	 * @param selectedCells
-	 *            set of cells for which merge has to be performed; value
-	 *            {@code null} represents all cells.
+	 *                      set of cells for which merge has to be performed; value
+	 *                      {@code null} represents all cells.
 	 * @return
 	 *         true, if this method changed the state (except for the internal
 	 *         free variable to symbol conversions) of the receiver object.
@@ -674,7 +683,8 @@ public class ExtensibleCellMap<V extends Immutable> extends CellMap<V> {
 			}
 			V thatValue = thatMap.get(thatCell, ConvertMode.OFF);
 			V thisValue = thisMap.get(thatCell, ConvertMode.OFF);
-			// Note that thisValue may be null. We assume that mergeMethod takes care of that.
+			// Note that thisValue may be null. We assume that mergeMethod takes care of
+			// that.
 			V newValue = mergeMethod.apply(thisValue, thatValue);
 			if (newValue != null && !newValue.equals(thisValue)) {
 				changed = true;
@@ -726,29 +736,31 @@ public class ExtensibleCellMap<V extends Immutable> extends CellMap<V> {
 			}
 		}
 
-		// OLD CODE: This code below relied upon updateGenericMap(), which was too clumsy.
-		//		if (selectedCells != null) {
-		//			// Handle other cells of thisMap.
-		//			for (Cell otherCell : selectedCells) {
-		//				if (thatNonGenericSet.contains(otherCell)) {
-		//					continue;
-		//				}
-		//				if (thisNonGenericSet.contains(otherCell)) {
-		//					continue;
-		//				}
-		//				changed = true;
-		//				thisMap.put(otherCell, thatGenericValue);
-		//			}
-		//		} else {
-		//			// Handle implicit cells of thisMap.
-		//			V thisGenericValue = thisMap.get(Cell.genericCell);
-		//			// Note that thisGenericValye may be null. We assume that mergeMethod takes care of this issue.
-		//			V newGenericValue = mergeMethod.apply(thisGenericValue, thatGenericValue);
-		//			if (!newGenericValue.equals(thisGenericValue)) {
-		//				changed = true;
-		//				thisMap.updateGenericMap(newGenericValue);
-		//			}
-		//		}
+		// OLD CODE: This code below relied upon updateGenericMap(), which was too
+		// clumsy.
+		// if (selectedCells != null) {
+		// // Handle other cells of thisMap.
+		// for (Cell otherCell : selectedCells) {
+		// if (thatNonGenericSet.contains(otherCell)) {
+		// continue;
+		// }
+		// if (thisNonGenericSet.contains(otherCell)) {
+		// continue;
+		// }
+		// changed = true;
+		// thisMap.put(otherCell, thatGenericValue);
+		// }
+		// } else {
+		// // Handle implicit cells of thisMap.
+		// V thisGenericValue = thisMap.get(Cell.genericCell);
+		// // Note that thisGenericValye may be null. We assume that mergeMethod takes
+		// care of this issue.
+		// V newGenericValue = mergeMethod.apply(thisGenericValue, thatGenericValue);
+		// if (!newGenericValue.equals(thisGenericValue)) {
+		// changed = true;
+		// thisMap.updateGenericMap(newGenericValue);
+		// }
+		// }
 		this.containsUniversal = true;
 		return changed;
 	}
@@ -995,9 +1007,9 @@ public class ExtensibleCellMap<V extends Immutable> extends CellMap<V> {
 
 	@Override
 	protected void testAndConvert() {
-		//		if (true) {
-		//			return;
-		//		}
+		// if (true) {
+		// return;
+		// }
 		if (this.fallBackMap != null) {
 			this.fallBackMap.testAndConvert();
 		}
@@ -1016,7 +1028,7 @@ public class ExtensibleCellMap<V extends Immutable> extends CellMap<V> {
 		for (FreeVariable f : freeCells) {
 			Symbol sym = Misc.getSymbolEntry(f.getFreeVariableName(), f.getNodeToken());
 			if (sym != null) {
-				//				CellCollection.removeCellFromDerivedCollections(f);
+				// CellCollection.removeCellFromDerivedCollections(f);
 				this.put(sym, this.get(f, ConvertMode.OFF), ConvertMode.OFF);
 				this.remove(f, ConvertMode.OFF);
 				freeVariableCount--;
@@ -1037,7 +1049,7 @@ public class ExtensibleCellMap<V extends Immutable> extends CellMap<V> {
 		}
 		Symbol sym = Misc.getSymbolEntry(((FreeVariable) f).getFreeVariableName(), ((FreeVariable) f).getNodeToken());
 		if (sym != null) {
-			//			CellCollection.removeCellFromDerivedCollections(f);
+			// CellCollection.removeCellFromDerivedCollections(f);
 			this.put(sym, this.get(f, ConvertMode.OFF), ConvertMode.OFF);
 			this.remove(f, ConvertMode.OFF);
 			freeVariableCount--;
@@ -1052,7 +1064,7 @@ public class ExtensibleCellMap<V extends Immutable> extends CellMap<V> {
 	 * existing explicit cell mappings.
 	 * 
 	 * @param value
-	 *            value which a generic cell should be mapped to.
+	 *              value which a generic cell should be mapped to.
 	 * @return
 	 *         the old value that was mapped to the generic cell, else
 	 *         {@code null}.
@@ -1150,16 +1162,16 @@ public class ExtensibleCellMap<V extends Immutable> extends CellMap<V> {
 			}
 		}
 		// OLD CODE BELOW:
-		//		if (this.isUniversal()) {
-		//			this.containsUniversal = true;
-		//			V oldVal = this.get(Cell.getGenericCell());
-		//			// DO NOT CHANGE THIS TO PUT().
-		//			this.internalRepresentation.put(Cell.getGenericCell(), value);
-		//			return oldVal;
-		//		} else {
-		//			this.internalRepresentation.put(Cell.getGenericCell(), value);
-		//			return null;
-		//		}
+		// if (this.isUniversal()) {
+		// this.containsUniversal = true;
+		// V oldVal = this.get(Cell.getGenericCell());
+		// // DO NOT CHANGE THIS TO PUT().
+		// this.internalRepresentation.put(Cell.getGenericCell(), value);
+		// return oldVal;
+		// } else {
+		// this.internalRepresentation.put(Cell.getGenericCell(), value);
+		// return null;
+		// }
 	}
 
 	@Deprecated
@@ -1167,24 +1179,25 @@ public class ExtensibleCellMap<V extends Immutable> extends CellMap<V> {
 	public void forEachExpanded(BiConsumer<Cell, V> action) {
 		throw new UnsupportedOperationException();
 		// OLD CODE BELOW.
-		//		if (this.isUniversal()) {
-		//			Thread.dumpStack();
-		//			Misc.warnDueToLackOfFeature("Applying an action on all cells due to expansion of keys.", Program.getRoot());
-		//			this.testAndConvert();
-		//			V globalVal = this.internalRepresentation.get(Cell.getGenericCell());
-		//			Set<Cell> existingKeys = this.internalRepresentation.keySet();
-		//			for (Cell otherCell : Cell.allCells) {
-		//				if (!existingKeys.contains(otherCell)) {
-		//					action.accept(otherCell, globalVal);
-		//				}
-		//			}
-		//			for (Cell existingKey : existingKeys) {
-		//				action.accept(existingKey, this.internalRepresentation.get(existingKey));
-		//			}
-		//		} else {
-		//			this.testAndConvert();
-		//			this.internalRepresentation.forEach(action);
-		//		}
+		// if (this.isUniversal()) {
+		// Thread.dumpStack();
+		// Misc.warnDueToLackOfFeature("Applying an action on all cells due to expansion
+		// of keys.", Program.getRoot());
+		// this.testAndConvert();
+		// V globalVal = this.internalRepresentation.get(Cell.getGenericCell());
+		// Set<Cell> existingKeys = this.internalRepresentation.keySet();
+		// for (Cell otherCell : Cell.allCells) {
+		// if (!existingKeys.contains(otherCell)) {
+		// action.accept(otherCell, globalVal);
+		// }
+		// }
+		// for (Cell existingKey : existingKeys) {
+		// action.accept(existingKey, this.internalRepresentation.get(existingKey));
+		// }
+		// } else {
+		// this.testAndConvert();
+		// this.internalRepresentation.forEach(action);
+		// }
 	}
 
 	@Deprecated
@@ -1192,26 +1205,28 @@ public class ExtensibleCellMap<V extends Immutable> extends CellMap<V> {
 	public void replaceAllExpanded(BiFunction<Cell, V, V> function) {
 		throw new UnsupportedOperationException();
 		// OLD CODE BELOW.
-		//		if (this.isUniversal()) {
-		//			Thread.dumpStack();
-		//			Misc.warnDueToLackOfFeature("Replacing values for all cells due to expansion of keys.", Program.getRoot());
-		//			this.testAndConvert();
-		//			V globalVal = this.internalRepresentation.get(Cell.getGenericCell());
-		//			Set<Cell> existingKeys = this.internalRepresentation.keySet();
-		//			for (Cell otherCell : Cell.allCells) {
-		//				if (!existingKeys.contains(otherCell)) {
-		//					this.internalRepresentation.put(otherCell, function.apply(otherCell, globalVal));
-		//				}
-		//			}
-		//			for (Cell existingKey : existingKeys) {
-		//				this.internalRepresentation.put(existingKey,
-		//						function.apply(existingKey, this.internalRepresentation.get(existingKey)));
-		//			}
-		//			this.remove(Cell.getGenericCell());
-		//			this.containsUniversal = false;
-		//		} else {
-		//			this.testAndConvert();
-		//			this.internalRepresentation.replaceAll(function);
-		//		}
+		// if (this.isUniversal()) {
+		// Thread.dumpStack();
+		// Misc.warnDueToLackOfFeature("Replacing values for all cells due to expansion
+		// of keys.", Program.getRoot());
+		// this.testAndConvert();
+		// V globalVal = this.internalRepresentation.get(Cell.getGenericCell());
+		// Set<Cell> existingKeys = this.internalRepresentation.keySet();
+		// for (Cell otherCell : Cell.allCells) {
+		// if (!existingKeys.contains(otherCell)) {
+		// this.internalRepresentation.put(otherCell, function.apply(otherCell,
+		// globalVal));
+		// }
+		// }
+		// for (Cell existingKey : existingKeys) {
+		// this.internalRepresentation.put(existingKey,
+		// function.apply(existingKey, this.internalRepresentation.get(existingKey)));
+		// }
+		// this.remove(Cell.getGenericCell());
+		// this.containsUniversal = false;
+		// } else {
+		// this.testAndConvert();
+		// this.internalRepresentation.replaceAll(function);
+		// }
 	}
 }

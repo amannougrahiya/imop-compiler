@@ -52,7 +52,7 @@ public class BarrierCounterInstrumentation {
 			Builder.addDeclarationToGlobals(counterDeclaration);
 
 			CompoundStatement parBody = (CompoundStatement) parCons.getInfo().getCFGInfo().getBody();
-			//			parBody.getInfo().getCFGInfo().addElement(0, counterDeclaration);
+			// parBody.getInfo().getCFGInfo().addElement(0, counterDeclaration);
 			Statement counterInit = FrontEnd.parseAndNormalize(
 					"#pragma omp master\n{" + counterName + " = 2" + ";" + totalCounterName + " += 2;}",
 					Statement.class);

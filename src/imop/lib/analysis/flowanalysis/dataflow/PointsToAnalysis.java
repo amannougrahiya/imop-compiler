@@ -35,7 +35,7 @@ public class PointsToAnalysis extends InterThreadForwardCellularAnalysis<PointsT
 	public static void handleNodeAdditionOrRemovalForHeuristic(Node affectedNode) {
 		if (!isHeuristicEnabled) {
 			return;
-		} else if (!Program.ptaHeuristicEnabled){
+		} else if (!Program.ptaHeuristicEnabled) {
 			isHeuristicEnabled = false;
 			return;
 		}
@@ -91,14 +91,15 @@ public class PointsToAnalysis extends InterThreadForwardCellularAnalysis<PointsT
 				remSet.add(n);
 			}
 			// OLD CODE: Now we do not add the entry points of SCCs to be processed.
-			//			SCC nSCC = n.getInfo().getCFGInfo().getSCC();
-			//			if (nSCC != null) {
-			//				this.workList.addAll(nSCC.getEntryNodes());
-			//			}
+			// SCC nSCC = n.getInfo().getCFGInfo().getSCC();
+			// if (nSCC != null) {
+			// this.workList.addAll(nSCC.getEntryNodes());
+			// }
 		}
-		// OLD CODE: Now, if we ever find that a node is unconnected to the program, we remove it from processing.
+		// OLD CODE: Now, if we ever find that a node is unconnected to the program, we
+		// remove it from processing.
 		this.nodesToBeUpdated.removeAll(remSet);
-		//		this.nodesToBeUpdated.clear();
+		// this.nodesToBeUpdated.clear();
 
 		this.processedInThisUpdate = new HashSet<>();
 		this.yetToBeFinalized = new HashSet<>();
@@ -126,7 +127,8 @@ public class PointsToAnalysis extends InterThreadForwardCellularAnalysis<PointsT
 		if (this.analysisName == AnalysisName.POINTSTO
 				&& PointsToAnalysis.stateOfPointsTo == PointsToGlobalState.STALE) {
 			PointsToAnalysis.stateOfPointsTo = PointsToGlobalState.CORRECT;
-			//			DumpSnapshot.dumpPointsTo("stable" + Program.updateCategory + this.autoUpdateTriggerCounter);
+			// DumpSnapshot.dumpPointsTo("stable" + Program.updateCategory +
+			// this.autoUpdateTriggerCounter);
 		}
 	}
 
@@ -220,7 +222,7 @@ public class PointsToAnalysis extends InterThreadForwardCellularAnalysis<PointsT
 						CellList locationsOfInit = init.getInfo().getLocationsOf();
 						if (locationsOfInit.isUniversal()) {
 							rhsPtsToSet.add(Cell.genericCell);
-							//				System.err.println("Gen at " + n);
+							// System.err.println("Gen at " + n);
 						} else {
 							for (Cell c : locationsOfInit) {
 								CellSet ptsTo = new CellSet();
@@ -593,45 +595,48 @@ public class PointsToAnalysis extends InterThreadForwardCellularAnalysis<PointsT
 	@Override
 	public PointsToFlowMap visit(PreCallNode n, PointsToFlowMap flowFactIN) {
 		return flowFactIN;
-		// OLD CODE: This code is incomplete; anyway, a more logical alternative is HeapValidityAnalysis.
-		//		PointsToFlowMap flowFactOUT = flowFactIN;
-		//		CallStatement callStmt = n.getParent();
-		//		Symbol funcSymbol = (Symbol) callStmt.getInfo().getCalledSymbols().getReadOnlyInternal().stream().findFirst()
-		//				.get();
-		//		String funcName = funcSymbol.getName();
-		//		if (funcName.equals("free")) {
-		//			/*
-		//			 * Now, we should get the pointer that is being freed, and emulate
-		//			 * "ptr = NULL;"
-		//			 */
-		//			CellSet lhsSet = new CellSet();
-		//			SimplePrimaryExpression firstArgSPE = n.getArgumentList().get(0);
-		//			if (firstArgSPE.isAConstant()) {
-		//				return flowFactOUT;
-		//			}
-		//			NodeToken firstArg = firstArgSPE.getIdentifier();
-		//			Symbol argSymbol = Misc.getSymbolEntry(firstArg.getTokenImage(), n);
-		//			lhsSet.add(argSymbol);
+		// OLD CODE: This code is incomplete; anyway, a more logical alternative is
+		// HeapValidityAnalysis.
+		// PointsToFlowMap flowFactOUT = flowFactIN;
+		// CallStatement callStmt = n.getParent();
+		// Symbol funcSymbol = (Symbol)
+		// callStmt.getInfo().getCalledSymbols().getReadOnlyInternal().stream().findFirst()
+		// .get();
+		// String funcName = funcSymbol.getName();
+		// if (funcName.equals("free")) {
+		// /*
+		// * Now, we should get the pointer that is being freed, and emulate
+		// * "ptr = NULL;"
+		// */
+		// CellSet lhsSet = new CellSet();
+		// SimplePrimaryExpression firstArgSPE = n.getArgumentList().get(0);
+		// if (firstArgSPE.isAConstant()) {
+		// return flowFactOUT;
+		// }
+		// NodeToken firstArg = firstArgSPE.getIdentifier();
+		// Symbol argSymbol = Misc.getSymbolEntry(firstArg.getTokenImage(), n);
+		// lhsSet.add(argSymbol);
 		//
-		//			CellSet rhsPtsToSet = new CellSet();
-		//			rhsPtsToSet.add(Symbol.getNullCell());
+		// CellSet rhsPtsToSet = new CellSet();
+		// rhsPtsToSet.add(Symbol.getNullCell());
 		//
-		//			CellMap<CellSet> affectedMap = OptimizedPointsToUpdateGetter.generateUpdateMap(n, lhsSet, rhsPtsToSet);
-		//			if (!affectedMap.isEmpty()) {
-		//				flowFactOUT = new OptimizedPointsToFlowFact(flowFactIN);
-		//				flowFactOUT.flowMap.mergeWith(affectedMap, (s1, s2) -> {
-		//					CellSet s3;
-		//					if (s2 != null) {
-		//						s3 = s2; // We use same CellSet objects as present in affectedMap.
-		//					} else {
-		//						s3 = s1; // Implies no change.
-		//					}
-		//					return s3;
-		//				}, null);
-		//			}
-		//			return flowFactOUT;
-		//		}
-		//		return flowFactOUT;
+		// CellMap<CellSet> affectedMap =
+		// OptimizedPointsToUpdateGetter.generateUpdateMap(n, lhsSet, rhsPtsToSet);
+		// if (!affectedMap.isEmpty()) {
+		// flowFactOUT = new OptimizedPointsToFlowFact(flowFactIN);
+		// flowFactOUT.flowMap.mergeWith(affectedMap, (s1, s2) -> {
+		// CellSet s3;
+		// if (s2 != null) {
+		// s3 = s2; // We use same CellSet objects as present in affectedMap.
+		// } else {
+		// s3 = s1; // Implies no change.
+		// }
+		// return s3;
+		// }, null);
+		// }
+		// return flowFactOUT;
+		// }
+		// return flowFactOUT;
 	}
 
 	/**
@@ -703,14 +708,15 @@ public class PointsToAnalysis extends InterThreadForwardCellularAnalysis<PointsT
 	 * flow-function of the write to the parameter that happens implicitly.
 	 * 
 	 * @param parameter
-	 *            a {@code ParameterDeclaration} which needs to be assigned with
-	 *            the {@code argument}.
+	 *                   a {@code ParameterDeclaration} which needs to be assigned
+	 *                   with
+	 *                   the {@code argument}.
 	 * @param argument
-	 *            a {@code SimplePrimaryExpression} which is assigned to the
-	 *            {@code parameter}.
+	 *                   a {@code SimplePrimaryExpression} which is assigned to the
+	 *                   {@code parameter}.
 	 * @param flowFactIN
-	 *            the IN flow-fact for the implicit assignment of the
-	 *            {@code argument} to the {@code parameter}.
+	 *                   the IN flow-fact for the implicit assignment of the
+	 *                   {@code argument} to the {@code parameter}.
 	 * @return
 	 *         the OUT flow-fact, as a result of the implicit assignment of the
 	 *         {@code argument} to the {@code parameter}.

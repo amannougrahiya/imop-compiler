@@ -64,40 +64,41 @@ public class PreCallNode extends Node {
 		return (CallStatement) super.getParent();
 	}
 
-	//	@Override
-	//	public boolean equals(Object obj) {
-	//		if (obj == null) {
-	//			return false;
-	//		}
-	//		if (!(obj instanceof PreCallNode)) {
-	//			return false;
-	//		}
-	//		PreCallNode that = (PreCallNode) obj;
-	//		if (this.argumentList.equals(that.argumentList)) {
-	//			return true;
-	//		} else {
-	//			return false;
-	//		}
-	//		//		if (this.argumentList.size() != that.argumentList.size()) {
-	//		//			return false;
-	//		//		}
-	//		//		for (SimplePrimaryExpression spe : this.argumentList) {
-	//		//			int index = this.argumentList.indexOf(spe);
-	//		//			if (!that.argumentList.get(index).equals(spe)) {
-	//		//				return false;
-	//		//			}
-	//		//		}
-	//		//		return true;
-	//	}
+	// @Override
+	// public boolean equals(Object obj) {
+	// if (obj == null) {
+	// return false;
+	// }
+	// if (!(obj instanceof PreCallNode)) {
+	// return false;
+	// }
+	// PreCallNode that = (PreCallNode) obj;
+	// if (this.argumentList.equals(that.argumentList)) {
+	// return true;
+	// } else {
+	// return false;
+	// }
+	// // if (this.argumentList.size() != that.argumentList.size()) {
+	// // return false;
+	// // }
+	// // for (SimplePrimaryExpression spe : this.argumentList) {
+	// // int index = this.argumentList.indexOf(spe);
+	// // if (!that.argumentList.get(index).equals(spe)) {
+	// // return false;
+	// // }
+	// // }
+	// // return true;
+	// }
 	//
-	//	@Override
-	//	public int hashCode() {
-	//		final int prime = 31;
-	//		int result = 1;
-	//		result = prime * result + ((this.argumentList == null) ? 0 : this.argumentList.hashCode());
-	//		return result;
-	//		//		return Arrays.hashCode(new Object[]{this.argumentList});
-	//	}
+	// @Override
+	// public int hashCode() {
+	// final int prime = 31;
+	// int result = 1;
+	// result = prime * result + ((this.argumentList == null) ? 0 :
+	// this.argumentList.hashCode());
+	// return result;
+	// // return Arrays.hashCode(new Object[]{this.argumentList});
+	// }
 	//
 	@Override
 	public void accept(Visitor v) {

@@ -25,8 +25,8 @@ public class CFGLinkFinder {
 	 * Note that {@code childNode} should not be a FunctionDefinition.
 	 * 
 	 * @param childNode
-	 *            node whose place in its parent CFG node has to be found with
-	 *            the help of an appropriate CFG link.
+	 *                  node whose place in its parent CFG node has to be found with
+	 *                  the help of an appropriate CFG link.
 	 * @return
 	 *         an appropriate CFG link object that represents the position of
 	 *         the {@code childNode} in its CFG parent node.
@@ -40,7 +40,8 @@ public class CFGLinkFinder {
 		}
 		Node parentNode = Misc.getEnclosingCFGNonLeafNode(childNode);
 		if (parentNode == null) {
-			// Misc.warnDueToLackOfFeature("Cannot provide CFG link node for a node with no CFG parent.", childNode);
+			// Misc.warnDueToLackOfFeature("Cannot provide CFG link node for a node with no
+			// CFG parent.", childNode);
 			return null;
 		}
 
@@ -76,7 +77,7 @@ public class CFGLinkFinder {
 		 */
 		@Override
 		public void visit(FunctionDefinition n) {
-			NestedCFG ncfg = n.getInfo().getCFGInfo().getNestedCFG();	// Create a nested CFG "ncfg".
+			NestedCFG ncfg = n.getInfo().getCFGInfo().getNestedCFG(); // Create a nested CFG "ncfg".
 			if (childNode == ncfg.getBegin()) {
 				cfgLink = new FunctionBeginLink(n, (BeginNode) childNode);
 				return;
@@ -98,17 +99,18 @@ public class CFGLinkFinder {
 				}
 			}
 			// OLD CODE:
-			//			List<Node> stmtList = body.f1.nodes;
-			//			if (body.f1.present()) {	// If the containing body is not empty
-			//				for (Node tempNode : stmtList) { // For all the statements in the body
-			//					Node element = Misc.getInternalFirstCFGNode(tempNode); // Get the CFG node "element"
-			//					if (childNode == element) {
-			//						int index = stmtList.indexOf(tempNode);
-			//						cfgLink = new FunctionBodyLink(n, childNode, index);
-			//						return;
-			//					}
-			//				}
-			//			}
+			// List<Node> stmtList = body.f1.nodes;
+			// if (body.f1.present()) { // If the containing body is not empty
+			// for (Node tempNode : stmtList) { // For all the statements in the body
+			// Node element = Misc.getInternalFirstCFGNode(tempNode); // Get the CFG node
+			// "element"
+			// if (childNode == element) {
+			// int index = stmtList.indexOf(tempNode);
+			// cfgLink = new FunctionBodyLink(n, childNode, index);
+			// return;
+			// }
+			// }
+			// }
 			return;
 		}
 
@@ -119,7 +121,7 @@ public class CFGLinkFinder {
 		 */
 		@Override
 		public void visit(ParallelConstruct n) {
-			NestedCFG ncfg = n.getInfo().getCFGInfo().getNestedCFG();	// Create a nested CFG "ncfg".
+			NestedCFG ncfg = n.getInfo().getCFGInfo().getNestedCFG(); // Create a nested CFG "ncfg".
 			if (childNode == ncfg.getBegin()) {
 				cfgLink = new ParallelBeginLink(n, (BeginNode) childNode);
 				return;
@@ -138,26 +140,27 @@ public class CFGLinkFinder {
 			}
 
 			// Old Code
-			//			List<OmpClause> executableClauses = new ArrayList<>();
-			//			for (OmpClause ompClause : Misc.getClauseList(n)) {
-			//				if (ompClause instanceof IfClause || ompClause instanceof NumThreadsClause
-			//						|| ompClause instanceof FinalClause) {
-			//					executableClauses.add(ompClause);
-			//				}
-			//			}
-			//			if (!executableClauses.isEmpty()) {
-			//				for (OmpClause ompClause : executableClauses) {
-			//					if (childNode == ompClause) {
-			//						int index = executableClauses.indexOf(ompClause);
-			//						cfgLink = new ParallelClauseLink(n, (OmpClause) childNode, index);
-			//						return;
-			//					}
-			//				}
-			//			}
-			//			Node element = Misc.getInternalFirstCFGNode(n.f2); // Obtain the internal CFG node "element"
-			//			if (childNode == element) {
-			//				cfgLink = new ParallelBodyLink(n, (Statement) childNode);
-			//			}
+			// List<OmpClause> executableClauses = new ArrayList<>();
+			// for (OmpClause ompClause : Misc.getClauseList(n)) {
+			// if (ompClause instanceof IfClause || ompClause instanceof NumThreadsClause
+			// || ompClause instanceof FinalClause) {
+			// executableClauses.add(ompClause);
+			// }
+			// }
+			// if (!executableClauses.isEmpty()) {
+			// for (OmpClause ompClause : executableClauses) {
+			// if (childNode == ompClause) {
+			// int index = executableClauses.indexOf(ompClause);
+			// cfgLink = new ParallelClauseLink(n, (OmpClause) childNode, index);
+			// return;
+			// }
+			// }
+			// }
+			// Node element = Misc.getInternalFirstCFGNode(n.f2); // Obtain the internal CFG
+			// node "element"
+			// if (childNode == element) {
+			// cfgLink = new ParallelBodyLink(n, (Statement) childNode);
+			// }
 			return;
 		}
 
@@ -169,7 +172,7 @@ public class CFGLinkFinder {
 		 */
 		@Override
 		public void visit(ForConstruct n) {
-			NestedCFG ncfg = n.getInfo().getCFGInfo().getNestedCFG();	// Create a nested CFG "ncfg".
+			NestedCFG ncfg = n.getInfo().getCFGInfo().getNestedCFG(); // Create a nested CFG "ncfg".
 			if (childNode == ncfg.getBegin()) {
 				cfgLink = new OmpForBeginLink(n, (BeginNode) childNode);
 				return;
@@ -211,7 +214,7 @@ public class CFGLinkFinder {
 		 */
 		@Override
 		public void visit(SectionsConstruct n) {
-			NestedCFG ncfg = n.getInfo().getCFGInfo().getNestedCFG();	// Create a nested CFG "ncfg".
+			NestedCFG ncfg = n.getInfo().getCFGInfo().getNestedCFG(); // Create a nested CFG "ncfg".
 			if (childNode == ncfg.getBegin()) {
 				cfgLink = new SectionsBeginLink(n, (BeginNode) childNode);
 				return;
@@ -222,7 +225,8 @@ public class CFGLinkFinder {
 			}
 
 			for (Node secNode : n.getF4().getF2().getNodes()) { // For all the sections
-				Node element = Misc.getInternalFirstCFGNode(((ASection) secNode).getF3()); // Obtain the CFG element of section's body
+				Node element = Misc.getInternalFirstCFGNode(((ASection) secNode).getF3()); // Obtain the CFG element of
+																							// section's body
 				if (childNode == element) {
 					int index = n.getF4().getF2().getNodes().indexOf(secNode);
 					cfgLink = new SectionsSectionBodyLink(n, (Statement) childNode, index);
@@ -241,7 +245,7 @@ public class CFGLinkFinder {
 		 */
 		@Override
 		public void visit(SingleConstruct n) {
-			NestedCFG ncfg = n.getInfo().getCFGInfo().getNestedCFG();	// Create a nested CFG "ncfg".
+			NestedCFG ncfg = n.getInfo().getCFGInfo().getNestedCFG(); // Create a nested CFG "ncfg".
 			if (childNode == ncfg.getBegin()) {
 				cfgLink = new SingleBeginLink(n, (BeginNode) childNode);
 				return;
@@ -250,7 +254,8 @@ public class CFGLinkFinder {
 				cfgLink = new SingleEndLink(n, (EndNode) childNode);
 				return;
 			}
-			Node element = Misc.getInternalFirstCFGNode(n.getF4()); // Obtain the CFG element from body of the Single construct.
+			Node element = Misc.getInternalFirstCFGNode(n.getF4()); // Obtain the CFG element from body of the Single
+																	// construct.
 			if (childNode == element) {
 				cfgLink = new SingleBodyLink(n, (Statement) childNode);
 			}
@@ -266,7 +271,7 @@ public class CFGLinkFinder {
 		 */
 		@Override
 		public void visit(TaskConstruct n) {
-			NestedCFG ncfg = n.getInfo().getCFGInfo().getNestedCFG();	// Create a nested CFG "ncfg".
+			NestedCFG ncfg = n.getInfo().getCFGInfo().getNestedCFG(); // Create a nested CFG "ncfg".
 			if (childNode == ncfg.getBegin()) {
 				cfgLink = new TaskBeginLink(n, (BeginNode) childNode);
 				return;
@@ -308,7 +313,7 @@ public class CFGLinkFinder {
 		 */
 		@Override
 		public void visit(MasterConstruct n) {
-			NestedCFG ncfg = n.getInfo().getCFGInfo().getNestedCFG();	// Create a nested CFG "ncfg".
+			NestedCFG ncfg = n.getInfo().getCFGInfo().getNestedCFG(); // Create a nested CFG "ncfg".
 			if (childNode == ncfg.getBegin()) {
 				cfgLink = new MasterBeginLink(n, (BeginNode) childNode);
 				return;
@@ -317,7 +322,8 @@ public class CFGLinkFinder {
 				cfgLink = new MasterEndLink(n, (EndNode) childNode);
 				return;
 			}
-			Node element = Misc.getInternalFirstCFGNode(n.getF3()); // Obtain the CFG element of the body of the construct
+			Node element = Misc.getInternalFirstCFGNode(n.getF3()); // Obtain the CFG element of the body of the
+																	// construct
 			if (childNode == element) {
 				cfgLink = new MasterBodyLink(n, (Statement) childNode);
 			}
@@ -333,7 +339,7 @@ public class CFGLinkFinder {
 		 */
 		@Override
 		public void visit(CriticalConstruct n) {
-			NestedCFG ncfg = n.getInfo().getCFGInfo().getNestedCFG();	// Create a nested CFG "ncfg".
+			NestedCFG ncfg = n.getInfo().getCFGInfo().getNestedCFG(); // Create a nested CFG "ncfg".
 			if (childNode == ncfg.getBegin()) {
 				cfgLink = new CriticalBeginLink(n, (BeginNode) childNode);
 				return;
@@ -342,7 +348,8 @@ public class CFGLinkFinder {
 				cfgLink = new CriticalEndLink(n, (EndNode) childNode);
 				return;
 			}
-			Node element = Misc.getInternalFirstCFGNode(n.getF4()); // Obtain the CFG element of the body of the construct
+			Node element = Misc.getInternalFirstCFGNode(n.getF4()); // Obtain the CFG element of the body of the
+																	// construct
 			if (childNode == element) {
 				cfgLink = new CriticalBodyLink(n, (Statement) childNode);
 			}
@@ -358,7 +365,7 @@ public class CFGLinkFinder {
 		 */
 		@Override
 		public void visit(AtomicConstruct n) {
-			NestedCFG ncfg = n.getInfo().getCFGInfo().getNestedCFG();	// Create a nested CFG "ncfg".
+			NestedCFG ncfg = n.getInfo().getCFGInfo().getNestedCFG(); // Create a nested CFG "ncfg".
 			if (childNode == ncfg.getBegin()) {
 				cfgLink = new AtomicBeginLink(n, (BeginNode) childNode);
 				return;
@@ -367,7 +374,8 @@ public class CFGLinkFinder {
 				cfgLink = new AtomicEndLink(n, (EndNode) childNode);
 				return;
 			}
-			Node element = Misc.getInternalFirstCFGNode(n.getF4()); // Obtain the CFG element of the body of the construct
+			Node element = Misc.getInternalFirstCFGNode(n.getF4()); // Obtain the CFG element of the body of the
+																	// construct
 			if (childNode == element) {
 				cfgLink = new AtomicStatementLink(n, (ExpressionStatement) childNode);
 			}
@@ -382,7 +390,7 @@ public class CFGLinkFinder {
 		 */
 		@Override
 		public void visit(OrderedConstruct n) {
-			NestedCFG ncfg = n.getInfo().getCFGInfo().getNestedCFG();	// Create a nested CFG "ncfg".
+			NestedCFG ncfg = n.getInfo().getCFGInfo().getNestedCFG(); // Create a nested CFG "ncfg".
 			if (childNode == ncfg.getBegin()) {
 				cfgLink = new OrderedBeginLink(n, (BeginNode) childNode);
 				return;
@@ -391,7 +399,8 @@ public class CFGLinkFinder {
 				cfgLink = new OrderedEndLink(n, (EndNode) childNode);
 				return;
 			}
-			Node element = Misc.getInternalFirstCFGNode(n.getF3()); // Obtain the CFG element of the body of the construct
+			Node element = Misc.getInternalFirstCFGNode(n.getF3()); // Obtain the CFG element of the body of the
+																	// construct
 			if (childNode == element) {
 				cfgLink = new OrderedBodyLink(n, (Statement) childNode);
 			}
@@ -405,7 +414,7 @@ public class CFGLinkFinder {
 		 */
 		@Override
 		public void visit(CompoundStatement n) {
-			NestedCFG ncfg = n.getInfo().getCFGInfo().getNestedCFG();	// Create a nested CFG "ncfg".
+			NestedCFG ncfg = n.getInfo().getCFGInfo().getNestedCFG(); // Create a nested CFG "ncfg".
 			if (childNode == ncfg.getBegin()) {
 				cfgLink = new CompoundBeginLink(n, (BeginNode) childNode);
 				return;
@@ -417,7 +426,7 @@ public class CFGLinkFinder {
 			if (n.getF1().present()) { // If the block isn't empty
 				List<Node> stmtList = n.getF1().getNodes();
 				for (Node dS : stmtList) { // For all the statements
-					Node element = Misc.getInternalFirstCFGNode(dS); // Obtain the CFG element of the statement 
+					Node element = Misc.getInternalFirstCFGNode(dS); // Obtain the CFG element of the statement
 					if (childNode == element) {
 						int index = stmtList.indexOf(dS);
 						cfgLink = new CompoundElementLink(n, childNode, index);
@@ -438,7 +447,7 @@ public class CFGLinkFinder {
 		 */
 		@Override
 		public void visit(IfStatement n) {
-			NestedCFG ncfg = n.getInfo().getCFGInfo().getNestedCFG();	// Create a nested CFG "ncfg".
+			NestedCFG ncfg = n.getInfo().getCFGInfo().getNestedCFG(); // Create a nested CFG "ncfg".
 			if (childNode == ncfg.getBegin()) {
 				cfgLink = new IfBeginLink(n, (BeginNode) childNode);
 				return;
@@ -459,7 +468,7 @@ public class CFGLinkFinder {
 				return;
 			}
 
-			if (n.getF5().present()) {	// If "else" part is present
+			if (n.getF5().present()) { // If "else" part is present
 				Node elementElse = Misc.getInternalFirstCFGNode(((NodeSequence) n.getF5().getNode()).getNodes().get(1));
 				if (childNode == elementElse) {
 					cfgLink = new IfElseBodyLink(n, (Statement) childNode);
@@ -478,7 +487,7 @@ public class CFGLinkFinder {
 		 */
 		@Override
 		public void visit(SwitchStatement n) {
-			NestedCFG ncfg = n.getInfo().getCFGInfo().getNestedCFG();	// Create a nested CFG "ncfg".
+			NestedCFG ncfg = n.getInfo().getCFGInfo().getNestedCFG(); // Create a nested CFG "ncfg".
 			if (childNode == ncfg.getBegin()) {
 				cfgLink = new SwitchBeginLink(n, (BeginNode) childNode);
 				return;
@@ -511,7 +520,7 @@ public class CFGLinkFinder {
 		 */
 		@Override
 		public void visit(WhileStatement n) {
-			NestedCFG ncfg = n.getInfo().getCFGInfo().getNestedCFG();	// Create a nested CFG "ncfg".
+			NestedCFG ncfg = n.getInfo().getCFGInfo().getNestedCFG(); // Create a nested CFG "ncfg".
 			if (childNode == ncfg.getBegin()) {
 				cfgLink = new WhileBeginLink(n, (BeginNode) childNode);
 				return;
@@ -545,7 +554,7 @@ public class CFGLinkFinder {
 		 */
 		@Override
 		public void visit(DoStatement n) {
-			NestedCFG ncfg = n.getInfo().getCFGInfo().getNestedCFG();	// Create a nested CFG "ncfg".
+			NestedCFG ncfg = n.getInfo().getCFGInfo().getNestedCFG(); // Create a nested CFG "ncfg".
 			if (childNode == ncfg.getBegin()) {
 				cfgLink = new DoBeginLink(n, (BeginNode) childNode);
 				return;
@@ -580,7 +589,7 @@ public class CFGLinkFinder {
 		 */
 		@Override
 		public void visit(ForStatement n) {
-			NestedCFG ncfg = n.getInfo().getCFGInfo().getNestedCFG();	// Create a nested CFG "ncfg".
+			NestedCFG ncfg = n.getInfo().getCFGInfo().getNestedCFG(); // Create a nested CFG "ncfg".
 			if (childNode == ncfg.getBegin()) {
 				cfgLink = new ForBeginLink(n, (BeginNode) childNode);
 				return;

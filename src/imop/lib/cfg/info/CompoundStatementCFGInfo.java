@@ -56,7 +56,8 @@ public class CompoundStatementCFGInfo extends CFGInfo {
 	public void clearElementList() {
 		CompoundStatement node = (CompoundStatement) this.getOwner();
 		NodeListOptional elementList = node.getF1();
-		// TODO: It might be optimal to remove all the statements first, and then remove all the declarations.
+		// TODO: It might be optimal to remove all the statements first, and then remove
+		// all the declarations.
 		while (!elementList.getNodes().isEmpty()) {
 			List<SideEffect> sideEffectList = this.removeElement(elementList.getNodes().get(0));
 			for (SideEffect nse : sideEffectList) {
@@ -84,7 +85,7 @@ public class CompoundStatementCFGInfo extends CFGInfo {
 	 * instead.
 	 * 
 	 * @param i
-	 *            an index.
+	 *          an index.
 	 * @return
 	 *         list of side-effects generated while removing the element from
 	 *         index {@code i}.
@@ -104,7 +105,7 @@ public class CompoundStatementCFGInfo extends CFGInfo {
 	 * instead.
 	 * 
 	 * @param element
-	 *            element to be removed.
+	 *                element to be removed.
 	 * @return
 	 *         list of side-effects generated while removing the element from
 	 *         index {@code i}.
@@ -159,8 +160,8 @@ public class CompoundStatementCFGInfo extends CFGInfo {
 						if (visibleVar.getName().equals(idToBeRemoved)) {
 							sideEffectList.add(new NamespaceCollisionOnRemoval(declaration));
 							// Old Code:
-							//							sideEffectList.add(UpdateSideEffects.NO_UPDATE_DUE_TO_NAME_COLLISION);
-							//							return sideEffectList;
+							// sideEffectList.add(UpdateSideEffects.NO_UPDATE_DUE_TO_NAME_COLLISION);
+							// return sideEffectList;
 						}
 					}
 				} else {
@@ -170,8 +171,8 @@ public class CompoundStatementCFGInfo extends CFGInfo {
 							if (visibleVar.getName().equals(idToBeRemoved)) {
 								sideEffectList.add(new NamespaceCollisionOnRemoval(declaration));
 								// Old Code:
-								//								sideEffectList.add(UpdateSideEffects.NO_UPDATE_DUE_TO_NAME_COLLISION);
-								//								return sideEffectList;
+								// sideEffectList.add(UpdateSideEffects.NO_UPDATE_DUE_TO_NAME_COLLISION);
+								// return sideEffectList;
 							}
 						}
 					}
@@ -208,7 +209,8 @@ public class CompoundStatementCFGInfo extends CFGInfo {
 			Program.invalidColumnNum = Program.invalidLineNum = true;
 			AutomatedUpdater.updatePhaseAndInterTaskEdgesUponRemoval(affectedBeginPhasePoints);
 			AutomatedUpdater.updateFlowFactsForward(rerunNodesForward); // Called here after removal is successful.
-			//			AutomatedUpdater.invalidateSymbolsInNode(compStmtElementTarget);// Added, so that any changes from points-to may be reflected here.
+			// AutomatedUpdater.invalidateSymbolsInNode(compStmtElementTarget);// Added, so
+			// that any changes from points-to may be reflected here.
 			AutomatedUpdater.updateFlowFactsBackward(rerunNodesBackward);
 			Cell.removeCell(sym);
 		}
@@ -235,7 +237,8 @@ public class CompoundStatementCFGInfo extends CFGInfo {
 			Program.invalidColumnNum = Program.invalidLineNum = true;
 			AutomatedUpdater.updatePhaseAndInterTaskEdgesUponRemoval(affectedBeginPhasePoints);
 			AutomatedUpdater.updateFlowFactsForward(rerunNodesForward); // Called here after removal is successful.
-			//			AutomatedUpdater.invalidateSymbolsInNode(compStmtElementTarget); // Added, so that any changes from points-to may be reflected here.
+			// AutomatedUpdater.invalidateSymbolsInNode(compStmtElementTarget); // Added, so
+			// that any changes from points-to may be reflected here.
 			AutomatedUpdater.updateFlowFactsBackward(rerunNodesBackward);
 		}
 		return removed;
@@ -403,7 +406,8 @@ public class CompoundStatementCFGInfo extends CFGInfo {
 		List<SideEffect> splitSE = SplitCombinedConstructs.splitCombinedConstructForTheStatement(stmt);
 		if (!splitSE.isEmpty()) {
 			NodeUpdated nodeUpdatedSE = (NodeUpdated) splitSE.get(0);
-			// Note: Here we reparse the parallel construct so that we can perform other normalizations within it.
+			// Note: Here we reparse the parallel construct so that we can perform other
+			// normalizations within it.
 			ParallelConstruct splitParCons = FrontEnd.parseAndNormalize(nodeUpdatedSE.affectedNode.toString(),
 					ParallelConstruct.class);
 			sideEffectList.add(new NodeUpdated(splitParCons, nodeUpdatedSE.getUpdateMessage()));
@@ -461,13 +465,14 @@ public class CompoundStatementCFGInfo extends CFGInfo {
 		CellSet existingCells = this.getOwner().getInfo().getAllCellsAtNode();
 
 		Set<String> accessedNames = new HashSet<>();
-		//		if (accessedCells.isUniversal()) {
-		//			System.out.println("No update due to name collision (inefficient points-to): " + declaredIds + ", " + accessedNames);
-		//			Thread.dumpStack();
-		//			System.exit(0);
-		//			sideEffectList.add(UpdateSideEffects.NO_UPDATE_DUE_TO_NAME_COLLISION);
-		//			return sideEffectList;
-		//		} else {
+		// if (accessedCells.isUniversal()) {
+		// System.out.println("No update due to name collision (inefficient points-to):
+		// " + declaredIds + ", " + accessedNames);
+		// Thread.dumpStack();
+		// System.exit(0);
+		// sideEffectList.add(UpdateSideEffects.NO_UPDATE_DUE_TO_NAME_COLLISION);
+		// return sideEffectList;
+		// } else {
 		existingCells.applyAllExpanded(cell -> {
 			if (cell instanceof Symbol) {
 				accessedNames.add(((Symbol) cell).getName());
@@ -482,16 +487,17 @@ public class CompoundStatementCFGInfo extends CFGInfo {
 				accessedNames.add(((FreeVariable) cell).getFreeVariableName());
 			}
 		});
-		//		}
+		// }
 
 		if (Misc.doIntersect(declaredIds, accessedNames)) {
 			sideEffectList.add(new NamespaceCollisionOnAddition(declaration));
 			// Old Code:
-			//			System.out.println("No update due to name collision: " + declaredIds + ", " + accessedNames);
-			//			Thread.dumpStack();
-			//			System.exit(0);
-			//			sideEffectList.add(UpdateSideEffects.NO_UPDATE_DUE_TO_NAME_COLLISION);
-			//			return sideEffectList;
+			// System.out.println("No update due to name collision: " + declaredIds + ", " +
+			// accessedNames);
+			// Thread.dumpStack();
+			// System.exit(0);
+			// sideEffectList.add(UpdateSideEffects.NO_UPDATE_DUE_TO_NAME_COLLISION);
+			// return sideEffectList;
 		}
 
 		NodeRemover.removeNodeIfConnected(declaration);
@@ -518,10 +524,11 @@ public class CompoundStatementCFGInfo extends CFGInfo {
 		Symbol sym = declaration.getInfo().getDeclaredSymbol();
 		Cell.addCell(sym);
 		AutomatedUpdater.updateInformationForAddition(declaration);
-		//		AutomatedUpdater.invalidateSymbolsInNode(compStmtElementTarget); // Added, so that any changes from points-to may be reflected here.
-		// Old code: These lines from above were here previously. 
-		//		Symbol sym = declaration.getInfo().getDeclaredSymbol();
-		//		Cell.addCell(sym);
+		// AutomatedUpdater.invalidateSymbolsInNode(compStmtElementTarget); // Added, so
+		// that any changes from points-to may be reflected here.
+		// Old code: These lines from above were here previously.
+		// Symbol sym = declaration.getInfo().getDeclaredSymbol();
+		// Cell.addCell(sym);
 		return sideEffectList;
 	}
 
@@ -530,7 +537,7 @@ public class CompoundStatementCFGInfo extends CFGInfo {
 	 * the current location due to DFD constraints.
 	 * 
 	 * @param index
-	 *            index at which we wish to insert a node.
+	 *              index at which we wish to insert a node.
 	 * @return
 	 *         index at which a new node can be inserted, if intention was to
 	 *         insert at {@code index}.
@@ -578,21 +585,23 @@ public class CompoundStatementCFGInfo extends CFGInfo {
 	 * Inserts an element, without caring for any normalizations.
 	 * 
 	 * @param index
-	 *            location at which the node has to be added.
+	 *                location at which the node has to be added.
 	 * @param element
-	 *            a CFG Node that needs to be added.
+	 *                a CFG Node that needs to be added.
 	 */
 	private void commonNodeAdditionModule(int index, Node element, List<SideEffect> sideEffectList) {
 		CompoundStatement node = (CompoundStatement) this.getOwner();
 		// OLD CODE: This check has already been performed in addStatement().
-		//		if (element instanceof Statement) {
-		//			Statement stmtWrapper = Misc.getStatementWrapper((Statement) element);
-		//			Statement newElement = ImplicitBarrierRemover.makeBarrierExplicitForNode(stmtWrapper, sideEffectList);
-		//			if (newElement != stmtWrapper) {
-		//				sideEffectList.addAll(this.addElement(index, newElement));
-		//				return;
-		//			}
-		//		}
+		// if (element instanceof Statement) {
+		// Statement stmtWrapper = Misc.getStatementWrapper((Statement) element);
+		// Statement newElement =
+		// ImplicitBarrierRemover.makeBarrierExplicitForNode(stmtWrapper,
+		// sideEffectList);
+		// if (newElement != stmtWrapper) {
+		// sideEffectList.addAll(this.addElement(index, newElement));
+		// return;
+		// }
+		// }
 
 		CompoundStatementElement compStmtElementTarget = Misc.getCompoundStatementElementWrapper(element);
 		NodeListOptional list = node.getF1();
@@ -612,7 +621,8 @@ public class CompoundStatementCFGInfo extends CFGInfo {
 
 		Program.invalidColumnNum = Program.invalidLineNum = true;
 		AutomatedUpdater.updateInformationForAddition(element);
-		//		AutomatedUpdater.invalidateSymbolsInNode(compStmtElementTarget);// Added, so that any changes from points-to may be reflected here.
+		// AutomatedUpdater.invalidateSymbolsInNode(compStmtElementTarget);// Added, so
+		// that any changes from points-to may be reflected here.
 	}
 
 	/**
@@ -745,32 +755,32 @@ public class CompoundStatementCFGInfo extends CFGInfo {
 
 		// 2. Remove stale edges.
 		// OLD CODE: Readable version follows.
-		//		NestedCFG ncfg = getOwner().getInfo().getCFGInfo().getNestedCFG();
-		//		List<Node> stmtList = this.getElementList();
-		//		int index = stmtList.indexOf(removed);
-		//		assert (index != -1);
-		//		Node prevNode;
-		//		Node nextNode;
-		//		if (index == 0) {
-		//			prevNode = ncfg.getBegin();
-		//			if (stmtList.size() > 1) {
-		//				nextNode = stmtList.get(1);
-		//			} else {
-		//				nextNode = ncfg.getEnd();
-		//			}
-		//		} else if (index < stmtList.size() - 1) {
-		//			prevNode = stmtList.get(index - 1);
-		//			nextNode = stmtList.get(index + 1);
-		//		} else if (index == stmtList.size() - 1) {
-		//			prevNode = stmtList.get(index - 1);
-		//			nextNode = ncfg.getEnd();
-		//		} else {
-		//			prevNode = nextNode = null;
-		//			assert (false);
-		//		}
-		//		if (prevNode.getInfo().getCFGInfo().isEndReachable()) {
-		//			connectAndAdjustEndReachability(prevNode, nextNode);
-		//		}
+		// NestedCFG ncfg = getOwner().getInfo().getCFGInfo().getNestedCFG();
+		// List<Node> stmtList = this.getElementList();
+		// int index = stmtList.indexOf(removed);
+		// assert (index != -1);
+		// Node prevNode;
+		// Node nextNode;
+		// if (index == 0) {
+		// prevNode = ncfg.getBegin();
+		// if (stmtList.size() > 1) {
+		// nextNode = stmtList.get(1);
+		// } else {
+		// nextNode = ncfg.getEnd();
+		// }
+		// } else if (index < stmtList.size() - 1) {
+		// prevNode = stmtList.get(index - 1);
+		// nextNode = stmtList.get(index + 1);
+		// } else if (index == stmtList.size() - 1) {
+		// prevNode = stmtList.get(index - 1);
+		// nextNode = ncfg.getEnd();
+		// } else {
+		// prevNode = nextNode = null;
+		// assert (false);
+		// }
+		// if (prevNode.getInfo().getCFGInfo().isEndReachable()) {
+		// connectAndAdjustEndReachability(prevNode, nextNode);
+		// }
 		for (Node prevCFGNode : removed.getInfo().getCFGInfo().getPredBlocks()) {
 			if (prevCFGNode instanceof GotoStatement) {
 				continue;
@@ -780,8 +790,8 @@ public class CompoundStatementCFGInfo extends CFGInfo {
 			}
 		}
 		removed.getInfo().getCFGInfo().clearAllEdges();
-		//		disconnectAndAdjustEndReachability(prevNode, removed);
-		//		disconnectAndAdjustEndReachability(removed, nextNode);
+		// disconnectAndAdjustEndReachability(prevNode, removed);
+		// disconnectAndAdjustEndReachability(removed, nextNode);
 	}
 
 	private void updateCFGForElementAddition(Node added) {
@@ -841,7 +851,7 @@ public class CompoundStatementCFGInfo extends CFGInfo {
 	 * (given that all other translations are performed by update-safe methods).
 	 * 
 	 * @param node
-	 *            {@code node} for which missing dummy-flushes have to be added.
+	 *             {@code node} for which missing dummy-flushes have to be added.
 	 * @return
 	 */
 	private void insertNewDFDsWithoutNode(Node node) {
@@ -853,52 +863,52 @@ public class CompoundStatementCFGInfo extends CFGInfo {
 			if (!InsertDummyFlushDirectives.hasPredDFD(node, DummyFlushType.FLUSH_START)) {
 				DummyFlushDirective dfd = new DummyFlushDirective(DummyFlushType.FLUSH_START);
 				// OLD CODE: Apparently, we had forgotten that pragmas cannot have labels!
-				//				StatementInfo stmtInfo = (StatementInfo) node.getInfo();
-				//				List<Label> labelAnnotations = null;
-				//				if (stmtInfo.hasLabelAnnotations()) {
-				//					labelAnnotations = new ArrayList<>(stmtInfo.getLabelAnnotations());
-				//					stmtInfo.clearLabelAnnotations();
-				//				}
+				// StatementInfo stmtInfo = (StatementInfo) node.getInfo();
+				// List<Label> labelAnnotations = null;
+				// if (stmtInfo.hasLabelAnnotations()) {
+				// labelAnnotations = new ArrayList<>(stmtInfo.getLabelAnnotations());
+				// stmtInfo.clearLabelAnnotations();
+				// }
 				this.commonNodeAdditionModule(index, dfd, sideEffectList);
-				//				if (labelAnnotations != null) {
-				//					for (Label label : labelAnnotations) {
-				//						dfd.getInfo().addLabelAnnotation(label);
-				//					}
-				//				}
+				// if (labelAnnotations != null) {
+				// for (Label label : labelAnnotations) {
+				// dfd.getInfo().addLabelAnnotation(label);
+				// }
+				// }
 			}
 		} else if (node instanceof BarrierDirective) {
 			if (!InsertDummyFlushDirectives.hasPredDFD(node, DummyFlushType.BARRIER_START)) {
 				DummyFlushDirective dfd = new DummyFlushDirective(DummyFlushType.BARRIER_START);
-				//				StatementInfo stmtInfo = (StatementInfo) node.getInfo();
-				//				List<Label> labelAnnotations = null;
-				//				if (stmtInfo.hasLabelAnnotations()) {
-				//					labelAnnotations = new ArrayList<>(stmtInfo.getLabelAnnotations());
-				//					stmtInfo.clearLabelAnnotations();
-				//				}
+				// StatementInfo stmtInfo = (StatementInfo) node.getInfo();
+				// List<Label> labelAnnotations = null;
+				// if (stmtInfo.hasLabelAnnotations()) {
+				// labelAnnotations = new ArrayList<>(stmtInfo.getLabelAnnotations());
+				// stmtInfo.clearLabelAnnotations();
+				// }
 				this.commonNodeAdditionModule(index, dfd, sideEffectList);
-				//				if (labelAnnotations != null) {
-				//					for (Label label : labelAnnotations) {
-				//						dfd.getInfo().addLabelAnnotation(label);
-				//					}
-				//				}
+				// if (labelAnnotations != null) {
+				// for (Label label : labelAnnotations) {
+				// dfd.getInfo().addLabelAnnotation(label);
+				// }
+				// }
 			}
 		} else if (node instanceof AtomicConstruct) {
 			boolean addedStart = false;
 			if (!InsertDummyFlushDirectives.hasPredDFD(node, DummyFlushType.ATOMIC_START)) {
 				addedStart = true;
 				DummyFlushDirective dfd = new DummyFlushDirective(DummyFlushType.ATOMIC_START);
-				//				StatementInfo stmtInfo = (StatementInfo) node.getInfo();
-				//				List<Label> labelAnnotations = null;
-				//				if (stmtInfo.hasLabelAnnotations()) {
-				//					labelAnnotations = new ArrayList<>(stmtInfo.getLabelAnnotations());
-				//					stmtInfo.clearLabelAnnotations();
-				//				}
+				// StatementInfo stmtInfo = (StatementInfo) node.getInfo();
+				// List<Label> labelAnnotations = null;
+				// if (stmtInfo.hasLabelAnnotations()) {
+				// labelAnnotations = new ArrayList<>(stmtInfo.getLabelAnnotations());
+				// stmtInfo.clearLabelAnnotations();
+				// }
 				this.commonNodeAdditionModule(index, dfd, sideEffectList);
-				//				if (labelAnnotations != null) {
-				//					for (Label label : labelAnnotations) {
-				//						dfd.getInfo().addLabelAnnotation(label);
-				//					}
-				//				}
+				// if (labelAnnotations != null) {
+				// for (Label label : labelAnnotations) {
+				// dfd.getInfo().addLabelAnnotation(label);
+				// }
+				// }
 			}
 			if (!InsertDummyFlushDirectives.hasSuccDFD(node, DummyFlushType.ATOMIC_END)) {
 				DummyFlushDirective dfd = new DummyFlushDirective(DummyFlushType.ATOMIC_END);
@@ -914,18 +924,18 @@ public class CompoundStatementCFGInfo extends CFGInfo {
 			if (!InsertDummyFlushDirectives.hasPredDFD(node, DummyFlushType.CRITICAL_START)) {
 				addedStart = true;
 				DummyFlushDirective dfd = new DummyFlushDirective(DummyFlushType.CRITICAL_START);
-				//				StatementInfo stmtInfo = (StatementInfo) node.getInfo();
-				//				List<Label> labelAnnotations = null;
-				//				if (stmtInfo.hasLabelAnnotations()) {
-				//					labelAnnotations = new ArrayList<>(stmtInfo.getLabelAnnotations());
-				//					stmtInfo.clearLabelAnnotations();
-				//				}
+				// StatementInfo stmtInfo = (StatementInfo) node.getInfo();
+				// List<Label> labelAnnotations = null;
+				// if (stmtInfo.hasLabelAnnotations()) {
+				// labelAnnotations = new ArrayList<>(stmtInfo.getLabelAnnotations());
+				// stmtInfo.clearLabelAnnotations();
+				// }
 				this.commonNodeAdditionModule(index, dfd, sideEffectList);
-				//				if (labelAnnotations != null) {
-				//					for (Label label : labelAnnotations) {
-				//						dfd.getInfo().addLabelAnnotation(label);
-				//					}
-				//				}
+				// if (labelAnnotations != null) {
+				// for (Label label : labelAnnotations) {
+				// dfd.getInfo().addLabelAnnotation(label);
+				// }
+				// }
 			}
 			if (!InsertDummyFlushDirectives.hasSuccDFD(node, DummyFlushType.CRITICAL_END)) {
 				DummyFlushDirective dfd = new DummyFlushDirective(DummyFlushType.CRITICAL_END);
@@ -940,18 +950,18 @@ public class CompoundStatementCFGInfo extends CFGInfo {
 			if (!InsertDummyFlushDirectives.hasPredDFD(node, DummyFlushType.ORDERED_START)) {
 				addedStart = true;
 				DummyFlushDirective dfd = new DummyFlushDirective(DummyFlushType.ORDERED_START);
-				//				StatementInfo stmtInfo = (StatementInfo) node.getInfo();
-				//				List<Label> labelAnnotations = null;
-				//				if (stmtInfo.hasLabelAnnotations()) {
-				//					labelAnnotations = new ArrayList<>(stmtInfo.getLabelAnnotations());
-				//					stmtInfo.clearLabelAnnotations();
-				//				}
+				// StatementInfo stmtInfo = (StatementInfo) node.getInfo();
+				// List<Label> labelAnnotations = null;
+				// if (stmtInfo.hasLabelAnnotations()) {
+				// labelAnnotations = new ArrayList<>(stmtInfo.getLabelAnnotations());
+				// stmtInfo.clearLabelAnnotations();
+				// }
 				this.commonNodeAdditionModule(index, dfd, sideEffectList);
-				//				if (labelAnnotations != null) {
-				//					for (Label label : labelAnnotations) {
-				//						dfd.getInfo().addLabelAnnotation(label);
-				//					}
-				//				}
+				// if (labelAnnotations != null) {
+				// for (Label label : labelAnnotations) {
+				// dfd.getInfo().addLabelAnnotation(label);
+				// }
+				// }
 			}
 			if (!InsertDummyFlushDirectives.hasSuccDFD(node, DummyFlushType.ORDERED_END)) {
 				DummyFlushDirective dfd = new DummyFlushDirective(DummyFlushType.ORDERED_END);
@@ -968,18 +978,18 @@ public class CompoundStatementCFGInfo extends CFGInfo {
 				if (!InsertDummyFlushDirectives.hasPredDFD(node, DummyFlushType.LOCK_MODIFY_START)) {
 					addedStart = true;
 					DummyFlushDirective dfd = new DummyFlushDirective(DummyFlushType.LOCK_MODIFY_START);
-					//					StatementInfo stmtInfo = (StatementInfo) node.getInfo();
-					//					List<Label> labelAnnotations = null;
-					//					if (stmtInfo.hasLabelAnnotations()) {
-					//						labelAnnotations = new ArrayList<>(stmtInfo.getLabelAnnotations());
-					//						stmtInfo.clearLabelAnnotations();
-					//					}
+					// StatementInfo stmtInfo = (StatementInfo) node.getInfo();
+					// List<Label> labelAnnotations = null;
+					// if (stmtInfo.hasLabelAnnotations()) {
+					// labelAnnotations = new ArrayList<>(stmtInfo.getLabelAnnotations());
+					// stmtInfo.clearLabelAnnotations();
+					// }
 					this.commonNodeAdditionModule(index, dfd, sideEffectList);
-					//					if (labelAnnotations != null) {
-					//						for (Label label : labelAnnotations) {
-					//							dfd.getInfo().addLabelAnnotation(label);
-					//						}
-					//					}
+					// if (labelAnnotations != null) {
+					// for (Label label : labelAnnotations) {
+					// dfd.getInfo().addLabelAnnotation(label);
+					// }
+					// }
 				}
 				if (!InsertDummyFlushDirectives.hasSuccDFD(node, DummyFlushType.LOCK_MODIFY_END)) {
 					DummyFlushDirective dfd = new DummyFlushDirective(DummyFlushType.LOCK_MODIFY_END);
@@ -1000,18 +1010,18 @@ public class CompoundStatementCFGInfo extends CFGInfo {
 			if (!InsertDummyFlushDirectives.hasPredDFD(node, DummyFlushType.TASK_START)) {
 				addedStart = true;
 				DummyFlushDirective dfd = new DummyFlushDirective(DummyFlushType.TASK_START);
-				//				StatementInfo stmtInfo = (StatementInfo) node.getInfo();
-				//				List<Label> labelAnnotations = null;
-				//				if (stmtInfo.hasLabelAnnotations()) {
-				//					labelAnnotations = new ArrayList<>(stmtInfo.getLabelAnnotations());
-				//					stmtInfo.clearLabelAnnotations();
-				//				}
+				// StatementInfo stmtInfo = (StatementInfo) node.getInfo();
+				// List<Label> labelAnnotations = null;
+				// if (stmtInfo.hasLabelAnnotations()) {
+				// labelAnnotations = new ArrayList<>(stmtInfo.getLabelAnnotations());
+				// stmtInfo.clearLabelAnnotations();
+				// }
 				this.commonNodeAdditionModule(index, dfd, sideEffectList);
-				//				if (labelAnnotations != null) {
-				//					for (Label label : labelAnnotations) {
-				//						dfd.getInfo().addLabelAnnotation(label);
-				//					}
-				//				}
+				// if (labelAnnotations != null) {
+				// for (Label label : labelAnnotations) {
+				// dfd.getInfo().addLabelAnnotation(label);
+				// }
+				// }
 			}
 			if (!InsertDummyFlushDirectives.hasSuccDFD(node, DummyFlushType.TASK_END)) {
 				DummyFlushDirective dfd = new DummyFlushDirective(DummyFlushType.TASK_END);
@@ -1024,18 +1034,18 @@ public class CompoundStatementCFGInfo extends CFGInfo {
 		} else if (node instanceof TaskyieldDirective) {
 			if (!InsertDummyFlushDirectives.hasPredDFD(node, DummyFlushType.TASKYIELD_START)) {
 				DummyFlushDirective dfd = new DummyFlushDirective(DummyFlushType.TASKYIELD_START);
-				//				StatementInfo stmtInfo = (StatementInfo) node.getInfo();
-				//				List<Label> labelAnnotations = null;
-				//				if (stmtInfo.hasLabelAnnotations()) {
-				//					labelAnnotations = new ArrayList<>(stmtInfo.getLabelAnnotations());
-				//					stmtInfo.clearLabelAnnotations();
-				//				}
+				// StatementInfo stmtInfo = (StatementInfo) node.getInfo();
+				// List<Label> labelAnnotations = null;
+				// if (stmtInfo.hasLabelAnnotations()) {
+				// labelAnnotations = new ArrayList<>(stmtInfo.getLabelAnnotations());
+				// stmtInfo.clearLabelAnnotations();
+				// }
 				this.commonNodeAdditionModule(index, dfd, sideEffectList);
-				//				if (labelAnnotations != null) {
-				//					for (Label label : labelAnnotations) {
-				//						dfd.getInfo().addLabelAnnotation(label);
-				//					}
-				//				}
+				// if (labelAnnotations != null) {
+				// for (Label label : labelAnnotations) {
+				// dfd.getInfo().addLabelAnnotation(label);
+				// }
+				// }
 			}
 		} else if (node instanceof TaskwaitDirective) {
 			if (!InsertDummyFlushDirectives.hasPredDFD(node, DummyFlushType.TASKWAIT_START)) {

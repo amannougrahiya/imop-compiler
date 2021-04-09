@@ -43,9 +43,9 @@ public class Z3Solver {
 		solver.push();
 
 		solver.add(c.mkEq(x, c.mkITE(c.mkEq(c.mkInt(1), c.mkInt(1)), c.mkInt(0), c.mkMod(c.mkInt(5), c.mkInt(2)))));
-		//		solver.add(c.mkOr(c.mkEq(x, c.mkInt(3)), c.mkEq(x, c.mkInt(2))));
-		//		solver.add(c.mkEq(c.mkSub(y, c.mkInt(7)), c.mkInt(0)));
-		//		solver.add(c.mkEq(c.mkAdd(x, y), c.mkInt(10)));
+		// solver.add(c.mkOr(c.mkEq(x, c.mkInt(3)), c.mkEq(x, c.mkInt(2))));
+		// solver.add(c.mkEq(c.mkSub(y, c.mkInt(7)), c.mkInt(0)));
+		// solver.add(c.mkEq(c.mkAdd(x, y), c.mkInt(10)));
 
 		Status st = solver.check();
 		System.out.println(st);
@@ -55,7 +55,7 @@ public class Z3Solver {
 		}
 		Model m = solver.getModel();
 		System.out.println(m.getConstInterp(x));
-		//		System.out.println(m.getConstInterp(y));
+		// System.out.println(m.getConstInterp(y));
 		c.close();
 	}
 
@@ -75,12 +75,12 @@ public class Z3Solver {
 		IntExpr j2 = c.mkIntConst("j2");
 		BoolExpr unknown = c.mkBoolConst("unknown");
 		solver.add(c.mkEq(unknown, c.mkBool(true)));
-		//		solver.add(c.mkEq(nT, c.mkInt(16)));
+		// solver.add(c.mkEq(nT, c.mkInt(16)));
 		solver.add(c.mkGe(tid1, c.mkInt(0)));
 		solver.add(c.mkLt(tid1, nT));
 		solver.add(c.mkGe(tid2, c.mkInt(0)));
 		solver.add(c.mkLt(tid2, nT));
-		//		solver.add(c.mkNot(c.mkEq(tid1, tid2)));
+		// solver.add(c.mkNot(c.mkEq(tid1, tid2)));
 		ArithExpr itNum1 = c.mkSub(c.mkSub(c.mkInt(500), c.mkInt(1)), c.mkInt(1));
 		ArithExpr itNum2 = c.mkSub(c.mkSub(c.mkInt(500), c.mkInt(1)), c.mkInt(1));
 		ArithExpr itPerT1 = c.mkDiv(itNum1, nT);

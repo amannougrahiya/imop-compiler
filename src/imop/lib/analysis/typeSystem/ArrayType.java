@@ -40,7 +40,7 @@ public class ArrayType extends DerivedType {
 	}
 
 	public ArrayType(Type elementType, ConstantExpression size) {
-		//		assert (elementType.isComplete());
+		// assert (elementType.isComplete());
 		try {
 			Integer.parseInt(size.toString().trim());
 			this.sizeType = Length.FIXED_LENGTH;
@@ -109,62 +109,65 @@ public class ArrayType extends DerivedType {
 		}
 	}
 
-	//	@Override
-	//	protected String getDeclarationPostString(String tempName, boolean isFullDeclarator) {
-	//		if (isFullDeclarator) {
-	//			this.getDeclaration(tempName);
-	//		} else {
-	//			if (elementType instanceof ArrayType || elementType instanceof PointerType
-	//					|| elementType instanceof FunctionType) {
-	//				String sizeStr = size.getInfo().getString().trim();
-	//				if (sizeStr.equals("0") || sizeStr.equals("-1")) {
-	//					return elementType.getDeclarationPostString(" " + tempName + "[" + "]", false);
-	//				} else {
-	//					return elementType.getDeclarationPostString(" " + tempName + "[" + sizeStr + "]", false);
-	//				}
+	// @Override
+	// protected String getDeclarationPostString(String tempName, boolean
+	// isFullDeclarator) {
+	// if (isFullDeclarator) {
+	// this.getDeclaration(tempName);
+	// } else {
+	// if (elementType instanceof ArrayType || elementType instanceof PointerType
+	// || elementType instanceof FunctionType) {
+	// String sizeStr = size.getInfo().getString().trim();
+	// if (sizeStr.equals("0") || sizeStr.equals("-1")) {
+	// return elementType.getDeclarationPostString(" " + tempName + "[" + "]",
+	// false);
+	// } else {
+	// return elementType.getDeclarationPostString(" " + tempName + "[" + sizeStr +
+	// "]", false);
+	// }
 	//
-	//			} else {
-	//				String sizeStr = size.getInfo().getString().trim();
-	//				if (sizeStr.equals("0") || sizeStr.equals("-1")) {
-	//					return " " + tempName + "[" + "]";
-	//				} else {
-	//					return " " + tempName + "[" + sizeStr + "]";
-	//				}
-	//			}
-	//		}
-	//		return null;
-	//	}
+	// } else {
+	// String sizeStr = size.getInfo().getString().trim();
+	// if (sizeStr.equals("0") || sizeStr.equals("-1")) {
+	// return " " + tempName + "[" + "]";
+	// } else {
+	// return " " + tempName + "[" + sizeStr + "]";
+	// }
+	// }
+	// }
+	// return null;
+	// }
 
-	//	@Override
-	//	protected String postDeclarationString(String tempName) {
-	//		if (elementType instanceof ArrayType || elementType instanceof PointerType
-	//				|| elementType instanceof FunctionType) {
-	//			return elementType.getDeclarationPostString(" (*" + tempName + ")", false);
-	//		} else {
-	//			return " (*" + tempName + ")";
-	//		}
-	//	}
+	// @Override
+	// protected String postDeclarationString(String tempName) {
+	// if (elementType instanceof ArrayType || elementType instanceof PointerType
+	// || elementType instanceof FunctionType) {
+	// return elementType.getDeclarationPostString(" (*" + tempName + ")", false);
+	// } else {
+	// return " (*" + tempName + ")";
+	// }
+	// }
 
-	//	@Override
-	//	public String toString() {
-	//		String returnString = this.getDeclarationSpecifiersString();
-	//		returnString += this.getDeclaratorString("zzz", false).replace("zzz", " ");
-	//		return returnString;
-	//	}
+	// @Override
+	// public String toString() {
+	// String returnString = this.getDeclarationSpecifiersString();
+	// returnString += this.getDeclaratorString("zzz", false).replace("zzz", " ");
+	// return returnString;
+	// }
 
-	//	@Override
-	//	protected String preDeclarationString() {
-	//		StringBuilder stringBuilder = new StringBuilder();
-	//		stringBuilder.append(" ");
-	//		stringBuilder.append(elementType.preDeclarationString());
-	//		stringBuilder.append(" ");
-	//		return stringBuilder.toString();
-	//	}
+	// @Override
+	// protected String preDeclarationString() {
+	// StringBuilder stringBuilder = new StringBuilder();
+	// stringBuilder.append(" ");
+	// stringBuilder.append(elementType.preDeclarationString());
+	// stringBuilder.append(" ");
+	// return stringBuilder.toString();
+	// }
 
 	@Override
 	protected String preDeclarationString() {
 		String retString = "";
-		//		retString += this.elementType.preStringForCopy();
+		// retString += this.elementType.preStringForCopy();
 		if (elementType instanceof StructType || elementType instanceof UnionType || elementType instanceof EnumType) {
 			retString += this.elementType.preDeclarationString();
 		} else {

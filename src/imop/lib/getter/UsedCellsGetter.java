@@ -34,7 +34,7 @@ public class UsedCellsGetter {
 	 * Obtain the list of cells that may be used lexically within {@code node}.
 	 * 
 	 * @param node
-	 *            node for which the used set of cells needs to be obtained.
+	 *             node for which the used set of cells needs to be obtained.
 	 * @return
 	 *         set of cells that may be used lexically within the node
 	 *         {@code node}.
@@ -74,9 +74,9 @@ public class UsedCellsGetter {
 		 * {@code cellReadList}.
 		 * 
 		 * @param cellSet
-		 *            list of symbols and free variables that need to be added
-		 *            to the list of cells that may have been read in the
-		 *            visits.
+		 *                list of symbols and free variables that need to be added
+		 *                to the list of cells that may have been read in the
+		 *                visits.
 		 * 
 		 */
 		public void addAccesses(CellSet cellSet) {
@@ -397,7 +397,7 @@ public class UsedCellsGetter {
 			if (n.getExpF1().getNodes().isEmpty()) {
 				return n.getExpF0().accept(this);
 			} else {
-				assert (false); //ExpressionSimplification should have removed the comma operator.
+				assert (false); // ExpressionSimplification should have removed the comma operator.
 				addAccesses(n.getExpF0().accept(this));
 				for (Node seq : n.getExpF1().getNodes()) {
 					assert seq instanceof NodeSequence;
@@ -968,7 +968,7 @@ public class UsedCellsGetter {
 			// Since we have performed expression simplification,
 			// we won't enter this operator.
 			assert (false);
-			//			n.getF1().accept(this);
+			// n.getF1().accept(this);
 			return null;
 		}
 
@@ -1029,7 +1029,8 @@ public class UsedCellsGetter {
 
 		@Override
 		public CellSet visit(CallStatement n) {
-			// AccessGetter should be called only on leaf nodes or their parts. CallStatement is NOT a leaf node now.
+			// AccessGetter should be called only on leaf nodes or their parts.
+			// CallStatement is NOT a leaf node now.
 			assert (false);
 			return null;
 		}

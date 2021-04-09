@@ -56,7 +56,7 @@ public class DependenceEntry {
 	 * assertions may still be <i>inductive</i>.
 	 * 
 	 * @param numThreads
-	 *            number of threads (symbolically).
+	 *                   number of threads (symbolically).
 	 * @return
 	 *         list of possible equations as per this object's
 	 *         reaching-definitions/induction-ranges.

@@ -66,8 +66,8 @@ public class ResolvedDereference extends AccessExpression {
 	 * corresponding {@link ResolvedDereference} object.
 	 * 
 	 * @param castExpression
-	 *            given CastExpression that has been dereferenced using a
-	 *            pointer operator.
+	 *                       given CastExpression that has been dereferenced using a
+	 *                       pointer operator.
 	 * @return
 	 *         a {@link ResolvedDereference} object that logically
 	 *         represents the dereferenced {@code castExpression} in the form

@@ -33,8 +33,8 @@ public class PointerDereferenceGetter {
 	 * containing {@code e1}.
 	 * 
 	 * @param node
-	 *            a node from within which syntactic pointer dereferences where
-	 *            the dereferenced location may have been read have to be found.
+	 *             a node from within which syntactic pointer dereferences where
+	 *             the dereferenced location may have been read have to be found.
 	 * @return
 	 *         a list of syntactic dereferences made via {@code *} for
 	 *         which the dereferenced location may have been read anywhere
@@ -75,9 +75,9 @@ public class PointerDereferenceGetter {
 	 * containing {@code e1}.
 	 * 
 	 * @param node
-	 *            a node from within which syntactic pointer dereferences where
-	 *            the dereferenced location may have been written have to be
-	 *            found.
+	 *             a node from within which syntactic pointer dereferences where
+	 *             the dereferenced location may have been written have to be
+	 *             found.
 	 * @return
 	 *         a list of syntactic dereferences made via {@code *} for
 	 *         which the dereferenced location may have been written anywhere
@@ -107,7 +107,7 @@ public class PointerDereferenceGetter {
 	 * operator, this method returns the location that will be dereferenced.
 	 * 
 	 * @param node
-	 *            any C expression node.
+	 *             any C expression node.
 	 * @return
 	 *         the location on which dereference via {@code *} opertator would
 	 *         be done, when applied on {@code node}.
@@ -176,7 +176,8 @@ public class PointerDereferenceGetter {
 			if (n.getF1().getNode() != null) {
 				addReads(((NodeSequence) n.getF1().getNode()).getNodes().get(1).accept(this));
 			}
-			// This return null is correct -- the expression does not represent LHS location.
+			// This return null is correct -- the expression does not represent LHS
+			// location.
 			return null;
 		}
 
@@ -431,7 +432,7 @@ public class PointerDereferenceGetter {
 			if (n.getExpF1().getNodes().isEmpty()) {
 				return n.getExpF0().accept(this);
 			} else {
-				assert (false); //ExpressionSimplification should have removed the comma operator.
+				assert (false); // ExpressionSimplification should have removed the comma operator.
 				return null;
 			}
 		}
@@ -1034,7 +1035,8 @@ public class PointerDereferenceGetter {
 
 		@Override
 		public List<CastExpression> visit(CallStatement n) {
-			// AccessGetter should be called only on leaf nodes or their parts. CallStatement is NOT a leaf node now.
+			// AccessGetter should be called only on leaf nodes or their parts.
+			// CallStatement is NOT a leaf node now.
 			assert (false);
 			return null;
 		}

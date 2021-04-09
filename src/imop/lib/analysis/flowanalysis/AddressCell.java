@@ -42,13 +42,13 @@ public class AddressCell extends Cell {
 		this.sym = sym;
 		if (!Cell.dontSave) {
 			allCells.add(this);
-			//				System.err.println("&" + sym.getName());
-			//				allCells.add(this);
-			//				if (sym.isAFunction()) {
-			//					Symbol.allFunctionCells.add(this);
-			//				} else {
-			//					allCells.add(this);
-			//				}
+			// System.err.println("&" + sym.getName());
+			// allCells.add(this);
+			// if (sym.isAFunction()) {
+			// Symbol.allFunctionCells.add(this);
+			// } else {
+			// allCells.add(this);
+			// }
 		}
 	}
 

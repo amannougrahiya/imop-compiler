@@ -30,7 +30,7 @@ public class SimpleNodeEdgeWriter extends GJVoidDepthFirstProcess<BufferedWriter
 		}
 
 		try {
-			// Print the dot format of node 
+			// Print the dot format of node
 			bw.write("\n\tnode" + n.getInfo().hashCode() + "[label=\"" + Misc.putEscapes(n.getInfo().getString())
 					+ "\"];");
 			// Get successors of node n

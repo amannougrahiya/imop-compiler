@@ -16,9 +16,9 @@ public class Conversion {
 	 * Returns the <i>common real type</i> of given two types.
 	 * 
 	 * @param t1
-	 *            an operand type.
+	 *           an operand type.
 	 * @param t2
-	 *            an operand type.
+	 *           an operand type.
 	 * @return
 	 *         type obtained after applying usual arithmetic conversions on the
 	 *         operand types.

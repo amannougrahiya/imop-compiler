@@ -21,7 +21,7 @@ import imop.baseVisitor.DepthFirstProcess;
  */
 public class DeclarationStringFromExpressionGetter extends DepthFirstProcess {
 	private String varName;
-	public String declCodeString;	// String holding the declaration to be used
+	public String declCodeString; // String holding the declaration to be used
 
 	public DeclarationStringFromExpressionGetter(String varName) {
 		this.varName = varName;

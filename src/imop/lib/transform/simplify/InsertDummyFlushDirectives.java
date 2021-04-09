@@ -29,14 +29,14 @@ public class InsertDummyFlushDirectives {
 			if (node instanceof FlushDirective && !(node instanceof DummyFlushDirective)) {
 				if (!hasPredDFD(node, DummyFlushType.FLUSH_START)) {
 					InsertImmediatePredecessor.insert(node, new DummyFlushDirective(DummyFlushType.FLUSH_START));
-					//				InsertImmediateSuccessor.insertImmediateSuccessor(node,
-					//						new DummyFlushDirective(DummyFlushType.FLUSH_END));
+					// InsertImmediateSuccessor.insertImmediateSuccessor(node,
+					// new DummyFlushDirective(DummyFlushType.FLUSH_END));
 				}
 			} else if (node instanceof BarrierDirective) {
 				if (!hasPredDFD(node, DummyFlushType.BARRIER_START)) {
 					InsertImmediatePredecessor.insert(node, new DummyFlushDirective(DummyFlushType.BARRIER_START));
-					//				InsertImmediateSuccessor.insertImmediateSuccessor(node,
-					//						new DummyFlushDirective(DummyFlushType.BARRIER_END));
+					// InsertImmediateSuccessor.insertImmediateSuccessor(node,
+					// new DummyFlushDirective(DummyFlushType.BARRIER_END));
 				}
 			} else if (node instanceof AtomicConstruct) {
 				if (!hasPredDFD(node, DummyFlushType.ATOMIC_START)) {

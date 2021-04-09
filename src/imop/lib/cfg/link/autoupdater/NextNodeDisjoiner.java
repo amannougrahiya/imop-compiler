@@ -29,8 +29,8 @@ public class NextNodeDisjoiner {
 	 * is reached.
 	 * 
 	 * @param node
-	 *            node that needs to be disconnected to all its immediate
-	 *            successors.
+	 *             node that needs to be disconnected to all its immediate
+	 *             successors.
 	 */
 	public static void disjoinFromNextNode(Node node) {
 		CFGLink link = CFGLinkFinder.getCFGLinkFor(node);

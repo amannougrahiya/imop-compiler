@@ -42,25 +42,25 @@ public class NodeChoice extends Node {
 	@Override
 	public void accept(imop.baseVisitor.Visitor v) {
 		v.visit(this);
-		//choice.accept(v);
+		// choice.accept(v);
 	}
 
 	@Override
 	public <R, A> R accept(imop.baseVisitor.GJVisitor<R, A> v, A argu) {
 		return v.visit(this, argu);
-		//return choice.accept(v,argu);
+		// return choice.accept(v,argu);
 	}
 
 	@Override
 	public <R> R accept(imop.baseVisitor.GJNoArguVisitor<R> v) {
 		return v.visit(this);
-		//return choice.accept(v);
+		// return choice.accept(v);
 	}
 
 	@Override
 	public <A> void accept(imop.baseVisitor.GJVoidVisitor<A> v, A argu) {
 		v.visit(this, argu);
-		//choice.accept(v,argu);
+		// choice.accept(v,argu);
 	}
 
 	public Node getChoice() {

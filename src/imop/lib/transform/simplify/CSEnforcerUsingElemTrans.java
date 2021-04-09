@@ -78,7 +78,7 @@ public class CSEnforcerUsingElemTrans extends DepthFirstVisitor {
 		List<Statement> sectionList = sectionsConsInfo.getSectionList();
 		for (Statement sectionStmt : sectionList) {
 			if (!(sectionStmt instanceof CompoundStatement)) {
-				//			if (CompoundStatementEnforcer.needsWrapping(sectionStmt)) {
+				// if (CompoundStatementEnforcer.needsWrapping(sectionStmt)) {
 				Statement outSt = FrontEnd.parseAndNormalize("{}", Statement.class);
 				CompoundStatement compStmt = (CompoundStatement) Misc.getCFGNodeFor(outSt);
 				sectionsConsInfo.removeSection(sectionStmt);
@@ -128,26 +128,27 @@ public class CSEnforcerUsingElemTrans extends DepthFirstVisitor {
 		n.getF4().accept(this);
 	}
 
-	// Old Code: Won't be called, if ExpressionSimplification has been performed already, as is the case.
-	//	/**
-	//	 * f0 ::= OmpPragma()
-	//	 * f1 ::= <PARALLEL>
-	//	 * f2 ::= <FOR>
-	//	 * f3 ::= UniqueParallelOrUniqueForOrDataClauseList()
-	//	 * f4 ::= OmpEol()
-	//	 * f5 ::= OmpForHeader()
-	//	 * f6 ::= Statement()
-	//	 */
-	//	@Override
-	//	public void visit(ParallelForConstruct n) {
-	//		if (CompoundStatementEnforcer.needsWrapping(n.getF6())) {
-	//			Statement outSt = FrontEnd.parseAndNormalize("{}", Statement.class);
-	//			CompoundStatement compStmt = (CompoundStatement) Misc.getCFGNodeFor(outSt);
-	//			n.getInfo().getCFGInfo().setBody(compStmt);
-	//			compStmt.getInfo().getCFGInfo().addElement(n.getF6());
-	//		}
-	//		n.getF6().accept(this);
-	//	}
+	// Old Code: Won't be called, if ExpressionSimplification has been performed
+	// already, as is the case.
+	// /**
+	// * f0 ::= OmpPragma()
+	// * f1 ::= <PARALLEL>
+	// * f2 ::= <FOR>
+	// * f3 ::= UniqueParallelOrUniqueForOrDataClauseList()
+	// * f4 ::= OmpEol()
+	// * f5 ::= OmpForHeader()
+	// * f6 ::= Statement()
+	// */
+	// @Override
+	// public void visit(ParallelForConstruct n) {
+	// if (CompoundStatementEnforcer.needsWrapping(n.getF6())) {
+	// Statement outSt = FrontEnd.parseAndNormalize("{}", Statement.class);
+	// CompoundStatement compStmt = (CompoundStatement) Misc.getCFGNodeFor(outSt);
+	// n.getInfo().getCFGInfo().setBody(compStmt);
+	// compStmt.getInfo().getCFGInfo().addElement(n.getF6());
+	// }
+	// n.getF6().accept(this);
+	// }
 
 	/**
 	 * f0 ::= OmpPragma()
@@ -323,8 +324,8 @@ public class CSEnforcerUsingElemTrans extends DepthFirstVisitor {
 	 * Tells whether we need to call {@code wrapCS} for {@code inSt} or not.
 	 * 
 	 * @param inSt
-	 *            statement that should be immediately wrapping a
-	 *            CompoundStatement.
+	 *             statement that should be immediately wrapping a
+	 *             CompoundStatement.
 	 * @return
 	 *         true if {@inSt} doesn't immediately wraps a CompoundStatement.
 	 * @deprecated
@@ -343,7 +344,7 @@ public class CSEnforcerUsingElemTrans extends DepthFirstVisitor {
 	 * Obtain a compound-statement wrapped equivalent of {@code inSt}.
 	 * 
 	 * @param inSt
-	 *            a Statement that needs to be wrapped with compound-statement.
+	 *             a Statement that needs to be wrapped with compound-statement.
 	 * @return
 	 *         {@code inSt} if it immediately wraps a CompoundStatement,
 	 *         else, an equivalent which does.
@@ -363,11 +364,13 @@ public class CSEnforcerUsingElemTrans extends DepthFirstVisitor {
 			CompoundStatement compStmt = (CompoundStatement) Misc.getCFGNodeFor(outSt);
 			compStmt.getInfo().getCFGInfo().addElement(inSt);
 			// Old Code:
-			//			List<Node> compoundStatementElement = new ArrayList<>();
-			//			compoundStatementElement.add(new CompoundStatementElement(new NodeChoice(inSt)));
-			//			outSt = new CompoundStatement(new NodeListOptional(compoundStatementElement));
-			//			outSt = new Statement(new NodeChoice(outSt));
-			//			outSt.accept(new CFGGenerator());
+			// List<Node> compoundStatementElement = new ArrayList<>();
+			// compoundStatementElement.add(new CompoundStatementElement(new
+			// NodeChoice(inSt)));
+			// outSt = new CompoundStatement(new
+			// NodeListOptional(compoundStatementElement));
+			// outSt = new Statement(new NodeChoice(outSt));
+			// outSt.accept(new CFGGenerator());
 		}
 		assert (outSt.getClass() == Statement.class);
 		return outSt;

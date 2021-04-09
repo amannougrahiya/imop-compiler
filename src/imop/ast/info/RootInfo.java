@@ -146,8 +146,8 @@ public class RootInfo extends NodeInfo {
 
 	public RootInfo(Node owner) {
 		super(owner);
-		//		this.populateSymbolTable();
-		//		this.populateThreadPrivateList();
+		// this.populateSymbolTable();
+		// this.populateThreadPrivateList();
 	}
 
 	private HashMap<String, Symbol> symbolTable;
@@ -191,31 +191,31 @@ public class RootInfo extends NodeInfo {
 	 * for a particular function, we remove all the duplicate declarations
 	 * of that function from the symbol table.
 	 */
-	//	public void removeDuplicateSymbols() {
-	//		// Get a list of function names whose definitions are present in symbolTable
-	//		Vector<Symbol> funcWithDef = new Vector<Symbol>();
-	//		for(Symbol sym : getSymbolTable()) {
-	//			if(sym.declaringNode instanceof FunctionDefinition) {
-	//				funcWithDef.add(sym);
-	//			}
-	//		}
+	// public void removeDuplicateSymbols() {
+	// // Get a list of function names whose definitions are present in symbolTable
+	// Vector<Symbol> funcWithDef = new Vector<Symbol>();
+	// for(Symbol sym : getSymbolTable()) {
+	// if(sym.declaringNode instanceof FunctionDefinition) {
+	// funcWithDef.add(sym);
+	// }
+	// }
 	//
-	//		// Remove the other occurrences of these functions from symbolTable
-	//		for(Symbol defSym : funcWithDef) {
-	//			int index = 0;
-	//			while(index < getSymbolTable().size()) {
-	//				Symbol elem = getSymbolTable().elementAt(index);
-	//				if(elem.name.equals(defSym.name)) {
-	//					if(!(elem.declaringNode instanceof FunctionDefinition)) {
-	//						getSymbolTable().remove(index);
-	//						continue;
-	//					}
-	//				}
-	//				index++;
-	//			}
-	//		}
+	// // Remove the other occurrences of these functions from symbolTable
+	// for(Symbol defSym : funcWithDef) {
+	// int index = 0;
+	// while(index < getSymbolTable().size()) {
+	// Symbol elem = getSymbolTable().elementAt(index);
+	// if(elem.name.equals(defSym.name)) {
+	// if(!(elem.declaringNode instanceof FunctionDefinition)) {
+	// getSymbolTable().remove(index);
+	// continue;
+	// }
+	// }
+	// index++;
+	// }
+	// }
 	//
-	//	}
+	// }
 
 	public void populateThreadPrivateList() {
 		this.threadPrivateList = new HashMap<>();
@@ -285,7 +285,8 @@ public class RootInfo extends NodeInfo {
 				assert (declaratorNameList != null);
 				if (declaratorNameList.isEmpty()) {
 					// This may just be a definition of certain type, without use of that type.
-					// In this case, we simply visit the declaration, so as to collect the defined type.
+					// In this case, we simply visit the declaration, so as to collect the defined
+					// type.
 					Type.getTypeTree(declaration.getF0(), (TranslationUnit) this.getNode());
 				}
 
@@ -301,8 +302,8 @@ public class RootInfo extends NodeInfo {
 						}
 						Typedef newTypedef = new Typedef(declaratorName, declaratorType, declaration,
 								(TranslationUnit) this.getNode());
-						//							System.out.println("Adding a typedef for " + declaratorName
-						//									+ " with type " + newTypedef.getType());
+						// System.out.println("Adding a typedef for " + declaratorName
+						// + " with type " + newTypedef.getType());
 						this.typedefTable.put(declaratorName, newTypedef);
 					} else {
 						/*
@@ -328,16 +329,18 @@ public class RootInfo extends NodeInfo {
 				}
 			} else if (declChoice instanceof FunctionDefinition) {
 				// Note: A definition is a declaration as well.
-				// Ensure that only one entry for any given function is present in the symbol table.
-				// Furthermore, this entry shall be replaced with the definition, if that indeed is the case.
+				// Ensure that only one entry for any given function is present in the symbol
+				// table.
+				// Furthermore, this entry shall be replaced with the definition, if that indeed
+				// is the case.
 				FunctionDefinition funcDef = (FunctionDefinition) declChoice;
 
 				// Obtain the name of the function
 				String functionName = funcDef.getInfo().getFunctionName();
 				Type functionType = Type.getTypeTree(funcDef, (TranslationUnit) this.getNode());
 				// Check if the function name is already present in the symbol table
-				// 		continue if so.
-				// 		else, add this function to the symbol table
+				// continue if so.
+				// else, add this function to the symbol table
 				getSymbolTable().put(functionName,
 						new Symbol(functionName, functionType, funcDef, (TranslationUnit) getNode()));
 
@@ -386,7 +389,8 @@ public class RootInfo extends NodeInfo {
 		assert (declaratorNameList != null);
 		if (declaratorNameList.isEmpty()) {
 			// This may just be a definition of certain type, without use of that type.
-			// In this case, we simply visit the declaration, so as to collect the defined type.
+			// In this case, we simply visit the declaration, so as to collect the defined
+			// type.
 			Type.getTypeTree(declaration.getF0(), (TranslationUnit) this.getNode());
 		}
 
@@ -401,8 +405,8 @@ public class RootInfo extends NodeInfo {
 				}
 				Typedef newTypedef = new Typedef(declaratorName, declaratorType, declaration,
 						(TranslationUnit) this.getNode());
-				//							System.out.println("Adding a typedef for " + declaratorName
-				//									+ " with type " + newTypedef.getType());
+				// System.out.println("Adding a typedef for " + declaratorName
+				// + " with type " + newTypedef.getType());
 				this.typedefTable.put(declaratorName, newTypedef);
 			} else {
 				/*
@@ -459,10 +463,11 @@ public class RootInfo extends NodeInfo {
 	}
 
 	public void removeTypeDeclarationEffects(Declaration declaration) {
-		// TODO: Uncomment these two lines below, after removing the declaration from use, for user-defined types,
-		// 		 in ExpressionSimplifier.
-		//		List<String> declaratorNameList = Misc.getIdNameList(declaration);
-		// 		assert(declaratorNameList.isEmpty());
+		// TODO: Uncomment these two lines below, after removing the declaration from
+		// use, for user-defined types,
+		// in ExpressionSimplifier.
+		// List<String> declaratorNameList = Misc.getIdNameList(declaration);
+		// assert(declaratorNameList.isEmpty());
 		Type t = Type.getTypeTree(declaration.getF0(), (TranslationUnit) this.getNode());
 		String typeName = null;
 		if (t instanceof StructType) {
@@ -519,8 +524,8 @@ public class RootInfo extends NodeInfo {
 	 * (except {@code main}) that have not been called anywhere in the program.
 	 * 
 	 * @param baseNode
-	 *            a {@link TranslationUnit} from within which all unused
-	 *            function definitions and declarations have to be removed.
+	 *                 a {@link TranslationUnit} from within which all unused
+	 *                 function definitions and declarations have to be removed.
 	 */
 	public void removeUnusedFunctions() {
 		TranslationUnit baseNode = (TranslationUnit) getNode();
@@ -547,12 +552,12 @@ public class RootInfo extends NodeInfo {
 				}
 			});
 			// OLD CODE:
-			//			for (Cell cell : calledSymbols) {
-			//				if (!(cell instanceof Symbol)) {
-			//					continue;
-			//				}
-			//				usedFuncNames.add(((Symbol) cell).getName());
-			//			}
+			// for (Cell cell : calledSymbols) {
+			// if (!(cell instanceof Symbol)) {
+			// continue;
+			// }
+			// usedFuncNames.add(((Symbol) cell).getName());
+			// }
 		}
 
 		/*
@@ -600,32 +605,36 @@ public class RootInfo extends NodeInfo {
 		}
 
 		// Old Code:
-		//		CellList calledSymbols = new CellList();
-		//		for (CallStatement cS : mainFunc.getInfo().getLexicallyEnclosedCallStatements()) {
-		//			calledSymbols.addAll(cS.getInfo().getCalledSymbols());
-		//		}
-		//		if (calledSymbols.isUniversal()) {
-		//			System.err.println(
-		//					"Does this program use function pointers? If not, check this line in BasicTransform::removeUnusedFunctions.");
-		//		}
-		//		Collection<Symbol> symbolSet = new HashSet<>(baseNode.getInfo().getSymbolTable().values());
-		//		Set<String> removedSymNames = new HashSet<>();
-		//		for (Symbol sym : symbolSet) {
-		//			if (sym.getName().equals("main")) {
-		//				continue;
-		//			}
-		//			if (sym.getDeclaringNode() instanceof FunctionDefinition) {
-		//				FunctionDefinition funcDef = (FunctionDefinition) sym.getDeclaringNode();
-		//				if (!calledSymbols.contains(sym)) {
-		//					//					System.err.println("\t Removing function from root: " + sym.getName());
-		//					ElementsOfTranslation elemOfTranslation = (ElementsOfTranslation) Misc.getEnclosingNode(funcDef,
-		//							ElementsOfTranslation.class);
-		//					baseNode.getF0().getNodes().remove(elemOfTranslation);
-		//					baseNode.getInfo().removeFunctionDefinitionEffects(funcDef);
-		//					removedSymNames.add(sym.getName());
-		//				}
-		//			}
-		//		}
+		// CellList calledSymbols = new CellList();
+		// for (CallStatement cS :
+		// mainFunc.getInfo().getLexicallyEnclosedCallStatements()) {
+		// calledSymbols.addAll(cS.getInfo().getCalledSymbols());
+		// }
+		// if (calledSymbols.isUniversal()) {
+		// System.err.println(
+		// "Does this program use function pointers? If not, check this line in
+		// BasicTransform::removeUnusedFunctions.");
+		// }
+		// Collection<Symbol> symbolSet = new
+		// HashSet<>(baseNode.getInfo().getSymbolTable().values());
+		// Set<String> removedSymNames = new HashSet<>();
+		// for (Symbol sym : symbolSet) {
+		// if (sym.getName().equals("main")) {
+		// continue;
+		// }
+		// if (sym.getDeclaringNode() instanceof FunctionDefinition) {
+		// FunctionDefinition funcDef = (FunctionDefinition) sym.getDeclaringNode();
+		// if (!calledSymbols.contains(sym)) {
+		// // System.err.println("\t Removing function from root: " + sym.getName());
+		// ElementsOfTranslation elemOfTranslation = (ElementsOfTranslation)
+		// Misc.getEnclosingNode(funcDef,
+		// ElementsOfTranslation.class);
+		// baseNode.getF0().getNodes().remove(elemOfTranslation);
+		// baseNode.getInfo().removeFunctionDefinitionEffects(funcDef);
+		// removedSymNames.add(sym.getName());
+		// }
+		// }
+		// }
 		//
 		//
 	}
@@ -646,7 +655,8 @@ public class RootInfo extends NodeInfo {
 			return new HashSet<>();
 		}
 		Set<Node> allNodes = mainFunc.getInfo().getCFGInfo().getIntraTaskCFGLeafContents();
-		//		System.out.println("Total reachable CFG leaf nodes in the program: " + allNodes.size());
+		// System.out.println("Total reachable CFG leaf nodes in the program: " +
+		// allNodes.size());
 		return allNodes;
 	}
 
@@ -654,7 +664,7 @@ public class RootInfo extends NodeInfo {
 	 * Adds newFunc to the cached list of functions.
 	 * 
 	 * @param newFunc
-	 *            a newly added function.
+	 *                a newly added function.
 	 */
 	public void addFunctionToList(FunctionDefinition newFunc) {
 		this.allFunctionDefinitions.add(newFunc);
@@ -664,7 +674,7 @@ public class RootInfo extends NodeInfo {
 	 * Removes a function from the cached list of functions.
 	 * 
 	 * @param oldFunc
-	 *            an old function to be removed.
+	 *                an old function to be removed.
 	 */
 	public void removeFunctionFromList(FunctionDefinition oldFunc) {
 		this.allFunctionDefinitions.remove(oldFunc);

@@ -20,7 +20,7 @@ public class RegionMerger {
 	 * Merges reasons that exist within the provided {@code node}.
 	 * 
 	 * @param node
-	 *            node within which reasons need to be merged.
+	 *             node within which reasons need to be merged.
 	 */
 	public static void mergeRegionsWithin(TranslationUnit node) {
 		for (ParallelConstruct parCons : Misc.getExactEnclosee(node, ParallelConstruct.class)) {

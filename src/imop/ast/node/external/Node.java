@@ -29,9 +29,9 @@ public abstract class Node implements java.io.Serializable, DFable {
 	private static final long serialVersionUID = -58300488119959833L;
 
 	public static final Set<Integer> stmtSuperClassIds = new HashSet<>(
-			Arrays.asList(new Integer[] {3, 15, 21, 33, 39, 51, 57, 897, 1479}));
+			Arrays.asList(new Integer[] { 3, 15, 21, 33, 39, 51, 57, 897, 1479 }));
 	public static final Set<Integer> superClassIds = new HashSet<>(
-			Arrays.asList(new Integer[]{ 2, 3, 15, 21, 33, 39, 51, 57, 281, 467, 541, 897, 1466, 1479 }));
+			Arrays.asList(new Integer[] { 2, 3, 15, 21, 33, 39, 51, 57, 281, 467, 541, 897, 1466, 1479 }));
 	private Node parent;
 	protected NodeInfo info;
 	private int nodeId = -1;
@@ -39,7 +39,8 @@ public abstract class Node implements java.io.Serializable, DFable {
 
 	private static List<Node> allLeafCFGNodes = new ArrayList<>();
 
-	// Should throw a divide-by-zero error, if a certain class doesn't provide correct value for this field.
+	// Should throw a divide-by-zero error, if a certain class doesn't provide
+	// correct value for this field.
 	public int classId = 0;
 
 	public final int getClassId() {

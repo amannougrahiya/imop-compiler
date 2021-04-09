@@ -30,7 +30,11 @@ public class CallSiteGetter extends DepthFirstVisitor {
 	@Override
 	public void visit(PostfixExpression n) {
 		List<Node> opList = n.getF1().getF0().getNodes();
-		if ((!opList.isEmpty()) && ((APostfixOperation) opList.get(0)).getF0().getChoice() instanceof ArgumentList) { // If a call site found
+		if ((!opList.isEmpty()) && ((APostfixOperation) opList.get(0)).getF0().getChoice() instanceof ArgumentList) { // If
+																														// a
+																														// call
+																														// site
+																														// found
 			if (n.getF0().getF0().getChoice() instanceof NodeToken) { // If call site doesn't use a function pointer (?)
 				// Get the Callee's name and body
 				String name = ((NodeToken) n.getF0().getF0().getChoice()).getTokenImage();
@@ -57,7 +61,8 @@ public class CallSiteGetter extends DepthFirstVisitor {
 	@Override
 	public void visit(SizeofUnaryExpression n) {
 		n.getF0().accept(this);
-		//n.f1.accept(this);
-		// Expression is not evaluated when it is present as an argument to the sizeof operator
+		// n.f1.accept(this);
+		// Expression is not evaluated when it is present as an argument to the sizeof
+		// operator
 	}
 }

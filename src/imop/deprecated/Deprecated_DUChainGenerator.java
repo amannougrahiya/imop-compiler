@@ -54,14 +54,17 @@ public class Deprecated_DUChainGenerator extends DepthFirstProcess {
 
 		// Create DU and UD chains using all the definitions reachable at this node
 		// It may seem to happen that no definition reaches this use.
-		// This is not true, the use, in fact, gets the definition from arguments of the caller.
+		// This is not true, the use, in fact, gets the definition from arguments of the
+		// caller.
 		if (n.getInfo().deprecated_readReachingDefinitions() == null) {
 			return;
 		}
 		for (Definition def : n.getInfo().deprecated_readReachingDefinitions()) {
 			if (readSymbols.contains(def.getCell())) {
-				// System.out.println("Adding " + def.symbol.name + " for def at " + Misc.getLineNum(def.definingNode) + " with use at " + Misc.getLineNum(n));
-				// Populate the defsInUDSet<E>			HashMap<Symbol, Set<Node>> defsInDU = n.getInfo().getDefsInDU();
+				// System.out.println("Adding " + def.symbol.name + " for def at " +
+				// Misc.getLineNum(def.definingNode) + " with use at " + Misc.getLineNum(n));
+				// Populate the defsInUDSet<E> HashMap<Symbol, Set<Node>> defsInDU =
+				// n.getInfo().getDefsInDU();
 				CellMap<Set<Node>> defsInUD = n.getInfo().getDefsInUD();
 				if (!defsInUD.containsKey(def.getCell())) {
 					defsInUD.put(def.getCell(), new HashSet<>());

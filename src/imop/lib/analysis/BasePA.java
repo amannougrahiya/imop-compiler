@@ -28,9 +28,7 @@ public abstract class BasePA {
 	}
 
 	public static enum StabilizationMode {
-		EGINV,
-		EGUPD,
-		LZINV, // This is considered to be the default mode of stabilization.
+		EGINV, EGUPD, LZINV, // This is considered to be the default mode of stabilization.
 		LZUPD
 	}
 
@@ -48,8 +46,9 @@ public abstract class BasePA {
 	 * mode of stabilization (or LZINV, if the argument is {@code null}).
 	 * 
 	 * @param stabilizationMode
-	 *            selected mode of stabilization for this program-abstraction;
-	 *            if {@code null}, LZINV mode is used by default.
+	 *                          selected mode of stabilization for this
+	 *                          program-abstraction;
+	 *                          if {@code null}, LZINV mode is used by default.
 	 */
 	public BasePA(StabilizationMode stabilizationMode) {
 		if (stabilizationMode == null) {
@@ -193,7 +192,7 @@ public abstract class BasePA {
 	 * to the super-graph of the program.
 	 * 
 	 * @param n
-	 *            node that has been added to the program.
+	 *          node that has been added to the program.
 	 */
 	public abstract void handleNodeAddition(Node n);
 
@@ -207,7 +206,7 @@ public abstract class BasePA {
 	 * from the super-graph of the program.
 	 * 
 	 * @param n
-	 *            node that has been removed from the program.
+	 *          node that has been removed from the program.
 	 */
 	public abstract void handleNodeRemoval(Node n);
 
@@ -217,7 +216,7 @@ public abstract class BasePA {
 	 * to the super-graph of the program.
 	 * 
 	 * @param e
-	 *            edge that has been added to the program.
+	 *          edge that has been added to the program.
 	 */
 	public abstract void handleEdgeAddition(Edge e);
 
@@ -227,7 +226,7 @@ public abstract class BasePA {
 	 * from the super-graph of the program.
 	 * 
 	 * @param e
-	 *            edge that has been removed from the program.
+	 *          edge that has been removed from the program.
 	 */
 	public abstract void handleEdgeRemoval(Edge e);
 

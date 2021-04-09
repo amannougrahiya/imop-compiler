@@ -19,52 +19,52 @@ import java.util.HashSet;
 import java.util.Set;
 
 public interface AbstractPhasePointable {
-    Set<AbstractPhasePointable> allBeginPhasePoints = new HashSet<>();
+	Set<AbstractPhasePointable> allBeginPhasePoints = new HashSet<>();
 
-    static Set<AbstractPhasePointable> getAllBeginPhasePoints() {
-        if (Program.enableUnmodifiability) {
-            return Collections.unmodifiableSet(AbstractPhasePointable.allBeginPhasePoints);
-        } else {
-            return AbstractPhasePointable.allBeginPhasePoints;
-        }
-    }
+	static Set<AbstractPhasePointable> getAllBeginPhasePoints() {
+		if (Program.enableUnmodifiability) {
+			return Collections.unmodifiableSet(AbstractPhasePointable.allBeginPhasePoints);
+		} else {
+			return AbstractPhasePointable.allBeginPhasePoints;
+		}
+	}
 
-    static void flushALLMHPData() {
-        for (AbstractPhasePointable bppAbs : AbstractPhasePointable.allBeginPhasePoints) {
-            bppAbs.flushData();
-        }
-        AbstractPhasePointable.allBeginPhasePoints.clear();
-        if (Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.ICON) {
-            BeginPhasePoint.getStaleBeginPhasePoints().clear();
-        }
-    }
+	static void flushALLMHPData() {
+		for (AbstractPhasePointable bppAbs : AbstractPhasePointable.allBeginPhasePoints) {
+			bppAbs.flushData();
+		}
+		AbstractPhasePointable.allBeginPhasePoints.clear();
+		if (Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.ICON) {
+			BeginPhasePoint.getStaleBeginPhasePoints().clear();
+		}
+	}
 
-    static void resetStaticFields() {
-        AbstractPhasePointable.allBeginPhasePoints.clear();
-        if (Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.ICON) {
-            BeginPhasePoint.getStaleBeginPhasePoints().clear();
-        }
-    }
+	static void resetStaticFields() {
+		AbstractPhasePointable.allBeginPhasePoints.clear();
+		if (Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.ICON) {
+			BeginPhasePoint.getStaleBeginPhasePoints().clear();
+		}
+	}
 
-    Set<Node> getReachableNodes();
+	Set<Node> getReachableNodes();
 
-    Set<? extends AbstractPhasePointable> getNextBarriers();
+	Set<? extends AbstractPhasePointable> getNextBarriers();
 
-    Set<? extends AbstractPhase<?, ?>> getPhaseSet();
+	Set<? extends AbstractPhase<?, ?>> getPhaseSet();
 
-    void flushMHPData(AbstractPhase<?, ?> phase);
+	void flushMHPData(AbstractPhase<?, ?> phase);
 
-    void flushData();
+	void flushData();
 
-    default Node getNodeFromInterface() {
-        if (this instanceof PhasePoint) {
-            PhasePoint thisPoint = (PhasePoint) this;
-            return thisPoint.getNode();
-        } else {
-            YPhasePoint thisPoint = (YPhasePoint) this;
-            return thisPoint.getNode();
-        }
-    }
+	default Node getNodeFromInterface() {
+		if (this instanceof PhasePoint) {
+			PhasePoint thisPoint = (PhasePoint) this;
+			return thisPoint.getNode();
+		} else {
+			YPhasePoint thisPoint = (YPhasePoint) this;
+			return thisPoint.getNode();
+		}
+	}
 
-    <T extends AbstractPhase<?, ?>> void removePhase(T phaseToBeRemoved);
+	<T extends AbstractPhase<?, ?>> void removePhase(T phaseToBeRemoved);
 }

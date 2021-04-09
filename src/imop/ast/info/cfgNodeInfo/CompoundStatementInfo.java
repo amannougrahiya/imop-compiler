@@ -110,43 +110,46 @@ public class CompoundStatementInfo extends StatementInfo {
 					}
 				}
 			});
-			//			this.allSharedCellsInclusive.addAll(encloser.getInfo().getSharedCellsAtNode());
+			// this.allSharedCellsInclusive.addAll(encloser.getInfo().getSharedCellsAtNode());
 		}
 		this.populateSetsWithHeapCells();
 		invalidCellSets = false;
 
-		//		Node scopeChoice = getNode();
-		//		while (scopeChoice != null) {
-		//			if (scopeChoice instanceof TranslationUnit) {
-		//				for (Symbol sym : ((RootInfo) scopeChoice.getInfo()).getSymbolTable().values()) {
-		//					if (sym.isAVariable()) {
-		//						allCellsInclusive.add(sym);
-		//						if (this.getSharingAttribute(sym) == DataSharingAttribute.SHARED) {
-		//							allSharedCellsInclusive.add(sym);
-		//						}
-		//					}
-		//				}
-		//			} else if (scopeChoice instanceof FunctionDefinition) {
-		//				for (Symbol sym : ((FunctionDefinitionInfo) scopeChoice.getInfo()).getSymbolTable().values()) {
-		//					if (sym.isAVariable()) {
-		//						allCellsInclusive.add(sym);
-		//						if (this.getSharingAttribute(sym) == DataSharingAttribute.SHARED) {
-		//							allSharedCellsInclusive.add(sym);
-		//						}
-		//					}
-		//				}
-		//			} else if (scopeChoice instanceof CompoundStatement) {
-		//				for (Symbol sym : ((CompoundStatementInfo) scopeChoice.getInfo()).getSymbolTable().values()) {
-		//					if (sym.isAVariable()) {
-		//						allCellsInclusive.add(sym);
-		//						if (this.getSharingAttribute(sym) == DataSharingAttribute.SHARED) {
-		//							allSharedCellsInclusive.add(sym);
-		//						}
-		//					}
-		//				}
-		//			}
-		//			scopeChoice = (Node) Misc.getEnclosingBlock(scopeChoice);
-		//		}
+		// Node scopeChoice = getNode();
+		// while (scopeChoice != null) {
+		// if (scopeChoice instanceof TranslationUnit) {
+		// for (Symbol sym : ((RootInfo)
+		// scopeChoice.getInfo()).getSymbolTable().values()) {
+		// if (sym.isAVariable()) {
+		// allCellsInclusive.add(sym);
+		// if (this.getSharingAttribute(sym) == DataSharingAttribute.SHARED) {
+		// allSharedCellsInclusive.add(sym);
+		// }
+		// }
+		// }
+		// } else if (scopeChoice instanceof FunctionDefinition) {
+		// for (Symbol sym : ((FunctionDefinitionInfo)
+		// scopeChoice.getInfo()).getSymbolTable().values()) {
+		// if (sym.isAVariable()) {
+		// allCellsInclusive.add(sym);
+		// if (this.getSharingAttribute(sym) == DataSharingAttribute.SHARED) {
+		// allSharedCellsInclusive.add(sym);
+		// }
+		// }
+		// }
+		// } else if (scopeChoice instanceof CompoundStatement) {
+		// for (Symbol sym : ((CompoundStatementInfo)
+		// scopeChoice.getInfo()).getSymbolTable().values()) {
+		// if (sym.isAVariable()) {
+		// allCellsInclusive.add(sym);
+		// if (this.getSharingAttribute(sym) == DataSharingAttribute.SHARED) {
+		// allSharedCellsInclusive.add(sym);
+		// }
+		// }
+		// }
+		// }
+		// scopeChoice = (Node) Misc.getEnclosingBlock(scopeChoice);
+		// }
 
 	}
 
@@ -179,7 +182,7 @@ public class CompoundStatementInfo extends StatementInfo {
 
 	public CompoundStatementInfo(CompoundStatement owner) {
 		super(owner);
-		//		this.populateSymbolTable();
+		// this.populateSymbolTable();
 	}
 
 	@Override
@@ -249,7 +252,8 @@ public class CompoundStatementInfo extends StatementInfo {
 		assert (declaratorNameList != null);
 		if (declaratorNameList.isEmpty()) {
 			// This may just be a definition of certain type, without use of that type.
-			// In this case, we simply visit the declaration, so as to collect the defined type.
+			// In this case, we simply visit the declaration, so as to collect the defined
+			// type.
 			Type.getTypeTree(declaration, (CompoundStatement) this.getNode());
 			return;
 		}
@@ -282,13 +286,15 @@ public class CompoundStatementInfo extends StatementInfo {
 						Node oldDeclarationdNode = sym.getDeclaringNode();
 						if (oldDeclarationdNode instanceof Declaration) {
 							String newName = declaration.getInfo().getDeclaredName();
-							// If the name of some deleted symbol matches the one declared in this declaration, ...
+							// If the name of some deleted symbol matches the one declared in this
+							// declaration, ...
 							if (oldName.equals(newName)) {
 								Scopeable oldScope = sym.getDefiningScope();
 								if (oldScope instanceof CompoundStatement) {
 									CompoundStatement oldCS = (CompoundStatement) oldScope;
 									CompoundStatement newCS = ((CompoundStatement) this.getNode());
-									// .. and if the scope of one is the ancestor of the other in the scope tree, ...
+									// .. and if the scope of one is the ancestor of the other in the scope tree,
+									// ...
 									if (newCS.getInfo().getLexicallyEnclosedScopesInclusive().contains(oldCS)
 											|| oldCS.getInfo().getLexicallyEnclosedScopesInclusive().contains(newCS)) {
 										// .. then, reuse the old symbol, by changing its Declaration and Scope.
@@ -301,7 +307,8 @@ public class CompoundStatementInfo extends StatementInfo {
 						}
 					}
 				}
-				// If the required symbol is not present in deletedCells, we should obtain a new symbol and proceed.
+				// If the required symbol is not present in deletedCells, we should obtain a new
+				// symbol and proceed.
 				if (newSymbol == null) {
 					newSymbol = new Symbol(declaratorName, declaratorType, declaration,
 							(CompoundStatement) this.getNode());
@@ -316,7 +323,8 @@ public class CompoundStatementInfo extends StatementInfo {
 		assert (declaratorNameList != null);
 		if (declaratorNameList.isEmpty()) {
 			// This may just be a definition of certain type, without use of that type.
-			// In this case, we simply visit the declaration, so as to collect the defined type.
+			// In this case, we simply visit the declaration, so as to collect the defined
+			// type.
 			Type t = Type.getTypeTree(declaration.getF0(), (CompoundStatement) this.getNode());
 			String typeName = null;
 			if (t instanceof StructType) {
@@ -382,7 +390,8 @@ public class CompoundStatementInfo extends StatementInfo {
 	 * @return
 	 */
 	public Statement getCopyForUnrolling() {
-		// Step 1: Obtain a copy that does not contain any declarations at the top-most level.
+		// Step 1: Obtain a copy that does not contain any declarations at the top-most
+		// level.
 		Object[] stmtList = this.getCFGInfo().getElementList().stream().filter((n) -> (!(n instanceof Declaration)))
 				.toArray();
 		String newBodyStr = "{";
@@ -393,7 +402,8 @@ public class CompoundStatementInfo extends StatementInfo {
 		newBodyStr += "}";
 		Statement retCopyStmt = FrontEnd.parseAndNormalize(newBodyStr, Statement.class);
 
-		// Step 2: Obtain a mapping from old label names to new label names, for all nodes
+		// Step 2: Obtain a mapping from old label names to new label names, for all
+		// nodes
 		// inside the newly created copy.
 		HashMap<String, String> labelMap = new HashMap<>();
 		for (Node cfgNode : retCopyStmt.getInfo().getCFGInfo().getLexicalCFGContents()) {
@@ -409,7 +419,8 @@ public class CompoundStatementInfo extends StatementInfo {
 			}
 		}
 
-		// Step 3: Make sure that all the GotoStatement's now refer to the new label names instead of old.
+		// Step 3: Make sure that all the GotoStatement's now refer to the new label
+		// names instead of old.
 		for (GotoStatement gotoStmt : Misc.getInheritedEnclosee(retCopyStmt, GotoStatement.class)) {
 			if (labelMap.containsKey(gotoStmt.getInfo().getLabelName())) {
 				GotoStatement newGotoStmt = FrontEnd.parseAndNormalize(
@@ -418,7 +429,8 @@ public class CompoundStatementInfo extends StatementInfo {
 			}
 		}
 
-		// Step 4: Ensure that all the statements are not annotated with new label names instead of old.
+		// Step 4: Ensure that all the statements are not annotated with new label names
+		// instead of old.
 		for (Node element : retCopyStmt.getInfo().getCFGInfo().getLexicalCFGContents()) {
 			if (!(element instanceof Statement)) {
 				continue;
@@ -590,7 +602,8 @@ public class CompoundStatementInfo extends StatementInfo {
 		assert (declaratorNameList != null);
 		if (declaratorNameList.isEmpty()) {
 			// This may just be a definition of certain type, without use of that type.
-			// In this case, we simply visit the declaration, so as to collect the defined type.
+			// In this case, we simply visit the declaration, so as to collect the defined
+			// type.
 			Type.getTypeTree(declaration, (CompoundStatement) this.getNode());
 		}
 
@@ -627,7 +640,8 @@ public class CompoundStatementInfo extends StatementInfo {
 		assert (declaratorNameList != null);
 		if (declaratorNameList.isEmpty()) {
 			// This may just be a definition of certain type, without use of that type.
-			// In this case, we simply visit the declaration, so as to collect the defined type.
+			// In this case, we simply visit the declaration, so as to collect the defined
+			// type.
 			Type.getTypeTree(declaration, (CompoundStatement) this.getNode(), true);
 		}
 

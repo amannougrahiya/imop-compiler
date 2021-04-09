@@ -51,9 +51,9 @@ public class Deprecated_ImmediatePredecessorInserter extends DepthFirstVisitor {
 	 * <br>
 	 * 
 	 * @param pred
-	 *            the predecessor node.
+	 *             the predecessor node.
 	 * @param succ
-	 *            the successor node.
+	 *             the successor node.
 	 */
 	public void checkEdge(Node pred, Node succ) {
 		assert (pred != null && succ != null);
@@ -74,9 +74,9 @@ public class Deprecated_ImmediatePredecessorInserter extends DepthFirstVisitor {
 	 * <br>
 	 * 
 	 * @param pred
-	 *            the predecessor node.
+	 *             the predecessor node.
 	 * @param succ
-	 *            the successor node.
+	 *             the successor node.
 	 */
 	public void connect(Node pred, Node succ) {
 		assert (pred != null && succ != null);
@@ -114,7 +114,7 @@ public class Deprecated_ImmediatePredecessorInserter extends DepthFirstVisitor {
 	 * within <code>n</code>
 	 * 
 	 * @param n
-	 *            CFG node which needs to be checked for end-reachibility.
+	 *          CFG node which needs to be checked for end-reachibility.
 	 * @return
 	 *         true, if starting the control-flow from the begin of
 	 *         <code>n</code>,
@@ -122,7 +122,7 @@ public class Deprecated_ImmediatePredecessorInserter extends DepthFirstVisitor {
 	 */
 	boolean isEndReachable(Node n) {
 		assert (Misc.isCFGNode(n));
-		if (Misc.isCFGLeafNode(n)) {	// n is a leaf CFG node
+		if (Misc.isCFGLeafNode(n)) { // n is a leaf CFG node
 			if (n instanceof JumpStatement) {
 				return false;
 			} else {
@@ -158,7 +158,7 @@ public class Deprecated_ImmediatePredecessorInserter extends DepthFirstVisitor {
 	public void visit(FunctionDefinition n) {
 		assert (!n.getF2().present());
 		boolean reach;
-		NestedCFG ncfg = n.getInfo().getCFGInfo().getNestedCFG();	// Create a nested CFG "ncfg".
+		NestedCFG ncfg = n.getInfo().getCFGInfo().getNestedCFG(); // Create a nested CFG "ncfg".
 		CompoundStatement body = n.getF3();
 		NodeListOptional stmtList = body.getF1();
 		Node first = ncfg.getBegin();
@@ -202,10 +202,12 @@ public class Deprecated_ImmediatePredecessorInserter extends DepthFirstVisitor {
 			first = paramList.get(paramList.size() - 1);
 		}
 
-		if (body.getF1().present()) {	// If the containing body is not empty
-			Node element = Misc.getInternalFirstCFGNode(stmtList.getNodes().get(0)); // Obtain the first statement element (CFG node) in the body.
+		if (body.getF1().present()) { // If the containing body is not empty
+			Node element = Misc.getInternalFirstCFGNode(stmtList.getNodes().get(0)); // Obtain the first statement
+																						// element (CFG node) in the
+																						// body.
 			if (element == baseNode) {
-				checkEdge(first, element); // Add element to the succ list of begin of ncfg.			 
+				checkEdge(first, element); // Add element to the succ list of begin of ncfg.
 				if (targetNode instanceof ParameterDeclaration) {
 					Set<ParameterList> paramListSet = Misc.getInheritedEnclosee(n.getF1(), ParameterList.class);
 					ParameterList paramListNode = Misc.getSingleton(paramListSet);
@@ -227,7 +229,7 @@ public class Deprecated_ImmediatePredecessorInserter extends DepthFirstVisitor {
 				if (tempNode == stmtList.getNodes().get(stmtList.size() - 1)) { // For the last statement of the body
 					if (reach) { // If the end is reachable
 						if (ncfg.getEnd() == baseNode) {
-							checkEdge(element, ncfg.getEnd());							 // Add element to the pred list of end of ncfg.
+							checkEdge(element, ncfg.getEnd()); // Add element to the pred list of end of ncfg.
 							targetNode = Misc.getCompoundStatementElementWrapper(targetNode);
 							assert (targetNode != null);
 							stmtList.addNode(stmtList.size() - 1, targetNode);
@@ -238,9 +240,11 @@ public class Deprecated_ImmediatePredecessorInserter extends DepthFirstVisitor {
 				}
 				if (reach) { // For all non-last statements, if the end is reachable
 					Node nextElement = Misc.getInternalFirstCFGNode(
-							(stmtList.getNodes().get(stmtList.getNodes().indexOf(tempNode) + 1))); // Get the next CFG element in the list.
+							(stmtList.getNodes().get(stmtList.getNodes().indexOf(tempNode) + 1))); // Get the next CFG
+																									// element in the
+																									// list.
 					if (nextElement == baseNode) {
-						checkEdge(element, nextElement); // Add the next element in the succ list of current element.									
+						checkEdge(element, nextElement); // Add the next element in the succ list of current element.
 						targetNode = Misc.getCompoundStatementElementWrapper(targetNode);
 						assert (targetNode != null);
 						stmtList.addNode(stmtList.getNodes().indexOf(tempNode) + 1, targetNode);
@@ -327,7 +331,7 @@ public class Deprecated_ImmediatePredecessorInserter extends DepthFirstVisitor {
 		reach = isEndReachable(element);
 		if (reach) { // If the end is reachable
 			if (ncfg.getEnd() == baseNode) {
-				checkEdge(element, ncfg.getEnd()); 			 // Add element in the pred list of ncfg's end
+				checkEdge(element, ncfg.getEnd()); // Add element in the pred list of ncfg's end
 				Statement newStmt = this.addAfterStatement(targetNode, n.getParConsF2(), ncfg.getEnd());
 				if (newStmt != n.getParConsF2()) {
 					n.setParConsF2(newStmt);
@@ -369,7 +373,7 @@ public class Deprecated_ImmediatePredecessorInserter extends DepthFirstVisitor {
 
 		}
 		if (elementBody == baseNode) {
-			checkEdge(elementTerm, elementBody); // Add elementBody to the succ of elementTerm			
+			checkEdge(elementTerm, elementBody); // Add elementBody to the succ of elementTerm
 			Statement newStmt = this.addBeforeStatement(targetNode, n.getF3(), elementTerm);
 			if (newStmt != n.getF3()) {
 				n.setF3(newStmt);
@@ -382,7 +386,7 @@ public class Deprecated_ImmediatePredecessorInserter extends DepthFirstVisitor {
 		reach = isEndReachable(elementBody);
 		if (reach) {
 			if (elementStep == baseNode) {
-				checkEdge(elementBody, elementStep); // Add elementStep to the succ of elementBody			
+				checkEdge(elementBody, elementStep); // Add elementStep to the succ of elementBody
 				Statement newStmt = this.addAfterStatement(targetNode, n.getF3(), elementStep);
 				if (newStmt != n.getF3()) {
 					n.setF3(newStmt);
@@ -412,9 +416,11 @@ public class Deprecated_ImmediatePredecessorInserter extends DepthFirstVisitor {
 			return;
 		}
 		for (Node secNode : n.getF4().getF2().getNodes()) { // For all the sections
-			Node element = Misc.getInternalFirstCFGNode(((ASection) secNode).getF3()); // Obtain the CFG element of section's body
+			Node element = Misc.getInternalFirstCFGNode(((ASection) secNode).getF3()); // Obtain the CFG element of
+																						// section's body
 			if (element == baseNode) {
-				checkEdge(ncfg.getBegin(), element); // Add the element to the succ of begin, and pred of end of the NestedCFG			
+				checkEdge(ncfg.getBegin(), element); // Add the element to the succ of begin, and pred of end of the
+														// NestedCFG
 				Statement oldStmt = ((ASection) secNode).getF3();
 				Statement newStmt = this.addBeforeStatement(targetNode, oldStmt, ncfg.getBegin());
 				if (newStmt != oldStmt) {
@@ -445,14 +451,15 @@ public class Deprecated_ImmediatePredecessorInserter extends DepthFirstVisitor {
 	 */
 	@Override
 	public void visit(SingleConstruct n) {
-		NestedCFG ncfg = n.getInfo().getCFGInfo().getNestedCFG();	// Obtain the NestedCFG "ncfg"
+		NestedCFG ncfg = n.getInfo().getCFGInfo().getNestedCFG(); // Obtain the NestedCFG "ncfg"
 		if (ncfg.getBegin() == baseNode) {
 			BasicTransform.deprecated_insertImmediatePredecessor(n, targetNode);
 			return;
 		}
-		Node element = Misc.getInternalFirstCFGNode(n.getF4()); // Obtain the CFG element from body of the Single construct.
+		Node element = Misc.getInternalFirstCFGNode(n.getF4()); // Obtain the CFG element from body of the Single
+																// construct.
 		if (element == baseNode) {
-			checkEdge(ncfg.getBegin(), element); // Add element to the succ of begin and pred of end		
+			checkEdge(ncfg.getBegin(), element); // Add element to the succ of begin and pred of end
 			Statement newStmt = this.addBeforeStatement(targetNode, n.getF4(), ncfg.getBegin());
 			if (newStmt != n.getF4()) {
 				n.setF4(newStmt);
@@ -547,7 +554,7 @@ public class Deprecated_ImmediatePredecessorInserter extends DepthFirstVisitor {
 		boolean reach = isEndReachable(element);
 		if (reach) { // If the end is reachable
 			if (ncfg.getEnd() == baseNode) {
-				checkEdge(element, ncfg.getEnd()); 			 // Add element in the pred list of ncfg's end
+				checkEdge(element, ncfg.getEnd()); // Add element in the pred list of ncfg's end
 				Statement newStmt = this.addAfterStatement(targetNode, n.getF4(), ncfg.getEnd());
 				if (newStmt != n.getF4()) {
 					n.setF4(newStmt);
@@ -595,14 +602,14 @@ public class Deprecated_ImmediatePredecessorInserter extends DepthFirstVisitor {
 	 */
 	@Override
 	public void visit(MasterConstruct n) {
-		NestedCFG ncfg = n.getInfo().getCFGInfo().getNestedCFG();	// Obtain the NestedCFG "ncfg"
+		NestedCFG ncfg = n.getInfo().getCFGInfo().getNestedCFG(); // Obtain the NestedCFG "ncfg"
 		if (ncfg.getBegin() == baseNode) {
 			BasicTransform.deprecated_insertImmediatePredecessor(n, targetNode);
 			return;
 		}
 		Node element = Misc.getInternalFirstCFGNode(n.getF3()); // Obtain the CFG element of the body of the construct
 		if (element == baseNode) {
-			checkEdge(ncfg.getBegin(), element); // Add the element to the succ and pred of begin and end respectively		
+			checkEdge(ncfg.getBegin(), element); // Add the element to the succ and pred of begin and end respectively
 			Statement newStmt = this.addBeforeStatement(targetNode, n.getF3(), ncfg.getBegin());
 			if (newStmt != n.getF3()) {
 				n.setF3(newStmt);
@@ -739,22 +746,23 @@ public class Deprecated_ImmediatePredecessorInserter extends DepthFirstVisitor {
 		}
 		NodeListOptional stmtList = n.getF1();
 		if (n.getF1().present()) { // If the block isn't empty
-			Node element = Misc.getInternalFirstCFGNode(stmtList.getNodes().get(0)); // Obtain the CFG element for the first statement in the block
+			Node element = Misc.getInternalFirstCFGNode(stmtList.getNodes().get(0)); // Obtain the CFG element for the
+																						// first statement in the block
 
 			if (element == baseNode) {
-				checkEdge(ncfg.getBegin(), element); //Add the first statement to the succ of begin			
+				checkEdge(ncfg.getBegin(), element); // Add the first statement to the succ of begin
 				targetNode = Misc.getCompoundStatementElementWrapper(targetNode);
 				stmtList.addNode(0, targetNode);
 				return;
 			}
 
 			for (Node dS : stmtList.getNodes()) { // For all the statements
-				element = Misc.getInternalFirstCFGNode(dS); // Obtain the CFG element of the statement 
+				element = Misc.getInternalFirstCFGNode(dS); // Obtain the CFG element of the statement
 				reach = isEndReachable(element);
 				if (reach) { // If the end is reachable
 					if (dS == stmtList.getNodes().get(stmtList.size() - 1)) { // If this is the last statement
 						if (ncfg.getEnd() == baseNode) {
-							checkEdge(element, ncfg.getEnd()); // Add end to the succ of this statement						
+							checkEdge(element, ncfg.getEnd()); // Add end to the succ of this statement
 							targetNode = Misc.getCompoundStatementElementWrapper(targetNode);
 							stmtList.addNode(stmtList.size() - 1, targetNode);
 							return;
@@ -762,9 +770,16 @@ public class Deprecated_ImmediatePredecessorInserter extends DepthFirstVisitor {
 						return;
 					}
 					Node nextElement = Misc
-							.getInternalFirstCFGNode(stmtList.getNodes().get(stmtList.getNodes().indexOf(dS) + 1)); // Obtain the CFG element of the next statement
+							.getInternalFirstCFGNode(stmtList.getNodes().get(stmtList.getNodes().indexOf(dS) + 1)); // Obtain
+																													// the
+																													// CFG
+																													// element
+																													// of
+																													// the
+																													// next
+																													// statement
 					if (nextElement == baseNode) {
-						checkEdge(element, nextElement); // Add next statement to the succ of the current statement					
+						checkEdge(element, nextElement); // Add next statement to the succ of the current statement
 						targetNode = Misc.getCompoundStatementElementWrapper(targetNode);
 						stmtList.addNode(stmtList.getNodes().indexOf(dS) + 1, targetNode);
 						return;
@@ -805,7 +820,7 @@ public class Deprecated_ImmediatePredecessorInserter extends DepthFirstVisitor {
 			return;
 		}
 		if (elementThen == baseNode) {
-			checkEdge(elementCond, elementThen); // Add elementThen to the succ of elementCond		
+			checkEdge(elementCond, elementThen); // Add elementThen to the succ of elementCond
 			Statement oldStmt = n.getF4();
 			Statement newStmt = this.addBeforeStatement(targetNode, oldStmt, elementCond);
 			if (oldStmt != newStmt) {
@@ -817,7 +832,7 @@ public class Deprecated_ImmediatePredecessorInserter extends DepthFirstVisitor {
 		reach = isEndReachable(elementThen);
 		if (reach) {
 			if (ncfg.getEnd() == baseNode) {
-				checkEdge(elementThen, ncfg.getEnd()); // Add end to the succ of elementThen			
+				checkEdge(elementThen, ncfg.getEnd()); // Add end to the succ of elementThen
 				Statement oldStmt = n.getF4();
 				Statement newStmt = this.addAfterStatement(targetNode, oldStmt, ncfg.getEnd());
 				if (newStmt != oldStmt) {
@@ -825,12 +840,12 @@ public class Deprecated_ImmediatePredecessorInserter extends DepthFirstVisitor {
 				}
 			}
 		}
-		if (n.getF5().present()) {	// If "else" part is present
+		if (n.getF5().present()) { // If "else" part is present
 			Node elementElse = Misc.getInternalFirstCFGNode(((NodeSequence) n.getF5().getNode()).getNodes().get(1));
 			NodeSequence nodes = ((NodeSequence) n.getF5().getNode());
 			Statement elseStmt = (Statement) nodes.getNodes().get(1);
 			if (elementElse == baseNode) {
-				checkEdge(elementCond, elementElse); // Add elementElse to the succ of elementCond			
+				checkEdge(elementCond, elementElse); // Add elementElse to the succ of elementCond
 				Statement oldStmt = elseStmt;
 				Statement newStmt = this.addBeforeStatement(targetNode, oldStmt, elementCond);
 				if (newStmt != oldStmt) {
@@ -841,7 +856,7 @@ public class Deprecated_ImmediatePredecessorInserter extends DepthFirstVisitor {
 			reach = isEndReachable(elementElse);
 			if (reach) { // If end of elementElse is reachable
 				if (ncfg.getEnd() == baseNode) {
-					checkEdge(elementElse, ncfg.getEnd()); // Add end to the succ of elementElse				
+					checkEdge(elementElse, ncfg.getEnd()); // Add end to the succ of elementElse
 					Statement oldStmt = elseStmt;
 					Statement newStmt = this.addAfterStatement(targetNode, oldStmt, ncfg.getEnd());
 					if (newStmt != oldStmt) {
@@ -850,9 +865,9 @@ public class Deprecated_ImmediatePredecessorInserter extends DepthFirstVisitor {
 					}
 				}
 			}
-		} else {	// If "else" isn't present
+		} else { // If "else" isn't present
 			if (ncfg.getEnd() == baseNode) {
-				//				checkEdge(elementCond, ncfg.end); // Add end to the succ of elementCond			
+				// checkEdge(elementCond, ncfg.end); // Add end to the succ of elementCond
 				/*
 				 * Here, we need to insert the else-clause separately.
 				 */
@@ -905,7 +920,7 @@ public class Deprecated_ImmediatePredecessorInserter extends DepthFirstVisitor {
 		reach = isEndReachable(elementBody);
 		if (reach) { // If end of the body is reachable
 			if (ncfg.getEnd() == baseNode) {
-				checkEdge(elementBody, ncfg.getEnd()); // Add end to the succ of elementBody			
+				checkEdge(elementBody, ncfg.getEnd()); // Add end to the succ of elementBody
 				Statement oldStmt = n.getF4();
 				Statement newStmt = this.addAfterStatement(targetNode, oldStmt, ncfg.getEnd());
 				if (newStmt != oldStmt) {
@@ -914,7 +929,10 @@ public class Deprecated_ImmediatePredecessorInserter extends DepthFirstVisitor {
 			}
 		}
 
-		Collection<Statement> caseStmts = n.getInfo().getRelevantCFGStatements(); // OLD: Misc.getCaseStatements(n); // Obtain the vector of all the immediate cases and default within the current switch block
+		Collection<Statement> caseStmts = n.getInfo().getRelevantCFGStatements(); // OLD: Misc.getCaseStatements(n); //
+																					// Obtain the vector of all the
+																					// immediate cases and default
+																					// within the current switch block
 		for (Node caseS : caseStmts) { // For all the case statements
 			Node elementCase = Misc.getInternalFirstCFGNode(caseS); // Obtain the CFG element of case statement
 			if (elementCase == baseNode) {
@@ -934,7 +952,8 @@ public class Deprecated_ImmediatePredecessorInserter extends DepthFirstVisitor {
 			}
 		}
 
-		// If there was no DefaultLabeledStatement, add an edge from Switch's expression to the endSwitchStatement
+		// If there was no DefaultLabeledStatement, add an edge from Switch's expression
+		// to the endSwitchStatement
 		if (!n.getInfo().hasDefaultLabel()) {
 			if (ncfg.getEnd() == baseNode) {
 				// Insert the new defaultLabaeledStatement in the AST.
@@ -986,7 +1005,7 @@ public class Deprecated_ImmediatePredecessorInserter extends DepthFirstVisitor {
 		}
 
 		if (elementBody == baseNode) {
-			checkEdge(elementCond, elementBody); // Add elementBody to the succ of elementCond		
+			checkEdge(elementCond, elementBody); // Add elementBody to the succ of elementCond
 			Statement oldStmt = n.getF4();
 			Statement newStmt = this.addBeforeStatement(targetNode, oldStmt, elementCond);
 			if (oldStmt != newStmt) {
@@ -1001,7 +1020,7 @@ public class Deprecated_ImmediatePredecessorInserter extends DepthFirstVisitor {
 		reach = isEndReachable(elementBody);
 		if (reach) { // If end of body is reachable
 			if (elementCond == baseNode) {
-				checkEdge(elementBody, elementCond); // Add elementCond to the succ of elementBody			
+				checkEdge(elementBody, elementCond); // Add elementCond to the succ of elementBody
 				Statement oldStmt = n.getF4();
 				Statement newStmt = this.addAfterStatement(targetNode, oldStmt, elementCond);
 				if (newStmt != oldStmt) {
@@ -1033,7 +1052,7 @@ public class Deprecated_ImmediatePredecessorInserter extends DepthFirstVisitor {
 		Node elementCond = n.getF4();
 
 		if (elementBody == baseNode) {
-			checkEdge(ncfg.getBegin(), elementBody); // Add elementBody to the succ of begin		
+			checkEdge(ncfg.getBegin(), elementBody); // Add elementBody to the succ of begin
 
 			Statement oldStmt = n.getF1();
 			Statement newStmt = this.addBeforeStatement(targetNode, oldStmt, ncfg.getBegin());
@@ -1045,7 +1064,7 @@ public class Deprecated_ImmediatePredecessorInserter extends DepthFirstVisitor {
 		reach = isEndReachable(elementBody);
 		if (reach) { // If end of elementBody is reachable
 			if (elementCond == baseNode) {
-				checkEdge(elementBody, elementCond); // Add elementCond to the succ of elementBody			
+				checkEdge(elementBody, elementCond); // Add elementCond to the succ of elementBody
 				Statement oldStmt = n.getF1();
 				Statement newStmt = this.addAfterStatement(targetNode, oldStmt, elementCond);
 				if (newStmt != oldStmt) {
@@ -1055,7 +1074,7 @@ public class Deprecated_ImmediatePredecessorInserter extends DepthFirstVisitor {
 		}
 
 		if (elementBody == baseNode) {
-			checkEdge(elementCond, elementBody); // Add elementBody and end to the succ of elementCond		
+			checkEdge(elementCond, elementBody); // Add elementBody and end to the succ of elementCond
 			Statement oldStmt = n.getF1();
 			Statement newStmt = this.addBeforeStatement(targetNode, oldStmt, elementCond);
 			if (oldStmt != newStmt) {
@@ -1097,7 +1116,7 @@ public class Deprecated_ImmediatePredecessorInserter extends DepthFirstVisitor {
 				// Don't return here.
 			}
 
-			if (n.getF4().present()) { // If termination condition is present				
+			if (n.getF4().present()) { // If termination condition is present
 				elementTerm = n.getF4().getNode(); // Obtain CFG element of the termination condition
 
 				if (elementTerm == baseNode) {
@@ -1112,7 +1131,7 @@ public class Deprecated_ImmediatePredecessorInserter extends DepthFirstVisitor {
 					BasicTransform.deprecated_insertImmediatePredecessor(n, targetNode);
 				}
 				if (elementBody == baseNode) {
-					checkEdge(elementTerm, elementBody); // Add elementBody to the succ of elementTerm				
+					checkEdge(elementTerm, elementBody); // Add elementBody to the succ of elementTerm
 					Statement oldStmt = n.getF8();
 					Statement newStmt = this.addBeforeStatement(targetNode, oldStmt, elementTerm);
 					if (newStmt != oldStmt) {
@@ -1130,7 +1149,7 @@ public class Deprecated_ImmediatePredecessorInserter extends DepthFirstVisitor {
 					elementStep = n.getF6().getNode();
 					if (reachStmt) { // If the body's end is reachable
 						if (elementStep == baseNode) {
-							checkEdge(elementBody, elementStep); // Add elementStep to the succ of elementBody						
+							checkEdge(elementBody, elementStep); // Add elementStep to the succ of elementBody
 							Statement oldStmt = n.getF8();
 							Statement newStmt = this.addAfterStatement(targetNode, oldStmt, elementStep);
 							if (newStmt != oldStmt) {
@@ -1158,7 +1177,7 @@ public class Deprecated_ImmediatePredecessorInserter extends DepthFirstVisitor {
 				} else { // If step is not present
 					if (reachStmt) { // If the body's end is reachable
 						if (elementTerm == baseNode) {
-							checkEdge(elementBody, elementTerm); // Add elementTerm to the succ of elementBody						
+							checkEdge(elementBody, elementTerm); // Add elementTerm to the succ of elementBody
 							Statement oldStmt = n.getF8();
 							Statement newStmt = this.addAfterStatement(targetNode, oldStmt, elementTerm);
 							if (newStmt != oldStmt) {
@@ -1171,7 +1190,7 @@ public class Deprecated_ImmediatePredecessorInserter extends DepthFirstVisitor {
 				}
 			} else { // If the termination condition is not present
 				if (elementBody == baseNode) {
-					checkEdge(elementInit, elementBody); // Add elementBody to the succ of elementInit				
+					checkEdge(elementInit, elementBody); // Add elementBody to the succ of elementInit
 					Statement oldStmt = n.getF8();
 					Statement newStmt = this.addBeforeStatement(targetNode, oldStmt, elementInit);
 					if (newStmt != oldStmt) {
@@ -1185,7 +1204,7 @@ public class Deprecated_ImmediatePredecessorInserter extends DepthFirstVisitor {
 						elementStep = n.getF6().getNode(); // Obtain CFG element of step
 
 						if (elementStep == baseNode) {
-							checkEdge(elementBody, elementStep); // Add elementStep to the succ of elementBody						
+							checkEdge(elementBody, elementStep); // Add elementStep to the succ of elementBody
 							Statement oldStmt = n.getF8();
 							Statement newStmt = this.addAfterStatement(targetNode, oldStmt, elementStep);
 							if (newStmt != oldStmt) {
@@ -1195,7 +1214,7 @@ public class Deprecated_ImmediatePredecessorInserter extends DepthFirstVisitor {
 							}
 						}
 						if (elementBody == baseNode) {
-							checkEdge(elementStep, elementBody); // Add elementBody to the succ of elementStep						
+							checkEdge(elementStep, elementBody); // Add elementBody to the succ of elementStep
 							Statement oldStmt = n.getF8();
 							Statement newStmt = this.addBeforeStatement(targetNode, oldStmt, elementStep);
 							if (newStmt != oldStmt) {
@@ -1206,7 +1225,7 @@ public class Deprecated_ImmediatePredecessorInserter extends DepthFirstVisitor {
 						}
 					} else { // If step is not present
 						if (elementBody == baseNode) {
-							checkEdge(elementBody, elementBody); // Add elementBody to its own succ						
+							checkEdge(elementBody, elementBody); // Add elementBody to its own succ
 							Statement oldStmt = n.getF8();
 							Statement newStmt = this.addBeforeStatement(targetNode, oldStmt, elementBody);
 							if (newStmt != oldStmt) {
@@ -1226,7 +1245,7 @@ public class Deprecated_ImmediatePredecessorInserter extends DepthFirstVisitor {
 				// Don't return here.
 			}
 			if (elementBody == baseNode) {
-				checkEdge(elementTerm, elementBody); // Add elementBody to the succ of elementTerm			
+				checkEdge(elementTerm, elementBody); // Add elementBody to the succ of elementTerm
 				Statement oldStmt = n.getF8();
 				Statement newStmt = this.addBeforeStatement(targetNode, oldStmt, elementTerm);
 				if (newStmt != oldStmt) {
@@ -1245,7 +1264,7 @@ public class Deprecated_ImmediatePredecessorInserter extends DepthFirstVisitor {
 					elementStep = n.getF6().getNode(); // Obtain CFG element of step
 
 					if (elementStep == baseNode) {
-						checkEdge(elementBody, elementStep); // Add elementStep to the succ of elementBody					
+						checkEdge(elementBody, elementStep); // Add elementStep to the succ of elementBody
 						Statement oldStmt = n.getF8();
 						Statement newStmt = this.addAfterStatement(targetNode, oldStmt, elementStep);
 						if (newStmt != oldStmt) {
@@ -1255,7 +1274,7 @@ public class Deprecated_ImmediatePredecessorInserter extends DepthFirstVisitor {
 						}
 					}
 					if (elementTerm == baseNode) {
-						checkEdge(elementStep, elementTerm); // Add elementTerm to the succ of elementStep					
+						checkEdge(elementStep, elementTerm); // Add elementTerm to the succ of elementStep
 						n.getF6().setNode(null);
 						Statement oldStmt = n.getF8();
 						Statement newStmt = this.addAfterStatement(elementStep, oldStmt, elementTerm);
@@ -1272,7 +1291,7 @@ public class Deprecated_ImmediatePredecessorInserter extends DepthFirstVisitor {
 					}
 				} else { // If step is not present
 					if (elementTerm == baseNode) {
-						checkEdge(elementBody, elementTerm); // Add elementTerm to the succ of elementBody					
+						checkEdge(elementBody, elementTerm); // Add elementTerm to the succ of elementBody
 						Statement oldStmt = n.getF8();
 						Statement newStmt = this.addAfterStatement(targetNode, oldStmt, elementTerm);
 						if (newStmt != oldStmt) {
@@ -1286,15 +1305,16 @@ public class Deprecated_ImmediatePredecessorInserter extends DepthFirstVisitor {
 				elementStep = n.getF6().getNode(); // Obtain CFG element of step
 
 				if (elementTerm == baseNode) {
-					//					checkEdge(elementStep, elementTerm); // Add elementTerm to the succ of elementStep				
+					// checkEdge(elementStep, elementTerm); // Add elementTerm to the succ of
+					// elementStep
 					Misc.exitDueToLackOfFeature("Cannot insert any expression between e3 -::= e2 of a for-loop "
 							+ "since the body of the loop doesn't reach e3.");
 				}
 			}
 
-		} else { //if neither init nor term is present
+		} else { // if neither init nor term is present
 			if (elementBody == baseNode) {
-				checkEdge(ncfg.getBegin(), elementBody); // Add the body to the succ of begin			
+				checkEdge(ncfg.getBegin(), elementBody); // Add the body to the succ of begin
 				Statement oldStmt = n.getF8();
 				Statement newStmt = this.addBeforeStatement(targetNode, oldStmt, ncfg.getBegin());
 				if (newStmt != oldStmt) {
@@ -1304,11 +1324,11 @@ public class Deprecated_ImmediatePredecessorInserter extends DepthFirstVisitor {
 				}
 			}
 			if (reachStmt) { // If body's end is reachable
-				if (n.getF6().present()) { //If elementStep is present
+				if (n.getF6().present()) { // If elementStep is present
 					elementStep = n.getF6().getNode(); // Obtain CFG element of step
 
 					if (elementStep == baseNode) {
-						checkEdge(elementBody, elementStep); // Add elementStep to the succ of elementBody 					
+						checkEdge(elementBody, elementStep); // Add elementStep to the succ of elementBody
 						Statement oldStmt = n.getF8();
 						Statement newStmt = this.addAfterStatement(targetNode, oldStmt, elementStep);
 						if (newStmt != oldStmt) {
@@ -1318,7 +1338,7 @@ public class Deprecated_ImmediatePredecessorInserter extends DepthFirstVisitor {
 						}
 					}
 					if (elementBody == baseNode) {
-						checkEdge(elementStep, elementBody); // Add elementBody to the succ of elementStep					
+						checkEdge(elementStep, elementBody); // Add elementBody to the succ of elementStep
 						Statement oldStmt = n.getF8();
 						Statement newStmt = this.addBeforeStatement(targetNode, oldStmt, elementStep);
 						if (newStmt != oldStmt) {
@@ -1329,7 +1349,7 @@ public class Deprecated_ImmediatePredecessorInserter extends DepthFirstVisitor {
 					}
 				} else { // If elementStep is not present
 					if (elementBody == baseNode) {
-						checkEdge(elementBody, elementBody); // Add elementBody to its own succ					
+						checkEdge(elementBody, elementBody); // Add elementBody to its own succ
 						Statement oldStmt = n.getF8();
 						Statement newStmt = this.addBeforeStatement(targetNode, oldStmt, elementBody);
 						if (newStmt != oldStmt) {
@@ -1357,8 +1377,10 @@ public class Deprecated_ImmediatePredecessorInserter extends DepthFirstVisitor {
 
 		if (func == null) {
 			// OLD CODE: If enclosing function is not found, we should add this link later.
-			//			subRoot.getInfo().getIncompleteSemantics()
-			//					.addToEdges(new IncompleteEdge(IncompleteEdge.TypeOfIncompleteness.UNKNOWN_GOTO_DESTINATION, n));
+			// subRoot.getInfo().getIncompleteSemantics()
+			// .addToEdges(new
+			// IncompleteEdge(IncompleteEdge.TypeOfIncompleteness.UNKNOWN_GOTO_DESTINATION,
+			// n));
 			return;
 		}
 
@@ -1367,16 +1389,19 @@ public class Deprecated_ImmediatePredecessorInserter extends DepthFirstVisitor {
 		func.accept(labelVisitor, n.getF1().getTokenImage());
 
 		if (labelVisitor.labelNode == null) {
-			// OLD CODE: If label not found in the enclosing function, add to the incompleteness and proceed.
-			//			subRoot.getInfo().getIncompleteSemantics()
-			//					.addToEdges(new IncompleteEdge(IncompleteEdge.TypeOfIncompleteness.UNKNOWN_GOTO_DESTINATION, n));
+			// OLD CODE: If label not found in the enclosing function, add to the
+			// incompleteness and proceed.
+			// subRoot.getInfo().getIncompleteSemantics()
+			// .addToEdges(new
+			// IncompleteEdge(IncompleteEdge.TypeOfIncompleteness.UNKNOWN_GOTO_DESTINATION,
+			// n));
 			return;
 		}
 
-		// Add target to the succ of n (the Goto statement)		
+		// Add target to the succ of n (the Goto statement)
 		Node target = Misc.getInternalFirstCFGNode(labelVisitor.labelNode);
 		if (target == baseNode) {
-			//			checkEdge(n, target);
+			// checkEdge(n, target);
 		}
 		return;
 	}
@@ -1389,21 +1414,26 @@ public class Deprecated_ImmediatePredecessorInserter extends DepthFirstVisitor {
 	 */
 	@Override
 	public void visit(ContinueStatement n) {
-		Node targetOwn = Misc.getEnclosingLoopOrForConstruct(n);	// Obtain the owner loop of this continue statement 
+		Node targetOwn = Misc.getEnclosingLoopOrForConstruct(n); // Obtain the owner loop of this continue statement
 
 		if (targetOwn == null) {
-			// OLD CODE: If target-owner is not found, add to the incompleteness and proceed.
-			//			subRoot.getInfo().getIncompleteSemantics().addToEdges(
-			//					new IncompleteEdge(IncompleteEdge.TypeOfIncompleteness.UNKNOWN_CONTINUE_DESTINATION, n));
+			// OLD CODE: If target-owner is not found, add to the incompleteness and
+			// proceed.
+			// subRoot.getInfo().getIncompleteSemantics().addToEdges(
+			// new
+			// IncompleteEdge(IncompleteEdge.TypeOfIncompleteness.UNKNOWN_CONTINUE_DESTINATION,
+			// n));
 			return;
 		}
 
 		Node target = null; // target represents the target statement of this continue
 
 		if (targetOwn instanceof WhileStatement) {
-			target = Misc.getInternalFirstCFGNode(((WhileStatement) targetOwn).getF2()); // Target is the termination condition
+			target = Misc.getInternalFirstCFGNode(((WhileStatement) targetOwn).getF2()); // Target is the termination
+																							// condition
 		} else if (targetOwn instanceof DoStatement) {
-			target = Misc.getInternalFirstCFGNode(((DoStatement) targetOwn).getF4()); // Target is the termination condition
+			target = Misc.getInternalFirstCFGNode(((DoStatement) targetOwn).getF4()); // Target is the termination
+																						// condition
 
 		} else if (targetOwn instanceof ForStatement) {
 			ForStatement forS = ((ForStatement) targetOwn);
@@ -1417,7 +1447,8 @@ public class Deprecated_ImmediatePredecessorInserter extends DepthFirstVisitor {
 
 		}
 		if (target == baseNode) {
-			//			checkEdge(n, target); // Add the target to the succ of n, i.e., the Continue statement		
+			// checkEdge(n, target); // Add the target to the succ of n, i.e., the Continue
+			// statement
 		}
 		return;
 	}
@@ -1434,14 +1465,18 @@ public class Deprecated_ImmediatePredecessorInserter extends DepthFirstVisitor {
 
 		if (targetOwn == null) {
 			// OLD CODE: If target-owner not found, add to the incompleteness and return.
-			//			subRoot.getInfo().getIncompleteSemantics()
-			//					.addToEdges(new IncompleteEdge(IncompleteEdge.TypeOfIncompleteness.UNKNOWN_BREAK_DESTINATION, n));
+			// subRoot.getInfo().getIncompleteSemantics()
+			// .addToEdges(new
+			// IncompleteEdge(IncompleteEdge.TypeOfIncompleteness.UNKNOWN_BREAK_DESTINATION,
+			// n));
 			return;
 		}
 
-		Node target = targetOwn.getInfo().getCFGInfo().getNestedCFG().getEnd(); // get the endStatement of the associated loop/switch
+		Node target = targetOwn.getInfo().getCFGInfo().getNestedCFG().getEnd(); // get the endStatement of the
+																				// associated loop/switch
 		if (target == baseNode) {
-			//			checkEdge(n, target); // Add target to the succ of n, i.e., the Break Statement		
+			// checkEdge(n, target); // Add target to the succ of n, i.e., the Break
+			// Statement
 		}
 		return;
 	}
@@ -1460,14 +1495,17 @@ public class Deprecated_ImmediatePredecessorInserter extends DepthFirstVisitor {
 		if (targetOwn == null) {
 			// OLD CODE:
 			// If enclosing function is not found, add to the incompleteness and return.
-			//			subRoot.getInfo().getIncompleteSemantics()
-			//					.addToEdges(new IncompleteEdge(IncompleteEdge.TypeOfIncompleteness.UNKNOWN_RETURN_DESTINATION, n));
+			// subRoot.getInfo().getIncompleteSemantics()
+			// .addToEdges(new
+			// IncompleteEdge(IncompleteEdge.TypeOfIncompleteness.UNKNOWN_RETURN_DESTINATION,
+			// n));
 			return;
 		}
 
 		Node target = targetOwn.getInfo().getCFGInfo().getNestedCFG().getEnd(); // get endNode of the enclosing function
 		if (target == baseNode) {
-			//			checkEdge(n, target); // Add target to the succ of n, i.e., the Return statement
+			// checkEdge(n, target); // Add target to the succ of n, i.e., the Return
+			// statement
 		}
 		return;
 	}
@@ -1518,13 +1556,13 @@ public class Deprecated_ImmediatePredecessorInserter extends DepthFirstVisitor {
 	 * or a function-definition.
 	 * 
 	 * @param targetNode
-	 *            node that has to be added just after {@code stmt}.
+	 *                   node that has to be added just after {@code stmt}.
 	 * @param stmt
-	 *            statement just after which {@code targetNode} has to be
-	 *            added.
+	 *                   statement just after which {@code targetNode} has to be
+	 *                   added.
 	 * @param
 	 * CFG
-	 *            successor of the statement {@code stmt}.
+	 *                   successor of the statement {@code stmt}.
 	 * 
 	 * @return
 	 */
@@ -1550,7 +1588,7 @@ public class Deprecated_ImmediatePredecessorInserter extends DepthFirstVisitor {
 			endNode.getInfo().getCFGInfo().getPredBlocks().clear();
 			this.connect(targetNode, endNode);
 
-			// Fix the AST edges. 
+			// Fix the AST edges.
 			targetNode = Misc.getCompoundStatementElementWrapper(targetNode);
 			cs.getF1().addNode(cs.getF1().getNodes().size() - 1, targetNode);
 			return stmt;
@@ -1594,13 +1632,13 @@ public class Deprecated_ImmediatePredecessorInserter extends DepthFirstVisitor {
 	 * of {@code stmt} is not a compound-statement or a function-definition.
 	 * 
 	 * @param targetNode
-	 *            node that has to be added immediately before {@code stmt}.
+	 *                   node that has to be added immediately before {@code stmt}.
 	 * @param stmt
-	 *            statement just before which {@code targetNode} has to be
-	 *            added.
+	 *                   statement just before which {@code targetNode} has to be
+	 *                   added.
 	 * @param
 	 * CFG
-	 *            predecessor of the statement {@code stmt}.
+	 *                   predecessor of the statement {@code stmt}.
 	 * 
 	 * @return
 	 */
@@ -1626,7 +1664,7 @@ public class Deprecated_ImmediatePredecessorInserter extends DepthFirstVisitor {
 			beginNode.getInfo().getCFGInfo().getSuccBlocks().clear();
 			this.connect(beginNode, targetNode);
 
-			// Fix the AST edges. 
+			// Fix the AST edges.
 			targetNode = Misc.getCompoundStatementElementWrapper(targetNode);
 			cs.getF1().addNode(0, targetNode);
 			return stmt;

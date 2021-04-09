@@ -55,7 +55,8 @@ public class ForStatementCFGInfo extends CFGInfo {
 
 		Program.invalidColumnNum = true;
 		AutomatedUpdater.updateInformationForAddition(e1);
-		//		AutomatedUpdater.invalidateSymbolsInNode(nodeOptional);// Added, so that any changes from points-to may be reflected here.
+		// AutomatedUpdater.invalidateSymbolsInNode(nodeOptional);// Added, so that any
+		// changes from points-to may be reflected here.
 	}
 
 	public Expression getInitExpression() {
@@ -83,7 +84,8 @@ public class ForStatementCFGInfo extends CFGInfo {
 			AutomatedUpdater.invalidateSymbolsInNode(oldInit);
 			AutomatedUpdater.updatePhaseAndInterTaskEdgesUponRemoval(affectedBeginPhasePoints);
 			AutomatedUpdater.updateFlowFactsForward(rerunNodesForward); // Called here after removal is successful.
-			//			AutomatedUpdater.invalidateSymbolsInNode(oldInit);// Added, so that any changes from points-to may be reflected here.
+			// AutomatedUpdater.invalidateSymbolsInNode(oldInit);// Added, so that any
+			// changes from points-to may be reflected here.
 			AutomatedUpdater.updateFlowFactsBackward(rerunNodesBackward);
 		}
 	}
@@ -107,7 +109,8 @@ public class ForStatementCFGInfo extends CFGInfo {
 
 		Program.invalidColumnNum = true;
 		AutomatedUpdater.updateInformationForAddition(e2);
-		//		AutomatedUpdater.invalidateSymbolsInNode(nodeOptional);// Added, so that any changes from points-to may be reflected here.
+		// AutomatedUpdater.invalidateSymbolsInNode(nodeOptional);// Added, so that any
+		// changes from points-to may be reflected here.
 	}
 
 	public Expression getTerminationExpression() {
@@ -135,7 +138,8 @@ public class ForStatementCFGInfo extends CFGInfo {
 			AutomatedUpdater.invalidateSymbolsInNode(oldTermExp);
 			AutomatedUpdater.updatePhaseAndInterTaskEdgesUponRemoval(affectedBeginPhasePoints);
 			AutomatedUpdater.updateFlowFactsForward(rerunNodesForward); // Called here after removal is successful.
-			//			AutomatedUpdater.invalidateSymbolsInNode(oldTermExp);// Added, so that any changes from points-to may be reflected here.
+			// AutomatedUpdater.invalidateSymbolsInNode(oldTermExp);// Added, so that any
+			// changes from points-to may be reflected here.
 			AutomatedUpdater.updateFlowFactsBackward(rerunNodesBackward);
 		}
 	}
@@ -159,7 +163,8 @@ public class ForStatementCFGInfo extends CFGInfo {
 
 		Program.invalidColumnNum = true;
 		AutomatedUpdater.updateInformationForAddition(e3);
-		//		AutomatedUpdater.invalidateSymbolsInNode(nodeOptional);// Added, so that any changes from points-to may be reflected here.
+		// AutomatedUpdater.invalidateSymbolsInNode(nodeOptional);// Added, so that any
+		// changes from points-to may be reflected here.
 	}
 
 	public Expression getStepExpression() {
@@ -187,7 +192,8 @@ public class ForStatementCFGInfo extends CFGInfo {
 			AutomatedUpdater.invalidateSymbolsInNode(oldNode);
 			AutomatedUpdater.updatePhaseAndInterTaskEdgesUponRemoval(affectedBeginPhasePoints);
 			AutomatedUpdater.updateFlowFactsForward(rerunNodesForward); // Called here after removal is successful.
-			//			AutomatedUpdater.invalidateSymbolsInNode(oldNode);// Added, so that any changes from points-to may be reflected here.
+			// AutomatedUpdater.invalidateSymbolsInNode(oldNode);// Added, so that any
+			// changes from points-to may be reflected here.
 			AutomatedUpdater.updateFlowFactsBackward(rerunNodesBackward);
 		}
 	}
@@ -204,7 +210,8 @@ public class ForStatementCFGInfo extends CFGInfo {
 		List<SideEffect> splitSE = SplitCombinedConstructs.splitCombinedConstructForTheStatement(stmt);
 		if (!splitSE.isEmpty()) {
 			NodeUpdated nodeUpdatedSE = (NodeUpdated) splitSE.get(0);
-			// Note: Here we reparse the parallel construct so that we can perform other normalizations within it.
+			// Note: Here we reparse the parallel construct so that we can perform other
+			// normalizations within it.
 			ParallelConstruct splitParCons = FrontEnd.parseAndNormalize(nodeUpdatedSE.affectedNode.toString(),
 					ParallelConstruct.class);
 			sideEffectList.add(new NodeUpdated(splitParCons, nodeUpdatedSE.getUpdateMessage()));
@@ -244,13 +251,16 @@ public class ForStatementCFGInfo extends CFGInfo {
 
 		stmt = Normalization.normalizeLeafNodes(stmt, sideEffectList);
 
-		//		this.getOwner().accept(new CompoundStatementEnforcer());// COMMENTED RECENTLY.
+		// this.getOwner().accept(new CompoundStatementEnforcer());// COMMENTED
+		// RECENTLY.
 		Program.invalidColumnNum = Program.invalidLineNum = true;
 		AutomatedUpdater.updatePhaseAndInterTaskEdgesUponRemoval(affectedBeginPhasePoints);
 		AutomatedUpdater.updateInformationForAddition(stmt);
 		AutomatedUpdater.updateFlowFactsForward(rerunNodesForward); // Called here after replacement is successful.
-		//		AutomatedUpdater.invalidateSymbolsInNode(owner.getF8());// Added, so that any changes from points-to may be reflected here.
-		//		AutomatedUpdater.invalidateSymbolsInNode(stmt);// Added, so that any changes from points-to may be reflected here.
+		// AutomatedUpdater.invalidateSymbolsInNode(owner.getF8());// Added, so that any
+		// changes from points-to may be reflected here.
+		// AutomatedUpdater.invalidateSymbolsInNode(stmt);// Added, so that any changes
+		// from points-to may be reflected here.
 		AutomatedUpdater.updateFlowFactsBackward(rerunNodesBackward);
 		return sideEffectList;
 	}
@@ -269,10 +279,10 @@ public class ForStatementCFGInfo extends CFGInfo {
 			connectAndAdjustEndReachability(ncfg.getBegin(), this.getBody());
 		}
 		removed.getInfo().getCFGInfo().clearAllEdges();
-		//		for (Node components : this.getAllComponents()) {
-		//			disconnectAndAdjustEndReachability(removed, components);
-		//			disconnectAndAdjustEndReachability(components, removed);
-		//		}
+		// for (Node components : this.getAllComponents()) {
+		// disconnectAndAdjustEndReachability(removed, components);
+		// disconnectAndAdjustEndReachability(components, removed);
+		// }
 	}
 
 	private void updateCFGForInitExpressionAddition(Expression added) {
@@ -352,8 +362,8 @@ public class ForStatementCFGInfo extends CFGInfo {
 		for (Node prevNode : prevNodeList) {
 			for (Node nextNode : nextNodeList) {
 				connectAndAdjustEndReachability(prevNode, nextNode);
-				//				disconnectAndAdjustEndReachability(prevNode, removed);
-				//				disconnectAndAdjustEndReachability(removed, nextNode);
+				// disconnectAndAdjustEndReachability(prevNode, removed);
+				// disconnectAndAdjustEndReachability(removed, nextNode);
 			}
 		}
 		removed.getInfo().getCFGInfo().clearAllEdges();
@@ -391,23 +401,23 @@ public class ForStatementCFGInfo extends CFGInfo {
 		}
 
 		// Old code:
-		//		Statement body = this.getBody();
-		//		Node prevNode;
-		//		Node nextNode;
-		//		if (body.getInfo().getCFGInfo().isEndReachable()) {
-		//			prevNode = body;
-		//		} else {
-		//			prevNode = null;
-		//		}
-		//		if (this.hasTerminationExpression()) {
-		//			nextNode = this.getTerminationExpression();
-		//		} else {
-		//			nextNode = body;
-		//		}
+		// Statement body = this.getBody();
+		// Node prevNode;
+		// Node nextNode;
+		// if (body.getInfo().getCFGInfo().isEndReachable()) {
+		// prevNode = body;
+		// } else {
+		// prevNode = null;
+		// }
+		// if (this.hasTerminationExpression()) {
+		// nextNode = this.getTerminationExpression();
+		// } else {
+		// nextNode = body;
+		// }
 		//
-		//		disconnect(prevNode, nextNode);
-		//		connect(prevNode, added);
-		//		connect(added, nextNode);
+		// disconnect(prevNode, nextNode);
+		// connect(prevNode, added);
+		// connect(added, nextNode);
 	}
 
 	private void updateCFGForBodyRemoval(Statement removed) {
@@ -416,11 +426,12 @@ public class ForStatementCFGInfo extends CFGInfo {
 		removed.getInfo().getIncompleteSemantics().adjustSemanticsForOwnerRemoval();
 		// 2. Remove stale edges.
 		removed.getInfo().getCFGInfo().clearAllEdges();
-		// Note that this is an intermediate state; we don't need to connect successors to predecessors.
-		//		for (Node components : this.getAllComponents()) {
-		//			disconnectAndAdjustEndReachability(removed, components);
-		//			disconnectAndAdjustEndReachability(components, removed);
-		//		}
+		// Note that this is an intermediate state; we don't need to connect successors
+		// to predecessors.
+		// for (Node components : this.getAllComponents()) {
+		// disconnectAndAdjustEndReachability(removed, components);
+		// disconnectAndAdjustEndReachability(components, removed);
+		// }
 	}
 
 	private void updateCFGForBodyAddition(Statement added) {
@@ -487,30 +498,30 @@ public class ForStatementCFGInfo extends CFGInfo {
 		added.getInfo().getIncompleteSemantics().adjustSemanticsForOwnerAddition();
 
 		// OLD CODE:
-		//		if (this.hasTerminationExpression()) {
-		//			prevNode = this.getTerminationExpression();
-		//		} else {
-		//			if (this.hasInitExpression()) {
-		//				prevNode = this.getInitExpression();
-		//			} else {
-		//				prevNode = ncfg.getBegin();
-		//			}
-		//		}
-		//		if (this.hasStepExpression()) {
-		//			nextNode = this.getStepExpression();
-		//		} else {
-		//			if (this.hasTerminationExpression()) {
-		//				nextNode = this.getTerminationExpression();
-		//			} else {
-		//				nextNode = added;
-		//			}
-		//		}
-		//		connectAndAdjustEndReachability(prevNode, added);
-		//		if (added.getInfo().getCFGInfo().isEndReachable()) {
-		//			connectAndAdjustEndReachability(added, nextNode);
-		//		}
-		//		connectAndAdjustEndReachability(nextNode, added);
-		//		disconnectAndAdjustEndReachability(prevNode, nextNode);
+		// if (this.hasTerminationExpression()) {
+		// prevNode = this.getTerminationExpression();
+		// } else {
+		// if (this.hasInitExpression()) {
+		// prevNode = this.getInitExpression();
+		// } else {
+		// prevNode = ncfg.getBegin();
+		// }
+		// }
+		// if (this.hasStepExpression()) {
+		// nextNode = this.getStepExpression();
+		// } else {
+		// if (this.hasTerminationExpression()) {
+		// nextNode = this.getTerminationExpression();
+		// } else {
+		// nextNode = added;
+		// }
+		// }
+		// connectAndAdjustEndReachability(prevNode, added);
+		// if (added.getInfo().getCFGInfo().isEndReachable()) {
+		// connectAndAdjustEndReachability(added, nextNode);
+		// }
+		// connectAndAdjustEndReachability(nextNode, added);
+		// disconnectAndAdjustEndReachability(prevNode, nextNode);
 
 		// 2. Adjust incompleteness
 	}

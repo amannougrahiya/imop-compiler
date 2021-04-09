@@ -24,8 +24,8 @@ import java.util.Set;
  */
 public class MovableNodeMarker extends DepthFirstCFG {
 	public BarrierDirective rootBarrier;
-	public Set<Node> movableNodes; 						// set of reachable nodes that are movable
-	public Set<Node> nonMovableNodes;					// set of reachable nodes that are not movable
+	public Set<Node> movableNodes; // set of reachable nodes that are movable
+	public Set<Node> nonMovableNodes; // set of reachable nodes that are not movable
 	public Set<Node> reachableNodes;
 	public Set<Node> visitedNodes = new HashSet<>();
 
@@ -73,7 +73,8 @@ public class MovableNodeMarker extends DepthFirstCFG {
 		// Check #3
 		if (this.isNodeMovable(n)) {
 			movableNodes.add(n);
-			// Note that the constituents of the non-leaf nodes aren't marked if the non-leaf node itself has been marked.
+			// Note that the constituents of the non-leaf nodes aren't marked if the
+			// non-leaf node itself has been marked.
 		} else {
 			nonMovableNodes.add(n);
 		}
@@ -144,7 +145,7 @@ public class MovableNodeMarker extends DepthFirstCFG {
 		 * $n$ won't be able to move past its dependees, due to the
 		 * dependence(s).
 		 */
-		// 
+		//
 		Set<Node> nodesInTheChop;
 		Set<Node> dependentNodes = Misc.getAllDataDependees(n);
 		nodesInTheChop = Misc.setIntersection(dependentNodes, reachableNodes);

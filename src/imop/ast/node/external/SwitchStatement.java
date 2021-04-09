@@ -51,7 +51,7 @@ public class SwitchStatement extends SelectionStatement {
 		setF2(n2);
 		setF3(n3);
 		setF4(n4);
-		//		settleInternalCases(); //Shifted to setF4()
+		// settleInternalCases(); //Shifted to setF4()
 	}
 
 	public SwitchStatement(Expression n0, Statement n1) {
@@ -65,7 +65,7 @@ public class SwitchStatement extends SelectionStatement {
 		setF3(new NodeToken(")"));
 		getF3().setParent(this);
 		setF4(n1);
-		//		settleInternalCases(); //Shifted to setF4()
+		// settleInternalCases(); //Shifted to setF4()
 	}
 
 	@Override
@@ -149,52 +149,59 @@ public class SwitchStatement extends SelectionStatement {
 	public void setF4(Statement f4) {
 		f4.setParent(this);
 		this.f4 = f4;
-		//		settleInternalCases();
+		// settleInternalCases();
 	}
 
-	// Not required now. Cost of maintaining parentSwitch is high, and the process is error-prone.
-	//	/**
-	//	 * Set this SwitchStatement as the parentSwitch for all the internal AST
-	//	 * nodes with CaseLabels that do not have any parentSwitchStatement.
-	//	 */
-	//	public void settleInternalCases() {
-	//		for (Statement tempStmt : Misc.getInheritedEnclosee(this, Statement.class)) {
-	//			if (tempStmt == this) {
-	//				continue;
-	//			}
-	//			if (!Misc.isCFGNode(tempStmt)) {
-	//				continue;
-	//			}
-	//			for (Label label : tempStmt.getInfo().getLabelAnnotations()) {
-	//				if (label instanceof CaseLabel) {
-	//					CaseLabel caseLabel = (CaseLabel) label;
-	//					if (caseLabel.getParentSwitch() == null) {
-	//						caseLabel.setParentSwitch(this);
-	//						// Old code. Removal of incomplete edges is now done as a part of the automated updates to CFG edges.
-	//						//						// Remove the incompleteness from tempStmt.
-	//						//						for (IncompleteEdge ie : new HashSet<>(
-	//						//								tempStmt.getInfo().getIncompleteSemantics().getIncompleteEdges())) {
-	//						//							if (ie.getTypeOfIncompleteness() == TypeOfIncompleteness.UNKNOWN_CASE_SOURCE) {
-	//						//								tempStmt.getInfo().getIncompleteSemantics().getIncompleteEdges().remove(ie);
-	//						//							}
-	//						//						}
-	//					}
-	//				} else if (label instanceof DefaultLabel) {
-	//					DefaultLabel defaultLabel = (DefaultLabel) label;
-	//					if (defaultLabel.getParentSwitch() == null) {
-	//						defaultLabel.setParentSwitch(this);
-	//						// Old code. Removal of incomplete edges is now done as a part of the automated updates to CFG edges.
-	//						//						// Remove the incompleteness from tempStmt.
-	//						//						for (IncompleteEdge ie : new HashSet<>(
-	//						//								tempStmt.getInfo().getIncompleteSemantics().getIncompleteEdges())) {
-	//						//							if (ie.getTypeOfIncompleteness() == TypeOfIncompleteness.UNKNOWN_DEFAULT_SOURCE) {
-	//						//								tempStmt.getInfo().getIncompleteSemantics().getIncompleteEdges().remove(ie);
-	//						//							}
-	//						//						}
-	//					}
-	//				}
-	//			}
-	//		}
-	//	}
+	// Not required now. Cost of maintaining parentSwitch is high, and the process
+	// is error-prone.
+	// /**
+	// * Set this SwitchStatement as the parentSwitch for all the internal AST
+	// * nodes with CaseLabels that do not have any parentSwitchStatement.
+	// */
+	// public void settleInternalCases() {
+	// for (Statement tempStmt : Misc.getInheritedEnclosee(this, Statement.class)) {
+	// if (tempStmt == this) {
+	// continue;
+	// }
+	// if (!Misc.isCFGNode(tempStmt)) {
+	// continue;
+	// }
+	// for (Label label : tempStmt.getInfo().getLabelAnnotations()) {
+	// if (label instanceof CaseLabel) {
+	// CaseLabel caseLabel = (CaseLabel) label;
+	// if (caseLabel.getParentSwitch() == null) {
+	// caseLabel.setParentSwitch(this);
+	// // Old code. Removal of incomplete edges is now done as a part of the
+	// automated updates to CFG edges.
+	// // // Remove the incompleteness from tempStmt.
+	// // for (IncompleteEdge ie : new HashSet<>(
+	// // tempStmt.getInfo().getIncompleteSemantics().getIncompleteEdges())) {
+	// // if (ie.getTypeOfIncompleteness() ==
+	// TypeOfIncompleteness.UNKNOWN_CASE_SOURCE) {
+	// //
+	// tempStmt.getInfo().getIncompleteSemantics().getIncompleteEdges().remove(ie);
+	// // }
+	// // }
+	// }
+	// } else if (label instanceof DefaultLabel) {
+	// DefaultLabel defaultLabel = (DefaultLabel) label;
+	// if (defaultLabel.getParentSwitch() == null) {
+	// defaultLabel.setParentSwitch(this);
+	// // Old code. Removal of incomplete edges is now done as a part of the
+	// automated updates to CFG edges.
+	// // // Remove the incompleteness from tempStmt.
+	// // for (IncompleteEdge ie : new HashSet<>(
+	// // tempStmt.getInfo().getIncompleteSemantics().getIncompleteEdges())) {
+	// // if (ie.getTypeOfIncompleteness() ==
+	// TypeOfIncompleteness.UNKNOWN_DEFAULT_SOURCE) {
+	// //
+	// tempStmt.getInfo().getIncompleteSemantics().getIncompleteEdges().remove(ie);
+	// // }
+	// // }
+	// }
+	// }
+	// }
+	// }
+	// }
 
 }

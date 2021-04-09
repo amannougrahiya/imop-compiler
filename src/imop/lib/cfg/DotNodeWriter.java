@@ -76,13 +76,17 @@ public class DotNodeWriter extends GJDepthFirstProcess<Object, BufferedWriter> {
 					bw.write("label=\"" + n.getClass().getSimpleName() + "\";");
 				}
 				printTabs(tabSpace + 1, bw);
-				//				bw.write("node" + ncfg.getBegin().getInfo().hashCode() + "[label=\"begin" + Misc.getShortHand(n.getClass().getSimpleName())
+				// bw.write("node" + ncfg.getBegin().getInfo().hashCode() + "[label=\"begin" +
+				// Misc.getShortHand(n.getClass().getSimpleName())
 				bw.write("node" + ncfg.getBegin().getInfo().hashCode() + "[label=\"B_"
-						+ Misc.getShortHand(n.getClass().getSimpleName()) + "\", shape=\"triangle\"];"); // Add begin node
+						+ Misc.getShortHand(n.getClass().getSimpleName()) + "\", shape=\"triangle\"];"); // Add begin
+																											// node
 				printTabs(tabSpace + 1, bw);
-				//				bw.write("node" + ncfg.getEnd().getInfo().hashCode() + "[label=\"end" + Misc.getShortHand(n.getClass().getSimpleName())
+				// bw.write("node" + ncfg.getEnd().getInfo().hashCode() + "[label=\"end" +
+				// Misc.getShortHand(n.getClass().getSimpleName())
 				bw.write("node" + ncfg.getEnd().getInfo().hashCode() + "[label=\"E_"
-						+ Misc.getShortHand(n.getClass().getSimpleName()) + "\", shape=\"invtriangle\"];"); // Add end node
+						+ Misc.getShortHand(n.getClass().getSimpleName()) + "\", shape=\"invtriangle\"];"); // Add end
+																											// node
 				tabSpace++;
 			}
 		} catch (Exception e) {

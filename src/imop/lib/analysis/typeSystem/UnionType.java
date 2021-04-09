@@ -71,10 +71,11 @@ public class UnionType extends DerivedType implements Scopeable {
 		return typedefTable;
 
 	}
-	//	public void populateTypeTable() {
-	//		setTypeTable(new HashMap<String, Type>());
-	//		Type.getTypeTree((Declaration) Misc.getEnclosingNode(this.definingNode, Declaration.class));
-	//	}
+	// public void populateTypeTable() {
+	// setTypeTable(new HashMap<String, Type>());
+	// Type.getTypeTree((Declaration) Misc.getEnclosingNode(this.definingNode,
+	// Declaration.class));
+	// }
 
 	@Override
 	public HashMap<String, Type> getTypeTable() {

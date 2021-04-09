@@ -94,23 +94,23 @@ public class OldLock {
 		return name;
 	}
 
-	//	/**
-	//	 * If this lock is taken with the help of a critical-section, this method
-	//	 * returns the reference to the corresponding AST node of type
-	//	 * CriticalConstruct.
-	//	 * <br>
-	//	 * Note that two statements may get locked with different AST nodes and may
-	//	 * yet
-	//	 * share the same logical lock (which can be uniquely identified with the
-	//	 * help of the lock's name).
-	//	 * <p>
-	//	 * If this lock is taken with the help of an atomic-region, this method
-	//	 * returns
-	//	 * the reference to the corresponding AtomicConstruct.
-	//	 */
-	//	public Node getLockNode() {
-	//		return lockNode;
-	//	}
+	// /**
+	// * If this lock is taken with the help of a critical-section, this method
+	// * returns the reference to the corresponding AST node of type
+	// * CriticalConstruct.
+	// * <br>
+	// * Note that two statements may get locked with different AST nodes and may
+	// * yet
+	// * share the same logical lock (which can be uniquely identified with the
+	// * help of the lock's name).
+	// * <p>
+	// * If this lock is taken with the help of an atomic-region, this method
+	// * returns
+	// * the reference to the corresponding AtomicConstruct.
+	// */
+	// public Node getLockNode() {
+	// return lockNode;
+	// }
 	//
 	/**
 	 * This method returns a copy of the set of all the locks.

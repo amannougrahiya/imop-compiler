@@ -14,7 +14,7 @@ public class Demo0 {
 
 	public static void main(String[] args) {
 		args = new String[] { "-f", "runner/cgo-eg/example.c", "-nru" };
-	    Program.parseNormalizeInput(args);
+		Program.parseNormalizeInput(args);
 		System.out.println("Setup successful!");
 	}
 

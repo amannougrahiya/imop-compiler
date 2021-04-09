@@ -126,21 +126,24 @@ public class RestrictedSet<E> extends AbstractSet<E> {
 		throw new UnsupportedOperationException("Invoked unimplemented method removeIf() from RestrictedSet.");
 	}
 
-	//	@Override
-	//	public Spliterator<E> spliterator() {
-	//		Thread.dumpStack();
-	//		throw new UnsupportedOperationException("Invoked unimplemented method spliterator() from RestrictedSet.");
-	//	}
+	// @Override
+	// public Spliterator<E> spliterator() {
+	// Thread.dumpStack();
+	// throw new UnsupportedOperationException("Invoked unimplemented method
+	// spliterator() from RestrictedSet.");
+	// }
 	//
-	//	@Override
-	//    public Stream<E> stream() {
-	//		Thread.dumpStack();
-	//		throw new UnsupportedOperationException("Invoked unimplemented method stream() from RestrictedSet.");
-	//	}
-	//	
-	//	@Override
-	//	public Stream<E> parallelStream() {
-	//		Thread.dumpStack();
-	//		throw new UnsupportedOperationException("Invoked unimplemented method parallelStream() from RestrictedSet.");
-	//	}
+	// @Override
+	// public Stream<E> stream() {
+	// Thread.dumpStack();
+	// throw new UnsupportedOperationException("Invoked unimplemented method
+	// stream() from RestrictedSet.");
+	// }
+	//
+	// @Override
+	// public Stream<E> parallelStream() {
+	// Thread.dumpStack();
+	// throw new UnsupportedOperationException("Invoked unimplemented method
+	// parallelStream() from RestrictedSet.");
+	// }
 }

@@ -35,7 +35,7 @@ public class CompoundStatementNormalizer {
 	 * Note: The pair of braces across each single-statement body is preserved.
 	 * 
 	 * @param node
-	 *            input node which might contain more braces than it needs.
+	 *             input node which might contain more braces than it needs.
 	 */
 	public static void removeExtraScopes(Node node) {
 		if (!node.getInfo().isConnectedToProgram()) {
@@ -178,66 +178,67 @@ public class CompoundStatementNormalizer {
 				enclosingCSInfo.removeElement(nestedCS);
 				incrementFromInsertion--;
 			}
-			//		n.getInfo().populateSymbolTable();
+			// n.getInfo().populateSymbolTable();
 			// OLD CODE:::
-			//		/*
-			//		 * Assuming that the nested elements have been normalized,
-			//		 * now we need to pick each element, and see whether its contents
-			//		 * can be brought into the scope of the current CS.
-			//		 */
-			//		List<CompoundStatementElement> newList = new ArrayList<>();
-			//		for (Node elemNode : n.f1.nodes) {
-			//			CompoundStatementElement elemCSE = (CompoundStatementElement) elemNode;
-			//			Node element = elemCSE.f0.choice;
+			// /*
+			// * Assuming that the nested elements have been normalized,
+			// * now we need to pick each element, and see whether its contents
+			// * can be brought into the scope of the current CS.
+			// */
+			// List<CompoundStatementElement> newList = new ArrayList<>();
+			// for (Node elemNode : n.f1.nodes) {
+			// CompoundStatementElement elemCSE = (CompoundStatementElement) elemNode;
+			// Node element = elemCSE.f0.choice;
 			//
-			//			if (element instanceof Declaration) {
-			//				newList.add(elemCSE);
-			//			} else {
-			//				// In this case, element is of type Statement
-			//				Node stmtElement = ((Statement) element).f0.choice;
-			//				if (stmtElement instanceof CompoundStatement) {
-			//					CompoundStatement csElem = (CompoundStatement) stmtElement;
+			// if (element instanceof Declaration) {
+			// newList.add(elemCSE);
+			// } else {
+			// // In this case, element is of type Statement
+			// Node stmtElement = ((Statement) element).f0.choice;
+			// if (stmtElement instanceof CompoundStatement) {
+			// CompoundStatement csElem = (CompoundStatement) stmtElement;
 			//
-			//					/*
-			//					 * Step 1: Check if it is correct to bring up the elements
-			//					 * of csElem into the current scope.
-			//					 */
-			//					Set<String> internalNameSet = new HashSet<>(csElem.getInfo().getSymbolTable().keySet());
-			//					boolean collision = Misc.doIntersect(internalNameSet, nameSet);
+			// /*
+			// * Step 1: Check if it is correct to bring up the elements
+			// * of csElem into the current scope.
+			// */
+			// Set<String> internalNameSet = new
+			// HashSet<>(csElem.getInfo().getSymbolTable().keySet());
+			// boolean collision = Misc.doIntersect(internalNameSet, nameSet);
 			//
-			//					/*
-			//					 * Step 2: Bring up the elements, if possible.
-			//					 */
-			//					if (collision) {
-			//						newList.add(elemCSE);
-			//					} else {
-			//						for (Node internalCSENode : csElem.f1.nodes) {
-			//							newList.add((CompoundStatementElement) internalCSENode);
-			//						}
-			//						for (String str : internalNameSet) {
-			//							nameSet.add(str);
-			//						}
-			//					}
-			//				} else {
-			//					/*
-			//					 * In this case, stmtElement is of some other type which we
-			//					 * do not wish to disintegrate.
-			//					 */
-			//					newList.add(elemCSE);
-			//				}
-			//			}
-			//		}
+			// /*
+			// * Step 2: Bring up the elements, if possible.
+			// */
+			// if (collision) {
+			// newList.add(elemCSE);
+			// } else {
+			// for (Node internalCSENode : csElem.f1.nodes) {
+			// newList.add((CompoundStatementElement) internalCSENode);
+			// }
+			// for (String str : internalNameSet) {
+			// nameSet.add(str);
+			// }
+			// }
+			// } else {
+			// /*
+			// * In this case, stmtElement is of some other type which we
+			// * do not wish to disintegrate.
+			// */
+			// newList.add(elemCSE);
+			// }
+			// }
+			// }
 			//
-			//		List<Node> nodeList = new ArrayList<>();
-			//		for (CompoundStatementElement cse : newList) {
-			//			nodeList.add(cse);
-			//		}
-			//		n.f1.nodes = nodeList;
-			//		/*
-			//		 * Re-populate the symbol table of this child CS, so that
-			//		 * the parent CS should read the correct values.
-			//		 */
-			//		n.getInfo().populateSymbolTable();
+			// List<Node> nodeList = new ArrayList<>();
+			// for (CompoundStatementElement cse : newList) {
+			// nodeList.add(cse);
+			// }
+			// n.f1.nodes = nodeList;
+			// /*
+			// * Re-populate the symbol table of this child CS, so that
+			// * the parent CS should read the correct values.
+			// */
+			// n.getInfo().populateSymbolTable();
 		}
 
 		/**

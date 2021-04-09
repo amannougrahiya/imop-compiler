@@ -647,7 +647,8 @@ public class TypeTreeGetter extends GJDepthFirstProcess<Type, Type> {
 	private List<FunctionType.Parameter> getParameters(ParameterTypeList paramList, Scopeable scope) {
 		List<FunctionType.Parameter> parameters = new ArrayList<>();
 		for (ParameterDeclaration paramDeclNode : Misc.getInheritedEnclosee(paramList, ParameterDeclaration.class)) {
-			//			System.out.println("Processing the following parameter-declaration now: " + paramDeclNode.getInfo().getString());
+			// System.out.println("Processing the following parameter-declaration now: " +
+			// paramDeclNode.getInfo().getString());
 			if (paramDeclNode.toString().equals("void ")) {
 				continue;
 			}

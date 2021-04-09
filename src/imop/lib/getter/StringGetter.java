@@ -80,14 +80,16 @@ public class StringGetter {
 	 * replacement.
 	 * 
 	 * @param baseNode
-	 *            node whose string equivalent is to be found, with requested
-	 *            replacements.
+	 *                          node whose string equivalent is to be found, with
+	 *                          requested
+	 *                          replacements.
 	 * @param changeSource
-	 *            node whose string equivalent should be replaced with
-	 *            {@code changeDestination}, in the return value.
+	 *                          node whose string equivalent should be replaced with
+	 *                          {@code changeDestination}, in the return value.
 	 * @param replacementString
-	 *            string that should replace the string of {@code changeSource}
-	 *            in the return value.
+	 *                          string that should replace the string of
+	 *                          {@code changeSource}
+	 *                          in the return value.
 	 * @return
 	 *         string of {@code baseNode}, with the string of
 	 *         {@code changeSource}, replaced by {@code changeDestination}.
@@ -278,7 +280,8 @@ public class StringGetter {
 			printLabels(n);
 			n.getF0().accept(this);
 			// TODO Check: Shouldn't the pragmas be printed outside the body?
-			printCommentorsAndPragmas(n); // Note that the comments of a CompoundStatement are always printed inside its body.
+			printCommentorsAndPragmas(n); // Note that the comments of a CompoundStatement are always printed inside its
+											// body.
 			if (n.getF1().present()) {
 				tabs++;
 				/*
@@ -2934,7 +2937,8 @@ public class StringGetter {
 			printLabels(n);
 			n.getF0().accept(this);
 			// TODO Check: Shouldn't the pragmas be printed outside the body?
-			printCommentorsAndPragmas(n); // Note that the comments of a CompoundStatement are always printed inside its body.
+			printCommentorsAndPragmas(n); // Note that the comments of a CompoundStatement are always printed inside its
+											// body.
 			if (n.getF1().present()) {
 				tabs++;
 				for (Node element : n.getF1().getNodes()) {
@@ -3885,8 +3889,9 @@ public class StringGetter {
 					str.append("// #pragma omp dummyFlush " + n.getDummyFlushType() + " written(" + writeCells
 							+ ") read(" + readCells + ")\n");
 				} else {
-					str.append("// #pragma omp dummyFlush " + n.getDummyFlushType());// + " written(" + writeCells + ") read("
-					//						+ readCells + ")\n");
+					str.append("// #pragma omp dummyFlush " + n.getDummyFlushType());// + " written(" + writeCells + ")
+																						// read("
+					// + readCells + ")\n");
 				}
 			}
 		}

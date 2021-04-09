@@ -57,7 +57,8 @@ public class ParallelConstructCFGInfo extends CFGInfo {
 
 		Program.invalidColumnNum = true;
 		AutomatedUpdater.updateInformationForAddition(ifClause);
-		//		AutomatedUpdater.invalidateSymbolsInNode(newClauseWrapper);// Added, so that any changes from points-to may be reflected here.
+		// AutomatedUpdater.invalidateSymbolsInNode(newClauseWrapper);// Added, so that
+		// any changes from points-to may be reflected here.
 	}
 
 	public IfClause getIfClause() {
@@ -129,7 +130,8 @@ public class ParallelConstructCFGInfo extends CFGInfo {
 
 		Program.invalidColumnNum = true;
 		AutomatedUpdater.updateInformationForAddition(numThreadsClause);
-		//		AutomatedUpdater.invalidateSymbolsInNode(newClauseWrapper);// Added, so that any changes from points-to may be reflected here.
+		// AutomatedUpdater.invalidateSymbolsInNode(newClauseWrapper);// Added, so that
+		// any changes from points-to may be reflected here.
 	}
 
 	public NumThreadsClause getNumThreadsClause() {
@@ -197,7 +199,7 @@ public class ParallelConstructCFGInfo extends CFGInfo {
 	}
 
 	public List<SideEffect> setBody(Statement stmt) {
-		//		assert (false) : "This method is unsafe!";
+		// assert (false) : "This method is unsafe!";
 		List<SideEffect> sideEffectList = new ArrayList<>();
 		ParallelConstruct owner = (ParallelConstruct) this.getOwner();
 		stmt = Misc.getStatementWrapper(stmt);
@@ -209,7 +211,8 @@ public class ParallelConstructCFGInfo extends CFGInfo {
 		List<SideEffect> splitSE = SplitCombinedConstructs.splitCombinedConstructForTheStatement(stmt);
 		if (!splitSE.isEmpty()) {
 			NodeUpdated nodeUpdatedSE = (NodeUpdated) splitSE.get(0);
-			// Note: Here we reparse the parallel construct so that we can perform other normalizations within it.
+			// Note: Here we reparse the parallel construct so that we can perform other
+			// normalizations within it.
 			ParallelConstruct splitParCons = FrontEnd.parseAndNormalize(nodeUpdatedSE.affectedNode.toString(),
 					ParallelConstruct.class);
 			sideEffectList.add(new NodeUpdated(splitParCons, nodeUpdatedSE.getUpdateMessage()));
@@ -249,13 +252,16 @@ public class ParallelConstructCFGInfo extends CFGInfo {
 
 		stmt = Normalization.normalizeLeafNodes(stmt, sideEffectList);
 
-		//		this.getOwner().accept(new CompoundStatementEnforcer());// COMMENTED RECENTLY.
+		// this.getOwner().accept(new CompoundStatementEnforcer());// COMMENTED
+		// RECENTLY.
 		Program.invalidColumnNum = Program.invalidLineNum = true;
 		AutomatedUpdater.updatePhaseAndInterTaskEdgesUponRemoval(affectedBeginPhasePoints);
 		AutomatedUpdater.updateInformationForAddition(stmt);
 		AutomatedUpdater.updateFlowFactsForward(rerunNodesForward); // Called here after replacement is successful.
-		//		AutomatedUpdater.invalidateSymbolsInNode(owner.getParConsF2());// Added, so that any changes from points-to may be reflected here.
-		//		AutomatedUpdater.invalidateSymbolsInNode(stmt);// Added, so that any changes from points-to may be reflected here.
+		// AutomatedUpdater.invalidateSymbolsInNode(owner.getParConsF2());// Added, so
+		// that any changes from points-to may be reflected here.
+		// AutomatedUpdater.invalidateSymbolsInNode(stmt);// Added, so that any changes
+		// from points-to may be reflected here.
 		AutomatedUpdater.updateFlowFactsBackward(rerunNodesBackward);
 		return sideEffectList;
 	}
@@ -310,10 +316,10 @@ public class ParallelConstructCFGInfo extends CFGInfo {
 
 		// Remove stale edges.
 		removed.getInfo().getCFGInfo().clearAllEdges();
-		//		for (Node components : this.getAllComponents()) {
-		//			disconnectAndAdjustEndReachability(removed, components);
-		//			disconnectAndAdjustEndReachability(components, removed);
-		//		}
+		// for (Node components : this.getAllComponents()) {
+		// disconnectAndAdjustEndReachability(removed, components);
+		// disconnectAndAdjustEndReachability(components, removed);
+		// }
 	}
 
 	private void updateCFGForIfClauseAddition(IfClause added) {
@@ -345,10 +351,10 @@ public class ParallelConstructCFGInfo extends CFGInfo {
 
 		// Remove stale edges.
 		removed.getInfo().getCFGInfo().clearAllEdges();
-		//		for (Node components : this.getAllComponents()) {
-		//			disconnectAndAdjustEndReachability(removed, components);
-		//			disconnectAndAdjustEndReachability(components, removed);
-		//		}
+		// for (Node components : this.getAllComponents()) {
+		// disconnectAndAdjustEndReachability(removed, components);
+		// disconnectAndAdjustEndReachability(components, removed);
+		// }
 	}
 
 	private void updateCFGForNumThreadsClauseAddition(NumThreadsClause added) {
@@ -371,15 +377,15 @@ public class ParallelConstructCFGInfo extends CFGInfo {
 
 	private void updateCFGForBodyRemoval(Statement removed) {
 		removed = (Statement) Misc.getInternalFirstCFGNode(removed);
-		//		// 1. Adjust incompleteness.
-		//		removed.getInfo().getIncompleteSemantics().adjustSemanticsForOwnerRemoval();
+		// // 1. Adjust incompleteness.
+		// removed.getInfo().getIncompleteSemantics().adjustSemanticsForOwnerRemoval();
 
 		// 2. Remove stale edges.
 		removed.getInfo().getCFGInfo().clearAllEdges();
-		//		for (Node components : this.getAllComponents()) {
-		//			disconnectAndAdjustEndReachability(removed, components);
-		//			disconnectAndAdjustEndReachability(components, removed);
-		//		}
+		// for (Node components : this.getAllComponents()) {
+		// disconnectAndAdjustEndReachability(removed, components);
+		// disconnectAndAdjustEndReachability(components, removed);
+		// }
 	}
 
 	private void updateCFGForBodyAddition(Statement added) {
@@ -400,7 +406,7 @@ public class ParallelConstructCFGInfo extends CFGInfo {
 
 		// 2. Adjust incompleteness
 		// OLD CODE: Note that body of a ParallelContruct must be a structured block.
-		//		added.getInfo().getIncompleteSemantics().adjustSemanticsForOwnerAddition();
+		// added.getInfo().getIncompleteSemantics().adjustSemanticsForOwnerAddition();
 	}
 
 	/**

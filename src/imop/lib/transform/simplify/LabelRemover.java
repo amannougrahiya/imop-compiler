@@ -30,9 +30,10 @@ public class LabelRemover {
 	 * appropriate.
 	 * 
 	 * @param baseNode
-	 *            root of the tree under which, the CFG statements
-	 *            that have label annotations are to be marked with the same,
-	 *            and for whom the wrapping label-statements have to be removed.
+	 *                 root of the tree under which, the CFG statements
+	 *                 that have label annotations are to be marked with the same,
+	 *                 and for whom the wrapping label-statements have to be
+	 *                 removed.
 	 */
 	public static void populateLabelAnnotations(Statement baseNode) {
 		for (Node labelNode : Misc.getInheritedEncloseeList(baseNode, LabeledStatement.class)) {
@@ -41,7 +42,8 @@ public class LabelRemover {
 			}
 			if (!(labelNode instanceof SimpleLabeledStatement || labelNode instanceof DefaultLabeledStatement
 					|| labelNode instanceof CaseLabeledStatement)) {
-				// So that we do not process the wrapper object of runtime-type LabeledStatement.
+				// So that we do not process the wrapper object of runtime-type
+				// LabeledStatement.
 				continue;
 			}
 			Node labeledCFGNode = Misc.getInternalFirstCFGNode(labelNode);
@@ -57,8 +59,8 @@ public class LabelRemover {
 			} else {
 				assert (false);
 			}
-			//									System.out.println(
-			//											"Adding label " + newLabel.getString() + " to " + labeledCFGNode);
+			// System.out.println(
+			// "Adding label " + newLabel.getString() + " to " + labeledCFGNode);
 			((StatementInfo) labeledCFGNode.getInfo()).initAddLabelAnnotation(newLabel);
 		}
 

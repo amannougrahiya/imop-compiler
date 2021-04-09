@@ -181,7 +181,8 @@ public class FunctionDefinitionInfo extends NodeInfo {
 	@Deprecated
 	private HashMap<String, Type> typeTable;
 
-	private boolean runInParallel = false; // This flag is set for those function defs which may become a part of a parallel region.
+	private boolean runInParallel = false; // This flag is set for those function defs which may become a part of a
+											// parallel region.
 	private String functionName;
 	private HashMap<String, Symbol> symbolTable;
 
@@ -207,8 +208,8 @@ public class FunctionDefinitionInfo extends NodeInfo {
 
 	/**
 	 * @param onPath:
-	 *            a vector of all those functions which have been traversed so
-	 *            far.
+	 *                a vector of all those functions which have been traversed so
+	 *                far.
 	 * @return True if this function may be recursive in nature
 	 */
 	public boolean isRecursive() {
@@ -243,40 +244,40 @@ public class FunctionDefinitionInfo extends NodeInfo {
 		return false;
 	}
 
-	//	/**
-	//	 * Returns true if there is a barrier in this function (or in its called
-	//	 * functions)
-	//	 */
-	//	@Override
-	//	public boolean hasBarrierInCFG() {
-	//		Vector<FunctionDefinition> onPath = new Vector<>();
-	//		onPath.add((FunctionDefinition) node);
-	//		return hasBarrierInCFG(onPath);
-	//	}
+	// /**
+	// * Returns true if there is a barrier in this function (or in its called
+	// * functions)
+	// */
+	// @Override
+	// public boolean hasBarrierInCFG() {
+	// Vector<FunctionDefinition> onPath = new Vector<>();
+	// onPath.add((FunctionDefinition) node);
+	// return hasBarrierInCFG(onPath);
+	// }
 	//
-	//	public boolean hasBarrierInCFG(Vector<FunctionDefinition> onPath) {
-	//		if (hasBarrierInAST()) {
-	//			return true;
-	//		}
+	// public boolean hasBarrierInCFG(Vector<FunctionDefinition> onPath) {
+	// if (hasBarrierInAST()) {
+	// return true;
+	// }
 	//
-	//		for (CallSite cS : getCallSites()) {
-	//			FunctionDefinition fD = cS.calleeDefinition;
-	//			if (fD == null) {
-	//				continue;
-	//			}
+	// for (CallSite cS : getCallSites()) {
+	// FunctionDefinition fD = cS.calleeDefinition;
+	// if (fD == null) {
+	// continue;
+	// }
 	//
-	//			if (onPath.contains(fD)) {
-	//				continue; // reached a recursive path
-	//			}
+	// if (onPath.contains(fD)) {
+	// continue; // reached a recursive path
+	// }
 	//
-	//			onPath.add(fD);
-	//			if (fD.getInfo().hasBarrierInCFG(onPath)) {
-	//				return true;
-	//			}
-	//			onPath.remove(fD);
-	//		}
-	//		return false;
-	//	}
+	// onPath.add(fD);
+	// if (fD.getInfo().hasBarrierInCFG(onPath)) {
+	// return true;
+	// }
+	// onPath.remove(fD);
+	// }
+	// return false;
+	// }
 
 	/**
 	 * Dumps a list of variables/functions declared in this
@@ -322,49 +323,57 @@ public class FunctionDefinitionInfo extends NodeInfo {
 		}
 		FunctionType functionType = (FunctionType) functionSymbol.getType();
 		for (Parameter param : functionType.getParameterList()) {
-			//assert(param.parameterName != null);
+			// assert(param.parameterName != null);
 			if (param.getParameterName() == null) {
 				param.setParameterName(Builder.getNewTempName());
 			}
-			//				System.out.println("Adding a parameter named " + param.parameterName + " in " + functionName);
+			// System.out.println("Adding a parameter named " + param.parameterName + " in "
+			// + functionName);
 			symbolTable.put(param.getParameterName(), new Symbol(param.getParameterName(), param.getParameterType(),
 					param.getParameterDeclaration(), (FunctionDefinition) this.getNode()));
 		}
 
-		//		/*
-		//		 * Extract names from Declarator (f1) first
-		//		 */
-		//		Declarator decl = funcDef.f1;
-		//		ADeclaratorOp declOp = ((ADeclaratorOp)decl.f1.f1.f0.nodes.get(decl.f1.f1.f0.nodes.size() - 1));
-		//		Node paramListChoice = declOp.f0.choice;
-		//		if (paramListChoice instanceof ParameterTypeListClosed){
-		//			// Case 1: Using new-style parameter list
-		//			ParameterTypeListClosed paramListClosed = (ParameterTypeListClosed) paramListChoice;
-		//			if(paramListClosed.f1.node != null) {
-		//				ParameterList parList= ((ParameterTypeList)paramListClosed.f1.node).f0;
+		// /*
+		// * Extract names from Declarator (f1) first
+		// */
+		// Declarator decl = funcDef.f1;
+		// ADeclaratorOp declOp =
+		// ((ADeclaratorOp)decl.f1.f1.f0.nodes.get(decl.f1.f1.f0.nodes.size() - 1));
+		// Node paramListChoice = declOp.f0.choice;
+		// if (paramListChoice instanceof ParameterTypeListClosed){
+		// // Case 1: Using new-style parameter list
+		// ParameterTypeListClosed paramListClosed = (ParameterTypeListClosed)
+		// paramListChoice;
+		// if(paramListClosed.f1.node != null) {
+		// ParameterList parList= ((ParameterTypeList)paramListClosed.f1.node).f0;
 		//
-		//				// Obtain the name of first argument
-		//				Node paraDeclChoice = parList.f0.f1.f0.choice;
-		//				if(paraDeclChoice instanceof Declarator){
-		//					//System.out.println("Found a parameter: " + (Misc.getRootIdName((Declarator)paraDeclChoice)));
-		//					String symbolTempName = Misc.getRootIdName((Declarator)paraDeclChoice);
-		//					symbolTable.put(symbolTempName, new Symbol(symbolTempName, parList.f0, (FunctionDefinition) node));
-		//				}
+		// // Obtain the name of first argument
+		// Node paraDeclChoice = parList.f0.f1.f0.choice;
+		// if(paraDeclChoice instanceof Declarator){
+		// //System.out.println("Found a parameter: " +
+		// (Misc.getRootIdName((Declarator)paraDeclChoice)));
+		// String symbolTempName = Misc.getRootIdName((Declarator)paraDeclChoice);
+		// symbolTable.put(symbolTempName, new Symbol(symbolTempName, parList.f0,
+		// (FunctionDefinition) node));
+		// }
 		//
-		//				// Obtain the name of remaining arguments
-		//				for(Node seq: parList.f1.nodes){
-		//					assert seq instanceof NodeSequence;
-		//					paraDeclChoice = ((ParameterDeclaration)((NodeSequence)seq).nodes.get(1)).f1.f0.choice;
-		//					if(paraDeclChoice instanceof Declarator){
-		//						//System.out.println("Found a parameter: " + (Misc.getRootIdName((Declarator)paraDeclChoice)));
-		//						String symbolTempName = Misc.getRootIdName((Declarator)paraDeclChoice);
-		//						symbolTable.put(symbolTempName, new Symbol(symbolTempName, ((NodeSequence)seq).nodes.get(1), (FunctionDefinition) node));
-		//					}
-		//				}
+		// // Obtain the name of remaining arguments
+		// for(Node seq: parList.f1.nodes){
+		// assert seq instanceof NodeSequence;
+		// paraDeclChoice =
+		// ((ParameterDeclaration)((NodeSequence)seq).nodes.get(1)).f1.f0.choice;
+		// if(paraDeclChoice instanceof Declarator){
+		// //System.out.println("Found a parameter: " +
+		// (Misc.getRootIdName((Declarator)paraDeclChoice)));
+		// String symbolTempName = Misc.getRootIdName((Declarator)paraDeclChoice);
+		// symbolTable.put(symbolTempName, new Symbol(symbolTempName,
+		// ((NodeSequence)seq).nodes.get(1), (FunctionDefinition) node));
+		// }
+		// }
 		//
-		//			}
-		//		}
-		//		dumpSymbolTable();
+		// }
+		// }
+		// dumpSymbolTable();
 	}
 
 	public String getFunctionName() {
@@ -378,16 +387,16 @@ public class FunctionDefinitionInfo extends NodeInfo {
 		this.functionName = functionName;
 	}
 
-	//	/**
-	//	 * Returns a set of all those call-sites in the known part of the program
-	//	 * which may call this function-definition.
-	//	 * 
-	//	 * @return
-	//	 * @deprecated Use {@link #getCallersOfThis()} instead
-	//	 */
-	//	public Set<CallStatement> getCallers() {
-	//		return getCallersOfThis();
-	//	}
+	// /**
+	// * Returns a set of all those call-sites in the known part of the program
+	// * which may call this function-definition.
+	// *
+	// * @return
+	// * @deprecated Use {@link #getCallersOfThis()} instead
+	// */
+	// public Set<CallStatement> getCallers() {
+	// return getCallersOfThis();
+	// }
 
 	/**
 	 * Returns a set of all those call-sites in the known part of the program

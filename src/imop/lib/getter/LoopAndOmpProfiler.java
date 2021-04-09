@@ -48,9 +48,9 @@ public class LoopAndOmpProfiler extends DepthFirstProcess {
 			if (l instanceof OmpDirective || l instanceof OmpConstruct) {
 				return false;
 			}
-			//			if (!l.getInfo().getSharedAccesses().isEmpty()) {
-			//				return false;
-			//			}
+			// if (!l.getInfo().getSharedAccesses().isEmpty()) {
+			// return false;
+			// }
 
 		}
 		return true;
@@ -448,47 +448,47 @@ public class LoopAndOmpProfiler extends DepthFirstProcess {
 			return;
 		}
 		initProcess(n);
-		//		globalTab++;
+		// globalTab++;
 		for (Node s : n.getInfo().getCFGInfo().getElementList()) {
 			s.accept(this);
 		}
-		//		globalTab--;
+		// globalTab--;
 		endProcess(n);
 	}
 
-	//	/**
-	//	 * f0 ::= <IF>
-	//	 * f1 ::= "("
-	//	 * f2 ::= Expression()
-	//	 * f3 ::= ")"
-	//	 * f4 ::= Statement()
-	//	 * f5 ::= ( <ELSE> Statement() )?
-	//	 */
-	//	@Override
-	//	public void visit(IfStatement n) {
-	//		if (shouldLeave(n)) {
-	//			return;
-	//		}
-	//		initProcess(n);
-	//		str.append(Misc.getLineNum(n) + ": ");
-	//		printTabs();
-	//		str.append( "if: \n");
-	//		globalTab++;
-	//		printAccesses(n.getInfo().getCFGInfo().getPredicate());
-	//		str.append(Misc.getLineNum(n) + ": ");
-	//		printTabs();
-	//		str.append( "T:\n");
-	//		n.getInfo().getCFGInfo().getThenBody().accept(this);
-	//		globalTab--;
-	//		if (n.getInfo().getCFGInfo().hasElseBody()) {
-	//			globalTab++;
-	//			str.append( "F:\n");
-	//			n.getInfo().getCFGInfo().getElseBody().accept(this);
-	//			globalTab--;
-	//		}
-	//		
-	//		endProcess(n);
-	//	}
+	// /**
+	// * f0 ::= <IF>
+	// * f1 ::= "("
+	// * f2 ::= Expression()
+	// * f3 ::= ")"
+	// * f4 ::= Statement()
+	// * f5 ::= ( <ELSE> Statement() )?
+	// */
+	// @Override
+	// public void visit(IfStatement n) {
+	// if (shouldLeave(n)) {
+	// return;
+	// }
+	// initProcess(n);
+	// str.append(Misc.getLineNum(n) + ": ");
+	// printTabs();
+	// str.append( "if: \n");
+	// globalTab++;
+	// printAccesses(n.getInfo().getCFGInfo().getPredicate());
+	// str.append(Misc.getLineNum(n) + ": ");
+	// printTabs();
+	// str.append( "T:\n");
+	// n.getInfo().getCFGInfo().getThenBody().accept(this);
+	// globalTab--;
+	// if (n.getInfo().getCFGInfo().hasElseBody()) {
+	// globalTab++;
+	// str.append( "F:\n");
+	// n.getInfo().getCFGInfo().getElseBody().accept(this);
+	// globalTab--;
+	// }
+	//
+	// endProcess(n);
+	// }
 	//
 	/**
 	 * f0 ::= <SWITCH>

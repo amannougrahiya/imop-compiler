@@ -78,7 +78,7 @@ public class ExpressionSimplifier extends GJNoArguDepthFirstProcess<ExpressionSi
 	 *
 	 */
 	public static class SimplificationString {
-		//		public static long counter = 0;
+		// public static long counter = 0;
 
 		/**
 		 * StringBuilder that represents the modified code that replaces
@@ -104,7 +104,7 @@ public class ExpressionSimplifier extends GJNoArguDepthFirstProcess<ExpressionSi
 		private List<Declaration> temporaryDeclarations;
 
 		public SimplificationString() {
-			//			counter++;
+			// counter++;
 		}
 
 		public StringBuilder getPrelude() {
@@ -171,10 +171,10 @@ public class ExpressionSimplifier extends GJNoArguDepthFirstProcess<ExpressionSi
 	 * visitor where it should be used.
 	 * 
 	 * @param ret
-	 *            a {@code SimplificationString} from which the call-site, if
-	 *            any, needs to be extracted out.
+	 *               a {@code SimplificationString} from which the call-site, if
+	 *               any, needs to be extracted out.
 	 * @param retExp
-	 *            expression being processed.
+	 *               expression being processed.
 	 */
 	private void extractFunctionCall(SimplificationString ret, Expression retExp) {
 		if (!Misc.isACall(ret.getReplacementString())) {
@@ -463,11 +463,11 @@ public class ExpressionSimplifier extends GJNoArguDepthFirstProcess<ExpressionSi
 			}
 		}
 
-		//		System.out.println("TT: " + ret.temporaryDeclarations);
-		//		System.out.println("PR: " + ret.prelude);
-		//		System.out.println("RR: " + ret.replacementString);
-		//		System.out.println("===");
-		//		
+		// System.out.println("TT: " + ret.temporaryDeclarations);
+		// System.out.println("PR: " + ret.prelude);
+		// System.out.println("RR: " + ret.replacementString);
+		// System.out.println("===");
+		//
 		return ret;
 	}
 
@@ -505,7 +505,7 @@ public class ExpressionSimplifier extends GJNoArguDepthFirstProcess<ExpressionSi
 	public SimplificationString visit(ADeclarationSpecifier n) {
 		SimplificationString ret = n.getF0().accept(this);
 		ret.getReplacementString().append(" ");
-		//		ret.replacementString = new StringBuilder(n.getInfo().getString() + " ");
+		// ret.replacementString = new StringBuilder(n.getInfo().getString() + " ");
 		return ret;
 	}
 
@@ -521,13 +521,13 @@ public class ExpressionSimplifier extends GJNoArguDepthFirstProcess<ExpressionSi
 			ret = initNode.accept(this);
 			this.extractFunctionCall(ret, initNode);
 			// OLD CODE:
-			//			if (Misc.isACall(ret.getReplacementString())) {
-			//				String tempName = Builder.getNewTempName();
-			//				Declaration decl = Type.getType(initNode).getDeclaration(tempName);
-			//				ret.getTemporaryDeclarations().add(decl);
-			//				ret.getPrelude().append(tempName + " = " + ret.getReplacementString() + ";");
-			//				ret.setReplacementString(new StringBuilder(" " + tempName + " "));
-			//			}
+			// if (Misc.isACall(ret.getReplacementString())) {
+			// String tempName = Builder.getNewTempName();
+			// Declaration decl = Type.getType(initNode).getDeclaration(tempName);
+			// ret.getTemporaryDeclarations().add(decl);
+			// ret.getPrelude().append(tempName + " = " + ret.getReplacementString() + ";");
+			// ret.setReplacementString(new StringBuilder(" " + tempName + " "));
+			// }
 			ret.setReplacementString(
 					new StringBuilder(n.getF0().getInfo().getString()).append(" = " + ret.getReplacementString()));
 		} else {
@@ -1585,7 +1585,7 @@ public class ExpressionSimplifier extends GJNoArguDepthFirstProcess<ExpressionSi
 					|| clause instanceof OmpFirstPrivateClause || clause instanceof OmpLastPrivateClause
 					|| clause instanceof OmpSharedClause || clause instanceof OmpCopyinClause
 					|| clause instanceof OmpDfltSharedClause || clause instanceof OmpDfltNoneClause
-			//					|| clause instanceof OmpReductionClause) {}
+			// || clause instanceof OmpReductionClause) {}
 			) {
 				parSpecificClauses.append(" " + clause.getInfo().getString() + " ");
 			} else {
@@ -2107,7 +2107,7 @@ public class ExpressionSimplifier extends GJNoArguDepthFirstProcess<ExpressionSi
 
 			List<Label> labels = n.getInfo().getLabelAnnotations();
 			for (Label label : labels) {
-				//				System.out.println(label.getString());
+				// System.out.println(label.getString());
 				ret.getReplacementString().append(label.getString());
 			}
 
@@ -2121,7 +2121,7 @@ public class ExpressionSimplifier extends GJNoArguDepthFirstProcess<ExpressionSi
 			ret.setReplacementString(new StringBuilder(INIT));
 			List<Label> labels = n.getInfo().getLabelAnnotations();
 			for (Label label : labels) {
-				//				System.out.println(label.getString());
+				// System.out.println(label.getString());
 				ret.getReplacementString().append(label.getString());
 			}
 			ret.getReplacementString().append(expString);
@@ -2470,8 +2470,8 @@ public class ExpressionSimplifier extends GJNoArguDepthFirstProcess<ExpressionSi
 				ret.getReplacementString().append("}");
 			}
 		} else {
-			assert (!stmtSS.getReplacementString().toString()
-					.contains("continue")) : "Check this bug at ExpressionSimplifier:2408";
+			assert (!stmtSS.getReplacementString().toString().contains("continue"))
+					: "Check this bug at ExpressionSimplifier:2408";
 			ret.getReplacementString().append(e1SS.getReplacementString() + ";");
 			ret.getReplacementString().append(e2SS.getPrelude());
 			ret.getReplacementString().append("for (;" + e2SS.getReplacementString() + ";)");
@@ -2566,7 +2566,7 @@ public class ExpressionSimplifier extends GJNoArguDepthFirstProcess<ExpressionSi
 		SimplificationString ret = new SimplificationString();
 		SimplificationString expSS = n.getF1().accept(this);
 		if (n.getF1().present()) {
-			//			System.out.println(expSS.replacementString);
+			// System.out.println(expSS.replacementString);
 			if (Misc.isACall(expSS.getReplacementString())) {
 				String tempName = Builder.getNewTempName();
 				Declaration decl = Type.getType((Expression) n.getF1().getNode()).getDeclaration(tempName);
@@ -2645,7 +2645,8 @@ public class ExpressionSimplifier extends GJNoArguDepthFirstProcess<ExpressionSi
 	 */
 	@Override
 	public SimplificationString visit(NonConditionalExpression n) {
-		// TODO: Ensure that chained assignments are broken into statements with single assignments.
+		// TODO: Ensure that chained assignments are broken into statements with single
+		// assignments.
 		SimplificationString rhsSS = n.getF2().accept(this);
 		StringBuilder opSS = new StringBuilder(n.getF1().getInfo().getString() + " ");
 		if (!opSS.toString().equals("= ")) {
@@ -3410,9 +3411,9 @@ public class ExpressionSimplifier extends GJNoArguDepthFirstProcess<ExpressionSi
 		SimplificationString ret = n.getF0().accept(this);
 		List<Node> postFixOpList = n.getF1().getF0().getNodes();
 
-		//		if (postFixOpList.size() > 0) {
-		//			this.collapseCalls(ret, Type.getType(n.f0));
-		//		}
+		// if (postFixOpList.size() > 0) {
+		// this.collapseCalls(ret, Type.getType(n.f0));
+		// }
 		//
 		for (Node postFixOpNode : postFixOpList) {
 			Node postFixOp = ((APostfixOperation) postFixOpNode).getF0().getChoice();
@@ -3424,27 +3425,28 @@ public class ExpressionSimplifier extends GJNoArguDepthFirstProcess<ExpressionSi
 					Type e1Type = ExpressionTypeGetter.getHalfPostfixExpressionType(n,
 							(APostfixOperation) postFixOpNode);
 					// Step 2: Create a declaration for a temporary, say t1, with type T.
-					// 		   Add declaration to the list of temporary declarations.
+					// Add declaration to the list of temporary declarations.
 					String newTempName = Builder.getNewTempName();
 					Declaration e1Decl = e1Type.getDeclaration(newTempName);
 					ret.getTemporaryDeclarations().add(e1Decl);
 
-					// Step 3: Create a prelude "t1 = e1;"; append it to the existing prelude for e1.
+					// Step 3: Create a prelude "t1 = e1;"; append it to the existing prelude for
+					// e1.
 					ret.getPrelude().append(newTempName + " = " + ret.getReplacementString() + ";");
 
 					// Step 4: Replace the text of e1 by "t1" in the replacement string.
 					ret.setReplacementString(new StringBuilder(" " + newTempName + " "));
 
 					// Step 5: Obtain the SimplificationString of e2.
-					// 		   Append the prelude to the existing prelude.
-					// 		   Add the declarations to the list of temporary declarations.
-					//					SimplificationString elementSS = postFixOp.accept(this);
-					//					ret.getPrelude().append(elementSS.getPrelude());
-					//					ret.getTemporaryDeclarations().addAll(elementSS.getTemporaryDeclarations());
+					// Append the prelude to the existing prelude.
+					// Add the declarations to the list of temporary declarations.
+					// SimplificationString elementSS = postFixOp.accept(this);
+					// ret.getPrelude().append(elementSS.getPrelude());
+					// ret.getTemporaryDeclarations().addAll(elementSS.getTemporaryDeclarations());
 					//
-					//					// Step 6: Create the appropriate replacement string.
-					//					ret.getReplacementString().append(elementSS.getReplacementString());
-					//					continue;
+					// // Step 6: Create the appropriate replacement string.
+					// ret.getReplacementString().append(elementSS.getReplacementString());
+					// continue;
 				}
 			}
 			SimplificationString elementSS = postFixOp.accept(this);
@@ -3465,15 +3467,16 @@ public class ExpressionSimplifier extends GJNoArguDepthFirstProcess<ExpressionSi
 					ret.setReplacementString(new StringBuilder(" " + tempName + " "));
 
 					// OLD CODE: Incomplete..
-					//					Type prevType = null;
-					//					if (postFixOpList.indexOf(postFixOpNode) > 0) {
-					//						APostfixOperation prevOpNode = (APostfixOperation) postFixOpList
-					//								.get(postFixOpList.indexOf(postFixOpNode) - 1);
-					//						prevType = ExpressionTypeGetter.getHalfPostfixExpressionType(n, prevOpNode);
-					//						System.out.println("Type for " + n + " till" + prevOpNode + " is: " + prevType);
-					//					} else {
-					//						prevType = Type.getType(n.getF0());
-					//					}
+					// Type prevType = null;
+					// if (postFixOpList.indexOf(postFixOpNode) > 0) {
+					// APostfixOperation prevOpNode = (APostfixOperation) postFixOpList
+					// .get(postFixOpList.indexOf(postFixOpNode) - 1);
+					// prevType = ExpressionTypeGetter.getHalfPostfixExpressionType(n, prevOpNode);
+					// System.out.println("Type for " + n + " till" + prevOpNode + " is: " +
+					// prevType);
+					// } else {
+					// prevType = Type.getType(n.getF0());
+					// }
 				}
 			}
 		}
@@ -3673,9 +3676,9 @@ public class ExpressionSimplifier extends GJNoArguDepthFirstProcess<ExpressionSi
 	@Override
 	public SimplificationString visit(CallStatement n) {
 		SimplificationString ret = new SimplificationString();
-		//		for (Label label : n.getInfo().getLabelAnnotations()) {
-		//			ret.getReplacementString().append(label.getString());
-		//		}
+		// for (Label label : n.getInfo().getLabelAnnotations()) {
+		// ret.getReplacementString().append(label.getString());
+		// }
 		ret.getReplacementString().append(" " + n.toString() + " ");
 		return ret;
 	}
@@ -3720,7 +3723,7 @@ public class ExpressionSimplifier extends GJNoArguDepthFirstProcess<ExpressionSi
 	 * if it has been simplified down to more than one statements.
 	 * 
 	 * @param s
-	 *            an object of proper super-type Statement.
+	 *          an object of proper super-type Statement.
 	 * @return
 	 *         true if {@code s} needs to be encapsulated within
 	 *         CompoundStatement
@@ -3731,9 +3734,9 @@ public class ExpressionSimplifier extends GJNoArguDepthFirstProcess<ExpressionSi
 		if (s.getInfo().hasLabelAnnotations()) {
 			return true;
 		}
-		//		if (s instanceof CompoundStatement) {
-		//			return true;
-		//		}
+		// if (s instanceof CompoundStatement) {
+		// return true;
+		// }
 		Statement stmt = Misc.getEnclosingNode(s, Statement.class);
 		if (stmt == null) {
 			return true;

@@ -40,9 +40,9 @@ public class FieldSensitivity {
 	 * with each other.
 	 * 
 	 * @param s1
-	 *            a CFG node.
+	 *           a CFG node.
 	 * @param s2
-	 *            a CFG node.
+	 *           a CFG node.
 	 * @return
 	 *         true, if the nodes may access same memory location, when run from
 	 *         two different threads.
@@ -83,7 +83,8 @@ public class FieldSensitivity {
 		}
 
 		neededAtLeastOnce = true;
-		//		ConstraintsGenerator.reinitInductionSet(); // Shifted to flush in AutomatedUpdater.
+		// ConstraintsGenerator.reinitInductionSet(); // Shifted to flush in
+		// AutomatedUpdater.
 
 		if (FieldSensitivity.doConflict(writeSS1, readSS2) || FieldSensitivity.doConflict(writeSS1, writeSS2)
 				|| FieldSensitivity.doConflict(writeSS1, readPS2) || FieldSensitivity.doConflict(writeSS1, writePS2)
@@ -144,9 +145,9 @@ public class FieldSensitivity {
 	 * indirections.
 	 * 
 	 * @param sae1
-	 *            an expression that has been dereferenced using {@code []}.
+	 *             an expression that has been dereferenced using {@code []}.
 	 * @param sae2
-	 *            an expression that has been dereferenced using {@code []}.
+	 *             an expression that has been dereferenced using {@code []}.
 	 * @return
 	 *         true, if two different threads may access the same location by
 	 *         dereferencing the given arguments.
@@ -165,9 +166,9 @@ public class FieldSensitivity {
 	 * indirections.
 	 * 
 	 * @param sae1
-	 *            an expression that has been dereferenced using {@code []}
+	 *             an expression that has been dereferenced using {@code []}
 	 * @param ce2
-	 *            an expression that has been dereferences using a pointer.
+	 *             an expression that has been dereferences using a pointer.
 	 * @return
 	 *         true, if two different threads may access the same location by
 	 *         dereferencing the given arguments.

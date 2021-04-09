@@ -53,7 +53,8 @@ public class Deprecated_AntiDefVisitor extends DepthFirstProcess {
 					for (Node startNode : n.getInfo().getCFGInfo().getSuccBlocks()) {
 						startNode.accept(antiMarker);
 					}
-				} else { // def.definingNode is either of Parallel{For, Sections}Construct or TaskConstruct
+				} else { // def.definingNode is either of Parallel{For, Sections}Construct or
+							// TaskConstruct
 					n.getInfo().getCFGInfo().getNestedCFG().getBegin().accept(antiMarker);
 				}
 			});

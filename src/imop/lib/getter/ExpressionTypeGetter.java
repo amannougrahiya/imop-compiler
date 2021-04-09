@@ -40,7 +40,7 @@ public class ExpressionTypeGetter extends GJNoArguDepthFirstProcess<Type> {
 	 * array and function types.
 	 * 
 	 * @param inputType
-	 *            type on which pointer generation has to be performed.
+	 *                  type on which pointer generation has to be performed.
 	 * @return
 	 *         the pointer-generated type, regardless of where the corresponding
 	 *         operand may exist.
@@ -65,7 +65,7 @@ public class ExpressionTypeGetter extends GJNoArguDepthFirstProcess<Type> {
 	 * operand of {@code =} or {@code .} operators.
 	 * 
 	 * @param inputType
-	 *            the pointer-generated type, or a simple type.
+	 *                  the pointer-generated type, or a simple type.
 	 * @return
 	 *         type on which pointer-generation might have been applied.
 	 */
@@ -111,8 +111,8 @@ public class ExpressionTypeGetter extends GJNoArguDepthFirstProcess<Type> {
 				 * called. This old code below erroneously assumes the type of
 				 * such function-calls to be function-type.
 				 */
-				//				e1Type = new FunctionType(SignedIntType.type(), null);
-				//				e1Type = new PointerType(e1Type, e1Type);
+				// e1Type = new FunctionType(SignedIntType.type(), null);
+				// e1Type = new PointerType(e1Type, e1Type);
 			} else {
 				return null;
 			}
@@ -183,7 +183,8 @@ public class ExpressionTypeGetter extends GJNoArguDepthFirstProcess<Type> {
 							break;
 						}
 					}
-					//					assert (mType != null) : "Could not find type information for " + n.toString();
+					// assert (mType != null) : "Could not find type information for " +
+					// n.toString();
 				} else if (e1Type instanceof UnionType) {
 					for (StructOrUnionMember member : ((UnionType) e1Type).getElementList()) {
 						if (member.getElementName() == null) {
@@ -194,10 +195,10 @@ public class ExpressionTypeGetter extends GJNoArguDepthFirstProcess<Type> {
 							break;
 						}
 					}
-					//					assert (mType != null);
+					// assert (mType != null);
 				} else {
 					mType = null;
-					//					assert (false);
+					// assert (false);
 				}
 				// TODO: Take care of the qualifiers here.
 				e1Type = mType;
@@ -215,7 +216,7 @@ public class ExpressionTypeGetter extends GJNoArguDepthFirstProcess<Type> {
 							break;
 						}
 					}
-					//					assert (mType != null);
+					// assert (mType != null);
 				} else if (e1Type instanceof UnionType) {
 					for (StructOrUnionMember member : ((UnionType) e1Type).getElementList()) {
 						if (member.getElementName() == null) {
@@ -226,10 +227,10 @@ public class ExpressionTypeGetter extends GJNoArguDepthFirstProcess<Type> {
 							break;
 						}
 					}
-					//					assert (mType != null);
+					// assert (mType != null);
 				} else {
 					mType = null;
-					//					assert (false);
+					// assert (false);
 				}
 				// TODO: Take care of the qualifiers here.
 				e1Type = mType;
@@ -244,7 +245,7 @@ public class ExpressionTypeGetter extends GJNoArguDepthFirstProcess<Type> {
 					// Hence, no change in the type information.
 				} else {
 					e1Type = null;
-					//					assert (false);
+					// assert (false);
 				}
 			}
 		}
@@ -501,7 +502,7 @@ public class ExpressionTypeGetter extends GJNoArguDepthFirstProcess<Type> {
 				return falseExpType;
 			}
 		} else {
-			//			assert (false);
+			// assert (false);
 			return trueExpType;
 		}
 	}
@@ -905,7 +906,7 @@ public class ExpressionTypeGetter extends GJNoArguDepthFirstProcess<Type> {
 				pointeeType = ExpressionTypeGetter.performPointerGeneration(pointeeType);
 				return pointeeType;
 			}
-			//			assert (false);
+			// assert (false);
 			return null;
 		case "+":
 		case "-":
@@ -1068,18 +1069,19 @@ public class ExpressionTypeGetter extends GJNoArguDepthFirstProcess<Type> {
 			String idName = ((NodeToken) n.getF0().getChoice()).getTokenImage();
 			Symbol symbol = Misc.getSymbolEntry(idName, n);
 			// Old Code commented below: This code has been shifted to getSymbolEntry.
-			//			if (idName.startsWith("__builtin_")) {
-			//				String newName;
-			//				newName = idName.replaceAll("__builtin_", "");
-			//				symbol = Misc.getSymbolEntry(newName, n);
-			//				if (symbol == null) {
-			//					symbol = Misc.getSymbolEntry(idName, n);
-			//				}
-			//			}
+			// if (idName.startsWith("__builtin_")) {
+			// String newName;
+			// newName = idName.replaceAll("__builtin_", "");
+			// symbol = Misc.getSymbolEntry(newName, n);
+			// if (symbol == null) {
+			// symbol = Misc.getSymbolEntry(idName, n);
+			// }
+			// }
 			if (symbol == null) {
-				//				Misc.warnDueToLackOfFeature("Could not find any declaration for " + n + ".", n);
+				// Misc.warnDueToLackOfFeature("Could not find any declaration for " + n + ".",
+				// n);
 				return null; // This may be due to usage of a function that has not been declared yet,
-							// or because this method has been called in a snippet rather than a code.
+								// or because this method has been called in a snippet rather than a code.
 			}
 			Type type = symbol.getType();
 			type = ExpressionTypeGetter.performPointerGeneration(type);
@@ -1175,9 +1177,10 @@ public class ExpressionTypeGetter extends GJNoArguDepthFirstProcess<Type> {
 			String idName = n.getIdentifier().getTokenImage();
 			Symbol symbol = Misc.getSymbolEntry(idName, n);
 			if (symbol == null) {
-				//				Misc.warnDueToLackOfFeature("Could not find any declaration for " + n + ".", n);
+				// Misc.warnDueToLackOfFeature("Could not find any declaration for " + n + ".",
+				// n);
 				return null; // This may be due to usage of a function that has not been declared yet,
-							// or because this method has been called on a snippet rather than a code.
+								// or because this method has been called on a snippet rather than a code.
 			}
 			Type type = symbol.getType();
 			type = ExpressionTypeGetter.performPointerGeneration(type);

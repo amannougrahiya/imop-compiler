@@ -15,33 +15,36 @@ import imop.parser.Program;
 
 public class Demo3 {
 
-    /**
-     * Driver method for Demo #3.
-     * TODO OPTIONS:
-     *      1. System.out.println(callStmt.getInfo().getCalledDefinitions()); System.out.print(callStmt.getPreCallNode().getArgumentList());
-     *      2. Misc.getInheritedEnclosee(func, CallStatement.class)
-     *      3. System.out.println("Recursive?" + (func.getInfo().isRecursive() ? "Yes" : "No"));
-     *      4. System.out.println(func.getInfo().getCallersOfThis());
-     *      5. Program.getRoot().getInfo().getAllFunctionDefinitions()
-     */
-    public static void main(String[] args) {
-        args = new String[]{"-f", "runner/cgo-eg/example.c", "-nru"};
-        Program.parseNormalizeInput(args);
+	/**
+	 * Driver method for Demo #3.
+	 * TODO OPTIONS:
+	 * 1. System.out.println(callStmt.getInfo().getCalledDefinitions());
+	 * System.out.print(callStmt.getPreCallNode().getArgumentList());
+	 * 2. Misc.getInheritedEnclosee(func, CallStatement.class)
+	 * 3. System.out.println("Recursive?" + (func.getInfo().isRecursive() ? "Yes" :
+	 * "No"));
+	 * 4. System.out.println(func.getInfo().getCallersOfThis());
+	 * 5. Program.getRoot().getInfo().getAllFunctionDefinitions()
+	 */
+	public static void main(String[] args) {
+		args = new String[] { "-f", "runner/cgo-eg/example.c", "-nru" };
+		Program.parseNormalizeInput(args);
 
-        //		for (FunctionDefinition func :
-        //	TODO T1
-        //	    ) {
-        //			for (CallStatement callStmt :
-        //	TODO T2
-        //	        ) {
-        //				System.out.println(callStmt);
-        //			}
-        //	TODO T3
-        //			for (CallStatement callStmt : Misc.getInheritedEnclosee(func, CallStatement.class)) {
-        //	TODO T4
-        //			}
-        //	TODO T5
-        //		}
-    }
+		// for (FunctionDefinition func :
+		// TODO T1
+		// ) {
+		// for (CallStatement callStmt :
+		// TODO T2
+		// ) {
+		// System.out.println(callStmt);
+		// }
+		// TODO T3
+		// for (CallStatement callStmt : Misc.getInheritedEnclosee(func,
+		// CallStatement.class)) {
+		// TODO T4
+		// }
+		// TODO T5
+		// }
+	}
 
 }

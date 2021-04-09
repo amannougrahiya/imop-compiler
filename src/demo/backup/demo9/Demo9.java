@@ -46,8 +46,7 @@ public class Demo9 {
 	public static void demo9() {
 		for (BarrierDirective barrier : Misc.getInheritedEncloseeList(Program.getRoot(), BarrierDirective.class)) {
 			Set<Phase> allPhaseSet = new HashSet<>();
-			for (ParallelConstruct parConsNode : Misc.getExactEnclosee(Program.getRoot(),
-					ParallelConstruct.class)) {
+			for (ParallelConstruct parConsNode : Misc.getExactEnclosee(Program.getRoot(), ParallelConstruct.class)) {
 				allPhaseSet.addAll((Collection<? extends Phase>) parConsNode.getInfo().getConnectedPhases());
 			}
 			Set<Phase> phasesAbove = (Set<Phase>) barrier.getInfo().getNodePhaseInfo().getPhaseSet();

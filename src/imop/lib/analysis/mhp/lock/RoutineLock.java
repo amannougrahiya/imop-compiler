@@ -128,15 +128,15 @@ public class RoutineLock extends AbstractLock {
 		} else {
 			return false;
 		}
-		//		if (that.lockedLocations.size() != this.lockedLocations.size()) {
-		//			return false;
-		//		}
-		//		for (Cell thisSymbol : this.lockedLocations) {
-		//			if (that.lockedLocations.contains(thisSymbol)) {
-		//				return false;
-		//			}
-		//		}
-		//		return true;
+		// if (that.lockedLocations.size() != this.lockedLocations.size()) {
+		// return false;
+		// }
+		// for (Cell thisSymbol : this.lockedLocations) {
+		// if (that.lockedLocations.contains(thisSymbol)) {
+		// return false;
+		// }
+		// }
+		// return true;
 	}
 
 	@Override
@@ -145,7 +145,7 @@ public class RoutineLock extends AbstractLock {
 		int result = 1;
 		result = prime * result + ((this.lockedLocations == null) ? 0 : this.lockedLocations.size());
 		return result;
-		//		return Arrays.hashCode(new Object[] {this.lockedLocations});
+		// return Arrays.hashCode(new Object[] {this.lockedLocations});
 	}
 
 	@Override

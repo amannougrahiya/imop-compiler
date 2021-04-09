@@ -77,8 +77,10 @@ public class SwitchRelevantStatementsGetter extends DepthFirstProcess {
 	@Override
 	public void visit(SwitchStatement n) {
 		initProcess(n);
-		// No accepts here ensure that case statements of the internal switches are not added to "cases".
-		// NOTE: This visitor is called with Switch statement's body, and not the switch statement itself.
+		// No accepts here ensure that case statements of the internal switches are not
+		// added to "cases".
+		// NOTE: This visitor is called with Switch statement's body, and not the switch
+		// statement itself.
 	}
 
 }

@@ -73,7 +73,7 @@ public abstract class CellCollection extends AbstractCollection<Cell> implements
 
 	public boolean isUniversal() {
 		return this.containsUniversal;
-		//		return this.internalRepresentation.contains(getGenericCell());
+		// return this.internalRepresentation.contains(getGenericCell());
 	}
 
 	@Override
@@ -145,9 +145,9 @@ public abstract class CellCollection extends AbstractCollection<Cell> implements
 				internalRepresentation.add(Cell.genericCell);
 				this.freeVariableCount = Integer.MAX_VALUE;
 				this.containsUniversal = true;
-				//				this.freeVariableCount = getAllCells().stream().filter((x) -> {
-				//					return x instanceof FreeVariable;
-				//				}).toArray().length;
+				// this.freeVariableCount = getAllCells().stream().filter((x) -> {
+				// return x instanceof FreeVariable;
+				// }).toArray().length;
 				CellCollection.addCollectionToDerived(this);
 				return true;
 			}
@@ -173,9 +173,9 @@ public abstract class CellCollection extends AbstractCollection<Cell> implements
 				internalRepresentation.add(Cell.genericCell);
 				this.freeVariableCount = Integer.MAX_VALUE;
 				this.containsUniversal = true;
-				//				this.freeVariableCount = getAllCells().stream().filter((x) -> {
-				//					return x instanceof FreeVariable;
-				//				}).toArray().length;
+				// this.freeVariableCount = getAllCells().stream().filter((x) -> {
+				// return x instanceof FreeVariable;
+				// }).toArray().length;
 				CellCollection.addCollectionToDerived(this);
 				return true;
 			}
@@ -223,7 +223,7 @@ public abstract class CellCollection extends AbstractCollection<Cell> implements
 
 	public void applyAllExpanded(Consumer<Cell> c) {
 		if (this.isUniversal()) {
-			//			Thread.dumpStack();
+			// Thread.dumpStack();
 			Misc.warnDueToLackOfFeature(
 					"Not efficient in handling a generic cell while applying a function on all elements.",
 					Program.getRoot());

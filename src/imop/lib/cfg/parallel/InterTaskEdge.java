@@ -52,7 +52,7 @@ public class InterTaskEdge {
 		result = prime * result + ((sourceNode == null) ? 0 : sourceNode.hashCode());
 		result = prime * result + ((destinationNode == null) ? 0 : destinationNode.hashCode());
 		return result;
-		//		return Arrays.hashCode(new Object[] {sourceNode, destinationNode});
+		// return Arrays.hashCode(new Object[] {sourceNode, destinationNode});
 	}
 
 }

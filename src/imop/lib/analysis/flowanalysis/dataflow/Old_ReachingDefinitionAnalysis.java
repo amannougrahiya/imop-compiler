@@ -108,26 +108,28 @@ public class Old_ReachingDefinitionAnalysis
 		return new Old_ReachingDefinitionFlowFact(defSet);
 	}
 
-	//	@Override
-	//	public ReachingDefinitionFlowFact visit(EndNode n, ReachingDefinitionFlowFact flowFactIN) {
-	//		Node parent = n.getParent();
-	//		if (parent instanceof CompoundStatement) {
-	//			CompoundStatement compStmt = (CompoundStatement) parent;
-	//			Set<Definition> newDefSet = new HashSet<>(flowFactIN.definitions);
-	//			ReachingDefinitionFlowFact flowFactOUT = new ReachingDefinitionFlowFact(newDefSet);
-	//			
-	//			HashMap<String, Symbol> symTable = compStmt.getInfo().getSymbolTable();
-	//			for (Definition def : newDefSet) {
-	//				if (symTable.containsValue(def.getCell())) {
-	//					Symbol sym = (Symbol) def.getCell();
-	//					symTable.remove(sym.getName());
-	//				}
-	//			}
-	//			return flowFactOUT;
-	//		} else {
-	//			return flowFactIN;
-	//		}
-	//	}
+	// @Override
+	// public ReachingDefinitionFlowFact visit(EndNode n, ReachingDefinitionFlowFact
+	// flowFactIN) {
+	// Node parent = n.getParent();
+	// if (parent instanceof CompoundStatement) {
+	// CompoundStatement compStmt = (CompoundStatement) parent;
+	// Set<Definition> newDefSet = new HashSet<>(flowFactIN.definitions);
+	// ReachingDefinitionFlowFact flowFactOUT = new
+	// ReachingDefinitionFlowFact(newDefSet);
+	//
+	// HashMap<String, Symbol> symTable = compStmt.getInfo().getSymbolTable();
+	// for (Definition def : newDefSet) {
+	// if (symTable.containsValue(def.getCell())) {
+	// Symbol sym = (Symbol) def.getCell();
+	// symTable.remove(sym.getName());
+	// }
+	// }
+	// return flowFactOUT;
+	// } else {
+	// return flowFactIN;
+	// }
+	// }
 
 	@Override
 	public Old_ReachingDefinitionFlowFact initProcess(Node n, Old_ReachingDefinitionFlowFact flowFactIN) {

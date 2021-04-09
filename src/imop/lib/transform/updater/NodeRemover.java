@@ -38,7 +38,7 @@ public class NodeRemover {
 	 * This method is generally used by elementary transformations.
 	 * 
 	 * @param node
-	 *            node to be removed from its location in the program/snippet.
+	 *             node to be removed from its location in the program/snippet.
 	 * @return
 	 *         list of side effects resulting from removal of the node.
 	 */
@@ -368,7 +368,7 @@ public class NodeRemover {
 		 * Separates out the label from the element to on an empty statement.
 		 * 
 		 * @param link
-		 *            a compound-element link.
+		 *             a compound-element link.
 		 */
 		private List<SideEffect> separateOutLabels(CompoundElementLink link) {
 			List<SideEffect> sideEffects = new ArrayList<>();
@@ -378,7 +378,7 @@ public class NodeRemover {
 				return sideEffects; // A Declaration cannot have any labels.
 			}
 			Statement stmt = (Statement) element;
-			if (!stmt.getInfo().hasLabelAnnotations()) { //We do not require getLabels() here.
+			if (!stmt.getInfo().hasLabelAnnotations()) { // We do not require getLabels() here.
 				return sideEffects;
 			}
 			List<Label> labels = new ArrayList<>(stmt.getInfo().getLabelAnnotations());

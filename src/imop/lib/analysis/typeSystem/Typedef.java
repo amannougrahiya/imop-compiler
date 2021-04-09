@@ -53,48 +53,50 @@ public class Typedef {
 		return definingNode;
 	}
 
-	//	/**
-	//	 * Returns the typedef with specified tag, if present in the given scope,
-	//	 * or any of the nested scope.
-	//	 * @param tag
-	//	 * @param scope
-	//	 * @return
-	//	 */
-	//	public static Typedef getTypedefFromScope(String tag, Scopeable scope) {
-	//		return Typedef.getTypedefEntry(tag, scope);
-	//	}
+	// /**
+	// * Returns the typedef with specified tag, if present in the given scope,
+	// * or any of the nested scope.
+	// * @param tag
+	// * @param scope
+	// * @return
+	// */
+	// public static Typedef getTypedefFromScope(String tag, Scopeable scope) {
+	// return Typedef.getTypedefEntry(tag, scope);
+	// }
 	//
-	//	/**
-	//	 * Enters the provided tag and typedef key-value pair into the
-	//	 * typedefTable of the specified scope, if the typedef is not already
-	//	 * present in the complete state.
-	//	 * @param scope
-	//	 * @param tag
-	//	 * @param typedef
-	//	 */
-	//	public static void putTypedefToScope(Scopeable scope, String tag, Typedef typedef) {
-	//		HashMap<String, Typedef> typedefTable;
-	//		if (scope instanceof CompoundStatement) {
-	//			CompoundStatementInfo csInfo = (CompoundStatementInfo) ((CompoundStatement) scope).getInfo();
-	//			typedefTable = csInfo.getTypedefTable();
-	//		} else if (scope instanceof TranslationUnit) {
-	//			RootInfo rootInfo = (RootInfo) ((TranslationUnit) scope).getInfo();
-	//			typedefTable = rootInfo.getTypedefTable();
-	//		} else if (scope instanceof FunctionDefinition) {
-	//			typedefTable = null;
-	//			assert(false);
-	//		} else if (scope instanceof StructType) {
-	//			StructType structTypedef = (StructType) scope;
-	//			typedefTable = structTypedef.getTypedefTable();
-	//		} else if (scope instanceof UnionType) {
-	//			UnionType unionTypedef = (UnionType) scope;
-	//			typedefTable = unionTypedef.getTypedefTable();
-	//		} else {
-	//			typedefTable = null;
-	//			assert(false);
-	//		}
-	//		typedefTable.put(tag, typedef);
-	//	}
+	// /**
+	// * Enters the provided tag and typedef key-value pair into the
+	// * typedefTable of the specified scope, if the typedef is not already
+	// * present in the complete state.
+	// * @param scope
+	// * @param tag
+	// * @param typedef
+	// */
+	// public static void putTypedefToScope(Scopeable scope, String tag, Typedef
+	// typedef) {
+	// HashMap<String, Typedef> typedefTable;
+	// if (scope instanceof CompoundStatement) {
+	// CompoundStatementInfo csInfo = (CompoundStatementInfo) ((CompoundStatement)
+	// scope).getInfo();
+	// typedefTable = csInfo.getTypedefTable();
+	// } else if (scope instanceof TranslationUnit) {
+	// RootInfo rootInfo = (RootInfo) ((TranslationUnit) scope).getInfo();
+	// typedefTable = rootInfo.getTypedefTable();
+	// } else if (scope instanceof FunctionDefinition) {
+	// typedefTable = null;
+	// assert(false);
+	// } else if (scope instanceof StructType) {
+	// StructType structTypedef = (StructType) scope;
+	// typedefTable = structTypedef.getTypedefTable();
+	// } else if (scope instanceof UnionType) {
+	// UnionType unionTypedef = (UnionType) scope;
+	// typedefTable = unionTypedef.getTypedefTable();
+	// } else {
+	// typedefTable = null;
+	// assert(false);
+	// }
+	// typedefTable.put(tag, typedef);
+	// }
 
 	/**
 	 * @return Typedef defining a typedef for the given TypedefName.

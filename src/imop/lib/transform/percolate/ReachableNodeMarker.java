@@ -126,7 +126,8 @@ public class ReachableNodeMarker extends DepthFirstCFG {
 				return;
 			} else {
 				reachableNodes.add(n);
-				// Now, without any checks for barriers, mark all the constituent CFG nodes in $n$
+				// Now, without any checks for barriers, mark all the constituent CFG nodes in
+				// $n$
 				for (Node constituent : n.getInfo().getCFGInfo().getLexicalCFGContents()) {
 					reachableNodes.add(constituent);
 				}
@@ -153,7 +154,8 @@ public class ReachableNodeMarker extends DepthFirstCFG {
 		 */
 		if (Misc.isJumpNode(n)) {
 			reachableNodes.remove(n);
-			// TODO: Later, to be more precise, we can see how to handle motion of jump nodes across barriers.
+			// TODO: Later, to be more precise, we can see how to handle motion of jump
+			// nodes across barriers.
 			// However, that might not be beneficial.
 			return;
 		}

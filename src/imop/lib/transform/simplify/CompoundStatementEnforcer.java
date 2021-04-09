@@ -341,8 +341,8 @@ public class CompoundStatementEnforcer extends DepthFirstVisitor {
 	 * Tells whether we need to call {@code wrapCS} for {@code inSt} or not.
 	 * 
 	 * @param inSt
-	 *            statement that should be immediately wrapping a
-	 *            CompoundStatement.
+	 *             statement that should be immediately wrapping a
+	 *             CompoundStatement.
 	 * @return
 	 *         true if {@inSt} doesn't immediately wraps a CompoundStatement.
 	 * @deprecated
@@ -361,7 +361,7 @@ public class CompoundStatementEnforcer extends DepthFirstVisitor {
 	 * Obtain a compound-statement wrapped equivalent of {@code inSt}.
 	 * 
 	 * @param inSt
-	 *            a Statement that needs to be wrapped with compound-statement.
+	 *             a Statement that needs to be wrapped with compound-statement.
 	 * @return
 	 *         {@code inSt} if it immediately wraps a CompoundStatement,
 	 *         else, an equivalent which does.
@@ -381,11 +381,13 @@ public class CompoundStatementEnforcer extends DepthFirstVisitor {
 			CompoundStatement compStmt = (CompoundStatement) Misc.getCFGNodeFor(outSt);
 			compStmt.getInfo().getCFGInfo().addElement(inSt);
 			// Old Code:
-			//			List<Node> compoundStatementElement = new ArrayList<>();
-			//			compoundStatementElement.add(new CompoundStatementElement(new NodeChoice(inSt)));
-			//			outSt = new CompoundStatement(new NodeListOptional(compoundStatementElement));
-			//			outSt = new Statement(new NodeChoice(outSt));
-			//			outSt.accept(new CFGGenerator());
+			// List<Node> compoundStatementElement = new ArrayList<>();
+			// compoundStatementElement.add(new CompoundStatementElement(new
+			// NodeChoice(inSt)));
+			// outSt = new CompoundStatement(new
+			// NodeListOptional(compoundStatementElement));
+			// outSt = new Statement(new NodeChoice(outSt));
+			// outSt.accept(new CFGGenerator());
 		}
 		assert (outSt.getClass() == Statement.class);
 		return outSt;

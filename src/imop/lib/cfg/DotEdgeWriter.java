@@ -40,17 +40,21 @@ public class DotEdgeWriter extends GJDepthFirstProcess<Object, BufferedWriter> {
 			NodeInfo info = n.getInfo();
 			NestedCFG ncfg = info.getCFGInfo().getNestedCFG();
 			if (Misc.isCFGLeafNode(n)) { // n is a Leaf Node
-				// Problem: May induce cycles across clusters, which our DOT doesn't handle well.
-				//				if (n instanceof DummyFlushDirective) {
-				//					DummyFlushDirective df = (DummyFlushDirective) n;
-				//					for (InterTaskEdge interTaskEdge : df.getInfo().getOutgoingInterTaskEdges()) {
-				//						Node base = interTaskEdge.getSourceNode();
-				//						assert(base == n);
-				//						Node succ = interTaskEdge.getDestinationNode();
-				//						bw.write("\n\tnode" + base.getInfo().hashCode() + " ::= node" + succ.getInfo().hashCode()
-				//								+ "[weight=8, color=red, style=dotted, tailport=s, headport=n];"); // Add an edge between n and succ
-				//					}
-				//				}
+				// Problem: May induce cycles across clusters, which our DOT doesn't handle
+				// well.
+				// if (n instanceof DummyFlushDirective) {
+				// DummyFlushDirective df = (DummyFlushDirective) n;
+				// for (InterTaskEdge interTaskEdge : df.getInfo().getOutgoingInterTaskEdges())
+				// {
+				// Node base = interTaskEdge.getSourceNode();
+				// assert(base == n);
+				// Node succ = interTaskEdge.getDestinationNode();
+				// bw.write("\n\tnode" + base.getInfo().hashCode() + " ::= node" +
+				// succ.getInfo().hashCode()
+				// + "[weight=8, color=red, style=dotted, tailport=s, headport=n];"); // Add an
+				// edge between n and succ
+				// }
+				// }
 				for (Node succ : info.getCFGInfo().getSuccBlocks()) { // for all succ of n
 					if (Misc.isCFGLeafNode(succ)) { // if succ is a leaf node
 						bw.write("\n\tnode" + info.hashCode() + " -> node" + succ.getInfo().hashCode()
@@ -59,17 +63,21 @@ public class DotEdgeWriter extends GJDepthFirstProcess<Object, BufferedWriter> {
 						bw.write("\n\tnode" + info.hashCode() + " -> node"
 								+ succ.getInfo().getCFGInfo().getNestedCFG().getBegin().getInfo().hashCode()
 								+ "[lhead=cluster" + succ.getInfo().hashCode()
-								+ ", weight=8, tailport=s, headport=n];"); // Add an edge between n and succ using succ's begin
+								+ ", weight=8, tailport=s, headport=n];"); // Add an edge between n and succ using
+																			// succ's begin
 					}
 				}
 				return null;
 			} else { // If n is a non-leaf CFG node
-					// Create links from beginNode to its succ (Needs to be done here, as there are no AST visitors for beginNode)
+						// Create links from beginNode to its succ (Needs to be done here, as there are
+						// no AST visitors for beginNode)
 				for (Node succ : ncfg.getBegin().getInfo().getCFGInfo().getSuccBlocks()) { // for all succ of begin
 					NestedCFG succNcfg = succ.getInfo().getCFGInfo().getNestedCFG();
 					if (Misc.isCFGLeafNode(succ)) { // succ is a leaf node
 						bw.write("\n\tnode" + ncfg.getBegin().getInfo().hashCode() + " -> node"
-								+ succ.getInfo().hashCode() + "[tailport=s, headport=n, weight=8];"); // Add edge between begin and leaf succ
+								+ succ.getInfo().hashCode() + "[tailport=s, headport=n, weight=8];"); // Add edge
+																										// between begin
+																										// and leaf succ
 					} else if (Misc.isCFGNonLeafNode(succ)) { // succ is a non-leaf node
 						bw.write("\n\tnode" + ncfg.getBegin().getInfo().hashCode() + " -> node"
 								+ succNcfg.getBegin().getInfo().hashCode()
@@ -111,7 +119,17 @@ public class DotEdgeWriter extends GJDepthFirstProcess<Object, BufferedWriter> {
 						// Succ of this cluster is a cluster
 						bw.write("\n\tnode" + ncfg.getEnd().getInfo().hashCode() + " -> node"
 								+ ncfgSucc.getBegin().getInfo().hashCode() + "[tailport=s, headport=n, ltail=cluster"
-								+ n.getInfo().hashCode() + ", lhead=cluster" + succ.getInfo().hashCode() + "];"); // Add edge from n to its succ, using begin's of both.
+								+ n.getInfo().hashCode() + ", lhead=cluster" + succ.getInfo().hashCode() + "];"); // Add
+																													// edge
+																													// from
+																													// n
+																													// to
+																													// its
+																													// succ,
+																													// using
+																													// begin's
+																													// of
+																													// both.
 					}
 				}
 			}

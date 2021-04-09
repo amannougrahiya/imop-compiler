@@ -43,7 +43,7 @@ public class TypeCopyTest {
 		Symbol s = check();
 		if (s != null) {
 			System.out.println(s.getType().getDeclaration("temp"));
-			//			System.out.println(s.getType().getExactDeclaration("exact"));
+			// System.out.println(s.getType().getExactDeclaration("exact"));
 		}
 		assertEquals("Assert passed.", 0, 0);
 	}
@@ -54,7 +54,7 @@ public class TypeCopyTest {
 		Symbol s = check();
 		if (s != null) {
 			System.out.println(s.getType().getDeclaration("temp5"));
-			//			System.out.println(s.getType().getExactDeclaration("exact"));
+			// System.out.println(s.getType().getExactDeclaration("exact"));
 		}
 		assertEquals("Assert passed.", 0, 0);
 	}
@@ -66,7 +66,7 @@ public class TypeCopyTest {
 		Symbol s = check();
 		if (s != null) {
 			System.out.println(s.getType().getDeclaration("temp4"));
-			//			System.out.println(s.getType().getExactDeclaration("exact"));
+			// System.out.println(s.getType().getExactDeclaration("exact"));
 		}
 		assertEquals("Assert passed.", 0, 0);
 	}
@@ -78,7 +78,7 @@ public class TypeCopyTest {
 		Symbol s = check();
 		if (s != null) {
 			System.out.println(s.getType().getDeclaration("temp"));
-			//			System.out.println(s.getType().getExactDeclaration("exact"));
+			// System.out.println(s.getType().getExactDeclaration("exact"));
 		}
 		assertEquals("Assert passed.", 0, 0);
 	}
@@ -90,7 +90,7 @@ public class TypeCopyTest {
 		Symbol s = check();
 		if (s != null) {
 			System.out.println(s.getType().getDeclaration("temp"));
-			//			System.out.println(s.getType().getExactDeclaration("exact"));
+			// System.out.println(s.getType().getExactDeclaration("exact"));
 		}
 		assertEquals("Assert passed.", 0, 0);
 	}

@@ -74,7 +74,7 @@ public class DeclarationInfo extends NodeInfo {
 
 	/**
 	 * @param name
-	 *            A symbol name
+	 *             A symbol name
 	 * @return Declarator node which contains the symbol with name "name" in
 	 *         this declaration.
 	 */
@@ -106,7 +106,7 @@ public class DeclarationInfo extends NodeInfo {
 
 	/**
 	 * @param name
-	 *            A symbol name
+	 *             A symbol name
 	 * @return Declarator node which contains the symbol with name "name" in
 	 *         decl
 	 */
@@ -191,7 +191,7 @@ public class DeclarationInfo extends NodeInfo {
 	public String getDeclaredName() {
 		Declaration declaration = (Declaration) this.getNode();
 		List<String> idList = declaration.getInfo().getIDNameList();
-		//		assert (idList.size() < 2);
+		// assert (idList.size() < 2);
 		for (String name : idList) {
 			return name;
 		}
@@ -313,7 +313,7 @@ public class DeclarationInfo extends NodeInfo {
 
 	/**
 	 * @param decl
-	 *            A Declaration Node
+	 *             A Declaration Node
 	 * @return Returns the name of union type "defined" (not just declared) in
 	 *         this declaration, if any.
 	 */
@@ -351,7 +351,7 @@ public class DeclarationInfo extends NodeInfo {
 
 	/**
 	 * @param decl
-	 *            A Declaration Node
+	 *             A Declaration Node
 	 * @return Returns the name of enumerator type "defined" (not just declared)
 	 *         in this declaration, if any.
 	 */
@@ -428,7 +428,7 @@ public class DeclarationInfo extends NodeInfo {
 	/**
 	 * 
 	 * @param decl:
-	 *            A StructDeclaration
+	 *              A StructDeclaration
 	 * @return a string of idNames declared at this struct-declaration
 	 */
 	public static List<String> getIdNameList(StructDeclaration decl) {

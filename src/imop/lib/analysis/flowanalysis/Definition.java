@@ -42,13 +42,15 @@ public class Definition {
 			cachedHashCode = definingNode.getNodeId();
 		}
 		return cachedHashCode;
-		//		if (hashCode == -1) {
-		//			final int prime = 31;
-		//			hashCode = 1;
-		//			hashCode = prime * hashCode + ((this.getDefiningNode() == null) ? 0 : this.getDefiningNode().hashCode());
-		//			hashCode = prime * hashCode + ((this.getCell() == null) ? 0 : this.getCell().id);
-		//		}
-		//		return hashCode;
+		// if (hashCode == -1) {
+		// final int prime = 31;
+		// hashCode = 1;
+		// hashCode = prime * hashCode + ((this.getDefiningNode() == null) ? 0 :
+		// this.getDefiningNode().hashCode());
+		// hashCode = prime * hashCode + ((this.getCell() == null) ? 0 :
+		// this.getCell().id);
+		// }
+		// return hashCode;
 	}
 
 	@Override

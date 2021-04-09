@@ -88,7 +88,8 @@ public abstract class BTNode {
 			boolean down = up; // as up is false;
 			if (t1 instanceof BTBarrierNode && t2 instanceof BTBarrierNode) {
 				// Add (t1, t2) to matching set.
-				parCons.getInfo().addBTPair((BTBarrierNode) t1, (BTBarrierNode) t2); // TODO: Check why is there a notion of direction here?
+				parCons.getInfo().addBTPair((BTBarrierNode) t1, (BTBarrierNode) t2); // TODO: Check why is there a
+																						// notion of direction here?
 				return;
 			}
 

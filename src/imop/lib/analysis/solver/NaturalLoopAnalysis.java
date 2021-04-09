@@ -41,11 +41,11 @@ public class NaturalLoopAnalysis {
 	 * induction variables of the loop.
 	 * 
 	 * @param loopHeader
-	 *            head of the back-edge.
+	 *                     head of the back-edge.
 	 * @param loopTail
-	 *            tail of the back-edge.
+	 *                     tail of the back-edge.
 	 * @param loopContents
-	 *            contents of the loop.
+	 *                     contents of the loop.
 	 * @return
 	 *         a map from symbols (that are basic induction variables of the
 	 *         loop), to their symbolic value ranges.
@@ -141,7 +141,7 @@ public class NaturalLoopAnalysis {
 							 * Finally, create and save the induction range.
 							 */
 							if (initValue != null) {
-								//									&& NaturalLoopAnalysis.isLoopConstant(initPrefixRHS, loopContents)) {}
+								// && NaturalLoopAnalysis.isLoopConstant(initPrefixRHS, loopContents)) {}
 								/*
 								 * Expand the initRHS, to get better precision,
 								 * if possible.
@@ -221,11 +221,11 @@ public class NaturalLoopAnalysis {
 	 * constant.
 	 * 
 	 * @param loopHeader
-	 *            header of the loop under inspection.
+	 *                     header of the loop under inspection.
 	 * @param loopTail
-	 *            a predecessor of the loop header.
+	 *                     a predecessor of the loop header.
 	 * @param loopContents
-	 *            set of all the nodes in the loop under inspection.
+	 *                     set of all the nodes in the loop under inspection.
 	 * @return
 	 *         set of symbols that form the basic induction variables for the
 	 *         loop associated with {@code loopHeader}, along with information
@@ -372,39 +372,39 @@ public class NaturalLoopAnalysis {
 			}
 
 			// Old code.
-			//			Tokenizable secondToken = expandedForm.get(1);
-			//			if (!(secondToken instanceof IdOrConstToken)) {
-			//				removeMapping.add(sym);
-			//				continue;
-			//			} else {
-			//				IdOrConstToken idOrC = (IdOrConstToken) secondToken;
-			//				if (idOrC.isAConstant()) {
-			//					// Now, third token must be same as sym.
-			//					Tokenizable thirdToken = expandedForm.get(2);
-			//					if (!thirdToken.toString().trim().equals(sym.getName())) {
-			//						removeMapping.add(sym);
-			//						continue;
-			//					}
-			//				} else {
-			//					if (!secondToken.toString().trim().equals(sym.getName())) {
-			//						removeMapping.add(sym);
-			//						continue;
-			//					} else {
-			//						// Now, third token must be some constant.
-			//						Tokenizable thirdToken = expandedForm.get(2);
-			//						if (!(thirdToken instanceof IdOrConstToken)) {
-			//							removeMapping.add(sym);
-			//							continue;
-			//						} else {
-			//							IdOrConstToken thirdIdOrC = (IdOrConstToken) thirdToken;
-			//							if (!thirdIdOrC.isAConstant()) {
-			//								removeMapping.add(sym);
-			//								continue;
-			//							}
-			//						}
-			//					}
-			//				}
-			//			}
+			// Tokenizable secondToken = expandedForm.get(1);
+			// if (!(secondToken instanceof IdOrConstToken)) {
+			// removeMapping.add(sym);
+			// continue;
+			// } else {
+			// IdOrConstToken idOrC = (IdOrConstToken) secondToken;
+			// if (idOrC.isAConstant()) {
+			// // Now, third token must be same as sym.
+			// Tokenizable thirdToken = expandedForm.get(2);
+			// if (!thirdToken.toString().trim().equals(sym.getName())) {
+			// removeMapping.add(sym);
+			// continue;
+			// }
+			// } else {
+			// if (!secondToken.toString().trim().equals(sym.getName())) {
+			// removeMapping.add(sym);
+			// continue;
+			// } else {
+			// // Now, third token must be some constant.
+			// Tokenizable thirdToken = expandedForm.get(2);
+			// if (!(thirdToken instanceof IdOrConstToken)) {
+			// removeMapping.add(sym);
+			// continue;
+			// } else {
+			// IdOrConstToken thirdIdOrC = (IdOrConstToken) thirdToken;
+			// if (!thirdIdOrC.isAConstant()) {
+			// removeMapping.add(sym);
+			// continue;
+			// }
+			// }
+			// }
+			// }
+			// }
 			if (NaturalLoopAnalysis.debugMode) {
 				System.out.println("\tExpanded form of rhs-exp for def of basic induction variable " + sym + " is: "
 						+ expandedForm);
@@ -422,7 +422,7 @@ public class NaturalLoopAnalysis {
 	 * list is "loop-invariant".
 	 * 
 	 * @param loopContents
-	 *            contents of the loop to be tested.
+	 *                     contents of the loop to be tested.
 	 * @return
 	 *         {@code true}, if the given list is a loop-invariant.
 	 */
@@ -451,11 +451,11 @@ public class NaturalLoopAnalysis {
 	 * successors is not present in the {@code loopContents}.
 	 * 
 	 * @param loopHeader
-	 *            head of the back-edge.
+	 *                     head of the back-edge.
 	 * @param loopTail
-	 *            tail of the back-edge.
+	 *                     tail of the back-edge.
 	 * @param loopContents
-	 *            leaf contents of the loop.
+	 *                     leaf contents of the loop.
 	 * @return
 	 *         a set of all the exit predicates of the natural loop associated
 	 *         with the given back-edge.
@@ -478,7 +478,7 @@ public class NaturalLoopAnalysis {
 	 * Obtain all loop-headers that are present within the given node.
 	 * 
 	 * @param node
-	 *            node that has to be inspected
+	 *             node that has to be inspected
 	 * @return
 	 *         loop-headers of natural loops within this node.
 	 */
@@ -502,7 +502,7 @@ public class NaturalLoopAnalysis {
 	 * loop.
 	 * 
 	 * @param loopTail
-	 *            tail of the loop's back-edge.
+	 *                 tail of the loop's back-edge.
 	 * @return
 	 *         leaf nodes present within the natural loop of which {@code node}
 	 *         is the loop header.
@@ -527,7 +527,7 @@ public class NaturalLoopAnalysis {
 	 * tail of a back-edge that terminates at the {@code loopHeader}.
 	 * 
 	 * @param loopHeader
-	 *            head of a back-edge.
+	 *                   head of a back-edge.
 	 * @return
 	 *         set of all tails of the back-edges of various loops associated
 	 *         with the given {@code loopHeader}.

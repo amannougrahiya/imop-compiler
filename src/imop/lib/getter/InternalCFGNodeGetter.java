@@ -224,7 +224,7 @@ public class InternalCFGNodeGetter extends DepthFirstVisitor {
 	 * f3 ::= Statement()
 	 */
 	@Override
-	public void visit(CaseLabeledStatement n) {	// This is neither a leaf nor a non-leaf in CFG.
+	public void visit(CaseLabeledStatement n) { // This is neither a leaf nor a non-leaf in CFG.
 		n.getF3().accept(this);
 	}
 

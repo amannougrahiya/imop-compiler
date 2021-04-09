@@ -47,8 +47,8 @@ public class IdOrConstToken implements Tokenizable {
 	 * identifier named {@code newIdStr}.
 	 * 
 	 * @param newIdStr
-	 *            name of the identifier for which a new object has to be
-	 *            created.
+	 *                 name of the identifier for which a new object has to be
+	 *                 created.
 	 * @return
 	 *         a new {@link IdOrConstToken} object corresponding to a new
 	 *         identifier.
@@ -142,12 +142,12 @@ public class IdOrConstToken implements Tokenizable {
 		if (this.isAConstant()) {
 			result = prime * result + ((this.aConstant.toString() == null) ? 0 : this.aConstant.toString().hashCode());
 			return result;
-			//			return Arrays.hashCode(new Object[]{this.aConstant.toString()});
+			// return Arrays.hashCode(new Object[]{this.aConstant.toString()});
 		} else {
 			result = prime * result
 					+ ((this.anIdentifier.toString() == null) ? 0 : this.anIdentifier.toString().hashCode());
 			return result;
-			//			return Arrays.hashCode(new Object[]{this.anIdentifier.toString()});
+			// return Arrays.hashCode(new Object[]{this.anIdentifier.toString()});
 		}
 	}
 }

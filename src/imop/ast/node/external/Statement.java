@@ -45,14 +45,16 @@ public class Statement extends Node {
 	public Statement(NodeChoice n0) {
 		n0.setParent(this);
 		setStmtF0(n0);
-		// Old code: Not required here. This code has been shifted to setStmtF0, already.
-		//		if (getStmtF0().getChoice() instanceof LabeledStatement) {
-		//			LabelRemover.populateLabelAnnotations(this);
-		//		}
+		// Old code: Not required here. This code has been shifted to setStmtF0,
+		// already.
+		// if (getStmtF0().getChoice() instanceof LabeledStatement) {
+		// LabelRemover.populateLabelAnnotations(this);
+		// }
 	}
 
 	public Statement() {
-		// This constructor shall be used only when called from the constructors of subclasses of Statement
+		// This constructor shall be used only when called from the constructors of
+		// subclasses of Statement
 	}
 
 	@Override

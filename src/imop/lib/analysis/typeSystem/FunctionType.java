@@ -95,60 +95,62 @@ public class FunctionType extends DerivedType {
 		return parameterList.size();
 	}
 
-	//	@Override
-	//	protected String preDeclarationString() {
-	//		StringBuilder stringBuilder = new StringBuilder();
-	//		stringBuilder.append(" ");
-	//		stringBuilder.append(returnType.preDeclarationString());
-	//		stringBuilder.append(" ");
-	//		return stringBuilder.toString();
-	//	}
+	// @Override
+	// protected String preDeclarationString() {
+	// StringBuilder stringBuilder = new StringBuilder();
+	// stringBuilder.append(" ");
+	// stringBuilder.append(returnType.preDeclarationString());
+	// stringBuilder.append(" ");
+	// return stringBuilder.toString();
+	// }
 	//
-	//	@Override
-	//	protected String getDeclarationPostString(String tempName, boolean isFullDeclarator) {
-	//		if (isFullDeclarator) {
-	//			return this.postDeclarationString(tempName);
-	//		} else {
-	//			return tempName + " " + this.getParameterString();
-	//		}
-	//	}
+	// @Override
+	// protected String getDeclarationPostString(String tempName, boolean
+	// isFullDeclarator) {
+	// if (isFullDeclarator) {
+	// return this.postDeclarationString(tempName);
+	// } else {
+	// return tempName + " " + this.getParameterString();
+	// }
+	// }
 	//
-	//	@Override
-	//	protected String postDeclarationString(String tempName) {
-	//		return " (* " + tempName + ") " + this.getParameterString();
-	//	}
+	// @Override
+	// protected String postDeclarationString(String tempName) {
+	// return " (* " + tempName + ") " + this.getParameterString();
+	// }
 	//
-	//	private String getParameterString() {
-	//		StringBuilder stringBuilder = new StringBuilder();
-	//		stringBuilder.append("(");
-	//		if (!parameterList.isEmpty()) {
-	//			Parameter lastElement = parameterList.get(parameterList.size() - 1);
-	//			for (Parameter param : parameterList) {
-	//				if (param == lastElement) {
-	//					break;
-	//				}
-	//				stringBuilder.append(param.getParameterType().preDeclarationString() + " "
-	//						+ param.getParameterType().getDeclarationPostString("", false) + ", ");
-	//			}
-	//			// Add the last element (without comma)
-	//			stringBuilder.append(lastElement.getParameterType().preDeclarationString() + " "
-	//					+ lastElement.getParameterType().getDeclarationPostString("", false));
-	//		}
-	//		stringBuilder.append(")");
-	//		return stringBuilder.toString();
-	//	}
+	// private String getParameterString() {
+	// StringBuilder stringBuilder = new StringBuilder();
+	// stringBuilder.append("(");
+	// if (!parameterList.isEmpty()) {
+	// Parameter lastElement = parameterList.get(parameterList.size() - 1);
+	// for (Parameter param : parameterList) {
+	// if (param == lastElement) {
+	// break;
+	// }
+	// stringBuilder.append(param.getParameterType().preDeclarationString() + " "
+	// + param.getParameterType().getDeclarationPostString("", false) + ", ");
+	// }
+	// // Add the last element (without comma)
+	// stringBuilder.append(lastElement.getParameterType().preDeclarationString() +
+	// " "
+	// + lastElement.getParameterType().getDeclarationPostString("", false));
+	// }
+	// stringBuilder.append(")");
+	// return stringBuilder.toString();
+	// }
 	//
-	//	@Override
-	//	public String toString() {
-	//		String returnString = this.getDeclarationSpecifiersString();
-	//		returnString += this.getParameterString();
-	//		return returnString;
-	//	}
+	// @Override
+	// public String toString() {
+	// String returnString = this.getDeclarationSpecifiersString();
+	// returnString += this.getParameterString();
+	// return returnString;
+	// }
 
 	@Override
 	protected String preDeclarationString() {
 		String retString = "";
-		//		retString += this.returnType.preStringForCopy();
+		// retString += this.returnType.preStringForCopy();
 		if (returnType instanceof StructType || returnType instanceof UnionType || returnType instanceof EnumType) {
 			retString += this.returnType.preDeclarationString();
 		} else {

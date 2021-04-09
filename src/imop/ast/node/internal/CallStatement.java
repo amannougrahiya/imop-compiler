@@ -83,7 +83,8 @@ public class CallStatement extends Statement {
 	 * of an existing call-statement.
 	 * 
 	 * @param postCallNode
-	 *            a {@link PostCallNode} that represents the return receiver.
+	 *                     a {@link PostCallNode} that represents the return
+	 *                     receiver.
 	 */
 	public void addAReturnReceiver(PostCallNode postCallNode) {
 		this.postCallNode.setReturnReceiver(postCallNode.getReturnReceiver());
@@ -170,13 +171,15 @@ public class CallStatement extends Statement {
 		if (this.functionDesignatorNode == null) {
 			result = prime * result + ((this.postCallNode == null) ? 0 : this.postCallNode.hashCode());
 			result = prime * result + ((this.preCallNode == null) ? 0 : this.preCallNode.hashCode());
-			//			return Arrays.hashCode(new Object[]{this.postCallNode, this.preCallNode});
+			// return Arrays.hashCode(new Object[]{this.postCallNode, this.preCallNode});
 		} else {
 			String funcStr = this.functionDesignatorNode.getTokenImage();
 			result = prime * result + ((funcStr == null) ? 0 : funcStr.hashCode());
 			result = prime * result + ((this.postCallNode == null) ? 0 : this.postCallNode.hashCode());
 			result = prime * result + ((this.preCallNode == null) ? 0 : this.preCallNode.hashCode());
-			//			return Arrays.hashCode(new Object[]{this.functionDesignatorNode.getTokenImage(), this.postCallNode, this.preCallNode});
+			// return Arrays.hashCode(new
+			// Object[]{this.functionDesignatorNode.getTokenImage(), this.postCallNode,
+			// this.preCallNode});
 		}
 		return result;
 	}

@@ -66,7 +66,7 @@ public class HeapCell extends Cell {
 		this.heapId = counter++;
 		if (!dontSave) {
 			allCells.add(this);
-			//			System.err.println(this.allocatorNode);
+			// System.err.println(this.allocatorNode);
 		}
 	}
 

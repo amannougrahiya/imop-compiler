@@ -63,8 +63,10 @@ public class SwitchStatementCFGInfo extends CFGInfo {
 		AutomatedUpdater.updatePhaseAndInterTaskEdgesUponRemoval(affectedBeginPhasePoints);
 		AutomatedUpdater.updateInformationForAddition(predicate);
 		AutomatedUpdater.updateFlowFactsForward(rerunNodesForward); // Called here after replacement is successful.
-		//		AutomatedUpdater.invalidateSymbolsInNode(owner.getF2());// Added, so that any changes from points-to may be reflected here.
-		//		AutomatedUpdater.invalidateSymbolsInNode(predicate);// Added, so that any changes from points-to may be reflected here.
+		// AutomatedUpdater.invalidateSymbolsInNode(owner.getF2());// Added, so that any
+		// changes from points-to may be reflected here.
+		// AutomatedUpdater.invalidateSymbolsInNode(predicate);// Added, so that any
+		// changes from points-to may be reflected here.
 		AutomatedUpdater.updateFlowFactsBackward(rerunNodesBackward);
 	}
 
@@ -84,7 +86,8 @@ public class SwitchStatementCFGInfo extends CFGInfo {
 		List<SideEffect> splitSE = SplitCombinedConstructs.splitCombinedConstructForTheStatement(stmt);
 		if (!splitSE.isEmpty()) {
 			NodeUpdated nodeUpdatedSE = (NodeUpdated) splitSE.get(0);
-			// Note: Here we reparse the parallel construct so that we can perform other normalizations within it.
+			// Note: Here we reparse the parallel construct so that we can perform other
+			// normalizations within it.
 			ParallelConstruct splitParCons = FrontEnd.parseAndNormalize(nodeUpdatedSE.affectedNode.toString(),
 					ParallelConstruct.class);
 			sideEffectList.add(new NodeUpdated(splitParCons, nodeUpdatedSE.getUpdateMessage()));
@@ -124,13 +127,16 @@ public class SwitchStatementCFGInfo extends CFGInfo {
 
 		stmt = Normalization.normalizeLeafNodes(stmt, sideEffectList);
 
-		//		this.getOwner().accept(new CompoundStatementEnforcer());// COMMENTED RECENTLY.
+		// this.getOwner().accept(new CompoundStatementEnforcer());// COMMENTED
+		// RECENTLY.
 		Program.invalidColumnNum = Program.invalidLineNum = true;
 		AutomatedUpdater.updatePhaseAndInterTaskEdgesUponRemoval(affectedBeginPhasePoints);
 		AutomatedUpdater.updateInformationForAddition(stmt);
 		AutomatedUpdater.updateFlowFactsForward(rerunNodesForward); // Called here after replacement is successful.
-		//		AutomatedUpdater.invalidateSymbolsInNode(owner.getF4());// Added, so that any changes from points-to may be reflected here.
-		//		AutomatedUpdater.invalidateSymbolsInNode(stmt);// Added, so that any changes from points-to may be reflected here.
+		// AutomatedUpdater.invalidateSymbolsInNode(owner.getF4());// Added, so that any
+		// changes from points-to may be reflected here.
+		// AutomatedUpdater.invalidateSymbolsInNode(stmt);// Added, so that any changes
+		// from points-to may be reflected here.
 		AutomatedUpdater.updateFlowFactsBackward(rerunNodesBackward);
 		return sideEffectList;
 	}
@@ -141,70 +147,73 @@ public class SwitchStatementCFGInfo extends CFGInfo {
 		return (Statement) Misc.getInternalFirstCFGNode(node.getF4());
 	}
 	//
-	//	public void setCaseDefaultLabelStatementList(List<Statement> caseDefaultLabelList) {
-	//		this.clearCaseDefaultLabelStatementList();
-	//		for (Statement stmt : caseDefaultLabelList) {
-	//			this.addCaseDefaultLabelStatement(stmt);
-	//		}
-	//	}
+	// public void setCaseDefaultLabelStatementList(List<Statement>
+	// caseDefaultLabelList) {
+	// this.clearCaseDefaultLabelStatementList();
+	// for (Statement stmt : caseDefaultLabelList) {
+	// this.addCaseDefaultLabelStatement(stmt);
+	// }
+	// }
 
-	//	public void clearCaseDefaultLabelStatementList() {
-	//		for (Statement stmt : this.getCaseDefaultLabelStatementList()) {
-	//			stmt = (Statement) Misc.getInternalFirstCFGNode(stmt);
-	//			this.removeCaseDefaultLabelStatement(stmt);
-	//		}
-	//	}
+	// public void clearCaseDefaultLabelStatementList() {
+	// for (Statement stmt : this.getCaseDefaultLabelStatementList()) {
+	// stmt = (Statement) Misc.getInternalFirstCFGNode(stmt);
+	// this.removeCaseDefaultLabelStatement(stmt);
+	// }
+	// }
 	//
-	//	public boolean addCaseDefaultLabelStatement(Statement stmt) {
-	//		return this.addCaseDefaultLabelStatement(-1, stmt);
-	//	}
+	// public boolean addCaseDefaultLabelStatement(Statement stmt) {
+	// return this.addCaseDefaultLabelStatement(-1, stmt);
+	// }
 	//
-	//	/**
-	//	 * Add a new case/default label for this switch statement.
-	//	 * Note: This method ensures that there exists a break statement at the end
-	//	 * of the compound-statement,
-	//	 * before appending it with {@code stmt}
-	//	 * 
-	//	 * @param index
-	//	 * @param stmt
-	//	 * @return
-	//	 */
-	//	public boolean addCaseDefaultLabelStatement(int index, Statement stmt) {
-	//		/*
-	//		 * Step 1: Ensure that the label for ((SwitchStatement) node) {@code
-	//		 * caseStmt} should not be
-	//		 * present already
-	//		 * in the SwitchStatement.
-	//		 */
-	//		stmt = (Statement) Misc.getInternalFirstCFGNode(stmt);
-	//		List<Label> oldLabels = ((SwitchStatement) owner).getInfo().getEnclosedLabels();
-	//		for (Label label : stmt.getInfo().getLabelAnnotations()) {
-	//			if (oldLabels.contains(label)) {
-	//				return false;
-	//			}
-	//		}
-	//		/*
-	//		 * Step 2: Add the element.
-	//		 */
-	//		CompoundStatement body = (CompoundStatement) this.getBody();
-	//		List<Node> cfgElements = body.getInfo().getCFGInfo().getElementList();
-	//		if (!(cfgElements.get(cfgElements.size() - 1) instanceof BreakStatement)) {
-	//			body.getInfo().getCFGInfo().addElement(CParser.justParse("break;", BreakStatement.class));
-	//		}
-	//		body.getInfo().getCFGInfo().addElement(stmt);
-	//		return true;
-	//	}
+	// /**
+	// * Add a new case/default label for this switch statement.
+	// * Note: This method ensures that there exists a break statement at the end
+	// * of the compound-statement,
+	// * before appending it with {@code stmt}
+	// *
+	// * @param index
+	// * @param stmt
+	// * @return
+	// */
+	// public boolean addCaseDefaultLabelStatement(int index, Statement stmt) {
+	// /*
+	// * Step 1: Ensure that the label for ((SwitchStatement) node) {@code
+	// * caseStmt} should not be
+	// * present already
+	// * in the SwitchStatement.
+	// */
+	// stmt = (Statement) Misc.getInternalFirstCFGNode(stmt);
+	// List<Label> oldLabels = ((SwitchStatement)
+	// owner).getInfo().getEnclosedLabels();
+	// for (Label label : stmt.getInfo().getLabelAnnotations()) {
+	// if (oldLabels.contains(label)) {
+	// return false;
+	// }
+	// }
+	// /*
+	// * Step 2: Add the element.
+	// */
+	// CompoundStatement body = (CompoundStatement) this.getBody();
+	// List<Node> cfgElements = body.getInfo().getCFGInfo().getElementList();
+	// if (!(cfgElements.get(cfgElements.size() - 1) instanceof BreakStatement)) {
+	// body.getInfo().getCFGInfo().addElement(CParser.justParse("break;",
+	// BreakStatement.class));
+	// }
+	// body.getInfo().getCFGInfo().addElement(stmt);
+	// return true;
+	// }
 	//
-	//	public boolean removeCaseDefaultLabelStatement(Statement stmt) {
-	//		for (Statement existingStmt : this.getCaseDefaultLabelStatementList()) {
-	//			if (existingStmt == stmt) {
-	//				CompoundStatement body = (CompoundStatement) this.getBody();
-	//				body.getInfo().getCFGInfo().removeElement(stmt);
-	//				return true;
-	//			}
-	//		}
-	//		return false;
-	//	}
+	// public boolean removeCaseDefaultLabelStatement(Statement stmt) {
+	// for (Statement existingStmt : this.getCaseDefaultLabelStatementList()) {
+	// if (existingStmt == stmt) {
+	// CompoundStatement body = (CompoundStatement) this.getBody();
+	// body.getInfo().getCFGInfo().removeElement(stmt);
+	// return true;
+	// }
+	// }
+	// return false;
+	// }
 	//
 	public boolean hasDefaultStatement() {
 		return ((SwitchStatement) this.getOwner()).getInfo().hasDefaultLabel();
@@ -217,14 +226,15 @@ public class SwitchStatementCFGInfo extends CFGInfo {
 
 		// 2. Remove stale edges.
 		removed.getInfo().getCFGInfo().clearAllEdges();
-		//		for (Node components : this.getAllComponents()) {
-		//			disconnectAndAdjustEndReachability(removed, components);
-		//			disconnectAndAdjustEndReachability(components, removed);
-		//		}
-		//		for (Node components : ((SwitchStatementInfo) this.getOwner().getInfo()).getRelevantCFGStatements()) {
-		//			disconnectAndAdjustEndReachability(removed, components);
-		//			disconnectAndAdjustEndReachability(components, removed);
-		//		}
+		// for (Node components : this.getAllComponents()) {
+		// disconnectAndAdjustEndReachability(removed, components);
+		// disconnectAndAdjustEndReachability(components, removed);
+		// }
+		// for (Node components : ((SwitchStatementInfo)
+		// this.getOwner().getInfo()).getRelevantCFGStatements()) {
+		// disconnectAndAdjustEndReachability(removed, components);
+		// disconnectAndAdjustEndReachability(components, removed);
+		// }
 	}
 
 	private void updateCFGForBodyAddition(Statement added) {
@@ -244,14 +254,15 @@ public class SwitchStatementCFGInfo extends CFGInfo {
 		// Remove stale edges.
 		this.getBody().getInfo().getIncompleteSemantics().adjustSemanticsForSwitchPredicateRemoval();
 		removed.getInfo().getCFGInfo().clearAllEdges();
-		//		for (Node components : this.getAllComponents()) {
-		//			disconnectAndAdjustEndReachability(removed, components);
-		//			disconnectAndAdjustEndReachability(components, removed);
-		//		}
-		//		for (Node components : ((SwitchStatementInfo) this.getOwner().getInfo()).getRelevantCFGStatements()) {
-		//			disconnectAndAdjustEndReachability(removed, components);
-		//			disconnectAndAdjustEndReachability(components, removed);
-		//		}
+		// for (Node components : this.getAllComponents()) {
+		// disconnectAndAdjustEndReachability(removed, components);
+		// disconnectAndAdjustEndReachability(components, removed);
+		// }
+		// for (Node components : ((SwitchStatementInfo)
+		// this.getOwner().getInfo()).getRelevantCFGStatements()) {
+		// disconnectAndAdjustEndReachability(removed, components);
+		// disconnectAndAdjustEndReachability(components, removed);
+		// }
 	}
 
 	private void updateCFGForPredicateAddition(Expression added) {
@@ -259,41 +270,48 @@ public class SwitchStatementCFGInfo extends CFGInfo {
 		NestedCFG ncfg = owner.getInfo().getCFGInfo().getNestedCFG();
 		Expression predicate = added;
 		connectAndAdjustEndReachability(ncfg.getBegin(), predicate);
-		// OLD CODE: This is now taken care of by adjustSemanticsForSwitchPredicateAddition().
-		//		for (Node caseStmt : owner.getInfo().getRelevantCFGStatements()) {
-		//			connectAndAdjustEndReachability(predicate, caseStmt);
-		//		}
+		// OLD CODE: This is now taken care of by
+		// adjustSemanticsForSwitchPredicateAddition().
+		// for (Node caseStmt : owner.getInfo().getRelevantCFGStatements()) {
+		// connectAndAdjustEndReachability(predicate, caseStmt);
+		// }
 		if (!this.hasDefaultStatement()) {
 			connectAndAdjustEndReachability(predicate, ncfg.getEnd());
 		}
 		this.getBody().getInfo().getIncompleteSemantics().adjustSemanticsForSwitchPredicateAddition();
 	}
-	//	
-	//	private void updateCFGForCaseDefaultLabelStatementRemoval(Statement removed) {
-	//		NestedCFG ncfg = owner.getInfo().getCFGInfo().getNestedCFG();
-	//		// 1. Adjust incompleteness.
-	//		IncompleteSemantics incompleteness = removed.getInfo().getIncompleteSemantics();
-	//		incompleteness.adjustSemanticsForRemoval((FunctionDefinition) Misc.getEnclosingFunction(removed));
-	//		// 2. Remove stale edges.
-	//		for (Node components : this.getAllComponents()) {
-	//			disconnect(removed, components);
-	//			disconnect(components, removed);
-	//		}
-	//	}
-	//	
-	//	private void updateCFGForCaseDefaultLabelStatementInsertion(Statement added) {
-	//		NestedCFG ncfg = owner.getInfo().getCFGInfo().getNestedCFG();
-	//		// 1. Add new edges.
-	//		Expression predicate = this.getPredicate();
-	//		connect(predicate, added);
-	//		
-	//		// 2. Adjust incompleteness
-	//		IncompleteSemantics incompleteness = added.getInfo().getIncompleteSemantics();
-	//		if (incompleteness.getIncompleteEdges().size() != 0) {
-	//			incompleteness.adjustSemanticsForAddition((FunctionDefinition) Misc.getEnclosingFunction(added));
-	//		}
-	//	}
-	//	
+	//
+	// private void updateCFGForCaseDefaultLabelStatementRemoval(Statement removed)
+	// {
+	// NestedCFG ncfg = owner.getInfo().getCFGInfo().getNestedCFG();
+	// // 1. Adjust incompleteness.
+	// IncompleteSemantics incompleteness =
+	// removed.getInfo().getIncompleteSemantics();
+	// incompleteness.adjustSemanticsForRemoval((FunctionDefinition)
+	// Misc.getEnclosingFunction(removed));
+	// // 2. Remove stale edges.
+	// for (Node components : this.getAllComponents()) {
+	// disconnect(removed, components);
+	// disconnect(components, removed);
+	// }
+	// }
+	//
+	// private void updateCFGForCaseDefaultLabelStatementInsertion(Statement added)
+	// {
+	// NestedCFG ncfg = owner.getInfo().getCFGInfo().getNestedCFG();
+	// // 1. Add new edges.
+	// Expression predicate = this.getPredicate();
+	// connect(predicate, added);
+	//
+	// // 2. Adjust incompleteness
+	// IncompleteSemantics incompleteness =
+	// added.getInfo().getIncompleteSemantics();
+	// if (incompleteness.getIncompleteEdges().size() != 0) {
+	// incompleteness.adjustSemanticsForAddition((FunctionDefinition)
+	// Misc.getEnclosingFunction(added));
+	// }
+	// }
+	//
 
 	/**
 	 * Obtain the various CFG components of the {@code owner} node.
@@ -303,12 +321,12 @@ public class SwitchStatementCFGInfo extends CFGInfo {
 	 */
 	@Override
 	public List<Node> getAllComponents() {
-		//		SwitchStatement owner = (SwitchStatement) this.getOwner();
+		// SwitchStatement owner = (SwitchStatement) this.getOwner();
 		List<Node> retList = new ArrayList<>();
 		retList.add(this.getNestedCFG().getBegin());
 		retList.add(this.getPredicate());
 		retList.add(this.getBody());
-		//		retList.addAll(owner.getInfo().getCaseDefaultLabelStatementList());
+		// retList.addAll(owner.getInfo().getCaseDefaultLabelStatementList());
 		retList.add(this.getNestedCFG().getEnd());
 		return retList;
 	}

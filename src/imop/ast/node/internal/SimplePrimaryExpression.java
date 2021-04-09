@@ -83,12 +83,12 @@ public class SimplePrimaryExpression extends Expression {
 		if (this.isAConstant()) {
 			result = prime * result + ((this.aConstant.toString() == null) ? 0 : this.aConstant.toString().hashCode());
 			return result;
-			//			return Arrays.hashCode(new Object[]{this.aConstant.toString()});
+			// return Arrays.hashCode(new Object[]{this.aConstant.toString()});
 		} else {
 			result = prime * result
 					+ ((this.anIdentifier.toString() == null) ? 0 : this.anIdentifier.toString().hashCode());
 			return result;
-			//			return Arrays.hashCode(new Object[]{this.anIdentifier.toString()});
+			// return Arrays.hashCode(new Object[]{this.anIdentifier.toString()});
 		}
 	}
 

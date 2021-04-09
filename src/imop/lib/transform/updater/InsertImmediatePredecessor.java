@@ -83,7 +83,8 @@ public class InsertImmediatePredecessor {
 			return sideEffectList;
 		}
 
-		// To avoid creating multiple copies of the target, instead of simply shifting the labels, 
+		// To avoid creating multiple copies of the target, instead of simply shifting
+		// the labels,
 		// we have added a logical OR with a new second operand here.
 		if (basePredecessors.size() <= 1 || cfgLink instanceof CompoundElementLink || cfgLink instanceof DoBodyLink
 				|| cfgLink instanceof ForBodyLink || cfgLink instanceof ForTermLink || cfgLink instanceof ForEndLink
@@ -183,7 +184,8 @@ public class InsertImmediatePredecessor {
 			EndNode endNode = functionDef.getInfo().getCFGInfo().getNestedCFG().getEnd();
 			List<Node> endPredList = endNode.getInfo().getCFGInfo().getPredBlocks();
 
-			assert (endPredList.size() == 1); // Since insertAggressive() would not call this method if this is not the case.
+			assert (endPredList.size() == 1); // Since insertAggressive() would not call this method if this is not the
+												// case.
 			Node predecessor = endPredList.get(0);
 			if (predecessor instanceof CompoundStatement) {
 				EndNode bodyEnd = ((CompoundStatement) predecessor).getInfo().getCFGInfo().getNestedCFG().getEnd();
@@ -209,33 +211,39 @@ public class InsertImmediatePredecessor {
 
 		@Override
 		public List<SideEffect> visit(ParallelClauseLink link) {
-			//			if (targetNode instanceof IfClause) {
-			//				parCFGInfo.setIfClause((IfClause) targetNode);
-			//				return sideEffectList;
-			//			} else if (targetNode instanceof NumThreadsClause) {
-			//				parCFGInfo.setNumThreadsClause((NumThreadsClause) targetNode);
-			//				return sideEffectList;
-			//			} else {
+			// if (targetNode instanceof IfClause) {
+			// parCFGInfo.setIfClause((IfClause) targetNode);
+			// return sideEffectList;
+			// } else if (targetNode instanceof NumThreadsClause) {
+			// parCFGInfo.setNumThreadsClause((NumThreadsClause) targetNode);
+			// return sideEffectList;
+			// } else {
 			return InsertImmediatePredecessor.insert(link.enclosingNonLeafNode, targetNode);
-			//			}
+			// }
 		}
 
 		@Override
 		public List<SideEffect> visit(ParallelBodyLink link) {
 			List<SideEffect> sideEffectList = new ArrayList<>();
-			//			ParallelConstructCFGInfo parCFGInfo = link.enclosingNonLeafNode.getInfo().getCFGInfo();
-			//			if (targetNode instanceof IfClause) {
-			//				parCFGInfo.setIfClause((IfClause) targetNode);
-			//				return sideEffectList;
-			//			} else if (targetNode instanceof NumThreadsClause) {
-			//				parCFGInfo.setNumThreadsClause((NumThreadsClause) targetNode);
-			//				return sideEffectList;
-			//			}
+			// ParallelConstructCFGInfo parCFGInfo =
+			// link.enclosingNonLeafNode.getInfo().getCFGInfo();
+			// if (targetNode instanceof IfClause) {
+			// parCFGInfo.setIfClause((IfClause) targetNode);
+			// return sideEffectList;
+			// } else if (targetNode instanceof NumThreadsClause) {
+			// parCFGInfo.setNumThreadsClause((NumThreadsClause) targetNode);
+			// return sideEffectList;
+			// }
 			CompoundStatement body = (CompoundStatement) link.childNode;
 			if (Misc.collidesFreelyWith(targetNode, body)) {
 				Statement newStmt = FrontEnd.parseAndNormalize("{}", Statement.class);
 				CompoundStatement compStmt = (CompoundStatement) Misc.getCFGNodeFor(newStmt);
-				sideEffectList.addAll(link.enclosingNonLeafNode.getInfo().getCFGInfo().setBody(compStmt)); // Note that this line looks same, but is different.
+				sideEffectList.addAll(link.enclosingNonLeafNode.getInfo().getCFGInfo().setBody(compStmt)); // Note that
+																											// this line
+																											// looks
+																											// same, but
+																											// is
+																											// different.
 				sideEffectList.addAll(compStmt.getInfo().getCFGInfo().addElement(targetNode));
 				sideEffectList.add(new AddedEnclosingBlock(compStmt));
 				sideEffectList.addAll(InsertImmediateSuccessor.insert(targetNode, body));
@@ -260,7 +268,12 @@ public class InsertImmediatePredecessor {
 			if (Misc.collidesFreelyWith(targetNode, body)) {
 				Statement newStmt = FrontEnd.parseAndNormalize("{}", Statement.class);
 				CompoundStatement compStmt = (CompoundStatement) Misc.getCFGNodeFor(newStmt);
-				sideEffectList.addAll(link.enclosingNonLeafNode.getInfo().getCFGInfo().setBody(compStmt)); // Note that this line looks same, but is different.
+				sideEffectList.addAll(link.enclosingNonLeafNode.getInfo().getCFGInfo().setBody(compStmt)); // Note that
+																											// this line
+																											// looks
+																											// same, but
+																											// is
+																											// different.
 				sideEffectList.addAll(compStmt.getInfo().getCFGInfo().addElement(body));
 				sideEffectList.addAll(InsertImmediateSuccessor.insert(body, targetNode));
 				sideEffectList.add(new AddedEnclosingBlock(compStmt));
@@ -312,7 +325,15 @@ public class InsertImmediatePredecessor {
 				if (Misc.collidesFreelyWith(targetNode, body)) {
 					Statement newStmt = FrontEnd.parseAndNormalize("{}", Statement.class);
 					CompoundStatement compStmt = (CompoundStatement) Misc.getCFGNodeFor(newStmt);
-					sideEffectList.addAll(link.enclosingNonLeafNode.getInfo().getCFGInfo().setBody(compStmt)); // Note that this line looks same, but is different.
+					sideEffectList.addAll(link.enclosingNonLeafNode.getInfo().getCFGInfo().setBody(compStmt)); // Note
+																												// that
+																												// this
+																												// line
+																												// looks
+																												// same,
+																												// but
+																												// is
+																												// different.
 					sideEffectList.addAll(compStmt.getInfo().getCFGInfo().addElement(body));
 					sideEffectList.addAll(InsertImmediateSuccessor.insert(body, targetNode));
 					sideEffectList.add(new AddedEnclosingBlock(compStmt));
@@ -341,7 +362,12 @@ public class InsertImmediatePredecessor {
 			if (Misc.collidesFreelyWith(targetNode, body)) {
 				Statement newStmt = FrontEnd.parseAndNormalize("{}", Statement.class);
 				CompoundStatement compStmt = (CompoundStatement) Misc.getCFGNodeFor(newStmt);
-				sideEffectList.addAll(link.enclosingNonLeafNode.getInfo().getCFGInfo().setBody(compStmt)); // Note that this line looks same, but is different.
+				sideEffectList.addAll(link.enclosingNonLeafNode.getInfo().getCFGInfo().setBody(compStmt)); // Note that
+																											// this line
+																											// looks
+																											// same, but
+																											// is
+																											// different.
 				sideEffectList.addAll(compStmt.getInfo().getCFGInfo().addElement(targetNode));
 				sideEffectList.add(new AddedEnclosingBlock(compStmt));
 				sideEffectList.addAll(InsertImmediateSuccessor.insert(targetNode, body));
@@ -375,7 +401,15 @@ public class InsertImmediatePredecessor {
 				Statement newStmt = FrontEnd.parseAndNormalize("{}", Statement.class);
 				CompoundStatement compStmt = (CompoundStatement) Misc.getCFGNodeFor(newStmt);
 				link.enclosingNonLeafNode.getInfo().getCFGInfo().removeSection(body);
-				sideEffectList.addAll(link.enclosingNonLeafNode.getInfo().getCFGInfo().addSection(compStmt)); // Note that this line looks same, but is different.
+				sideEffectList.addAll(link.enclosingNonLeafNode.getInfo().getCFGInfo().addSection(compStmt)); // Note
+																												// that
+																												// this
+																												// line
+																												// looks
+																												// same,
+																												// but
+																												// is
+																												// different.
 				sideEffectList.addAll(compStmt.getInfo().getCFGInfo().addElement(targetNode));
 				sideEffectList.add(new AddedEnclosingBlock(compStmt));
 				sideEffectList.addAll(InsertImmediateSuccessor.insert(targetNode, body));
@@ -389,7 +423,8 @@ public class InsertImmediatePredecessor {
 
 		@Override
 		public List<SideEffect> visit(SectionsEndLink link) {
-			// Note that this method would never be called, unless we have exactly one predecessor.
+			// Note that this method would never be called, unless we have exactly one
+			// predecessor.
 			assert (link.childNode.getInfo().getCFGInfo().getLeafPredecessors().size() == 1);
 			List<SideEffect> sideEffectList = new ArrayList<>();
 			SectionsConstructCFGInfo cfgInfo = link.enclosingNonLeafNode.getInfo().getCFGInfo();
@@ -411,7 +446,8 @@ public class InsertImmediatePredecessor {
 				if (Misc.collidesFreelyWith(targetNode, body)) {
 					Statement newStmt = FrontEnd.parseAndNormalize("{}", Statement.class);
 					CompoundStatement compStmt = (CompoundStatement) Misc.getCFGNodeFor(newStmt);
-					link.enclosingNonLeafNode.getInfo().getCFGInfo().removeSection(body); // Note that this line looks same, but is different.
+					link.enclosingNonLeafNode.getInfo().getCFGInfo().removeSection(body); // Note that this line looks
+																							// same, but is different.
 					link.enclosingNonLeafNode.getInfo().getCFGInfo().addSection(compStmt);
 					sideEffectList.addAll(compStmt.getInfo().getCFGInfo().addElement(body));
 					sideEffectList.addAll(InsertImmediateSuccessor.insert(body, targetNode));
@@ -437,7 +473,12 @@ public class InsertImmediatePredecessor {
 			if (Misc.collidesFreelyWith(targetNode, body)) {
 				Statement newStmt = FrontEnd.parseAndNormalize("{}", Statement.class);
 				CompoundStatement compStmt = (CompoundStatement) Misc.getCFGNodeFor(newStmt);
-				sideEffectList.addAll(link.enclosingNonLeafNode.getInfo().getCFGInfo().setBody(compStmt)); // Note that this line looks same, but is different.
+				sideEffectList.addAll(link.enclosingNonLeafNode.getInfo().getCFGInfo().setBody(compStmt)); // Note that
+																											// this line
+																											// looks
+																											// same, but
+																											// is
+																											// different.
 				sideEffectList.addAll(compStmt.getInfo().getCFGInfo().addElement(targetNode));
 				sideEffectList.add(new AddedEnclosingBlock(compStmt));
 				sideEffectList.addAll(InsertImmediateSuccessor.insert(targetNode, body));
@@ -457,7 +498,12 @@ public class InsertImmediatePredecessor {
 			if (Misc.collidesFreelyWith(targetNode, body)) {
 				Statement newStmt = FrontEnd.parseAndNormalize("{}", Statement.class);
 				CompoundStatement compStmt = (CompoundStatement) Misc.getCFGNodeFor(newStmt);
-				sideEffectList.addAll(link.enclosingNonLeafNode.getInfo().getCFGInfo().setBody(compStmt)); // Note that this line looks same, but is different.
+				sideEffectList.addAll(link.enclosingNonLeafNode.getInfo().getCFGInfo().setBody(compStmt)); // Note that
+																											// this line
+																											// looks
+																											// same, but
+																											// is
+																											// different.
 				sideEffectList.addAll(compStmt.getInfo().getCFGInfo().addElement(body));
 				sideEffectList.addAll(InsertImmediateSuccessor.insert(body, targetNode));
 				sideEffectList.add(new AddedEnclosingBlock(compStmt));
@@ -476,15 +522,16 @@ public class InsertImmediatePredecessor {
 
 		@Override
 		public List<SideEffect> visit(TaskClauseLink link) {
-			//			if (targetNode instanceof IfClause) {
-			//				taskConstruct.getInfo().getCFGInfo().setIfClause((IfClause) targetNode);
-			//				return sideEffectList;
-			//			} else if (targetNode instanceof FinalClause) {
-			//				taskConstruct.getInfo().getCFGInfo().setFinalClause((FinalClause) targetNode);
-			//				return sideEffectList;
-			//			} else {
+			// if (targetNode instanceof IfClause) {
+			// taskConstruct.getInfo().getCFGInfo().setIfClause((IfClause) targetNode);
+			// return sideEffectList;
+			// } else if (targetNode instanceof FinalClause) {
+			// taskConstruct.getInfo().getCFGInfo().setFinalClause((FinalClause)
+			// targetNode);
+			// return sideEffectList;
+			// } else {
 			return InsertImmediatePredecessor.insert(link.enclosingNonLeafNode, targetNode);
-			//			}
+			// }
 		}
 
 		@Override
@@ -494,7 +541,12 @@ public class InsertImmediatePredecessor {
 			if (Misc.collidesFreelyWith(targetNode, body)) {
 				Statement newStmt = FrontEnd.parseAndNormalize("{}", Statement.class);
 				CompoundStatement compStmt = (CompoundStatement) Misc.getCFGNodeFor(newStmt);
-				sideEffectList.addAll(link.enclosingNonLeafNode.getInfo().getCFGInfo().setBody(compStmt)); // Note that this line looks same, but is different.
+				sideEffectList.addAll(link.enclosingNonLeafNode.getInfo().getCFGInfo().setBody(compStmt)); // Note that
+																											// this line
+																											// looks
+																											// same, but
+																											// is
+																											// different.
 				sideEffectList.addAll(compStmt.getInfo().getCFGInfo().addElement(targetNode));
 				sideEffectList.add(new AddedEnclosingBlock(compStmt));
 				sideEffectList.addAll(InsertImmediateSuccessor.insert(targetNode, body));
@@ -514,7 +566,12 @@ public class InsertImmediatePredecessor {
 			if (Misc.collidesFreelyWith(targetNode, body)) {
 				Statement newStmt = FrontEnd.parseAndNormalize("{}", Statement.class);
 				CompoundStatement compStmt = (CompoundStatement) Misc.getCFGNodeFor(newStmt);
-				sideEffectList.addAll(link.enclosingNonLeafNode.getInfo().getCFGInfo().setBody(compStmt)); // Note that this line looks same, but is different.
+				sideEffectList.addAll(link.enclosingNonLeafNode.getInfo().getCFGInfo().setBody(compStmt)); // Note that
+																											// this line
+																											// looks
+																											// same, but
+																											// is
+																											// different.
 				sideEffectList.addAll(compStmt.getInfo().getCFGInfo().addElement(body));
 				sideEffectList.addAll(InsertImmediateSuccessor.insert(body, targetNode));
 				sideEffectList.add(new AddedEnclosingBlock(compStmt));
@@ -538,7 +595,12 @@ public class InsertImmediatePredecessor {
 			if (Misc.collidesFreelyWith(targetNode, body)) {
 				Statement newStmt = FrontEnd.parseAndNormalize("{}", Statement.class);
 				CompoundStatement compStmt = (CompoundStatement) Misc.getCFGNodeFor(newStmt);
-				sideEffectList.addAll(link.enclosingNonLeafNode.getInfo().getCFGInfo().setBody(compStmt)); // Note that this line looks same, but is different.
+				sideEffectList.addAll(link.enclosingNonLeafNode.getInfo().getCFGInfo().setBody(compStmt)); // Note that
+																											// this line
+																											// looks
+																											// same, but
+																											// is
+																											// different.
 				sideEffectList.addAll(compStmt.getInfo().getCFGInfo().addElement(targetNode));
 				sideEffectList.add(new AddedEnclosingBlock(compStmt));
 				sideEffectList.addAll(InsertImmediateSuccessor.insert(targetNode, body));
@@ -558,7 +620,12 @@ public class InsertImmediatePredecessor {
 			if (Misc.collidesFreelyWith(targetNode, body)) {
 				Statement newStmt = FrontEnd.parseAndNormalize("{}", Statement.class);
 				CompoundStatement compStmt = (CompoundStatement) Misc.getCFGNodeFor(newStmt);
-				sideEffectList.addAll(link.enclosingNonLeafNode.getInfo().getCFGInfo().setBody(compStmt)); // Note that this line looks same, but is different.
+				sideEffectList.addAll(link.enclosingNonLeafNode.getInfo().getCFGInfo().setBody(compStmt)); // Note that
+																											// this line
+																											// looks
+																											// same, but
+																											// is
+																											// different.
 				sideEffectList.addAll(compStmt.getInfo().getCFGInfo().addElement(body));
 				sideEffectList.addAll(InsertImmediateSuccessor.insert(body, targetNode));
 				sideEffectList.add(new AddedEnclosingBlock(compStmt));
@@ -582,7 +649,12 @@ public class InsertImmediatePredecessor {
 			if (Misc.collidesFreelyWith(targetNode, body)) {
 				Statement newStmt = FrontEnd.parseAndNormalize("{}", Statement.class);
 				CompoundStatement compStmt = (CompoundStatement) Misc.getCFGNodeFor(newStmt);
-				sideEffectList.addAll(link.enclosingNonLeafNode.getInfo().getCFGInfo().setBody(compStmt)); // Note that this line looks same, but is different.
+				sideEffectList.addAll(link.enclosingNonLeafNode.getInfo().getCFGInfo().setBody(compStmt)); // Note that
+																											// this line
+																											// looks
+																											// same, but
+																											// is
+																											// different.
 				sideEffectList.addAll(compStmt.getInfo().getCFGInfo().addElement(targetNode));
 				sideEffectList.add(new AddedEnclosingBlock(compStmt));
 				sideEffectList.addAll(InsertImmediateSuccessor.insert(targetNode, body));
@@ -602,7 +674,12 @@ public class InsertImmediatePredecessor {
 			if (Misc.collidesFreelyWith(targetNode, body)) {
 				Statement newStmt = FrontEnd.parseAndNormalize("{}", Statement.class);
 				CompoundStatement compStmt = (CompoundStatement) Misc.getCFGNodeFor(newStmt);
-				sideEffectList.addAll(link.enclosingNonLeafNode.getInfo().getCFGInfo().setBody(compStmt)); // Note that this line looks same, but is different.
+				sideEffectList.addAll(link.enclosingNonLeafNode.getInfo().getCFGInfo().setBody(compStmt)); // Note that
+																											// this line
+																											// looks
+																											// same, but
+																											// is
+																											// different.
 				sideEffectList.addAll(compStmt.getInfo().getCFGInfo().addElement(body));
 				sideEffectList.addAll(InsertImmediateSuccessor.insert(body, targetNode));
 				sideEffectList.add(new AddedEnclosingBlock(compStmt));
@@ -649,7 +726,12 @@ public class InsertImmediatePredecessor {
 			if (Misc.collidesFreelyWith(targetNode, body)) {
 				Statement newStmt = FrontEnd.parseAndNormalize("{}", Statement.class);
 				CompoundStatement compStmt = (CompoundStatement) Misc.getCFGNodeFor(newStmt);
-				sideEffectList.addAll(link.enclosingNonLeafNode.getInfo().getCFGInfo().setBody(compStmt)); // Note that this line looks same, but is different.
+				sideEffectList.addAll(link.enclosingNonLeafNode.getInfo().getCFGInfo().setBody(compStmt)); // Note that
+																											// this line
+																											// looks
+																											// same, but
+																											// is
+																											// different.
 				sideEffectList.addAll(compStmt.getInfo().getCFGInfo().addElement(targetNode));
 				sideEffectList.add(new AddedEnclosingBlock(compStmt));
 				sideEffectList.addAll(InsertImmediateSuccessor.insert(targetNode, body));
@@ -669,7 +751,12 @@ public class InsertImmediatePredecessor {
 			if (Misc.collidesFreelyWith(targetNode, body)) {
 				Statement newStmt = FrontEnd.parseAndNormalize("{}", Statement.class);
 				CompoundStatement compStmt = (CompoundStatement) Misc.getCFGNodeFor(newStmt);
-				sideEffectList.addAll(link.enclosingNonLeafNode.getInfo().getCFGInfo().setBody(compStmt)); // Note that this line looks same, but is different.
+				sideEffectList.addAll(link.enclosingNonLeafNode.getInfo().getCFGInfo().setBody(compStmt)); // Note that
+																											// this line
+																											// looks
+																											// same, but
+																											// is
+																											// different.
 				sideEffectList.addAll(compStmt.getInfo().getCFGInfo().addElement(body));
 				sideEffectList.addAll(InsertImmediateSuccessor.insert(body, targetNode));
 				sideEffectList.add(new AddedEnclosingBlock(compStmt));
@@ -707,32 +794,44 @@ public class InsertImmediatePredecessor {
 				// New code in next two lines.
 				sideEffectList.addAll(compStmt.getInfo().getCFGInfo().addElement(baseIndex, targetNode));
 				return sideEffectList;
-				// OLD CODE: Now, normalization of the initializer is done automatically within addElement().
-				//				Initializer init = decl.getInfo().getInitializer();
-				//				if (init == null) {
-				//					sideEffectList.addAll(compStmt.getInfo().getCFGInfo().addElement(baseIndex, targetNode));
-				//					return sideEffectList;
-				//				} else {
-				//					// Too bad! Now, we need to simplify the declaration, and adjust the indices.
-				//					Type typeOfInit = Type.getType(init);
-				//					String tempName = Builder.getNewTempName(decl.getInfo().getDeclaredName() + "Init");
-				//					Declaration simplifyingTemp = typeOfInit.getDeclaration(tempName);
-				//					sideEffectList.addAll(InsertImmediatePredecessor.insertAggressive(link.childNode, simplifyingTemp));
-				//					sideEffectList.add(new InitializationSimplified(simplifyingTemp));
+				// OLD CODE: Now, normalization of the initializer is done automatically within
+				// addElement().
+				// Initializer init = decl.getInfo().getInitializer();
+				// if (init == null) {
+				// sideEffectList.addAll(compStmt.getInfo().getCFGInfo().addElement(baseIndex,
+				// targetNode));
+				// return sideEffectList;
+				// } else {
+				// // Too bad! Now, we need to simplify the declaration, and adjust the indices.
+				// Type typeOfInit = Type.getType(init);
+				// String tempName = Builder.getNewTempName(decl.getInfo().getDeclaredName() +
+				// "Init");
+				// Declaration simplifyingTemp = typeOfInit.getDeclaration(tempName);
+				// sideEffectList.addAll(InsertImmediatePredecessor.insertAggressive(link.childNode,
+				// simplifyingTemp));
+				// sideEffectList.add(new InitializationSimplified(simplifyingTemp));
 				//
-				//					Statement simplifyingExp = FrontEnd.parseAndNormalize(tempName + " = " + init.toString() + ";",
-				//							Statement.class);
-				//					sideEffectList.addAll(InsertImmediatePredecessor.insertAggressive(link.childNode, simplifyingExp));
-				//					sideEffectList.add(new InitializationSimplified(simplifyingExp));
+				// Statement simplifyingExp = FrontEnd.parseAndNormalize(tempName + " = " +
+				// init.toString() + ";",
+				// Statement.class);
+				// sideEffectList.addAll(InsertImmediatePredecessor.insertAggressive(link.childNode,
+				// simplifyingExp));
+				// sideEffectList.add(new InitializationSimplified(simplifyingExp));
 				//
-				//					Declarator declarator = decl.getInfo().getDeclarator(decl.getInfo().getDeclaredName());
-				//					String newDeclString = decl.getF0().toString() + " " + declarator + " = " + tempName + ";";
-				//					Declaration newDecl = FrontEnd.parseAndNormalize(newDeclString, Declaration.class);
-				//					sideEffectList.add(new NodeUpdated(newDecl, "Initializer of this declaration was simplified."));
-				//					baseIndex = compStmt.getInfo().getCFGInfo().getElementList().indexOf(link.childNode);
-				//					sideEffectList.addAll(compStmt.getInfo().getCFGInfo().addElement(baseIndex, newDecl));
-				//					return sideEffectList;
-				//				}
+				// Declarator declarator =
+				// decl.getInfo().getDeclarator(decl.getInfo().getDeclaredName());
+				// String newDeclString = decl.getF0().toString() + " " + declarator + " = " +
+				// tempName + ";";
+				// Declaration newDecl = FrontEnd.parseAndNormalize(newDeclString,
+				// Declaration.class);
+				// sideEffectList.add(new NodeUpdated(newDecl, "Initializer of this declaration
+				// was simplified."));
+				// baseIndex =
+				// compStmt.getInfo().getCFGInfo().getElementList().indexOf(link.childNode);
+				// sideEffectList.addAll(compStmt.getInfo().getCFGInfo().addElement(baseIndex,
+				// newDecl));
+				// return sideEffectList;
+				// }
 			} else {
 				Statement baseStmt = (Statement) baseNode;
 				Statement targetStmt = (Statement) targetNode;
@@ -773,7 +872,15 @@ public class InsertImmediatePredecessor {
 			if (Misc.collidesFreelyWith(targetNode, body)) {
 				Statement newStmt = FrontEnd.parseAndNormalize("{}", Statement.class);
 				CompoundStatement compStmt = (CompoundStatement) Misc.getCFGNodeFor(newStmt);
-				sideEffectList.addAll(link.enclosingNonLeafNode.getInfo().getCFGInfo().setThenBody(compStmt)); // Note that this line looks same, but is different.
+				sideEffectList.addAll(link.enclosingNonLeafNode.getInfo().getCFGInfo().setThenBody(compStmt)); // Note
+																												// that
+																												// this
+																												// line
+																												// looks
+																												// same,
+																												// but
+																												// is
+																												// different.
 				sideEffectList.addAll(compStmt.getInfo().getCFGInfo().addElement(targetNode));
 				sideEffectList.add(new AddedEnclosingBlock(compStmt));
 				sideEffectList.addAll(InsertImmediateSuccessor.insert(targetNode, body));
@@ -792,7 +899,15 @@ public class InsertImmediatePredecessor {
 			if (Misc.collidesFreelyWith(targetNode, body)) {
 				Statement newStmt = FrontEnd.parseAndNormalize("{}", Statement.class);
 				CompoundStatement compStmt = (CompoundStatement) Misc.getCFGNodeFor(newStmt);
-				sideEffectList.addAll(link.enclosingNonLeafNode.getInfo().getCFGInfo().setElseBody(compStmt)); // Note that this line looks same, but is different.
+				sideEffectList.addAll(link.enclosingNonLeafNode.getInfo().getCFGInfo().setElseBody(compStmt)); // Note
+																												// that
+																												// this
+																												// line
+																												// looks
+																												// same,
+																												// but
+																												// is
+																												// different.
 				sideEffectList.addAll(compStmt.getInfo().getCFGInfo().addElement(targetNode));
 				sideEffectList.add(new AddedEnclosingBlock(compStmt));
 				sideEffectList.addAll(InsertImmediateSuccessor.insert(targetNode, body));
@@ -836,7 +951,12 @@ public class InsertImmediatePredecessor {
 			if (Misc.collidesFreelyWith(targetNode, body)) {
 				Statement newStmt = FrontEnd.parseAndNormalize("{}", Statement.class);
 				CompoundStatement compStmt = (CompoundStatement) Misc.getCFGNodeFor(newStmt);
-				sideEffectList.addAll(link.enclosingNonLeafNode.getInfo().getCFGInfo().setBody(compStmt)); // Note that this line looks same, but is different.
+				sideEffectList.addAll(link.enclosingNonLeafNode.getInfo().getCFGInfo().setBody(compStmt)); // Note that
+																											// this line
+																											// looks
+																											// same, but
+																											// is
+																											// different.
 				sideEffectList.addAll(compStmt.getInfo().getCFGInfo().addElement(targetNode));
 				sideEffectList.add(new AddedEnclosingBlock(compStmt));
 				sideEffectList.addAll(InsertImmediateSuccessor.insert(targetNode, body));
@@ -861,45 +981,50 @@ public class InsertImmediatePredecessor {
 				return sideEffectList;
 			}
 			return InsertImmediateSuccessor.insert(link.enclosingNonLeafNode, targetNode);
-			//			List<UpdateSideEffects> sideEffectList = new ArrayList<>();
-			//			SwitchStatement switchStmt = link.enclosingNonLeafNode;
-			//			EndNode switchEnd = link.childNode;
-			//			List<Node> endPreds = switchEnd.getInfo().getCFGInfo().getPredBlocks();
-			//			if (endPreds.isEmpty()) {
-			//				Misc.warnDueToLackOfFeature(
-			//						"Cannot insert a node immediately before the endNode of a SwitchStatement, since it is not reachable.",
-			//						null);
-			//				sideEffectList.add(UpdateSideEffects.SYNTACTIC_CONSTRAINT);
-			//				return sideEffectList;
-			//			}
-			//			assert (endPreds.size() == 1);
-			//			Node endPred = endPreds.get(0);
-			//			if (endPred instanceof Expression) {
-			//				assert (!switchStmt.getInfo().hasDefaultLabel());
-			//				if (targetNode instanceof Declaration) {
-			//					Misc.warnDueToLackOfFeature("Cannot insert a declaration before the endNode of a SwitchStatement.",
-			//							null);
-			//					sideEffectList.add(UpdateSideEffects.SYNTACTIC_CONSTRAINT);
-			//					return sideEffectList;
-			//				} else {
-			//					Statement targetStmt = (Statement) targetNode;
-			//					DefaultLabel defLabel = new DefaultLabel(targetStmt, switchStmt);
-			//					targetStmt.getInfo().addLabelAnnotation(defLabel);
-			//					CompoundStatement body = (CompoundStatement) link.enclosingNonLeafNode.getInfo().getCFGInfo().getBody();
-			//					CompoundStatementCFGInfo bodyInfo = body.getInfo().getCFGInfo();
-			//					sideEffectList.addAll(bodyInfo.addElement(bodyInfo.getElementList().size(), targetStmt));
-			//					return sideEffectList;
-			//				}
-			//			} else if (endPred instanceof BreakStatement) {
-			//				return InsertImmediatePredecessor.insertAggressive(endPred, targetNode);
-			//			} else {
-			//				assert (endPred instanceof CompoundStatement);
-			//				CompoundStatement body = (CompoundStatement) endPred;
-			//				assert (body.getInfo().getCFGInfo().isEndReachable());
-			//				CompoundStatementCFGInfo bodyInfo = body.getInfo().getCFGInfo();
-			//				sideEffectList.addAll(bodyInfo.addElement(bodyInfo.getElementList().size(), targetNode));
-			//				return sideEffectList;
-			//			}
+			// List<UpdateSideEffects> sideEffectList = new ArrayList<>();
+			// SwitchStatement switchStmt = link.enclosingNonLeafNode;
+			// EndNode switchEnd = link.childNode;
+			// List<Node> endPreds = switchEnd.getInfo().getCFGInfo().getPredBlocks();
+			// if (endPreds.isEmpty()) {
+			// Misc.warnDueToLackOfFeature(
+			// "Cannot insert a node immediately before the endNode of a SwitchStatement,
+			// since it is not reachable.",
+			// null);
+			// sideEffectList.add(UpdateSideEffects.SYNTACTIC_CONSTRAINT);
+			// return sideEffectList;
+			// }
+			// assert (endPreds.size() == 1);
+			// Node endPred = endPreds.get(0);
+			// if (endPred instanceof Expression) {
+			// assert (!switchStmt.getInfo().hasDefaultLabel());
+			// if (targetNode instanceof Declaration) {
+			// Misc.warnDueToLackOfFeature("Cannot insert a declaration before the endNode
+			// of a SwitchStatement.",
+			// null);
+			// sideEffectList.add(UpdateSideEffects.SYNTACTIC_CONSTRAINT);
+			// return sideEffectList;
+			// } else {
+			// Statement targetStmt = (Statement) targetNode;
+			// DefaultLabel defLabel = new DefaultLabel(targetStmt, switchStmt);
+			// targetStmt.getInfo().addLabelAnnotation(defLabel);
+			// CompoundStatement body = (CompoundStatement)
+			// link.enclosingNonLeafNode.getInfo().getCFGInfo().getBody();
+			// CompoundStatementCFGInfo bodyInfo = body.getInfo().getCFGInfo();
+			// sideEffectList.addAll(bodyInfo.addElement(bodyInfo.getElementList().size(),
+			// targetStmt));
+			// return sideEffectList;
+			// }
+			// } else if (endPred instanceof BreakStatement) {
+			// return InsertImmediatePredecessor.insertAggressive(endPred, targetNode);
+			// } else {
+			// assert (endPred instanceof CompoundStatement);
+			// CompoundStatement body = (CompoundStatement) endPred;
+			// assert (body.getInfo().getCFGInfo().isEndReachable());
+			// CompoundStatementCFGInfo bodyInfo = body.getInfo().getCFGInfo();
+			// sideEffectList.addAll(bodyInfo.addElement(bodyInfo.getElementList().size(),
+			// targetNode));
+			// return sideEffectList;
+			// }
 		}
 
 		@Override
@@ -925,34 +1050,40 @@ public class InsertImmediatePredecessor {
 			assert (pred instanceof BeginNode);
 			return InsertImmediatePredecessor.insert(pred, targetNode);
 			//
-			//			List<UpdateSideEffects> sideEffectList = new ArrayList<>();
-			//			if (pred instanceof EndNode) {
-			//				assert (false);
-			//				CompoundStatement body = (CompoundStatement) link.enclosingNonLeafNode.getInfo().getCFGInfo().getBody();
-			//				if (Misc.collidesFreelyWith(targetNode, body)) {
-			//					Statement newStmt = FrontEnd.parseAndNormalize("{}", Statement.class);
-			//					CompoundStatement compStmt = (CompoundStatement) Misc.getCFGNodeFor(newStmt);
-			//					sideEffectList.addAll(link.enclosingNonLeafNode.getInfo().getCFGInfo().setBody(compStmt)); // Note that this line looks same, but is different.
-			//					sideEffectList.addAll(compStmt.getInfo().getCFGInfo().addElement(body));
-			//					sideEffectList.addAll(InsertImmediateSuccessor.insertAggressive(body, targetNode));
-			//					sideEffectList.add(UpdateSideEffects.ADDED_ENCLOSING_BLOCK);
-			//					return sideEffectList;
-			//				} else {
-			//					sideEffectList.addAll(InsertImmediatePredecessor
-			//							.insertAggressive(body.getInfo().getCFGInfo().getNestedCFG().getEnd(), targetNode));
-			//					return sideEffectList;
-			//				}
-			//			} else if (pred instanceof ContinueStatement) {
-			//				assert (false);
-			//				CompoundStatement body = (CompoundStatement) link.enclosingNonLeafNode.getInfo().getCFGInfo().getBody();
-			//				if (Misc.collidesFreelyWithinScopesOf(targetNode, body, pred)) {
-			//					sideEffectList.add(UpdateSideEffects.NO_UPDATE_DUE_TO_NAME_COLLISION);
-			//					return sideEffectList;
-			//				} else {
-			//					return InsertImmediatePredecessor.insertAggressive(leafPredList.get(0), targetNode);
-			//				}
-			//			} else {
-			//			}
+			// List<UpdateSideEffects> sideEffectList = new ArrayList<>();
+			// if (pred instanceof EndNode) {
+			// assert (false);
+			// CompoundStatement body = (CompoundStatement)
+			// link.enclosingNonLeafNode.getInfo().getCFGInfo().getBody();
+			// if (Misc.collidesFreelyWith(targetNode, body)) {
+			// Statement newStmt = FrontEnd.parseAndNormalize("{}", Statement.class);
+			// CompoundStatement compStmt = (CompoundStatement) Misc.getCFGNodeFor(newStmt);
+			// sideEffectList.addAll(link.enclosingNonLeafNode.getInfo().getCFGInfo().setBody(compStmt));
+			// // Note that this line looks same, but is different.
+			// sideEffectList.addAll(compStmt.getInfo().getCFGInfo().addElement(body));
+			// sideEffectList.addAll(InsertImmediateSuccessor.insertAggressive(body,
+			// targetNode));
+			// sideEffectList.add(UpdateSideEffects.ADDED_ENCLOSING_BLOCK);
+			// return sideEffectList;
+			// } else {
+			// sideEffectList.addAll(InsertImmediatePredecessor
+			// .insertAggressive(body.getInfo().getCFGInfo().getNestedCFG().getEnd(),
+			// targetNode));
+			// return sideEffectList;
+			// }
+			// } else if (pred instanceof ContinueStatement) {
+			// assert (false);
+			// CompoundStatement body = (CompoundStatement)
+			// link.enclosingNonLeafNode.getInfo().getCFGInfo().getBody();
+			// if (Misc.collidesFreelyWithinScopesOf(targetNode, body, pred)) {
+			// sideEffectList.add(UpdateSideEffects.NO_UPDATE_DUE_TO_NAME_COLLISION);
+			// return sideEffectList;
+			// } else {
+			// return InsertImmediatePredecessor.insertAggressive(leafPredList.get(0),
+			// targetNode);
+			// }
+			// } else {
+			// }
 		}
 
 		@Override
@@ -962,7 +1093,12 @@ public class InsertImmediatePredecessor {
 			if (Misc.collidesFreelyWith(targetNode, body)) {
 				Statement newStmt = FrontEnd.parseAndNormalize("{}", Statement.class);
 				CompoundStatement compStmt = (CompoundStatement) Misc.getCFGNodeFor(newStmt);
-				sideEffectList.addAll(link.enclosingNonLeafNode.getInfo().getCFGInfo().setBody(compStmt)); // Note that this line looks same, but is different.
+				sideEffectList.addAll(link.enclosingNonLeafNode.getInfo().getCFGInfo().setBody(compStmt)); // Note that
+																											// this line
+																											// looks
+																											// same, but
+																											// is
+																											// different.
 				sideEffectList.addAll(compStmt.getInfo().getCFGInfo().addElement(targetNode));
 				sideEffectList.add(new AddedEnclosingBlock(compStmt));
 				sideEffectList.addAll(InsertImmediateSuccessor.insert(targetNode, body));
@@ -1005,7 +1141,15 @@ public class InsertImmediatePredecessor {
 				if (Misc.collidesFreelyWith(targetNode, body)) {
 					Statement newStmt = FrontEnd.parseAndNormalize("{}", Statement.class);
 					CompoundStatement compStmt = (CompoundStatement) Misc.getCFGNodeFor(newStmt);
-					sideEffectList.addAll(link.enclosingNonLeafNode.getInfo().getCFGInfo().setBody(compStmt)); // Note that this line looks same, but is different.
+					sideEffectList.addAll(link.enclosingNonLeafNode.getInfo().getCFGInfo().setBody(compStmt)); // Note
+																												// that
+																												// this
+																												// line
+																												// looks
+																												// same,
+																												// but
+																												// is
+																												// different.
 					sideEffectList.addAll(compStmt.getInfo().getCFGInfo().addElement(body));
 					sideEffectList.addAll(InsertImmediateSuccessor.insert(body, targetNode));
 					sideEffectList.add(new AddedEnclosingBlock(compStmt));
@@ -1034,7 +1178,12 @@ public class InsertImmediatePredecessor {
 			if (Misc.collidesFreelyWith(targetNode, body)) {
 				Statement newStmt = FrontEnd.parseAndNormalize("{}", Statement.class);
 				CompoundStatement compStmt = (CompoundStatement) Misc.getCFGNodeFor(newStmt);
-				sideEffectList.addAll(link.enclosingNonLeafNode.getInfo().getCFGInfo().setBody(compStmt)); // Note that this line looks same, but is different.
+				sideEffectList.addAll(link.enclosingNonLeafNode.getInfo().getCFGInfo().setBody(compStmt)); // Note that
+																											// this line
+																											// looks
+																											// same, but
+																											// is
+																											// different.
 				sideEffectList.addAll(compStmt.getInfo().getCFGInfo().addElement(targetNode));
 				sideEffectList.add(new AddedEnclosingBlock(compStmt));
 				sideEffectList.addAll(InsertImmediateSuccessor.insert(targetNode, body));
@@ -1123,7 +1272,7 @@ public class InsertImmediatePredecessor {
 				forInfo.removeStepExpression();
 
 				if (stepPreds.isEmpty()) {
-					// This means that the path is not reachable. 
+					// This means that the path is not reachable.
 					// We should complete the transformation and return.
 					sideEffectList.add(new RemovedDeadCode(stepExpression));
 					sideEffectList.addAll(InsertImmediatePredecessor.insert(link.enclosingNonLeafNode, targetNode));
@@ -1144,7 +1293,15 @@ public class InsertImmediatePredecessor {
 						if (Misc.collidesFreelyWith(stepStmt, body)) {
 							Statement newStmt = FrontEnd.parseAndNormalize("{}", Statement.class);
 							CompoundStatement compStmt = (CompoundStatement) Misc.getCFGNodeFor(newStmt);
-							sideEffectList.addAll(link.enclosingNonLeafNode.getInfo().getCFGInfo().setBody(compStmt)); // Note that this line looks same, but is different.
+							sideEffectList.addAll(link.enclosingNonLeafNode.getInfo().getCFGInfo().setBody(compStmt)); // Note
+																														// that
+																														// this
+																														// line
+																														// looks
+																														// same,
+																														// but
+																														// is
+																														// different.
 							sideEffectList.addAll(compStmt.getInfo().getCFGInfo().addElement(body));
 							sideEffectList.addAll(InsertImmediateSuccessor.insert(body, stepStmt));
 							sideEffectList.add(new AddedEnclosingBlock(compStmt));
@@ -1201,7 +1358,15 @@ public class InsertImmediatePredecessor {
 					if (Misc.collidesFreelyWith(copiedTarget, body)) {
 						Statement newStmt = FrontEnd.parseAndNormalize("{}", Statement.class);
 						CompoundStatement compStmt = (CompoundStatement) Misc.getCFGNodeFor(newStmt);
-						sideEffectList.addAll(link.enclosingNonLeafNode.getInfo().getCFGInfo().setBody(compStmt)); // Note that this line looks same, but is different.
+						sideEffectList.addAll(link.enclosingNonLeafNode.getInfo().getCFGInfo().setBody(compStmt)); // Note
+																													// that
+																													// this
+																													// line
+																													// looks
+																													// same,
+																													// but
+																													// is
+																													// different.
 						sideEffectList.addAll(compStmt.getInfo().getCFGInfo().addElement(body));
 						sideEffectList.addAll(InsertImmediateSuccessor.insert(body, copiedTarget));
 						sideEffectList.add(new AddedEnclosingBlock(compStmt));
@@ -1258,7 +1423,15 @@ public class InsertImmediatePredecessor {
 				if (Misc.collidesFreelyWith(targetNode, body)) {
 					Statement newStmt = FrontEnd.parseAndNormalize("{}", Statement.class);
 					CompoundStatement compStmt = (CompoundStatement) Misc.getCFGNodeFor(newStmt);
-					sideEffectList.addAll(link.enclosingNonLeafNode.getInfo().getCFGInfo().setBody(compStmt)); // Note that this line looks same, but is different.
+					sideEffectList.addAll(link.enclosingNonLeafNode.getInfo().getCFGInfo().setBody(compStmt)); // Note
+																												// that
+																												// this
+																												// line
+																												// looks
+																												// same,
+																												// but
+																												// is
+																												// different.
 					sideEffectList.addAll(compStmt.getInfo().getCFGInfo().addElement(body));
 					sideEffectList.addAll(InsertImmediateSuccessor.insert(body, targetNode));
 					sideEffectList.add(new AddedEnclosingBlock(compStmt));
@@ -1287,7 +1460,12 @@ public class InsertImmediatePredecessor {
 			if (Misc.collidesFreelyWith(targetNode, body)) {
 				Statement newStmt = FrontEnd.parseAndNormalize("{}", Statement.class);
 				CompoundStatement compStmt = (CompoundStatement) Misc.getCFGNodeFor(newStmt);
-				sideEffectList.addAll(link.enclosingNonLeafNode.getInfo().getCFGInfo().setBody(compStmt)); // Note that this line looks same, but is different.
+				sideEffectList.addAll(link.enclosingNonLeafNode.getInfo().getCFGInfo().setBody(compStmt)); // Note that
+																											// this line
+																											// looks
+																											// same, but
+																											// is
+																											// different.
 				sideEffectList.addAll(compStmt.getInfo().getCFGInfo().addElement(targetNode));
 				sideEffectList.add(new AddedEnclosingBlock(compStmt));
 				sideEffectList.addAll(InsertImmediateSuccessor.insert(targetNode, body));
@@ -1390,17 +1568,19 @@ public class InsertImmediatePredecessor {
 			Misc.warnDueToLackOfFeature(str, link.enclosingNonLeafNode);
 			sideEffectList.add(new SyntacticConstraint(link.childNode, str));
 			return sideEffectList;
-			//			FunctionDefinition functionDef = link.enclosingNonLeafNode;
-			//			if (targetNode instanceof ParameterDeclaration) {
-			//				functionDef.getInfo().getCFGInfo().addParameterDeclaration((ParameterDeclaration) targetNode);
-			//				return sideEffectList;
-			//			} else if (targetNode instanceof Statement) {
-			//				CompoundStatement body = functionDef.getInfo().getCFGInfo().getBody();
-			//				body.getInfo().getCFGInfo().addElement(0, targetNode);
-			//				return sideEffectList; // Since we were not able to insert the targetNode outside the body.
-			//			} else {
-			//				return sideEffectList;
-			//			}
+			// FunctionDefinition functionDef = link.enclosingNonLeafNode;
+			// if (targetNode instanceof ParameterDeclaration) {
+			// functionDef.getInfo().getCFGInfo().addParameterDeclaration((ParameterDeclaration)
+			// targetNode);
+			// return sideEffectList;
+			// } else if (targetNode instanceof Statement) {
+			// CompoundStatement body = functionDef.getInfo().getCFGInfo().getBody();
+			// body.getInfo().getCFGInfo().addElement(0, targetNode);
+			// return sideEffectList; // Since we were not able to insert the targetNode
+			// outside the body.
+			// } else {
+			// return sideEffectList;
+			// }
 		}
 
 		@Override

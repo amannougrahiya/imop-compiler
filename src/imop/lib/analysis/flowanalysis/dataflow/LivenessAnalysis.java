@@ -39,26 +39,26 @@ public class LivenessAnalysis extends InterThreadBackwardNonCellularAnalysis<Liv
 			}
 			return this.livenessInfo.equals(that.livenessInfo);
 			// Old Code:
-			//			if (this.livenessInfo.size() != that.livenessInfo.size()) {
-			//				return false;
-			//			}
-			//			for (Node successor : this.livenessInfo.keySet()) {
-			//				if (!that.livenessInfo.containsKey(successor)) {
-			//					return false;
-			//				}
-			//				CellSet thisCellSet = this.livenessInfo.get(successor);
-			//				CellSet thatCellSet = that.livenessInfo.get(successor);
-			//				if (thisCellSet.size() != thatCellSet.size()) {
-			//					return false;
-			//				}
-			//				for (Cell cell : thisCellSet) {
-			//					if (!thatCellSet.contains(cell)) {
-			//						//						assert(!thisCellSet.toString().equals(thatCellSet.toString()));
-			//						return false;
-			//					}
-			//				}
-			//			}
-			//			return true;
+			// if (this.livenessInfo.size() != that.livenessInfo.size()) {
+			// return false;
+			// }
+			// for (Node successor : this.livenessInfo.keySet()) {
+			// if (!that.livenessInfo.containsKey(successor)) {
+			// return false;
+			// }
+			// CellSet thisCellSet = this.livenessInfo.get(successor);
+			// CellSet thatCellSet = that.livenessInfo.get(successor);
+			// if (thisCellSet.size() != thatCellSet.size()) {
+			// return false;
+			// }
+			// for (Cell cell : thisCellSet) {
+			// if (!thatCellSet.contains(cell)) {
+			// // assert(!thisCellSet.toString().equals(thatCellSet.toString()));
+			// return false;
+			// }
+			// }
+			// }
+			// return true;
 		}
 
 		@Override

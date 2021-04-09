@@ -26,11 +26,13 @@ public class TraversalOrderObtainer {
 	 * the root. Note that the cycles are ignored.
 	 * 
 	 * @param entryNode
-	 *            starting node, from which postorder traversal has to be
-	 *            performed.
+	 *                        starting node, from which postorder traversal has to
+	 *                        be
+	 *                        performed.
 	 * @param neighbourGetter
-	 *            a lambda used to obtain the list of nodes that are successors
-	 *            of the given node.
+	 *                        a lambda used to obtain the list of nodes that are
+	 *                        successors
+	 *                        of the given node.
 	 * @return
 	 *         a list that contains reachable nodes in postorder.
 	 */
@@ -49,11 +51,13 @@ public class TraversalOrderObtainer {
 	 * {@code entryNode} as the root. Note that the cycles are ignored.
 	 * 
 	 * @param entryNode
-	 *            starting node, from which reverse postorder traversal has to
-	 *            be performed.
+	 *                        starting node, from which reverse postorder traversal
+	 *                        has to
+	 *                        be performed.
 	 * @param neighbourGetter
-	 *            a lambda used to obtain the list of nodes that are successors
-	 *            of the given node.
+	 *                        a lambda used to obtain the list of nodes that are
+	 *                        successors
+	 *                        of the given node.
 	 * @return
 	 *         a list that contains reachable nodes in reverse postorder.
 	 */

@@ -35,7 +35,7 @@ public class LabeledStatement extends Statement {
 	}
 
 	public LabeledStatement() {
-		// This constructor shall be used only to create the objects of subclasses 
+		// This constructor shall be used only to create the objects of subclasses
 	}
 
 	@Override

@@ -109,7 +109,7 @@ public class ConstraintsGenerator {
 	 * created solver object, to check if the system is satisfiable.
 	 * 
 	 * @param seedConstraints
-	 *            set of seed constraints in terms of C expressions.
+	 *                        set of seed constraints in terms of C expressions.
 	 * @return
 	 *         true, if a solution may exist.
 	 */
@@ -261,14 +261,18 @@ public class ConstraintsGenerator {
 	 * definitions. Those are supposed to be removed in the next step.</b>
 	 * 
 	 * @param tokens
-	 *            an expression (without side-effects) in its prefix form.
+	 *                                            an expression (without
+	 *                                            side-effects) in its prefix form.
 	 * @param tid
-	 *            thread-id associated with the expression.
+	 *                                            thread-id associated with the
+	 *                                            expression.
 	 * @param cfgNode
-	 *            CFG node at which the expression appears.
+	 *                                            CFG node at which the expression
+	 *                                            appears.
 	 * @param mapFromSymbolsToDependenceEntrySets
-	 *            set of entries that will be used to generate the system of
-	 *            (in)equations.
+	 *                                            set of entries that will be used
+	 *                                            to generate the system of
+	 *                                            (in)equations.
 	 * @return
 	 *         renaming map to be applied in {@code tokens} to obtain correct
 	 *         set of (in)equations, without any naming conflicts/mismatches.
@@ -288,7 +292,8 @@ public class ConstraintsGenerator {
 					reachingDefs.add(rd);
 				}
 			}
-			//			System.err.println("Reaching definitions of " + symbol.getName() + " are: " + reachingDefs);
+			// System.err.println("Reaching definitions of " + symbol.getName() + " are: " +
+			// reachingDefs);
 			/********
 			 * Skimming through all the entries in
 			 * mapFromSymbolsToDependenceEntrySets, following two cases may
@@ -336,7 +341,8 @@ public class ConstraintsGenerator {
 			depEntryLoop: for (DependenceEntry depEntry : depEntrySet) {
 				if (depEntry.getReachingDefinitions().equals(reachingDefs)) {
 					if (depEntry.getTid().toString().equals(tid.toString())) {
-						// Note that here single-valuedness of reaching-definition entries does not matter.
+						// Note that here single-valuedness of reaching-definition entries does not
+						// matter.
 						foundDep = depEntry;
 						break;
 					} else {
@@ -417,8 +423,10 @@ public class ConstraintsGenerator {
 	 * update the {@code mapFromSymbolsToDependenceEntrySets} accordingly.
 	 * 
 	 * @param mapFromSymbolsToDependenceEntrySets
-	 *            a map from set of symbols to power set of dependence entries,
-	 *            in which we need to utilize the induction ranges.
+	 *                                            a map from set of symbols to power
+	 *                                            set of dependence entries,
+	 *                                            in which we need to utilize the
+	 *                                            induction ranges.
 	 */
 	private static void utilizeInductionRanges(
 			HashMap<Symbol, Set<DependenceEntry>> mapFromSymbolsToDependenceEntrySets) {
@@ -461,11 +469,11 @@ public class ConstraintsGenerator {
 	 * This method detects and breaks cycles of dependences from the given map.
 	 * 
 	 * @param finalAssertions
-	 *            list of final assertions, from which cycles have to be
-	 *            removed.
+	 *                        list of final assertions, from which cycles have to be
+	 *                        removed.
 	 * @param
 	 * list
-	 *            of strings that are names of known induction ranges.
+	 *                        of strings that are names of known induction ranges.
 	 * @return
 	 *         set of new replacement-assertions.
 	 */
@@ -932,7 +940,7 @@ public class ConstraintsGenerator {
 	 * {@code = x e}, where x is an identifier.
 	 * 
 	 * @param assertion
-	 *            an assertion, in prefix form.
+	 *                  an assertion, in prefix form.
 	 * @return
 	 *         list of all the <i>assign</i> constraints in the assertion.
 	 */
@@ -962,7 +970,7 @@ public class ConstraintsGenerator {
 	 * Obtain all known induction ranges in the given map of dependences.
 	 * 
 	 * @param mapFromSymbolsToDependenceEntrySets
-	 *            dependence information.
+	 *                                            dependence information.
 	 * @return
 	 *         a map that, given a symbol name, returns its dependence-entry
 	 *         that represents the induction range, if any.
@@ -992,12 +1000,14 @@ public class ConstraintsGenerator {
 	 * Note that these Z3 variables are created and added to the given context.
 	 * 
 	 * @param mapFromSymbolsToDependenceEntrySets
-	 *            dependence information.
+	 *                                            dependence information.
 	 * @param seedConstraints
-	 *            set of seed constraints, from which identifiers
-	 *            corresponding to thread-id's are created.
+	 *                                            set of seed constraints, from
+	 *                                            which identifiers
+	 *                                            corresponding to thread-id's are
+	 *                                            created.
 	 * @param context
-	 *            a Z3 context.
+	 *                                            a Z3 context.
 	 * @return
 	 *         a map from identifier names to Z3 variables.
 	 */
@@ -1116,7 +1126,7 @@ public class ConstraintsGenerator {
 		 * 2.7s, for 64 threads.
 		 * For 11s, the time gets reduced from 17s to 0.35s.
 		 */
-		//		IdOrConstToken eightToken = IdOrConstToken.getNewConstantToken("13");
+		// IdOrConstToken eightToken = IdOrConstToken.getNewConstantToken("13");
 		IdOrConstToken eightToken = IdOrConstToken.getNewConstantToken(Program.maxThreads + "");
 		tidConstraint = new ArrayList<>();
 		tidConstraint.add(OperatorToken.LE);
@@ -1176,7 +1186,7 @@ public class ConstraintsGenerator {
 	 * .. 2. There are no cyclic dependences among the variables in the system.
 	 * 
 	 * @param finalAssertions
-	 *            a list of assertions in prefix form.
+	 *                        a list of assertions in prefix form.
 	 * 
 	 * @return
 	 *         {@code true}, if {@code assertionList} represents a valid system
@@ -1204,7 +1214,7 @@ public class ConstraintsGenerator {
 	 * is either equality or a relational operator.
 	 * 
 	 * @param assertions
-	 *            a list of assertions.
+	 *                   a list of assertions.
 	 * @return
 	 *         true, if all entries in {@code assertions} are conjunctions of
 	 *         equality expressions (in prefix form), of the form {@code = x e},

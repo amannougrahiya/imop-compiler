@@ -67,8 +67,10 @@ public class WhileStatementCFGInfo extends CFGInfo {
 		AutomatedUpdater.updatePhaseAndInterTaskEdgesUponRemoval(affectedBeginPhasePoints);
 		AutomatedUpdater.updateInformationForAddition(predicate);
 		AutomatedUpdater.updateFlowFactsForward(rerunNodesForward); // Called here after replacement is successful.
-		//		AutomatedUpdater.invalidateSymbolsInNode(owner.getF2());// Added, so that any changes from points-to may be reflected here.
-		//		AutomatedUpdater.invalidateSymbolsInNode(predicate);// Added, so that any changes from points-to may be reflected here.
+		// AutomatedUpdater.invalidateSymbolsInNode(owner.getF2());// Added, so that any
+		// changes from points-to may be reflected here.
+		// AutomatedUpdater.invalidateSymbolsInNode(predicate);// Added, so that any
+		// changes from points-to may be reflected here.
 		AutomatedUpdater.updateFlowFactsBackward(rerunNodesBackward);
 	}
 
@@ -88,7 +90,8 @@ public class WhileStatementCFGInfo extends CFGInfo {
 		List<SideEffect> splitSE = SplitCombinedConstructs.splitCombinedConstructForTheStatement(stmt);
 		if (!splitSE.isEmpty()) {
 			NodeUpdated nodeUpdatedSE = (NodeUpdated) splitSE.get(0);
-			// Note: Here we reparse the parallel construct so that we can perform other normalizations within it.
+			// Note: Here we reparse the parallel construct so that we can perform other
+			// normalizations within it.
 			ParallelConstruct splitParCons = FrontEnd.parseAndNormalize(nodeUpdatedSE.affectedNode.toString(),
 					ParallelConstruct.class);
 			sideEffectList.add(new NodeUpdated(splitParCons, nodeUpdatedSE.getUpdateMessage()));
@@ -128,13 +131,16 @@ public class WhileStatementCFGInfo extends CFGInfo {
 
 		stmt = Normalization.normalizeLeafNodes(stmt, sideEffectList);
 
-		//		this.getOwner().accept(new CompoundStatementEnforcer());// COMMENTED RECENTLY.
+		// this.getOwner().accept(new CompoundStatementEnforcer());// COMMENTED
+		// RECENTLY.
 		Program.invalidColumnNum = Program.invalidLineNum = true;
 		AutomatedUpdater.updatePhaseAndInterTaskEdgesUponRemoval(affectedBeginPhasePoints);
 		AutomatedUpdater.updateInformationForAddition(stmt);
 		AutomatedUpdater.updateFlowFactsForward(rerunNodesForward); // Called here after replacement is successful.
-		//		AutomatedUpdater.invalidateSymbolsInNode(owner.getF4());// Added, so that any changes from points-to may be reflected here.
-		//		AutomatedUpdater.invalidateSymbolsInNode(stmt);// Added, so that any changes from points-to may be reflected here.
+		// AutomatedUpdater.invalidateSymbolsInNode(owner.getF4());// Added, so that any
+		// changes from points-to may be reflected here.
+		// AutomatedUpdater.invalidateSymbolsInNode(stmt);// Added, so that any changes
+		// from points-to may be reflected here.
 		AutomatedUpdater.updateFlowFactsBackward(rerunNodesBackward);
 		return sideEffectList;
 	}
@@ -148,12 +154,12 @@ public class WhileStatementCFGInfo extends CFGInfo {
 		this.getBody().getInfo().getIncompleteSemantics().adjustContinueSemanticsForLoopExpressionRemoval();
 		// Remove stale edges.
 		removed.getInfo().getCFGInfo().clearAllEdges();
-		//		NestedCFG ncfg = owner.getInfo().getCFGInfo().getNestedCFG();
-		//		Node elementCond = removed;
-		//		disconnectAndAdjustEndReachability(ncfg.getBegin(), elementCond);
-		//		disconnectAndAdjustEndReachability(elementCond, owner.getF4());
-		//		disconnectAndAdjustEndReachability(elementCond, ncfg.getEnd());
-		//		disconnectAndAdjustEndReachability(owner.getF4(), elementCond);
+		// NestedCFG ncfg = owner.getInfo().getCFGInfo().getNestedCFG();
+		// Node elementCond = removed;
+		// disconnectAndAdjustEndReachability(ncfg.getBegin(), elementCond);
+		// disconnectAndAdjustEndReachability(elementCond, owner.getF4());
+		// disconnectAndAdjustEndReachability(elementCond, ncfg.getEnd());
+		// disconnectAndAdjustEndReachability(owner.getF4(), elementCond);
 	}
 
 	private void updateCFGForPredicateAddition(Expression added) {
@@ -176,10 +182,10 @@ public class WhileStatementCFGInfo extends CFGInfo {
 		removed.getInfo().getIncompleteSemantics().adjustSemanticsForOwnerRemoval();
 		removed.getInfo().getCFGInfo().clearAllEdges();
 		// 2. Remove stale edges.
-		//		Node elementBody = removed;
-		//		Node elementCond = this.getPredicate();
-		//		disconnectAndAdjustEndReachability(elementCond, elementBody);
-		//		disconnectAndAdjustEndReachability(elementBody, elementCond);
+		// Node elementBody = removed;
+		// Node elementCond = this.getPredicate();
+		// disconnectAndAdjustEndReachability(elementCond, elementBody);
+		// disconnectAndAdjustEndReachability(elementBody, elementCond);
 	}
 
 	private void updateCFGForBodyAddition(Statement added) {

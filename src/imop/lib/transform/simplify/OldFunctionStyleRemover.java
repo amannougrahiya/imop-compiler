@@ -38,10 +38,11 @@ public class OldFunctionStyleRemover extends DepthFirstProcess {
 
 		if (firstDeclOp instanceof ParameterTypeListClosed) {
 			// This is a new-style parameter list
-			// Do nothing. No visit to parts required as C doesn't support nested function definitions.
+			// Do nothing. No visit to parts required as C doesn't support nested function
+			// definitions.
 			return;
 		} else if (firstDeclOp instanceof OldParameterListClosed) {
-			// This is an old-style parameter list. 
+			// This is an old-style parameter list.
 			// Change this to a new-style parameter list
 
 			if (((OldParameterListClosed) firstDeclOp).getF1().getNode() == null) {
@@ -59,9 +60,10 @@ public class OldFunctionStyleRemover extends DepthFirstProcess {
 			 * at the appropriate place.
 			 */
 			String newDeclaratorString = new String();
-			newDeclaratorString = n.getF1().getF0().getInfo().getString(); 		// Add (pointer)?
-			newDeclaratorString += n.getF1().getF1().getF0().getInfo().getString(); 	// From DirectDeclarator, add IdentifierOrDeclarator
-			newDeclaratorString += "(";								// Start the new-style parameter list
+			newDeclaratorString = n.getF1().getF0().getInfo().getString(); // Add (pointer)?
+			newDeclaratorString += n.getF1().getF1().getF0().getInfo().getString(); // From DirectDeclarator, add
+																					// IdentifierOrDeclarator
+			newDeclaratorString += "("; // Start the new-style parameter list
 			/*
 			 * From firstDeclOpChoice, get all the identifiers one-by-one and
 			 * after finding their appropriate declarations add them
@@ -110,7 +112,7 @@ public class OldFunctionStyleRemover extends DepthFirstProcess {
 							+ declaratorForParam.getInfo().getString();
 				}
 			}
-			newDeclaratorString += ")";								// End the new-style parameter list
+			newDeclaratorString += ")"; // End the new-style parameter list
 
 			// Create the new declarator and make proper adjustments to replace
 			// the old-style parameter list with the new style parameter list
@@ -126,9 +128,9 @@ public class OldFunctionStyleRemover extends DepthFirstProcess {
 
 	/**
 	 * @param declList:
-	 *            A NodeOptional of DeclarationList to be checked
+	 *                  A NodeOptional of DeclarationList to be checked
 	 * @param idName:
-	 *            An identifier name
+	 *                  An identifier name
 	 * @return The declaration which contains idName
 	 */
 	public Declaration getDeclarationFromList(NodeOptional declListOption, String idName) {

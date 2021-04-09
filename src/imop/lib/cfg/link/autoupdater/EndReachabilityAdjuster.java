@@ -25,7 +25,7 @@ public class EndReachabilityAdjuster {
 	 * {@code node} becomes reachable.
 	 * 
 	 * @param node
-	 *            node whose {@link EndNode} has become reachable.
+	 *             node whose {@link EndNode} has become reachable.
 	 */
 	public static void updateEndReachabilityAddition(Node node) {
 		if (!Misc.isCFGNonLeafNode(node)) {
@@ -46,7 +46,7 @@ public class EndReachabilityAdjuster {
 	 * {@code node} becomes unreachable.
 	 * 
 	 * @param node
-	 *            node whose {@link EndNode} has become unreachable.
+	 *             node whose {@link EndNode} has become unreachable.
 	 */
 	public static void updateEndReachabilityRemoval(Node node) {
 		if (!Misc.isCFGNonLeafNode(node)) {

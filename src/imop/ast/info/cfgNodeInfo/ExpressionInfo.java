@@ -161,13 +161,13 @@ public class ExpressionInfo extends NodeInfo {
 				return false;
 			}
 			// OLD CODE:
-			//		} else if (expType instanceof PointerType) {
-			//			Integer retVal = Misc.evaluateInteger(exp);
-			//			if (retVal != null) {
-			//				return true;
-			//			} else {
-			//				return false;
-			//			}
+			// } else if (expType instanceof PointerType) {
+			// Integer retVal = Misc.evaluateInteger(exp);
+			// if (retVal != null) {
+			// return true;
+			// } else {
+			// return false;
+			// }
 		} else {
 			return false;
 		}

@@ -2139,7 +2139,7 @@ public class GJDepthFirstProcess<R, A> extends GJDepthFirst<R, A> {
 		if (n instanceof DummyFlushDirective) {
 			assert (false);
 			return null;
-			//			System.exit(0);
+			// System.exit(0);
 		}
 		initProcess(n, argu);
 		n.getF0().accept(this, argu);

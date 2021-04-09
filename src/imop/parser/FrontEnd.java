@@ -88,7 +88,7 @@ public class FrontEnd {
 	 * </ol>
 	 * 
 	 * @param parseText
-	 *            string that holds the text of a complete translation-unit.
+	 *                  string that holds the text of a complete translation-unit.
 	 * @return root node of the input AST corresponding to the string
 	 *         <code>parseText</code>.
 	 */
@@ -117,7 +117,8 @@ public class FrontEnd {
 	 * </ol>
 	 * 
 	 * @param inputTextStream
-	 *            stream that holds the text of a complete translation-unit.
+	 *                        stream that holds the text of a complete
+	 *                        translation-unit.
 	 * @return root node of the input AST corresponding to the stream
 	 *         <code>inputTextStream</code>.
 	 */
@@ -145,10 +146,10 @@ public class FrontEnd {
 	 * </ol>
 	 * 
 	 * @param input
-	 *            stream that holds the text to be parsed.
+	 *                 stream that holds the text to be parsed.
 	 * @param nodeType
-	 *            non-terminal type with which the input stream has to be
-	 *            parsed.
+	 *                 non-terminal type with which the input stream has to be
+	 *                 parsed.
 	 * @return a reference to the root node of the AST obtained upon parsing
 	 *         {@code input} as a {@code nodeType}.
 	 */
@@ -175,30 +176,31 @@ public class FrontEnd {
 			}
 			CParser parser = new CParser(input);
 			/** TEST CODE, suggested by Anshuman **/
-			//			for (Method tempMethod : CParser.class.getMethods()) {
-			//				try {
-			//					tempMethod = CParser.class.getDeclaredMethod(nodeType.getSimpleName(), (Class<?>[]) null);
-			//					newNode = (T) tempMethod.invoke(parser);
-			//				} catch (NoSuchMethodException | SecurityException e1) {
-			//					continue;
-			//				} catch (IllegalAccessException e) {
-			//					continue;
-			//				} catch (IllegalArgumentException e) {
-			//					continue;
-			//				} catch (InvocationTargetException e) {
-			//					continue;
-			//				}
-			//				break;
-			//			}
+			// for (Method tempMethod : CParser.class.getMethods()) {
+			// try {
+			// tempMethod = CParser.class.getDeclaredMethod(nodeType.getSimpleName(),
+			// (Class<?>[]) null);
+			// newNode = (T) tempMethod.invoke(parser);
+			// } catch (NoSuchMethodException | SecurityException e1) {
+			// continue;
+			// } catch (IllegalAccessException e) {
+			// continue;
+			// } catch (IllegalArgumentException e) {
+			// continue;
+			// } catch (InvocationTargetException e) {
+			// continue;
+			// }
+			// break;
+			// }
 			/** TEST CODE ends here. **/
-			//			if (newNode == null) {
+			// if (newNode == null) {
 			Method m = null;
 			try {
 				m = CParser.class.getDeclaredMethod(nodeType.getSimpleName(), (Class<?>[]) null);
 				newNode = (T) m.invoke(parser);
 			} catch (NoSuchMethodException | SecurityException e1) {
 				System.err.println("Could not find method " + nodeType.getSimpleName() + "() in CParser.");
-				//				e1.printStackTrace();
+				// e1.printStackTrace();
 				System.exit(1);
 			} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
 				e.printStackTrace();
@@ -234,7 +236,7 @@ public class FrontEnd {
 	 * </ol>
 	 * 
 	 * @param parseText
-	 *            string that holds the text of a complete translation-unit.
+	 *                  string that holds the text of a complete translation-unit.
 	 * @return root node of the input AST corresponding to the string
 	 *         <code>parseText</code>.
 	 */
@@ -267,7 +269,8 @@ public class FrontEnd {
 	 * </ol>
 	 * 
 	 * @param inputTextStream
-	 *            stream that holds the text of a complete translation-unit.
+	 *                        stream that holds the text of a complete
+	 *                        translation-unit.
 	 * @return root node of the input AST corresponding to the stream
 	 *         <code>inputTextStream</code>.
 	 */
@@ -299,10 +302,10 @@ public class FrontEnd {
 	 * </ol>
 	 * 
 	 * @param input
-	 *            stream that holds the text to be parsed.
+	 *                 stream that holds the text to be parsed.
 	 * @param nodeType
-	 *            non-terminal type with which the input stream has to be
-	 *            parsed.
+	 *                 non-terminal type with which the input stream has to be
+	 *                 parsed.
 	 * @return a reference to the root node of the AST obtained upon parsing
 	 *         {@code input} as a {@code nodeType}.
 	 */
@@ -374,7 +377,7 @@ public class FrontEnd {
 	 * </ol>
 	 * 
 	 * @param codeString
-	 *            string that contains text to be parsed as a C program.
+	 *                   string that contains text to be parsed as a C program.
 	 * @return reference to the root node of the normalized AST of
 	 *         {@code codeString} when parsed as a C program.
 	 */
@@ -438,7 +441,7 @@ public class FrontEnd {
 	 * </ol>
 	 * 
 	 * @param input
-	 *            stream that contains text to be parsed as a C program.
+	 *              stream that contains text to be parsed as a C program.
 	 * @return reference to the root node of the normalized AST of {@code input}
 	 *         when parsed as a C program.
 	 */
@@ -470,8 +473,8 @@ public class FrontEnd {
 		System.err.println("\tStats: Number of leaf nodes: "
 				+ Program.getRoot().getInfo().getCFGInfo().getIntraTaskCFGLeafContents().size() + ".");
 
-		//		Testing various traversals.
-		//		FrontEnd.testTraversals(newNode);
+		// Testing various traversals.
+		// FrontEnd.testTraversals(newNode);
 
 		/*
 		 * Process/initialize parallelism related data structures.
@@ -481,7 +484,7 @@ public class FrontEnd {
 		System.err.println("\n** Number of cells encountered so far: " + Cell.allCells.size() + "\n");
 		System.err.flush();
 		// Testing various parallel traversals
-		//		FrontEnd.testParallelTraversals(newNode);
+		// FrontEnd.testParallelTraversals(newNode);
 
 		/*
 		 * If any node has incompatible type case, disable fieldSensitivity.
@@ -494,16 +497,16 @@ public class FrontEnd {
 		FunctionDefinition mainFunc = Program.getRoot().getInfo().getMainFunction();
 		if (mainFunc != null) {
 
-			//			System.err.println("Pass: Performing points-to analysis.");
-			//			timeStart = System.nanoTime();
-			//			PointsToAnalysis pta = new PointsToAnalysis();
-			//			Program.basePointsTo = false;
-			//			Program.memoizeAccesses++;
-			//			pta.run(mainFunc);
-			//			Program.memoizeAccesses--;
-			//			timeTaken = System.nanoTime() - timeStart;
-			//			System.err.println("\tNodes processed " + pta.nodesProcessed + " times.");
-			//			System.err.println("\tTime taken: " + timeTaken / 1000000000.0 + "s.");
+			// System.err.println("Pass: Performing points-to analysis.");
+			// timeStart = System.nanoTime();
+			// PointsToAnalysis pta = new PointsToAnalysis();
+			// Program.basePointsTo = false;
+			// Program.memoizeAccesses++;
+			// pta.run(mainFunc);
+			// Program.memoizeAccesses--;
+			// timeTaken = System.nanoTime() - timeStart;
+			// System.err.println("\tNodes processed " + pta.nodesProcessed + " times.");
+			// System.err.println("\tTime taken: " + timeTaken / 1000000000.0 + "s.");
 			DumpSnapshot.dumpPredicates("");
 
 			System.err.println("Pass: Performing optimized points-to analysis.");
@@ -517,69 +520,75 @@ public class FrontEnd {
 			System.err.println("\tNodes processed " + pta.nodesProcessed + " times.");
 			System.err.println("\tTime taken: " + timeTaken / 1000000000.0 + "s.");
 			DumpSnapshot.dumpPointsTo("");
-			//			FrontEnd.dumpStatsOfIDFA(pta.tempMap);
+			// FrontEnd.dumpStatsOfIDFA(pta.tempMap);
 
 			// Old code: This is executed in getIN() now, on demand.
-			//			System.err.println("Pass: Performing reaching-definition analysis.");
-			//			timeStart = System.nanoTime();
-			//			NodeInfo.rdDone = true;
-			//			ReachingDefinitionAnalysis rda = new ReachingDefinitionAnalysis();
-			//			rda.run(mainFunc);
-			//			timeTaken = System.nanoTime() - timeStart;
-			//			System.err.println("\tNodes processed " + rda.nodesProcessed + " times.");
-			//			System.err.println("\tTime taken: " + timeTaken / 1000000000.0 + "s.");
-			//			FrontEnd.dumpStatsOfIDFA(rda.tempMap);
+			// System.err.println("Pass: Performing reaching-definition analysis.");
+			// timeStart = System.nanoTime();
+			// NodeInfo.rdDone = true;
+			// ReachingDefinitionAnalysis rda = new ReachingDefinitionAnalysis();
+			// rda.run(mainFunc);
+			// timeTaken = System.nanoTime() - timeStart;
+			// System.err.println("\tNodes processed " + rda.nodesProcessed + " times.");
+			// System.err.println("\tTime taken: " + timeTaken / 1000000000.0 + "s.");
+			// FrontEnd.dumpStatsOfIDFA(rda.tempMap);
 
-			// NOTE: Following line is here only for testing purpose. It's safe to remove it.
-			//			mainFunc.getInfo().getCFGInfo().getNestedCFG().getBegin().getInfo().getIN(AnalysisName.DOMINANCE);
+			// NOTE: Following line is here only for testing purpose. It's safe to remove
+			// it.
+			// mainFunc.getInfo().getCFGInfo().getNestedCFG().getBegin().getInfo().getIN(AnalysisName.DOMINANCE);
 
-			//			System.err.println("Pass: Performing optimized reaching-definition analysis.");
-			//			timeStart = System.nanoTime();
-			//			ReachingDefinitionAnalysis rda = new ReachingDefinitionAnalysis();
-			//			rda.run(mainFunc);
-			//			timeTaken = System.nanoTime() - timeStart;
-			//			System.err.println("\tNodes processed " + rda.nodesProcessed + " times.");
-			//			System.err.println("\tTime taken: " + timeTaken / 1000000000.0 + "s.");
-			//			FrontEnd.dumpStatsOfIDFA(rda.tempMap);
+			// System.err.println("Pass: Performing optimized reaching-definition
+			// analysis.");
+			// timeStart = System.nanoTime();
+			// ReachingDefinitionAnalysis rda = new ReachingDefinitionAnalysis();
+			// rda.run(mainFunc);
+			// timeTaken = System.nanoTime() - timeStart;
+			// System.err.println("\tNodes processed " + rda.nodesProcessed + " times.");
+			// System.err.println("\tTime taken: " + timeTaken / 1000000000.0 + "s.");
+			// FrontEnd.dumpStatsOfIDFA(rda.tempMap);
 			// Old code: This is executed in getIN() now, on demand.
-			//			System.err.println("Pass: Performing liveness analysis.");
-			//			timeStart = System.nanoTime();
-			//			LivenessAnalysis lva = new LivenessAnalysis();
-			//			lva.run(mainFunc);
-			//			timeTaken = System.nanoTime() - timeStart;
-			//			System.err.println("\tNodes processed " + lva.nodesProcessed + " times.");
-			//			System.err.println("\tTime taken: " + timeTaken / 1000000000.0 + "s.");
-			//			FrontEnd.dumpStatsOfIDFA(lva.tempMap);
+			// System.err.println("Pass: Performing liveness analysis.");
+			// timeStart = System.nanoTime();
+			// LivenessAnalysis lva = new LivenessAnalysis();
+			// lva.run(mainFunc);
+			// timeTaken = System.nanoTime() - timeStart;
+			// System.err.println("\tNodes processed " + lva.nodesProcessed + " times.");
+			// System.err.println("\tTime taken: " + timeTaken / 1000000000.0 + "s.");
+			// FrontEnd.dumpStatsOfIDFA(lva.tempMap);
 
 			// Old code: This is executed in getIN() now, on demand.
-			//			System.err.println("Pass: Performing data-dependence analysis.");
-			//			System.err.println("\tPerforming forward R/W analysis.");
-			//			timeStart = System.nanoTime();
-			//			DataDependenceForward ddf = new DataDependenceForward();
-			//			ddf.run(mainFunc);
-			//			timeTaken = System.nanoTime() - timeStart;
-			//			System.err.println("\tNodes processed (forward) " + ddf.nodesProcessed + " times.");
-			//			System.err.println("\tTime taken: " + timeTaken / 1000000000.0 + "s.");
-			//			Main.dumpWriteSources();
-			//			FrontEnd.dumpStatsOfIDFA(ddf.tempMap);
+			// System.err.println("Pass: Performing data-dependence analysis.");
+			// System.err.println("\tPerforming forward R/W analysis.");
+			// timeStart = System.nanoTime();
+			// DataDependenceForward ddf = new DataDependenceForward();
+			// ddf.run(mainFunc);
+			// timeTaken = System.nanoTime() - timeStart;
+			// System.err.println("\tNodes processed (forward) " + ddf.nodesProcessed + "
+			// times.");
+			// System.err.println("\tTime taken: " + timeTaken / 1000000000.0 + "s.");
+			// Main.dumpWriteSources();
+			// FrontEnd.dumpStatsOfIDFA(ddf.tempMap);
 
-			//			System.err.println("Pass: Performing backward R/W analysis.");
-			//			timeStart = System.nanoTime();
-			//			NodeInfo.setReadWriteDestinations();
-			//			timeTaken = System.nanoTime() - timeStart;
-			//			System.err.println("\tTime taken: " + timeTaken / 1000000000.0 + "s.");
+			// System.err.println("Pass: Performing backward R/W analysis.");
+			// timeStart = System.nanoTime();
+			// NodeInfo.setReadWriteDestinations();
+			// timeTaken = System.nanoTime() - timeStart;
+			// System.err.println("\tTime taken: " + timeTaken / 1000000000.0 + "s.");
 
-			// NOTE: Calls to backward data-flow analysis have been disabled for efficiency concerns.
-			// Now, the required information about data-flow edge destinations is obtained by inverting the source map.
-			//			System.err.println("\tPerforming backward R/W analysis.");
-			//			DataDependenceBackward ddb = new DataDependenceBackward();
-			//			timeStart = System.nanoTime();
-			//			ddb.run(mainFunc);
-			//			timeTaken = System.nanoTime() - timeStart;
-			//			System.err.println("\tNodes processed (backward) " + ddb.nodesProcessed + " times.");
-			//			System.err.println("\tTime taken: " + timeTaken / 1000000000.0 + "s.");
-			//			System.out.println("For backward analysis: ");
-			//			FrontEnd.dumpStatsOfIDFA(ddb.tempMap);
+			// NOTE: Calls to backward data-flow analysis have been disabled for efficiency
+			// concerns.
+			// Now, the required information about data-flow edge destinations is obtained
+			// by inverting the source map.
+			// System.err.println("\tPerforming backward R/W analysis.");
+			// DataDependenceBackward ddb = new DataDependenceBackward();
+			// timeStart = System.nanoTime();
+			// ddb.run(mainFunc);
+			// timeTaken = System.nanoTime() - timeStart;
+			// System.err.println("\tNodes processed (backward) " + ddb.nodesProcessed + "
+			// times.");
+			// System.err.println("\tTime taken: " + timeTaken / 1000000000.0 + "s.");
+			// System.out.println("For backward analysis: ");
+			// FrontEnd.dumpStatsOfIDFA(ddb.tempMap);
 		} else {
 			System.err.println("Parsed not a main.");
 		}
@@ -625,9 +634,10 @@ public class FrontEnd {
 	 * </ol>
 	 * 
 	 * @param codeString
-	 *            string that contains text to be parsed as a {@code nodeType}.
+	 *                   string that contains text to be parsed as a
+	 *                   {@code nodeType}.
 	 * @param nodeType
-	 *            type as which {@code codeString} has to be parsed.
+	 *                   type as which {@code codeString} has to be parsed.
 	 * 
 	 * @return reference to the root node of the normalized AST of
 	 *         {@code codeString} when parsed as a {@code nodeType}.
@@ -671,9 +681,9 @@ public class FrontEnd {
 	 * </ol>
 	 * 
 	 * @param input
-	 *            stream that contains text to be parsed as a {@code nodeType}.
+	 *                 stream that contains text to be parsed as a {@code nodeType}.
 	 * @param nodeType
-	 *            type as which {@code input} has to be parsed.
+	 *                 type as which {@code input} has to be parsed.
 	 * 
 	 * @return reference to the root node of the normalized AST of {@code input}
 	 *         when parsed as a {@code nodeType}.
@@ -687,7 +697,7 @@ public class FrontEnd {
 
 		T newNode = parseCrude(input, nodeType);
 
-		//		newNode.accept(new ImplicitBarrierRemover());
+		// newNode.accept(new ImplicitBarrierRemover());
 		SplitCombinedConstructs.splitCombinedConstructsWithin(newNode);
 		newNode.accept(new CompoundStatementEnforcer()); // This must be called before removal of implicit barriers.
 		CFGGenerator.createCFGEdgesIn(newNode);
@@ -699,26 +709,30 @@ public class FrontEnd {
 				return newNode;
 			}
 		}
-		ImplicitBarrierRemover.removeImplicitBarrierDuringParsing(newNode); // This must be called only after enforcement of compound-statements.
+		ImplicitBarrierRemover.removeImplicitBarrierDuringParsing(newNode); // This must be called only after
+																			// enforcement of compound-statements.
 		/*
 		 * TODO: Uncomment the next line, after handling removal of scopes for
 		 * disconnected snippets of code.
 		 */
-		//		newNode.getInfo().removeExtraScopes();
+		// newNode.getInfo().removeExtraScopes();
 
 		for (CompoundStatement compStmt : Misc.getInheritedEnclosee(newNode, CompoundStatement.class)) {
 			compStmt.getInfo().getCFGInfo().initializeDummyFlushes();
 		}
 
-		// OLD CODE: Now, in order to remove spurious MHP relations, we do not invoke initMHP on new/disconnected snippetss
-		//		for (ParallelConstruct parCons : Misc.getInheritedPostOrderEnclosee(newNode, ParallelConstruct.class)) { // for all parCons
-		//			MHPAnalyzer mhp = new MHPAnalyzer(parCons);
-		//			mhp.initMHP(); // perform MHP Analysis
-		//		}
-		//		for (Node cfgNode : newNode.getInfo().getCFGInfo().getLexicalCFGLeafContents()) {
-		//			cfgNode.getInfo().getNodePhaseInfo().rememberCurrentPhases();
-		//		}
-		//		Misc.createDataFlowGraph(newNode);
+		// OLD CODE: Now, in order to remove spurious MHP relations, we do not invoke
+		// initMHP on new/disconnected snippetss
+		// for (ParallelConstruct parCons : Misc.getInheritedPostOrderEnclosee(newNode,
+		// ParallelConstruct.class)) { // for all parCons
+		// MHPAnalyzer mhp = new MHPAnalyzer(parCons);
+		// mhp.initMHP(); // perform MHP Analysis
+		// }
+		// for (Node cfgNode :
+		// newNode.getInfo().getCFGInfo().getLexicalCFGLeafContents()) {
+		// cfgNode.getInfo().getNodePhaseInfo().rememberCurrentPhases();
+		// }
+		// Misc.createDataFlowGraph(newNode);
 		/*
 		 * If any node has incompatible type case, disable fieldSensitivity.
 		 */
@@ -732,8 +746,8 @@ public class FrontEnd {
 	 * returns {@code null}.
 	 * 
 	 * @param string
-	 *            input string that needs to be checked for representing a
-	 *            simplified function call.
+	 *               input string that needs to be checked for representing a
+	 *               simplified function call.
 	 * @return root of the parse tree for the simplified function call
 	 *         representing
 	 *         {@code string}; {@code null}, if {@code string} does not
@@ -801,9 +815,9 @@ public class FrontEnd {
 	 * and built-in methods.
 	 * 
 	 * @param input
-	 *            a stream that contains prototype declarations for various
-	 *            library
-	 *            and built-in methods.
+	 *              a stream that contains prototype declarations for various
+	 *              library
+	 *              and built-in methods.
 	 * @return a TranslationUnit which is used to obtain type information of
 	 *         various
 	 *         library and built-in methods.
@@ -847,9 +861,9 @@ public class FrontEnd {
 	 * already, in case if the {@code nodeType} demands it.
 	 * 
 	 * @param input
-	 *            input stream representing some piece of code.
+	 *                 input stream representing some piece of code.
 	 * @param nodeType
-	 *            type of the code represented by {@code input}
+	 *                 type of the code represented by {@code input}
 	 * @return an input stream (same as {@code input} if unchanged), that
 	 *         contains a
 	 *         line separator at the end of the code represented by
@@ -881,9 +895,9 @@ public class FrontEnd {
 	 * the pre-pass phase.
 	 * 
 	 * @param newNode
-	 *            root of the AST to be simplified.
+	 *                  root of the AST to be simplified.
 	 * @param wholeTime
-	 *            start of the clock.
+	 *                  start of the clock.
 	 * @return
 	 *         root of the simplified AST node.
 	 */
@@ -913,7 +927,7 @@ public class FrontEnd {
 		/*
 		 * NEW:
 		 */
-		//		SplitCombinedConstructs.splitCombinedConstructsWithin(newNode);
+		// SplitCombinedConstructs.splitCombinedConstructsWithin(newNode);
 		/*
 		 * : NEW.
 		 */
@@ -935,8 +949,8 @@ public class FrontEnd {
 		/*
 		 * NEW:
 		 */
-		//		Normalization.normalizeLeafNodes(newNode, new ArrayList<>());
-		//		Misc.printToFile(newNode, Program.fileName + "-simplified.i");
+		// Normalization.normalizeLeafNodes(newNode, new ArrayList<>());
+		// Misc.printToFile(newNode, Program.fileName + "-simplified.i");
 		/*
 		 * :NEW.
 		 */
@@ -955,12 +969,12 @@ public class FrontEnd {
 		System.err.println("\tTime taken: " + timeTaken / 1000000000.0 + "s.");
 		DumpSnapshot.printToFile(newNode, Program.fileName + "-scoped.i");
 
-		//		System.err.println("Pass: Creating the control-flow graph.");
-		//		timeStart = System.nanoTime();
-		//		newNode.accept(new CFGGenerator());
-		//		timeTaken = System.nanoTime() - timeStart;
-		//		System.err.println("\tTime taken: " + timeTaken / 1000000000.0 + "s.");
-		//		Misc.generateDotGraph(newNode, "base");
+		// System.err.println("Pass: Creating the control-flow graph.");
+		// timeStart = System.nanoTime();
+		// newNode.accept(new CFGGenerator());
+		// timeTaken = System.nanoTime() - timeStart;
+		// System.err.println("\tTime taken: " + timeTaken / 1000000000.0 + "s.");
+		// Misc.generateDotGraph(newNode, "base");
 		//
 		if (Program.removeUnused) {
 			System.err.println("Pass: Removing declarations for unused elements.");
@@ -988,9 +1002,9 @@ public class FrontEnd {
 	 * </ol>
 	 * 
 	 * @param root
-	 *            reference to the root of AST on which various parallelism
-	 *            passes
-	 *            have to be run.
+	 *             reference to the root of AST on which various parallelism
+	 *             passes
+	 *             have to be run.
 	 */
 	private static void processParallelism(TranslationUnit root) {
 		System.err.println("Pass: Inserting dummy-flushes.");
@@ -1021,12 +1035,13 @@ public class FrontEnd {
 		System.err.println("\tTime taken: " + timeTaken / 1000000000.0 + "s.");
 
 		System.err.println("DISABLED Pass: Performing the lock-set analysis.");
-		//		timeStart = System.nanoTime();
-		//		LockSetAnalysis lockSetAnalysis = new LockSetAnalysis();
-		//		lockSetAnalysis.run(Program.root.getInfo().getMainFunction());
-		//		timeTaken = System.nanoTime() - timeStart;
-		//		System.err.println("\tNodes processed " + lockSetAnalysis.nodesProcessed + " times.");
-		//		System.err.println("\tTime taken: " + timeTaken / 1000000000.0 + "s.");
+		// timeStart = System.nanoTime();
+		// LockSetAnalysis lockSetAnalysis = new LockSetAnalysis();
+		// lockSetAnalysis.run(Program.root.getInfo().getMainFunction());
+		// timeTaken = System.nanoTime() - timeStart;
+		// System.err.println("\tNodes processed " + lockSetAnalysis.nodesProcessed + "
+		// times.");
+		// System.err.println("\tTime taken: " + timeTaken / 1000000000.0 + "s.");
 
 	}
 
@@ -1230,17 +1245,17 @@ public class FrontEnd {
 	 * A temporary testing method that tries out some traversal mechanisms.
 	 * 
 	 * @param root
-	 *            root of an AST.
+	 *             root of an AST.
 	 */
 	public static void testTraversals(Node root) {
-		//		for (Node n : Main.root.getInfo().getAllLeafNodesInTheProgram()) {
-		//			if (n.getInfo().getReads().isUniversal()) {
-		//				System.out.println("***\n Universal reads: " + n);
-		//			}
-		//			if (n.getInfo().getWrites().isUniversal()) {
-		//				System.out.println("***\n Universal writes: " + n);
-		//			}
-		//		}
+		// for (Node n : Main.root.getInfo().getAllLeafNodesInTheProgram()) {
+		// if (n.getInfo().getReads().isUniversal()) {
+		// System.out.println("***\n Universal reads: " + n);
+		// }
+		// if (n.getInfo().getWrites().isUniversal()) {
+		// System.out.println("***\n Universal writes: " + n);
+		// }
+		// }
 		//
 
 		if (NodeInfo.class.hashCode() > 0) {
@@ -1253,46 +1268,56 @@ public class FrontEnd {
 				if (labeledStmt == null) {
 					continue;
 				}
-				//				for (Node encloser : labeledStmt.getInfo().getAllLexicalNonLeafEnclosersExclusive()) {
-				//					System.out.println(encloser.getClass().getSimpleName() + ">>>>>>>\n\t" + encloser);
-				//					System.out.println();
-				//				}
-				//				for (Node encloser : labeledStmt.getInfo().getNonLeafNestingPathExclusive()) {
-				//					System.out.println(encloser.getClass().getSimpleName() + ">>>>>>>\n\t" + encloser);
-				//					System.out.println();
-				//				}
-				//				for (Node encloser : CollectorVisitor.collectNodesIntraTaskForward(labeledStmt, new HashSet<>(),
-				//						(n) -> false)) {
-				//					if (encloser instanceof EndNode) {
-				//						continue;
-				//					}
-				//					if (encloser instanceof BeginNode) {
-				//						continue;
-				//					}
-				//					System.out.println(encloser.getClass().getSimpleName() + ">>>>>>>\n\t" + encloser);
-				//					System.out.println();
-				//				}
-				//				for (Node encloser : CollectorVisitor.collectNodesIntraTaskBackward(labeledStmt, new HashSet<>(),
-				//						(n) -> false)) {
-				//					if (encloser instanceof EndNode) {
-				//						continue;
-				//					}
-				//					if (encloser instanceof BeginNode) {
-				//						continue;
-				//					}
-				//					System.out.println(encloser.getClass().getSimpleName() + ">>>>>>>\n\t" + encloser);
-				//					System.out.println();
-				//				}
-				//				for (Node encloser : labeledStmt.getInfo().getCFGInfo().getIntraTaskCFGLeafReachablesBackward()) {
-				//					if (encloser instanceof EndNode) {
-				//						continue;
-				//					}
-				//					if (encloser instanceof BeginNode) {
-				//						continue;
-				//					}
-				//					System.out.println(encloser.getClass().getSimpleName() + ">>>>>>>\n\t" + encloser);
-				//					System.out.println();
-				//				}
+				// for (Node encloser :
+				// labeledStmt.getInfo().getAllLexicalNonLeafEnclosersExclusive()) {
+				// System.out.println(encloser.getClass().getSimpleName() + ">>>>>>>\n\t" +
+				// encloser);
+				// System.out.println();
+				// }
+				// for (Node encloser : labeledStmt.getInfo().getNonLeafNestingPathExclusive())
+				// {
+				// System.out.println(encloser.getClass().getSimpleName() + ">>>>>>>\n\t" +
+				// encloser);
+				// System.out.println();
+				// }
+				// for (Node encloser :
+				// CollectorVisitor.collectNodesIntraTaskForward(labeledStmt, new HashSet<>(),
+				// (n) -> false)) {
+				// if (encloser instanceof EndNode) {
+				// continue;
+				// }
+				// if (encloser instanceof BeginNode) {
+				// continue;
+				// }
+				// System.out.println(encloser.getClass().getSimpleName() + ">>>>>>>\n\t" +
+				// encloser);
+				// System.out.println();
+				// }
+				// for (Node encloser :
+				// CollectorVisitor.collectNodesIntraTaskBackward(labeledStmt, new HashSet<>(),
+				// (n) -> false)) {
+				// if (encloser instanceof EndNode) {
+				// continue;
+				// }
+				// if (encloser instanceof BeginNode) {
+				// continue;
+				// }
+				// System.out.println(encloser.getClass().getSimpleName() + ">>>>>>>\n\t" +
+				// encloser);
+				// System.out.println();
+				// }
+				// for (Node encloser :
+				// labeledStmt.getInfo().getCFGInfo().getIntraTaskCFGLeafReachablesBackward()) {
+				// if (encloser instanceof EndNode) {
+				// continue;
+				// }
+				// if (encloser instanceof BeginNode) {
+				// continue;
+				// }
+				// System.out.println(encloser.getClass().getSimpleName() + ">>>>>>>\n\t" +
+				// encloser);
+				// System.out.println();
+				// }
 				break;
 			}
 		}
@@ -1301,16 +1326,18 @@ public class FrontEnd {
 			if (stmt == null) {
 				continue;
 			}
-			//			for (Node encloser : stmt.getInfo().getCFGInfo().getIntraTaskCFGLeafContents()) {
-			//				if (encloser instanceof EndNode) {
-			//					continue;
-			//				}
-			//				if (encloser instanceof BeginNode) {
-			//					continue;
-			//				}
-			//				System.out.println(encloser.getClass().getSimpleName() + ">>>>>>>\n\t" + encloser);
-			//				System.out.println();
-			//			}
+			// for (Node encloser :
+			// stmt.getInfo().getCFGInfo().getIntraTaskCFGLeafContents()) {
+			// if (encloser instanceof EndNode) {
+			// continue;
+			// }
+			// if (encloser instanceof BeginNode) {
+			// continue;
+			// }
+			// System.out.println(encloser.getClass().getSimpleName() + ">>>>>>>\n\t" +
+			// encloser);
+			// System.out.println();
+			// }
 			NodeWithStack nWS = new NodeWithStack(stmt, new CallStack());
 			for (NodeWithStack encloserWithStack : CollectorVisitor.collectNodesIntraTaskForwardBarrierFreePath(nWS,
 					new HashSet<>())) {
@@ -1333,8 +1360,8 @@ public class FrontEnd {
 	 * type-casts to pointers, present in the program.
 	 * 
 	 * @param rootNode
-	 *            node within which incompatible type-casts have to be checked
-	 *            for.
+	 *                 node within which incompatible type-casts have to be checked
+	 *                 for.
 	 */
 	private static void testIncompatibleTypeCasts(Node rootNode) {
 		if (!Program.fieldSensitive) {

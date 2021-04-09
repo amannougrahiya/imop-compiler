@@ -34,7 +34,8 @@ public class DotGraphGenerator {
 	}
 
 	public void create(TypeOfCFG nested) {
-		bw = DumpSnapshot.getGraphFileWriter(nested, fileName); // Obtain the BufferedWriter which will be used to write the dot data.
+		bw = DumpSnapshot.getGraphFileWriter(nested, fileName); // Obtain the BufferedWriter which will be used to write
+																// the dot data.
 		switch (nested) {
 		case NESTED:
 			generateNestedDotGraph();
@@ -76,11 +77,12 @@ public class DotGraphGenerator {
 	private void generateNestedDotGraph() {
 		try {
 			bw.write("digraph graph" + n.hashCode() + " {");
-			//bw.write("\tratio=1.0;");
+			// bw.write("\tratio=1.0;");
 			bw.write("\n\tcompound=true;");
 			bw.write("\n\tedge[color=blue];");
 
-			// Every node executes initProcess(), calls visits on the AST children, and then executes endProcess().
+			// Every node executes initProcess(), calls visits on the AST children, and then
+			// executes endProcess().
 			n.accept(new DotNodeWriter(), bw); // Write the information about all the nodes and subgraphs.
 			n.accept(new DotEdgeWriter(), bw); // Writer the information about all the edges.
 

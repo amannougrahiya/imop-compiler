@@ -43,7 +43,7 @@ public class CopyEliminator {
 	 * definitions, if they become dead.
 	 * 
 	 * @param root
-	 *            node under which copy propagation has to be performed.
+	 *             node under which copy propagation has to be performed.
 	 * @return
 	 *         set of all those nodes which were source of replaced copies.
 	 */
@@ -254,8 +254,9 @@ public class CopyEliminator {
 	 * finally render the copy source(s) dead.
 	 * 
 	 * @param baseNode
-	 *            when {@code inCopySources} is null, we assume it to be same as
-	 *            the set of all copy nodes in baseNode.
+	 *                 when {@code inCopySources} is null, we assume it to be same
+	 *                 as
+	 *                 the set of all copy nodes in baseNode.
 	 * @return
 	 *         true, if any renaming was performed.
 	 */
@@ -282,10 +283,13 @@ public class CopyEliminator {
 	 * finally render the copy source(s) dead.
 	 * 
 	 * @param inCopySources
-	 *            set of copy nodes for which all anti- and output-dependences
-	 *            that originate at the node, have to be removed with the help
-	 *            of memory renaming, if possible; if this field is null, we
-	 *            handle all the copies in program.
+	 *                      set of copy nodes for which all anti- and
+	 *                      output-dependences
+	 *                      that originate at the node, have to be removed with the
+	 *                      help
+	 *                      of memory renaming, if possible; if this field is null,
+	 *                      we
+	 *                      handle all the copies in program.
 	 * @return
 	 *         true, if any renaming was performed.
 	 */
@@ -319,7 +323,8 @@ public class CopyEliminator {
 			Cell writeCell = copyExpStmt.getInfo().getWrites().get(0);
 			CellSet atStake = new CellSet();
 			atStake.add(readCell);
-			atStake.add(writeCell); // Just so that we do not move past any writes of X (assuming that the copy is X:Y)
+			atStake.add(writeCell); // Just so that we do not move past any writes of X (assuming that the copy is
+									// X:Y)
 			for (Node depEdgeDestination : copyExpStmt.getInfo().getFirstPossibleKillersForwardExclusively(atStake)) {
 				Cell depEdgeDestWrite = depEdgeDestination.getInfo().getCleanWrite();
 				if (depEdgeDestWrite == null || depEdgeDestWrite != readCell) {
@@ -367,7 +372,7 @@ public class CopyEliminator {
 								copySources.remove(copyDepDestWriteStmt);
 								changed = true;
 								System.err.println("\tRemoved the useless swap definition (2) " + copyDepDestWriteStmt);
-								//								Main.validateRDs();
+								// Main.validateRDs();
 								continue inner;
 							}
 						}
@@ -459,8 +464,8 @@ public class CopyEliminator {
 	 * Removes all dead copy instructions in {@code root}.
 	 * 
 	 * @param root
-	 *            code under which dead-code elimination of copy instructions
-	 *            has to be performed.
+	 *             code under which dead-code elimination of copy instructions
+	 *             has to be performed.
 	 * @return
 	 *         true, if any dead-code elimination was performed.
 	 */
@@ -634,9 +639,9 @@ public class CopyEliminator {
 	 * {@code stmt}. For example, {@code C=A, A=B, B=C} has a swap-length of 2.
 	 * 
 	 * @param stmt
-	 *            statement starting which a swap-chain starts.
+	 *                 statement starting which a swap-chain starts.
 	 * @param encloser
-	 *            enclosing compound-statement for the given statement.
+	 *                 enclosing compound-statement for the given statement.
 	 * @return
 	 *         length of the swap-chain. (Note that this can never be 1.)
 	 */
@@ -693,7 +698,7 @@ public class CopyEliminator {
 	 * Obtain a set of shared clean-writes, given a set of nodes.
 	 * 
 	 * @param inSet
-	 *            set of nodes.
+	 *              set of nodes.
 	 * @return
 	 *         set of clean write nodes in {@code inSet}.
 	 * @deprecate
@@ -737,7 +742,7 @@ public class CopyEliminator {
 	 * definitions, if they become dead.
 	 * 
 	 * @param root
-	 *            node under which copy propagation has to be performed.
+	 *             node under which copy propagation has to be performed.
 	 * @return
 	 *         set of all those symbols which were replaced by some other symbol
 	 *         that they were a copy of, at any program point.

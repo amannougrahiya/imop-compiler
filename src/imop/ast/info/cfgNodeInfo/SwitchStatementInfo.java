@@ -144,7 +144,7 @@ public class SwitchStatementInfo extends SelectionStatementInfo {
 	 * {@code caseVal}.
 	 * 
 	 * @param caseVal
-	 *            an integer case constant.
+	 *                an integer case constant.
 	 * @return
 	 *         statement that will be the target of this predicate, if the
 	 *         predicate evaluates to {@code caseVal}; null, if no such
@@ -180,7 +180,7 @@ public class SwitchStatementInfo extends SelectionStatementInfo {
 	 * {@code caseVal}.
 	 * 
 	 * @param caseVal
-	 *            an character case constant.
+	 *                an character case constant.
 	 * @return
 	 *         statement that will be the target of this predicate, if the
 	 *         predicate evaluates to {@code caseVal}; null, if no such

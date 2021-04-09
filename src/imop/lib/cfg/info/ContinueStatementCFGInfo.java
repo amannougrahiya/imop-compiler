@@ -18,7 +18,8 @@ public class ContinueStatementCFGInfo extends CFGInfo {
 	}
 
 	public Node getTarget() {
-		Node targetOwner = Misc.getEnclosingLoopOrForConstruct(this.getOwner());	// Obtain the owner loop of this continue statement 
+		Node targetOwner = Misc.getEnclosingLoopOrForConstruct(this.getOwner()); // Obtain the owner loop of this
+																					// continue statement
 
 		if (targetOwner == null) {
 			return null;
@@ -27,10 +28,12 @@ public class ContinueStatementCFGInfo extends CFGInfo {
 		Node target = null; // target represents the target statement of this continue
 		if (targetOwner instanceof WhileStatement) {
 			target = ((WhileStatementCFGInfo) targetOwner.getInfo().getCFGInfo()).getPredicate();
-			//			target = Misc.getInternalFirstCFGNode(((WhileStatement) targetOwner).getF2()); // Target is the termination condition
+			// target = Misc.getInternalFirstCFGNode(((WhileStatement)
+			// targetOwner).getF2()); // Target is the termination condition
 		} else if (targetOwner instanceof DoStatement) {
 			target = ((DoStatementCFGInfo) targetOwner.getInfo().getCFGInfo()).getPredicate();
-			//			target = Misc.getInternalFirstCFGNode(((DoStatement) targetOwner).getF4()); // Target is the termination condition
+			// target = Misc.getInternalFirstCFGNode(((DoStatement) targetOwner).getF4());
+			// // Target is the termination condition
 
 		} else if (targetOwner instanceof ForStatement) {
 			ForStatement forS = ((ForStatement) targetOwner);
@@ -42,13 +45,14 @@ public class ContinueStatementCFGInfo extends CFGInfo {
 			} else {
 				target = forInfo.getBody();
 			}
-			//			if (forS.getF6().present()) { // If step is present
-			//				target = Misc.getInternalFirstCFGNode(forS.getF6());
-			//			} else if (forS.getF4().present()) { // else if termination condition is present
-			//				target = Misc.getInternalFirstCFGNode(forS.getF4());
-			//			} else {
-			//				target = Misc.getInternalFirstCFGNode(forS.getF8());
-			//			}
+			// if (forS.getF6().present()) { // If step is present
+			// target = Misc.getInternalFirstCFGNode(forS.getF6());
+			// } else if (forS.getF4().present()) { // else if termination condition is
+			// present
+			// target = Misc.getInternalFirstCFGNode(forS.getF4());
+			// } else {
+			// target = Misc.getInternalFirstCFGNode(forS.getF8());
+			// }
 
 		} else if (targetOwner instanceof ForConstruct) {
 			ForConstructCFGInfo cfgInfo = (ForConstructCFGInfo) targetOwner.getInfo().getCFGInfo();

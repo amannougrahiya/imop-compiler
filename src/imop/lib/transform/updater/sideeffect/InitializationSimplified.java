@@ -23,7 +23,7 @@ public class InitializationSimplified extends IndexIncremented {
 	@Override
 	public String toString() {
 		if (Program.printSideEffects) {
-			//			return "The index of this node was modified due to its normalization.";
+			// return "The index of this node was modified due to its normalization.";
 			return "";
 		} else {
 			return "";

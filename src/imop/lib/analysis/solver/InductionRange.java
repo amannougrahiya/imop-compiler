@@ -54,25 +54,28 @@ public class InductionRange {
 	 * {@code loopTail} as its head and tail, respectively.
 	 * 
 	 * @param inductionVariable
-	 *            a basic induction variable.
+	 *                          a basic induction variable.
 	 * @param initValue2
-	 *            RHS (in prefix form) of the initial definition of the
-	 *            induction variable.
+	 *                          RHS (in prefix form) of the initial definition of
+	 *                          the
+	 *                          induction variable.
 	 * @param stepOperator
-	 *            operator used to perform the update.
+	 *                          operator used to perform the update.
 	 * @param stepValue2
-	 *            RHS (in prefix form) of the update definition of the induction
-	 *            variable.
+	 *                          RHS (in prefix form) of the update definition of the
+	 *                          induction
+	 *                          variable.
 	 * @param finalOperator
-	 *            operator (<, >, <=, >=, or !=) which is used in the bound
-	 *            check.
+	 *                          operator (<, >, <=, >=, or !=) which is used in the
+	 *                          bound
+	 *                          check.
 	 * @param finalValue2
-	 *            final value of the basic induction variable from the
-	 *            termination predicate.
+	 *                          final value of the basic induction variable from the
+	 *                          termination predicate.
 	 * @param loopHeader
-	 *            head of the back-edge.
+	 *                          head of the back-edge.
 	 * @param loopTail
-	 *            tail of the back-edge.
+	 *                          tail of the back-edge.
 	 * @return
 	 *         associated induction-range. (Note that this induction range
 	 *         should be properly renamed, wherever required, while creating the
@@ -97,9 +100,9 @@ public class InductionRange {
 	 * value range constraints.
 	 * 
 	 * @param tid
-	 *            thread-id for which the range has to be obtained.
+	 *                   thread-id for which the range has to be obtained.
 	 * @param numThreads
-	 *            maximum number of threads.
+	 *                   maximum number of threads.
 	 * @return
 	 *         list of prefix form expressions that represent the symbolic value
 	 *         range constraints.
@@ -401,10 +404,10 @@ public class InductionRange {
 			 * inefficient (109s), whereas second option is (theoretically)
 			 * imprecise, but efficient (17s).
 			 */
-			//			rhsTerm = ExpressionTokenizer.getMin(nextChunk, borderValue);
+			// rhsTerm = ExpressionTokenizer.getMin(nextChunk, borderValue);
 			rhsTerm = nextChunk;
 		} else if (directionOperator == OperatorToken.MINUS) {
-			//			rhsTerm = ExpressionTokenizer.getMax(nextChunk, borderValue);
+			// rhsTerm = ExpressionTokenizer.getMax(nextChunk, borderValue);
 			rhsTerm = nextChunk;
 		} else {
 			assert (false);
@@ -425,7 +428,7 @@ public class InductionRange {
 	 * statically scheduled lists.
 	 * 
 	 * @param numThreads
-	 *            total number of threads (symbolically).
+	 *                   total number of threads (symbolically).
 	 * @return
 	 *         chunk size in prefix form, if this loop is statically scheduled;
 	 *         else an empty list.

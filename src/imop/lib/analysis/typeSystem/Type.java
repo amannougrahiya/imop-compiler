@@ -104,17 +104,17 @@ public abstract class Type {
 	}
 
 	public abstract boolean isKnownConstantSized();
-	//	public boolean isKnownConstantSized() {
-	//		if (this.isComplete()) {
-	//			if (this instanceof ArrayType && ((ArrayType) this).isVariableLengthed()) {
-	//				return false;
-	//			} else {
-	//				return true;
-	//			}
-	//		} else {
-	//			return false;
-	//		}
-	//	}
+	// public boolean isKnownConstantSized() {
+	// if (this.isComplete()) {
+	// if (this instanceof ArrayType && ((ArrayType) this).isVariableLengthed()) {
+	// return false;
+	// } else {
+	// return true;
+	// }
+	// } else {
+	// return false;
+	// }
+	// }
 
 	public boolean isDerivedDeclaratorType() {
 		if (this instanceof ArrayType || this instanceof FunctionType || this instanceof PointerType) {
@@ -175,15 +175,16 @@ public abstract class Type {
 
 	protected abstract String preDeclarationString();
 
-	//	protected String getDeclarationPostString(String tempName, boolean isFullDeclarator) {
-	//		String retString = " " + tempName + " ";
-	//		return retString;
-	//	}
+	// protected String getDeclarationPostString(String tempName, boolean
+	// isFullDeclarator) {
+	// String retString = " " + tempName + " ";
+	// return retString;
+	// }
 
 	protected abstract String postDeclarationString();
-	//	protected String postDeclarationString(String tempName) {
-	//		return this.getDeclarationPostString(tempName, true);
-	//	}
+	// protected String postDeclarationString(String tempName) {
+	// return this.getDeclarationPostString(tempName, true);
+	// }
 
 	/**
 	 * Returns a declaration for <code>tempName</code> with this type,
@@ -229,13 +230,13 @@ public abstract class Type {
 		return this.postString();
 	}
 
-	//	protected String postDeclarationString(String tempName) {
-	//		return this.getDeclarationPostString(tempName, true);
-	//	}
+	// protected String postDeclarationString(String tempName) {
+	// return this.getDeclarationPostString(tempName, true);
+	// }
 
-	//	protected String postDeclarationString(String tempName) {
-	//		return this.getDeclarationPostString(tempName, true);
-	//	}
+	// protected String postDeclarationString(String tempName) {
+	// return this.getDeclarationPostString(tempName, true);
+	// }
 
 	/**
 	 * Returns a string of an abstract declaration of this type.
@@ -252,7 +253,8 @@ public abstract class Type {
 	}
 
 	public static FunctionType getTypeTree(FunctionDefinition funcDef, Scopeable scope) {
-		// Ensure that all functions with unspecified return type have been pre-processed to return int.
+		// Ensure that all functions with unspecified return type have been
+		// pre-processed to return int.
 		if (!funcDef.getF0().present()) {
 			Misc.exitDueToError("Could not find the return type (int) of : " + funcDef.getInfo().getFunctionName());
 		}
@@ -261,9 +263,9 @@ public abstract class Type {
 	}
 
 	public static List<Type> getTypeTree(Declaration declaration, Scopeable scope, boolean deleteUserDefinedTypes) {
-		//		if (Misc.isTypedef(declaration)) {
-		//			return null;
-		//		}
+		// if (Misc.isTypedef(declaration)) {
+		// return null;
+		// }
 		List<String> ids = declaration.getInfo().getIDNameList();
 		List<Type> typeList = new ArrayList<>();
 		for (String name : ids) {
@@ -276,9 +278,9 @@ public abstract class Type {
 	}
 
 	public static List<Type> getTypeTree(Declaration declaration, Scopeable scope) {
-		//		if (Misc.isTypedef(declaration)) {
-		//			return null;
-		//		}
+		// if (Misc.isTypedef(declaration)) {
+		// return null;
+		// }
 		List<String> ids = declaration.getInfo().getIDNameList();
 		List<Type> typeList = new ArrayList<>();
 		if (ids.isEmpty()) {
@@ -306,25 +308,25 @@ public abstract class Type {
 
 	public static Type getTypeTree(Declaration declaration, String name, Scopeable scope,
 			boolean deleteUserDefinedTypes) {
-		//		if (Misc.isTypedef(declaration)) {
-		//			return null;
-		//		}
+		// if (Misc.isTypedef(declaration)) {
+		// return null;
+		// }
 		Declarator declarator = declaration.getInfo().getDeclarator(name);
 		return getTypeTree(declaration.getF0(), declarator, scope, deleteUserDefinedTypes);
 	}
 
 	public static Type getTypeTree(Declaration declaration, String name, Scopeable scope) {
-		//		if (Misc.isTypedef(declaration)) {
-		//			return null;
-		//		}
+		// if (Misc.isTypedef(declaration)) {
+		// return null;
+		// }
 		Declarator declarator = declaration.getInfo().getDeclarator(name);
 		return getTypeTree(declaration.getF0(), declarator, scope);
 	}
 
 	public static Type getTypeTree(Declaration declaration, String name, Type inType, Scopeable scope) {
-		//		if (Misc.isTypedef(declaration)) {
-		//			return null;
-		//		}
+		// if (Misc.isTypedef(declaration)) {
+		// return null;
+		// }
 		Declarator declarator = declaration.getInfo().getDeclarator(name);
 		return getTypeTree(declaration.getF0(), declarator, inType, scope);
 	}
@@ -350,7 +352,7 @@ public abstract class Type {
 			ArrayType arrType = (ArrayType) paramType;
 			paramType = new PointerType(arrType.getElementType());
 		}
-		//		System.out.println(paramDecl + " is a " + paramType + " now.");
+		// System.out.println(paramDecl + " is a " + paramType + " now.");
 		return paramType;
 	}
 
@@ -366,7 +368,8 @@ public abstract class Type {
 			baseType = declSpec.accept(typeTreeGetter, baseType);
 		}
 
-		//		System.out.println("Found a " + baseType + " for " + declSpec.getInfo().getString());
+		// System.out.println("Found a " + baseType + " for " +
+		// declSpec.getInfo().getString());
 		// TODO: Add qualifiers here.
 
 		Type typeFromDeclarator = paramAbs.accept(typeTreeGetter, baseType);
@@ -374,9 +377,9 @@ public abstract class Type {
 	}
 
 	public static Type getTypeTree(DeclarationSpecifiers declSpec, Scopeable scope, boolean deleteUserSpecifiedTypes) {
-		//		if (Misc.isTypedef(declSpec)) {
-		//			return null;
-		//		}
+		// if (Misc.isTypedef(declSpec)) {
+		// return null;
+		// }
 		Type baseType;
 		ArithmeticTypeKeyCollector arithmeticTypeGetter = new ArithmeticTypeKeyCollector(scope);
 		declSpec.accept(arithmeticTypeGetter);
@@ -391,9 +394,9 @@ public abstract class Type {
 	}
 
 	public static Type getTypeTree(DeclarationSpecifiers declSpec, Scopeable scope) {
-		//		if (Misc.isTypedef(declSpec)) {
-		//			return null;
-		//		}
+		// if (Misc.isTypedef(declSpec)) {
+		// return null;
+		// }
 		Type baseType;
 		ArithmeticTypeKeyCollector arithmeticTypeGetter = new ArithmeticTypeKeyCollector(scope);
 		declSpec.accept(arithmeticTypeGetter);
@@ -409,9 +412,9 @@ public abstract class Type {
 
 	public static Type getTypeTree(DeclarationSpecifiers declSpec, Declarator declarator, Scopeable scope,
 			boolean deleteUserDefinedType) {
-		//		if (Misc.isTypedef(declSpec)) {
-		//			return null;
-		//		}
+		// if (Misc.isTypedef(declSpec)) {
+		// return null;
+		// }
 		Type baseType;
 		ArithmeticTypeKeyCollector arithmeticTypeGetter = new ArithmeticTypeKeyCollector(scope);
 		declSpec.accept(arithmeticTypeGetter);
@@ -430,9 +433,9 @@ public abstract class Type {
 	}
 
 	public static Type getTypeTree(DeclarationSpecifiers declSpec, Declarator declarator, Scopeable scope) {
-		//		if (Misc.isTypedef(declSpec)) {
-		//			return null;
-		//		}
+		// if (Misc.isTypedef(declSpec)) {
+		// return null;
+		// }
 		Type baseType;
 		ArithmeticTypeKeyCollector arithmeticTypeGetter = new ArithmeticTypeKeyCollector(scope);
 		declSpec.accept(arithmeticTypeGetter);
@@ -470,9 +473,9 @@ public abstract class Type {
 
 	public static Type getTypeTree(DeclarationSpecifiers declSpec, Declarator declarator, Type inType,
 			Scopeable scope) {
-		//		if (Misc.isTypedef(declSpec)) {
-		//			return null;
-		//		}
+		// if (Misc.isTypedef(declSpec)) {
+		// return null;
+		// }
 		Type baseType;
 		ArithmeticTypeKeyCollector arithmeticTypeGetter = new ArithmeticTypeKeyCollector(scope);
 		declSpec.accept(arithmeticTypeGetter);
@@ -560,10 +563,10 @@ public abstract class Type {
 				// Long Long
 				if (arithTypeKeyList.contains(ArithmeticTypeKey.UNSIGNED)) {
 					return UnsignedLongLongIntType.type();
-					//					return UnsignedLongIntType.type(); // Error.
+					// return UnsignedLongIntType.type(); // Error.
 				} else {
 					return SignedLongLongIntType.type();
-					//					return SignedLongIntType.type(); // Error.
+					// return SignedLongIntType.type(); // Error.
 				}
 			} else {
 				arithTypeKeyList.add(ArithmeticTypeKey.LONG);
@@ -748,7 +751,8 @@ public abstract class Type {
 			}
 			scopeChoice = (Node) Misc.getEnclosingBlock(scopeChoice);
 		}
-		//		System.out.println("Could not find the type " + tag + " in " + node.getInfo().getString()  + " at line #" + Misc.getLineNum(node));
+		// System.out.println("Could not find the type " + tag + " in " +
+		// node.getInfo().getString() + " at line #" + Misc.getLineNum(node));
 		return null;
 	}
 
@@ -775,7 +779,7 @@ public abstract class Type {
 	 * cast without getting caught by this method.)
 	 * 
 	 * @param castExp
-	 *            a {@link CastExpressionTyped} expression to be tested.
+	 *                a {@link CastExpressionTyped} expression to be tested.
 	 * @return
 	 *         true, if the given expression performs an incompatible type cast.
 	 */
@@ -822,10 +826,10 @@ public abstract class Type {
 		HashMap<String, Type> typeTable = scope.getTypeTable();
 
 		// Future code. Can be thought about later.
-		//		if (!deletedTypes.isEmpty()) {
-		//			System.out.println(deletedTypes + " still " + tag + ".");
-		//		}
-		//		
+		// if (!deletedTypes.isEmpty()) {
+		// System.out.println(deletedTypes + " still " + tag + ".");
+		// }
+		//
 
 		Type oldType = typeTable.get(tag);
 		if (oldType == null) {
@@ -860,8 +864,8 @@ public abstract class Type {
 				Misc.warnDueToLackOfFeature(
 						"Attempting to redefine a complete type. Please look into the declarations of type " + newType,
 						Program.getRoot());
-				//				assert (false);
-				//				typeTable.put(tag, newType);
+				// assert (false);
+				// typeTable.put(tag, newType);
 				return oldType;
 			}
 		}

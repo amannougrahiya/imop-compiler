@@ -19,16 +19,16 @@ import java.util.Collection;
 import java.util.HashSet;
 
 public class YPhase extends AbstractPhase<YPhasePoint, YPhasePoint> {
-    public YPhase(ParallelConstruct owner) {
-        this(owner.getInfo());
-    }
+	public YPhase(ParallelConstruct owner) {
+		this(owner.getInfo());
+	}
 
-    public YPhase(ParallelConstructInfo ownerInfo) {
-        super((ParallelConstruct) ownerInfo.getNode());
-        assert (Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.YUANMHP);
-        Collection<YPhase> allPhaseList = (Collection<YPhase>) ownerInfo.getAllPhaseList();
-        this.succPhases = new HashSet<YPhase>();
-        this.predPhases = new HashSet<YPhase>();
-        allPhaseList.add(this);
-    }
+	public YPhase(ParallelConstructInfo ownerInfo) {
+		super((ParallelConstruct) ownerInfo.getNode());
+		assert (Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.YUANMHP);
+		Collection<YPhase> allPhaseList = (Collection<YPhase>) ownerInfo.getAllPhaseList();
+		this.succPhases = new HashSet<YPhase>();
+		this.predPhases = new HashSet<YPhase>();
+		allPhaseList.add(this);
+	}
 }

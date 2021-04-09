@@ -43,21 +43,29 @@ public class CollectorVisitor {
 	 * collectNodeSetInCustorGraph} instead.
 	 * 
 	 * @param startPoint
-	 *            a node of type {@code T}, starting whose successors the
-	 *            traversals have to start. Note that the {@terminationCheck} is
-	 *            not carried out on this node, unless any traversed paths
-	 *            pass through it.
+	 *                         a node of type {@code T}, starting whose successors
+	 *                         the
+	 *                         traversals have to start. Note that the
+	 *                         {@terminationCheck} is
+	 *                         not carried out on this node, unless any traversed
+	 *                         paths
+	 *                         pass through it.
 	 * @param endPoints
-	 *            list of nodes where traversal ends. Note that these nodes
-	 *            satisfy the predicate {@code terminationCheck}. This field is
-	 *            used as one of the outputs.
+	 *                         list of nodes where traversal ends. Note that these
+	 *                         nodes
+	 *                         satisfy the predicate {@code terminationCheck}. This
+	 *                         field is
+	 *                         used as one of the outputs.
 	 * @param terminationCheck
-	 *            a predicate which determines if traversal should terminate --
-	 *            if the predicate returns true on a node, then the traversal
-	 *            terminates at that node.
+	 *                         a predicate which determines if traversal should
+	 *                         terminate --
+	 *                         if the predicate returns true on a node, then the
+	 *                         traversal
+	 *                         terminates at that node.
 	 * @param nextLayerFinder
-	 *            a functional interface that takes a node and returns a list of
-	 *            successors for the node.
+	 *                         a functional interface that takes a node and returns
+	 *                         a list of
+	 *                         successors for the node.
 	 * @return
 	 *         a list of nodes which are encountered in the traversal of the
 	 *         graph, starting with the successors of the node
@@ -86,21 +94,29 @@ public class CollectorVisitor {
 	 * collectNodeSetInCustorGraph} instead.
 	 * 
 	 * @param startPoints
-	 *            list of nodes of type {@code T}, starting whose successors the
-	 *            traversals have to start. Note that the {@terminationCheck} is
-	 *            not carried out on these nodes, unless any traversed paths
-	 *            pass through them.
+	 *                         list of nodes of type {@code T}, starting whose
+	 *                         successors the
+	 *                         traversals have to start. Note that the
+	 *                         {@terminationCheck} is
+	 *                         not carried out on these nodes, unless any traversed
+	 *                         paths
+	 *                         pass through them.
 	 * @param endPoints
-	 *            list of nodes where traversal ends. Note that these nodes
-	 *            satisfy the predicate {@code terminationCheck}. This field is
-	 *            used as one of the outputs.
+	 *                         list of nodes where traversal ends. Note that these
+	 *                         nodes
+	 *                         satisfy the predicate {@code terminationCheck}. This
+	 *                         field is
+	 *                         used as one of the outputs.
 	 * @param terminationCheck
-	 *            a predicate which determines if traversal should terminate --
-	 *            if the predicate returns true on a node, then the traversal
-	 *            terminates at that node.
+	 *                         a predicate which determines if traversal should
+	 *                         terminate --
+	 *                         if the predicate returns true on a node, then the
+	 *                         traversal
+	 *                         terminates at that node.
 	 * @param nextLayerFinder
-	 *            a functional interface that takes a node and returns a list of
-	 *            successors for the node.
+	 *                         a functional interface that takes a node and returns
+	 *                         a list of
+	 *                         successors for the node.
 	 * @return
 	 *         a list of nodes which are encountered in the traversal of the
 	 *         graph, starting with the successors of the nodes in
@@ -141,21 +157,29 @@ public class CollectorVisitor {
 	 * traversed path, as well as nodes where the paths terminate.
 	 * 
 	 * @param startPoint
-	 *            a node of type {@code T}, starting whose successors the
-	 *            traversals have to start. Note that the {@code terminationCheck} is
-	 *            not carried out on this node, unless any traversed paths
-	 *            pass through it.
+	 *                         a node of type {@code T}, starting whose successors
+	 *                         the
+	 *                         traversals have to start. Note that the
+	 *                         {@code terminationCheck} is
+	 *                         not carried out on this node, unless any traversed
+	 *                         paths
+	 *                         pass through it.
 	 * @param endPoints
-	 *            set of nodes where the traversals end. Note that these nodes
-	 *            satisfy the predicate {@code terminationCheck}. This field is
-	 *            used as one of the outputs.
+	 *                         set of nodes where the traversals end. Note that
+	 *                         these nodes
+	 *                         satisfy the predicate {@code terminationCheck}. This
+	 *                         field is
+	 *                         used as one of the outputs.
 	 * @param terminationCheck
-	 *            a predicate which determines if traversal should terminate --
-	 *            if the predicate returns true on a node, then the traversal
-	 *            terminates at that node.
+	 *                         a predicate which determines if traversal should
+	 *                         terminate --
+	 *                         if the predicate returns true on a node, then the
+	 *                         traversal
+	 *                         terminates at that node.
 	 * @param nextLayerFinder
-	 *            a functional interface that takes a node and returns a set of
-	 *            successors for the node.
+	 *                         a functional interface that takes a node and returns
+	 *                         a set of
+	 *                         successors for the node.
 	 * @return
 	 *         a set of nodes which are encountered in the traversal of the
 	 *         graph, starting with the successors of the node
@@ -179,21 +203,29 @@ public class CollectorVisitor {
 	 * traversed path, as well as nodes where the paths terminate.
 	 * 
 	 * @param startPoints
-	 *            set of nodes of type {@code T}, starting whose successors the
-	 *            traversals have to start. Note that the {@terminationCheck} is
-	 *            not carried out on these nodes, unless any traversed paths
-	 *            pass through them.
+	 *                         set of nodes of type {@code T}, starting whose
+	 *                         successors the
+	 *                         traversals have to start. Note that the
+	 *                         {@terminationCheck} is
+	 *                         not carried out on these nodes, unless any traversed
+	 *                         paths
+	 *                         pass through them.
 	 * @param endPoints
-	 *            set of nodes where traversals end. Note that these nodes
-	 *            satisfy the predicate {@code terminationCheck}. This field is
-	 *            used as one of the outputs.
+	 *                         set of nodes where traversals end. Note that these
+	 *                         nodes
+	 *                         satisfy the predicate {@code terminationCheck}. This
+	 *                         field is
+	 *                         used as one of the outputs.
 	 * @param terminationCheck
-	 *            a predicate which determines if traversal should terminate --
-	 *            if the predicate returns true on a node, then the traversal
-	 *            terminates at that node.
+	 *                         a predicate which determines if traversal should
+	 *                         terminate --
+	 *                         if the predicate returns true on a node, then the
+	 *                         traversal
+	 *                         terminates at that node.
 	 * @param nextLayerFinder
-	 *            a functional interface that takes a node and returns a set of
-	 *            successors for the node.
+	 *                         a functional interface that takes a node and returns
+	 *                         a set of
+	 *                         successors for the node.
 	 * @return
 	 *         a set of nodes which are encountered in the traversal of the
 	 *         graph, starting with the successors of the nodes in
@@ -238,13 +270,15 @@ public class CollectorVisitor {
 	 * of its {@link BeginNode}.
 	 * 
 	 * @param startPoint
-	 *            node from which traversal has to start.
+	 *                         node from which traversal has to start.
 	 * @param endPoints
-	 *            set of nodes at which the traversal ends. This set is
-	 *            populated by this method call, and acts as one of the outputs.
+	 *                         set of nodes at which the traversal ends. This set is
+	 *                         populated by this method call, and acts as one of the
+	 *                         outputs.
 	 * @param terminationCheck
-	 *            a functional interface, which is used to specify the condition
-	 *            for termination of the CFG traversal.
+	 *                         a functional interface, which is used to specify the
+	 *                         condition
+	 *                         for termination of the CFG traversal.
 	 * @return
 	 *         set of nodes that lie on any of the paths between
 	 *         {@code startPoint} and {@code endPoints}, exclusively.
@@ -267,13 +301,15 @@ public class CollectorVisitor {
 	 * of its {@link BeginNode}.
 	 * 
 	 * @param startPoints
-	 *            set of nodes from which traversal has to start.
+	 *                         set of nodes from which traversal has to start.
 	 * @param endPoints
-	 *            set of nodes at which the traversal ends. This set is
-	 *            populated by this method call, and acts as one of the outputs.
+	 *                         set of nodes at which the traversal ends. This set is
+	 *                         populated by this method call, and acts as one of the
+	 *                         outputs.
 	 * @param terminationCheck
-	 *            a functional interface, which is used to specify the condition
-	 *            for termination of the CFG traversal.
+	 *                         a functional interface, which is used to specify the
+	 *                         condition
+	 *                         for termination of the CFG traversal.
 	 * @return
 	 *         set of nodes that lie on any of the paths between any element of
 	 *         {@code startPoint} and {@code endPoints}, exclusively.
@@ -299,26 +335,27 @@ public class CollectorVisitor {
 			collectedNodes.add(nodeWithStack.getNode());
 		}
 		return collectedNodes;
-		//		return collectNodesInCustomGraph(startPoints, endPoints, terminationCheck,
-		//				(Node n) -> n.getInfo().getCFGInfo().getInterProceduralLeafSuccessors());
-		//		Set<Node> collectedNodeSet = new HashSet<>();
-		//		Set<Node> workSet = new HashSet<>(startPoints);
+		// return collectNodesInCustomGraph(startPoints, endPoints, terminationCheck,
+		// (Node n) -> n.getInfo().getCFGInfo().getInterProceduralLeafSuccessors());
+		// Set<Node> collectedNodeSet = new HashSet<>();
+		// Set<Node> workSet = new HashSet<>(startPoints);
 		//
-		//		while (workSet.size() != 0) {
-		//			Node currentNode = Misc.getAnyElement(workSet);
-		//			workSet.remove(currentNode);
-		//			for (Node succNode : currentNode.getInfo().getCFGInfo().getInterProceduralLeafSuccessors()) {
-		//				if (!terminationCheck.test(succNode)) {
-		//					if (!collectedNodeSet.contains(succNode)) {
-		//						collectedNodeSet.add(succNode);
-		//						workSet.add(succNode);
-		//					}
-		//				} else {
-		//					endPoints.add(succNode);
-		//				}
-		//			}
-		//		}
-		//		return collectedNodeSet;
+		// while (workSet.size() != 0) {
+		// Node currentNode = Misc.getAnyElement(workSet);
+		// workSet.remove(currentNode);
+		// for (Node succNode :
+		// currentNode.getInfo().getCFGInfo().getInterProceduralLeafSuccessors()) {
+		// if (!terminationCheck.test(succNode)) {
+		// if (!collectedNodeSet.contains(succNode)) {
+		// collectedNodeSet.add(succNode);
+		// workSet.add(succNode);
+		// }
+		// } else {
+		// endPoints.add(succNode);
+		// }
+		// }
+		// }
+		// return collectedNodeSet;
 	}
 
 	/**
@@ -331,13 +368,15 @@ public class CollectorVisitor {
 	 * those of its {@link EndNode}.
 	 * 
 	 * @param startPoint
-	 *            node from which traversal has to start.
+	 *                         node from which traversal has to start.
 	 * @param endPoints
-	 *            set of nodes at which the traversal ends. This set is
-	 *            populated by this method call, and acts as one of the outputs.
+	 *                         set of nodes at which the traversal ends. This set is
+	 *                         populated by this method call, and acts as one of the
+	 *                         outputs.
 	 * @param terminationCheck
-	 *            a functional interface, which is used to specify the condition
-	 *            for termination of the CFG traversal.
+	 *                         a functional interface, which is used to specify the
+	 *                         condition
+	 *                         for termination of the CFG traversal.
 	 * @return
 	 *         set of nodes that lie on any of the paths between
 	 *         {@code startPoint} and {@code endPoints}, exclusively.
@@ -360,13 +399,15 @@ public class CollectorVisitor {
 	 * those of its {@link EndNode}.
 	 * 
 	 * @param startPoints
-	 *            set of nodes from which traversal has to start.
+	 *                         set of nodes from which traversal has to start.
 	 * @param endPoints
-	 *            set of nodes at which the traversal ends. This set is
-	 *            populated by this method call, and acts as one of the outputs.
+	 *                         set of nodes at which the traversal ends. This set is
+	 *                         populated by this method call, and acts as one of the
+	 *                         outputs.
 	 * @param terminationCheck
-	 *            a functional interface, which is used to specify the condition
-	 *            for termination of the CFG traversal.
+	 *                         a functional interface, which is used to specify the
+	 *                         condition
+	 *                         for termination of the CFG traversal.
 	 * @return
 	 *         set of nodes that lie on any of the paths between any element of
 	 *         {@code startPoint} and {@code endPoints}, exclusively.
@@ -392,24 +433,25 @@ public class CollectorVisitor {
 			collectedNodes.add(nodeWithStack.getNode());
 		}
 		return collectedNodes;
-		//		Set<Node> collectedNodeSet = new HashSet<>();
-		//		Set<Node> workSet = new HashSet<>(startPoints);
+		// Set<Node> collectedNodeSet = new HashSet<>();
+		// Set<Node> workSet = new HashSet<>(startPoints);
 		//
-		//		while (workSet.size() != 0) {
-		//			Node currentNode = Misc.getAnyElement(workSet);
-		//			workSet.remove(currentNode);
-		//			for (Node succNode : currentNode.getInfo().getCFGInfo().getInterProceduralLeafPredecessors()) {
-		//				if (!terminationCheck.test(succNode)) {
-		//					if (!collectedNodeSet.contains(succNode)) {
-		//						collectedNodeSet.add(succNode);
-		//						workSet.add(succNode);
-		//					}
-		//				} else {
-		//					endPoints.add(succNode);
-		//				}
-		//			}
-		//		}
-		//		return collectedNodeSet;
+		// while (workSet.size() != 0) {
+		// Node currentNode = Misc.getAnyElement(workSet);
+		// workSet.remove(currentNode);
+		// for (Node succNode :
+		// currentNode.getInfo().getCFGInfo().getInterProceduralLeafPredecessors()) {
+		// if (!terminationCheck.test(succNode)) {
+		// if (!collectedNodeSet.contains(succNode)) {
+		// collectedNodeSet.add(succNode);
+		// workSet.add(succNode);
+		// }
+		// } else {
+		// endPoints.add(succNode);
+		// }
+		// }
+		// }
+		// return collectedNodeSet;
 	}
 
 	/**
@@ -422,13 +464,15 @@ public class CollectorVisitor {
 	 * of its {@link BeginNode}.
 	 * 
 	 * @param startPoint
-	 *            node from which traversal has to start.
+	 *                         node from which traversal has to start.
 	 * @param endPoints
-	 *            set of nodes at which the traversal ends. This set is
-	 *            populated by this method call, and acts as one of the outputs.
+	 *                         set of nodes at which the traversal ends. This set is
+	 *                         populated by this method call, and acts as one of the
+	 *                         outputs.
 	 * @param terminationCheck
-	 *            a functional interface, which is used to specify the condition
-	 *            for termination of the CFG traversal.
+	 *                         a functional interface, which is used to specify the
+	 *                         condition
+	 *                         for termination of the CFG traversal.
 	 * @return
 	 *         set of nodes that lie on any of the paths between
 	 *         {@code startPoint} and {@code endPoints}, exclusively.
@@ -452,13 +496,15 @@ public class CollectorVisitor {
 	 * of its {@link BeginNode}.
 	 * 
 	 * @param startPoints
-	 *            set of nodes from which traversal has to start.
+	 *                         set of nodes from which traversal has to start.
 	 * @param endPoints
-	 *            set of nodes at which the traversal ends. This set is
-	 *            populated by this method call, and acts as one of the outputs.
+	 *                         set of nodes at which the traversal ends. This set is
+	 *                         populated by this method call, and acts as one of the
+	 *                         outputs.
 	 * @param terminationCheck
-	 *            a functional interface, which is used to specify the condition
-	 *            for termination of the CFG traversal.
+	 *                         a functional interface, which is used to specify the
+	 *                         condition
+	 *                         for termination of the CFG traversal.
 	 * @return
 	 *         set of nodes that lie on any of the paths between any element of
 	 *         {@code startPoint} and {@code endPoints}, exclusively.
@@ -479,13 +525,15 @@ public class CollectorVisitor {
 	 * of its {@link BeginNode}.
 	 * 
 	 * @param startPoint
-	 *            node from which traversal has to start.
+	 *                         node from which traversal has to start.
 	 * @param endPoints
-	 *            set of nodes at which the traversal ends. This set is
-	 *            populated by this method call, and acts as one of the outputs.
+	 *                         set of nodes at which the traversal ends. This set is
+	 *                         populated by this method call, and acts as one of the
+	 *                         outputs.
 	 * @param terminationCheck
-	 *            a functional interface, which is used to specify the condition
-	 *            for termination of the CFG traversal.
+	 *                         a functional interface, which is used to specify the
+	 *                         condition
+	 *                         for termination of the CFG traversal.
 	 * @return
 	 *         set of nodes that lie on any of the paths between
 	 *         {@code startPoint} and {@code endPoints}, exclusively.
@@ -509,13 +557,15 @@ public class CollectorVisitor {
 	 * of its {@link BeginNode}.
 	 * 
 	 * @param startPoints
-	 *            set of nodes from which traversal has to start.
+	 *                         set of nodes from which traversal has to start.
 	 * @param endPoints
-	 *            set of nodes at which the traversal ends. This set is
-	 *            populated by this method call, and acts as one of the outputs.
+	 *                         set of nodes at which the traversal ends. This set is
+	 *                         populated by this method call, and acts as one of the
+	 *                         outputs.
 	 * @param terminationCheck
-	 *            a functional interface, which is used to specify the condition
-	 *            for termination of the CFG traversal.
+	 *                         a functional interface, which is used to specify the
+	 *                         condition
+	 *                         for termination of the CFG traversal.
 	 * @return
 	 *         set of nodes that lie on any of the paths between any element of
 	 *         {@code startPoint} and {@code endPoints}, exclusively.

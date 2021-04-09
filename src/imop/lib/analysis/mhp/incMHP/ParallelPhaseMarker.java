@@ -72,9 +72,9 @@ public class ParallelPhaseMarker extends GJVoidDepthFirstCFG<CallStack> {
 	 */
 	@Override
 	public void initProcess(Node n, CallStack callStack) {
-		//		assert (!(n instanceof BarrierDirective));
-		//		assert (!(n instanceof EndNode));
-		//		assert (!(n instanceof ParallelConstruct));
+		// assert (!(n instanceof BarrierDirective));
+		// assert (!(n instanceof EndNode));
+		// assert (!(n instanceof ParallelConstruct));
 		if (Misc.isCFGLeafNode(n)) {
 			if (addPhase(n, callStack)) {
 				for (NodeWithStack successor : n.getInfo().getCFGInfo().getInterProceduralLeafSuccessors(callStack)) {
@@ -374,29 +374,29 @@ public class ParallelPhaseMarker extends GJVoidDepthFirstCFG<CallStack> {
 	public void visit(CallStatement n, CallStack callStack) {
 		initProcess(n, callStack);
 		// Old code:
-		//		/*
-		//		 * Note that in case of recursion, when we enter a
-		//		 * function-definition for the third time
-		//		 * with the same callSite (callStatement), then the BeginNode will
-		//		 * not be visiting
-		//		 * the successors due to the code written in initProcess() for
-		//		 * BeginNode.
-		//		 */
+		// /*
+		// * Note that in case of recursion, when we enter a
+		// * function-definition for the third time
+		// * with the same callSite (callStatement), then the BeginNode will
+		// * not be visiting
+		// * the successors due to the code written in initProcess() for
+		// * BeginNode.
+		// */
 		//
-		//		CallStatement callSt = n;
-		//		if (callSt.getInfo().getCalleeDefinitions().isEmpty()) {
-		//			/*
-		//			 * In this case, the function definition is not present.
-		//			 * We should move ahead with the marking of the phases.
-		//			 */
-		//			initProcess(n, callStack);
-		//		} else {
-		//			addPhase(n, callStack);
-		//			for (FunctionDefinition callee : callSt.getInfo().getCalleeDefinitions()) {
-		//				CallStack windCallStack = CallStack.pushUnique(callStack, callSt);
-		//				callee.accept(this, windCallStack);
-		//			}
-		//		}
+		// CallStatement callSt = n;
+		// if (callSt.getInfo().getCalleeDefinitions().isEmpty()) {
+		// /*
+		// * In this case, the function definition is not present.
+		// * We should move ahead with the marking of the phases.
+		// */
+		// initProcess(n, callStack);
+		// } else {
+		// addPhase(n, callStack);
+		// for (FunctionDefinition callee : callSt.getInfo().getCalleeDefinitions()) {
+		// CallStack windCallStack = CallStack.pushUnique(callStack, callSt);
+		// callee.accept(this, windCallStack);
+		// }
+		// }
 	}
 
 	/**
@@ -581,7 +581,8 @@ public class ParallelPhaseMarker extends GJVoidDepthFirstCFG<CallStack> {
 				 */
 				for (CallStatement cS : funcDefInfo.getCallersOfThis()) {
 					Node callerCFGNode = cS.getPostCallNode();
-					// TODO: We could have simply called this visitor on callerCFGNode, instead of the code below.
+					// TODO: We could have simply called this visitor on callerCFGNode, instead of
+					// the code below.
 					if (this.addPhase(callerCFGNode, callStack)) {
 						for (NodeWithStack successor : callerCFGNode.getInfo().getCFGInfo()
 								.getInterProceduralLeafSuccessors(callStack)) {
@@ -596,7 +597,8 @@ public class ParallelPhaseMarker extends GJVoidDepthFirstCFG<CallStack> {
 				CallStack unwindCallStack = CallStack.pop(callStack);
 				CallStatement cS = callStack.peek();
 				Node callerCFGNode = cS.getPostCallNode();
-				// TODO: We could have simply called this visitor on callerCFGNode, instead of the code below.
+				// TODO: We could have simply called this visitor on callerCFGNode, instead of
+				// the code below.
 				if (this.addPhase(callerCFGNode, unwindCallStack)) {
 					for (NodeWithStack successor : callerCFGNode.getInfo().getCFGInfo()
 							.getInterProceduralLeafSuccessors(unwindCallStack)) {
@@ -606,7 +608,7 @@ public class ParallelPhaseMarker extends GJVoidDepthFirstCFG<CallStack> {
 			}
 			return;
 		} else if (n.getParent() instanceof ParallelConstruct && n.getParent() == ph.getParConstruct()) {
-			//assert (callStack.isEmpty());
+			// assert (callStack.isEmpty());
 			addPhase(ph.getParConstruct().getInfo().getCFGInfo().getNestedCFG().getEnd(), callStack);
 			ph.addEndPointNoUdpate(
 					new EndPhasePoint(ph.getParConstruct().getInfo().getCFGInfo().getNestedCFG().getEnd(), callStack));

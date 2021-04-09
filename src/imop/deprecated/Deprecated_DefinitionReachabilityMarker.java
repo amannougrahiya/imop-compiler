@@ -79,7 +79,8 @@ public class Deprecated_DefinitionReachabilityMarker extends DepthFirstCFG {
 			}
 
 			if (n != markerDef.getDefiningNode()) {
-				// If non-nested writes is a singleton set with the symbol being marked, then return
+				// If non-nested writes is a singleton set with the symbol being marked, then
+				// return
 				if (nonNestedWrites != null && nonNestedWrites.size() == 1
 						&& nonNestedWrites.contains(markerDef.getCell())) {
 					return;

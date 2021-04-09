@@ -35,7 +35,7 @@ public class AtomicConstructCFGInfo extends CFGInfo {
 		AutomatedUpdater.flushCaches();
 		NodeRemover.removeNodeIfConnected(expStmt);
 		AtomicConstruct atomicOwner = (AtomicConstruct) getOwner();
-		
+
 		PointsToAnalysis.handleNodeAdditionOrRemovalForHeuristic(expStmt);
 		PointsToAnalysis.handleNodeAdditionOrRemovalForHeuristic(atomicOwner.getF4());
 		expStmt.setParent(atomicOwner);
@@ -51,15 +51,18 @@ public class AtomicConstructCFGInfo extends CFGInfo {
 		AutomatedUpdater.invalidateSymbolsInNode(expStmt);
 		updateCFGForBodyAddition(expStmt);
 
-		// NOTE: For this non-leaf node, no modifications are required in internal leaf nodes.
-		//		expStmt = Normalization.normalizeLeafNodes(expStmt, new ArrayList<>());
+		// NOTE: For this non-leaf node, no modifications are required in internal leaf
+		// nodes.
+		// expStmt = Normalization.normalizeLeafNodes(expStmt, new ArrayList<>());
 
 		invalidatePositionForStatementAddition(expStmt);
 		AutomatedUpdater.updatePhaseAndInterTaskEdgesUponRemoval(affectedBeginPhasePoints);
 		AutomatedUpdater.updateInformationForAddition(expStmt);
 		AutomatedUpdater.updateFlowFactsForward(rerunNodesForward); // Called here after replacement is successful.
-		//		AutomatedUpdater.invalidateSymbolsInNode(atomicOwner.getF4());// Added, so that any changes from points-to may be reflected here.
-		//		AutomatedUpdater.invalidateSymbolsInNode(expStmt);// Added, so that any changes from points-to may be reflected here.
+		// AutomatedUpdater.invalidateSymbolsInNode(atomicOwner.getF4());// Added, so
+		// that any changes from points-to may be reflected here.
+		// AutomatedUpdater.invalidateSymbolsInNode(expStmt);// Added, so that any
+		// changes from points-to may be reflected here.
 		AutomatedUpdater.updateFlowFactsBackward(rerunNodesBackward);
 	}
 
@@ -69,8 +72,8 @@ public class AtomicConstructCFGInfo extends CFGInfo {
 
 	private void updateCFGForBodyRemoval(Statement removed) {
 		removed = (Statement) Misc.getInternalFirstCFGNode(removed);
-		//		// 1. Adjust incompleteness.
-		//		removed.getInfo().getIncompleteSemantics().adjustSemanticsForOwnerRemoval();
+		// // 1. Adjust incompleteness.
+		// removed.getInfo().getIncompleteSemantics().adjustSemanticsForOwnerRemoval();
 
 		// 2. Remove stale edges.
 		removed.getInfo().getCFGInfo().clearAllEdges();
@@ -86,8 +89,8 @@ public class AtomicConstructCFGInfo extends CFGInfo {
 			connectAndAdjustEndReachability(added, ncfg.getEnd());
 		}
 
-		//		// 2. Adjust incompleteness.
-		//		added.getInfo().getIncompleteSemantics().adjustSemanticsForOwnerAddition();
+		// // 2. Adjust incompleteness.
+		// added.getInfo().getIncompleteSemantics().adjustSemanticsForOwnerAddition();
 	}
 
 	public void invalidatePositionForStatementAddition(Statement expStmt) {

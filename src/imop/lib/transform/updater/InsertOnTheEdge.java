@@ -222,21 +222,24 @@ public class InsertOnTheEdge {
 			return sideEffectList;
 		}
 
-		// Future code. To be completed when we wish to handle executableLeafPred/Succ as well.
-		//		/*
-		//		 * Note that this method supports insertion using both nested as well as
-		//		 * plain CFG.
-		//		 * We convert insertion requests on plain CFG to nested CFG below.
-		//		 */
-		//		NodePair nodePair = Misc.getBlockNeighbours(sourceNode, destinationNode, pivotPoint);
-		//		if (nodePair.one == null || nodePair.two == null) {
-		//			Misc.warnDueToLackOfFeature("Could not find a proper link between the source and destination nodes.", null);
-		//			sideEffectList.add(UpdateSideEffects.SYNTACTIC_CONSTRAINT);
-		//			return sideEffectList;
-		//		} else {
-		//			sourceNode = nodePair.one;
-		//			destinationNode = nodePair.two;
-		//		}
+		// Future code. To be completed when we wish to handle executableLeafPred/Succ
+		// as well.
+		// /*
+		// * Note that this method supports insertion using both nested as well as
+		// * plain CFG.
+		// * We convert insertion requests on plain CFG to nested CFG below.
+		// */
+		// NodePair nodePair = Misc.getBlockNeighbours(sourceNode, destinationNode,
+		// pivotPoint);
+		// if (nodePair.one == null || nodePair.two == null) {
+		// Misc.warnDueToLackOfFeature("Could not find a proper link between the source
+		// and destination nodes.", null);
+		// sideEffectList.add(UpdateSideEffects.SYNTACTIC_CONSTRAINT);
+		// return sideEffectList;
+		// } else {
+		// sourceNode = nodePair.one;
+		// destinationNode = nodePair.two;
+		// }
 		if (sideEffectList != null && (sourceSuccessors.size() == 1 || destinationPredecessors.size() == 1)) {
 			return sideEffectList;
 		}
@@ -603,17 +606,20 @@ public class InsertOnTheEdge {
 				return sideEffectList;
 
 				// Old Code:
-				//				Set<IncompleteEdge> edges = Misc.getInternalIncompleteEdges(targetNode);
-				//				if (edges.stream()
-				//						.anyMatch((e) -> (e.getTypeOfIncompleteness() == TypeOfIncompleteness.UNKNOWN_BREAK_DESTINATION
-				//								|| e.getTypeOfIncompleteness() == TypeOfIncompleteness.UNKNOWN_CASE_SOURCE
-				//								|| e.getTypeOfIncompleteness() == TypeOfIncompleteness.UNKNOWN_DEFAULT_SOURCE))) {
-				//					sideEffectList.add(UpdateSideEffects.JUMPEDGE_CONSTRAINT);
-				//					sideEffectList.add(UpdateSideEffects.SYNTACTIC_CONSTRAINT);
-				//					return sideEffectList;
-				//				}
-				//				SwitchStatement switchStmt = ((SwitchEndLink) destinationLink).enclosingNonLeafNode;
-				//				return InsertImmediateSuccessor.insertAggressive(switchStmt, targetNode);
+				// Set<IncompleteEdge> edges = Misc.getInternalIncompleteEdges(targetNode);
+				// if (edges.stream()
+				// .anyMatch((e) -> (e.getTypeOfIncompleteness() ==
+				// TypeOfIncompleteness.UNKNOWN_BREAK_DESTINATION
+				// || e.getTypeOfIncompleteness() == TypeOfIncompleteness.UNKNOWN_CASE_SOURCE
+				// || e.getTypeOfIncompleteness() ==
+				// TypeOfIncompleteness.UNKNOWN_DEFAULT_SOURCE))) {
+				// sideEffectList.add(UpdateSideEffects.JUMPEDGE_CONSTRAINT);
+				// sideEffectList.add(UpdateSideEffects.SYNTACTIC_CONSTRAINT);
+				// return sideEffectList;
+				// }
+				// SwitchStatement switchStmt = ((SwitchEndLink)
+				// destinationLink).enclosingNonLeafNode;
+				// return InsertImmediateSuccessor.insertAggressive(switchStmt, targetNode);
 			} else if (destinationLink instanceof CompoundElementLink) {
 				CompoundStatement body = (CompoundStatement) link.enclosingNonLeafNode.getInfo().getCFGInfo().getBody();
 				if (pivotPoint == PivotPoint.SOURCE) {

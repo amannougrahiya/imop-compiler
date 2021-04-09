@@ -20,7 +20,7 @@ public abstract class Deprecated_FlowFact {
 	 * the subclasses of {@code FlowFact} to define this equality.</i>
 	 * 
 	 * @param other
-	 *            the object to be checked for equality with this object.
+	 *              the object to be checked for equality with this object.
 	 * @return
 	 *         true, if <code>other</code> is same as this object.
 	 */
@@ -42,7 +42,7 @@ public abstract class Deprecated_FlowFact {
 	 * needed.</i>
 	 * 
 	 * @param other
-	 *            one of the flowFacts. Can be null.
+	 *              one of the flowFacts. Can be null.
 	 * @return
 	 *         meet of the flowFact passed to this method, with the receiver.
 	 */
@@ -56,9 +56,9 @@ public abstract class Deprecated_FlowFact {
 	 * needed.
 	 * 
 	 * @param other
-	 *            one of the flowFacts. Can be null.
+	 *              one of the flowFacts. Can be null.
 	 * @param n
-	 *            node at which the meet is being taken.
+	 *              node at which the meet is being taken.
 	 * @return
 	 *         meet of the flowFact passed to this method, with the receiver.
 	 */

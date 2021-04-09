@@ -63,7 +63,8 @@ public class ParallelRegionMarker extends GJVoidDepthFirstCFG<ParallelConstruct>
 			return;
 		}
 
-		// If not already present, add parConstruct to the regionInfo field of its statements.
+		// If not already present, add parConstruct to the regionInfo field of its
+		// statements.
 		beginNode.accept(new ParallelRegionMarker(), parConstruct);
 	}
 
@@ -76,7 +77,7 @@ public class ParallelRegionMarker extends GJVoidDepthFirstCFG<ParallelConstruct>
 			if (succ.getInfo().isRunnableInRegion(region)) {
 				continue;
 			}
-			succ.accept(this, region);	// This may be a BeginNode, EndNode, other Leaf node or a Non-Leaf node.
+			succ.accept(this, region); // This may be a BeginNode, EndNode, other Leaf node or a Non-Leaf node.
 		}
 		return;
 	}

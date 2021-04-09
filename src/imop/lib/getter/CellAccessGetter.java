@@ -709,12 +709,12 @@ public class CellAccessGetter {
 							} else {
 								e1List.applyAllExpanded(cell -> {
 									if (Program.getCellsThatMayPointToSymbols().contains(cell)) {
-										//if (cell instanceof Symbol) {
-										//	Symbol sym = (Symbol) cell;
-										//	 if (sym.getType() instanceof PointerType) {
-										//	 	System.err.println("Following pointer at " + cfgNode + ": " + sym);
-										//	 }
-										//}
+										// if (cell instanceof Symbol) {
+										// Symbol sym = (Symbol) cell;
+										// if (sym.getType() instanceof PointerType) {
+										// System.err.println("Following pointer at " + cfgNode + ": " + sym);
+										// }
+										// }
 										tempList.addAll(cell.getPointsTo(cfgNode));
 									}
 								});
@@ -726,12 +726,12 @@ public class CellAccessGetter {
 							} else {
 								e2List.applyAllExpanded(cell -> {
 									if (Program.getCellsThatMayPointToSymbols().contains(cell)) {
-										//if (cell instanceof Symbol) {
-										//	Symbol sym = (Symbol) cell;
-										//	if (sym.getType() instanceof PointerType) {
-										//		System.err.println("Following pointer at " + cfgNode + ": " + sym);
-										//	}
-										//}
+										// if (cell instanceof Symbol) {
+										// Symbol sym = (Symbol) cell;
+										// if (sym.getType() instanceof PointerType) {
+										// System.err.println("Following pointer at " + cfgNode + ": " + sym);
+										// }
+										// }
 										tempList.addAll(cell.getPointsTo(cfgNode));
 									}
 								});
@@ -740,7 +740,8 @@ public class CellAccessGetter {
 
 						symList = tempList;
 					} else if (opNode instanceof ArgumentList) {
-						//						assert (false); // Cannot have this operator here after expression simplification.
+						// assert (false); // Cannot have this operator here after expression
+						// simplification.
 						return null;
 					} else if (opNode instanceof DotId) {
 						// ||p|.id| = |p|
@@ -898,11 +899,11 @@ public class CellAccessGetter {
 		 * {@code cellReadList}.
 		 *
 		 * @param n
-		 *            node at which the access has been made.
+		 *                 node at which the access has been made.
 		 * @param cellList
-		 *            list of symbols and free variables that need to be added
-		 *            to the list of cells that may have been read in the
-		 *            visits.
+		 *                 list of symbols and free variables that need to be added
+		 *                 to the list of cells that may have been read in the
+		 *                 visits.
 		 * 
 		 */
 		public void addReads(Node n, CellList cellList) {
@@ -910,41 +911,41 @@ public class CellAccessGetter {
 			if (cellList != null) {
 				if (cellList.isUniversal()) {
 					cellReadList.add(Cell.genericCell);
-					//					CellSet allCellsHere = n.getInfo().getAllCellsAtNode();
-					//					if (allCellsHere.isUniversal()) {
-					//						for (Cell cell : Cell.allCells) {
-					//							if (cell != null) {
-					//								if (isForShared == false
-					//										|| n.getInfo().getSharingAttribute(cell) == DataSharingAttribute.SHARED) {
-					//									cellReadList.add(cell);
-					//								}
-					//							}
-					//						}
-					//					} else {
-					//						for (Cell cell : n.getInfo().getAllCellsAtNode()) {
-					//							if (cell != null) {
-					//								if (isForShared == false
-					//										|| n.getInfo().getSharingAttribute(cell) == DataSharingAttribute.SHARED) {
-					//									cellReadList.add(cell);
-					//								}
-					//							}
-					//						}
-					//					}
+					// CellSet allCellsHere = n.getInfo().getAllCellsAtNode();
+					// if (allCellsHere.isUniversal()) {
+					// for (Cell cell : Cell.allCells) {
+					// if (cell != null) {
+					// if (isForShared == false
+					// || n.getInfo().getSharingAttribute(cell) == DataSharingAttribute.SHARED) {
+					// cellReadList.add(cell);
+					// }
+					// }
+					// }
+					// } else {
+					// for (Cell cell : n.getInfo().getAllCellsAtNode()) {
+					// if (cell != null) {
+					// if (isForShared == false
+					// || n.getInfo().getSharingAttribute(cell) == DataSharingAttribute.SHARED) {
+					// cellReadList.add(cell);
+					// }
+					// }
+					// }
+					// }
 				} else {
 					for (Cell cell : cellList) {
 						if (cell != null) {
 							if (isForShared == false
 									|| n.getInfo().getSharingAttribute(cell) == DataSharingAttribute.SHARED) {
-								//								if (cell instanceof Symbol) {
-								//									Symbol sym = (Symbol) cell;
-								//									if (sym.getType() instanceof ArrayType) {
-								//										cellReadList.add(sym.getAddressCell());
-								//									} else {
-								//										cellReadList.add(cell);
-								//									}
-								//								} else {
+								// if (cell instanceof Symbol) {
+								// Symbol sym = (Symbol) cell;
+								// if (sym.getType() instanceof ArrayType) {
+								// cellReadList.add(sym.getAddressCell());
+								// } else {
+								// cellReadList.add(cell);
+								// }
+								// } else {
 								cellReadList.add(cell);
-								//								}
+								// }
 							}
 						}
 					}
@@ -957,11 +958,11 @@ public class CellAccessGetter {
 		 * {@code cellWriteList}.
 		 * 
 		 * @param n
-		 *            node at which the access has been made.
+		 *                 node at which the access has been made.
 		 * @param cellList
-		 *            list of symbols and free variables that need to be added
-		 *            to the list of cells that may have been written in the
-		 *            visits.
+		 *                 list of symbols and free variables that need to be added
+		 *                 to the list of cells that may have been written in the
+		 *                 visits.
 		 * 
 		 */
 		public void addWrites(Node n, CellList cellList) {
@@ -970,26 +971,26 @@ public class CellAccessGetter {
 				if (cellList.isUniversal()) {
 					boolean morePrecise = false;
 					if (morePrecise) {
-						//					CellSet allCellsHere = n.getInfo().getAllCellsAtNode();
-						//					if (allCellsHere.isUniversal()) {
-						//						for (Cell cell : Cell.allCells) {
-						//							if (cell != null) {
-						//								if (isForShared == false
-						//										|| n.getInfo().getSharingAttribute(cell) == DataSharingAttribute.SHARED) {
-						//									cellWriteList.add(cell);
-						//								}
-						//							}
-						//						}
-						//					} else {
-						//						for (Cell cell : n.getInfo().getAllCellsAtNode()) {
-						//							if (cell != null) {
-						//								if (isForShared == false
-						//										|| n.getInfo().getSharingAttribute(cell) == DataSharingAttribute.SHARED) {
-						//									cellWriteList.add(cell);
-						//								}
-						//							}
-						//						}
-						//					}
+						// CellSet allCellsHere = n.getInfo().getAllCellsAtNode();
+						// if (allCellsHere.isUniversal()) {
+						// for (Cell cell : Cell.allCells) {
+						// if (cell != null) {
+						// if (isForShared == false
+						// || n.getInfo().getSharingAttribute(cell) == DataSharingAttribute.SHARED) {
+						// cellWriteList.add(cell);
+						// }
+						// }
+						// }
+						// } else {
+						// for (Cell cell : n.getInfo().getAllCellsAtNode()) {
+						// if (cell != null) {
+						// if (isForShared == false
+						// || n.getInfo().getSharingAttribute(cell) == DataSharingAttribute.SHARED) {
+						// cellWriteList.add(cell);
+						// }
+						// }
+						// }
+						// }
 					} else {
 						cellWriteList.add(Cell.genericCell);
 					}
@@ -1020,9 +1021,9 @@ public class CellAccessGetter {
 
 		/**
 		 * @param pointerSet:
-		 *            list of pointer cells.
+		 *                    list of pointer cells.
 		 * @param nodeList
-		 *            list of nodes.
+		 *                    list of nodes.
 		 * @return a set of symbols pointed to by elements of {@code pointerSet}
 		 */
 		@Deprecated
@@ -1053,9 +1054,9 @@ public class CellAccessGetter {
 
 		/**
 		 * @param pointerSet:
-		 *            List of pointer symbols
+		 *                    List of pointer symbols
 		 * @param nodeList
-		 *            list of nodes.
+		 *                    list of nodes.
 		 * @return a set of symbols pointed to by elements of (@code
 		 *         pointerSet}, and
 		 *         those pointed to by these symbols and so on...
@@ -1091,9 +1092,9 @@ public class CellAccessGetter {
 
 		/**
 		 * @param pointerSet:
-		 *            List of pointer symbols
+		 *                    List of pointer symbols
 		 * @param nodeList
-		 *            list of nodes.
+		 *                    list of nodes.
 		 * @return a set of symbols pointed to by elements of (@code
 		 *         pointerSet}, and
 		 *         those pointed to by these symbols and so on...
@@ -1175,7 +1176,8 @@ public class CellAccessGetter {
 			if (n.getF1().getNode() != null) {
 				addReads(n, ((NodeSequence) n.getF1().getNode()).getNodes().get(1).accept(this));
 			}
-			// This return null is correct -- the expression does not represent LHS location.
+			// This return null is correct -- the expression does not represent LHS
+			// location.
 			return null;
 		}
 
@@ -1504,14 +1506,14 @@ public class CellAccessGetter {
 		@Override
 		public CellList visit(Expression n) {
 			if (n.getExpF1().getNodes().isEmpty()) {
-				//				if (Misc.isAPredicate(n)) {
-				//					addReads(n, n.getExpF0().accept(this));
-				//					return null;
-				//				} else {
+				// if (Misc.isAPredicate(n)) {
+				// addReads(n, n.getExpF0().accept(this));
+				// return null;
+				// } else {
 				return n.getExpF0().accept(this);
-				//				}
+				// }
 			} else {
-				assert (false); //ExpressionSimplification should have removed the comma operator.
+				assert (false); // ExpressionSimplification should have removed the comma operator.
 				addReads(n, n.getExpF0().accept(this));
 				for (Node seq : n.getExpF1().getNodes()) {
 					assert seq instanceof NodeSequence;
@@ -1545,7 +1547,7 @@ public class CellAccessGetter {
 			if (operator.equals("=")) {
 				// UnaryExpression is only written to
 				addWrites(n, sym);
-				//addWrites(n, symList);
+				// addWrites(n, symList);
 			} else {
 				// UnaryExpression is both read and written
 				addReads(n, sym);
@@ -2016,15 +2018,15 @@ public class CellAccessGetter {
 				if (symList.isUniversal()) {
 					addRead(n, Cell.genericCell);
 					retList.add(Cell.genericCell);
-					//					Set<Cell> tempAllCells = Cell.allCells;
-					//					Cell.allCells = new HashSet<>();
-					//					for (Cell sym : tempAllCells) {
-					//						if (sym instanceof Symbol) {
-					//							cellReadList.add(((Symbol) sym).getAddressCell());
-					//						}
-					//					}
-					//					tempAllCells.addAll(Cell.allCells);
-					//					Cell.allCells = tempAllCells;
+					// Set<Cell> tempAllCells = Cell.allCells;
+					// Cell.allCells = new HashSet<>();
+					// for (Cell sym : tempAllCells) {
+					// if (sym instanceof Symbol) {
+					// cellReadList.add(((Symbol) sym).getAddressCell());
+					// }
+					// }
+					// tempAllCells.addAll(Cell.allCells);
+					// Cell.allCells = tempAllCells;
 				} else {
 					symList.applyAllExpanded(sym -> {
 						if (sym instanceof Symbol) {
@@ -2032,21 +2034,21 @@ public class CellAccessGetter {
 							addRead(n, s.getAddressCell());
 							retList.add(s.getAddressCell());
 							// Old code:
-							//							if (s.getType() instanceof ArrayType) {
-							//								addRead(n, s);
-							//								// Old Code:
-							//								//							} else if (s.getType() instanceof PointerType) {
-							//								//								// Field-insensitivity and pointer generation.
-							//								//								PointerType ptrType = (PointerType) s.getType();
-							//								//								if (!ptrType.isFromPointer()) {
-							//								//									addRead(n, s);
-							//								//									assert(false);
-							//								//								}
-							//								retList.add(s);
-							//							} else {
-							//								addRead(n, s.getAddressCell());
-							//								retList.add(s.getAddressCell());
-							//							}
+							// if (s.getType() instanceof ArrayType) {
+							// addRead(n, s);
+							// // Old Code:
+							// // } else if (s.getType() instanceof PointerType) {
+							// // // Field-insensitivity and pointer generation.
+							// // PointerType ptrType = (PointerType) s.getType();
+							// // if (!ptrType.isFromPointer()) {
+							// // addRead(n, s);
+							// // assert(false);
+							// // }
+							// retList.add(s);
+							// } else {
+							// addRead(n, s.getAddressCell());
+							// retList.add(s.getAddressCell());
+							// }
 						} else if (sym instanceof FieldCell) {
 							retList.add(((FieldCell) sym).getAggregateElement());
 						} else if (sym instanceof HeapCell) {
@@ -2065,11 +2067,11 @@ public class CellAccessGetter {
 					});
 				}
 				return retList;
-			//				// OLD CODE:
-			//				// *x refers to all those symbols which are pointed to by x,
-			//				// and it also reads from x.
-			//				addReads(n, symList);
-			//				return (new CellList(getOptimizedPointsToSet(symList, nodeList)));
+			// // OLD CODE:
+			// // *x refers to all those symbols which are pointed to by x,
+			// // and it also reads from x.
+			// addReads(n, symList);
+			// return (new CellList(getOptimizedPointsToSet(symList, nodeList)));
 			case "+":
 			case "-":
 			case "~":
@@ -2164,7 +2166,8 @@ public class CellAccessGetter {
 
 						symList = tempList;
 					} else if (opNode instanceof ArgumentList) {
-						//						assert (false); // Cannot have this operator here after expression simplification.
+						// assert (false); // Cannot have this operator here after expression
+						// simplification.
 						return null;
 					} else if (opNode instanceof DotId) {
 						// ||p|.id| = |p|
@@ -2224,7 +2227,7 @@ public class CellAccessGetter {
 			// Since we have performed expression simplification,
 			// we won't enter this operator.
 			assert (false);
-			//			n.getF1().accept(this);
+			// n.getF1().accept(this);
 			return null;
 		}
 
@@ -2309,7 +2312,8 @@ public class CellAccessGetter {
 
 		@Override
 		public CellList visit(CallStatement n) {
-			// AccessGetter should be called only on leaf nodes or their parts. CallStatement is NOT a leaf node now.
+			// AccessGetter should be called only on leaf nodes or their parts.
+			// CallStatement is NOT a leaf node now.
 			assert (false);
 			return null;
 		}
@@ -2349,10 +2353,10 @@ public class CellAccessGetter {
 			if (n.hasReturnReceiver()) {
 				addWrites(n, n.getReturnReceiver().accept(this));
 			}
-			//			CellList retList = new CellList();
-			//			CallStatement callStmt = (CallStatement) n.getParent();
-			//			retList.addAll(HeapCell.getHeapCells(callStmt));
-			//			return retList;
+			// CellList retList = new CellList();
+			// CallStatement callStmt = (CallStatement) n.getParent();
+			// retList.addAll(HeapCell.getHeapCells(callStmt));
+			// return retList;
 			return null;
 		}
 

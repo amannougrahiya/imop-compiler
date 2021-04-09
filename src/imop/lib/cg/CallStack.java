@@ -112,11 +112,11 @@ public class CallStack {
 		}
 	}
 	//
-	//	public Stack<CallStatement> getStackCopy() {
-	//		Stack<CallStatement> callStackCopy = new Stack<CallStatement>();
-	//		callStackCopy.addAll(callStack);
-	//		return callStackCopy;
-	//	}
+	// public Stack<CallStatement> getStackCopy() {
+	// Stack<CallStatement> callStackCopy = new Stack<CallStatement>();
+	// callStackCopy.addAll(callStack);
+	// return callStackCopy;
+	// }
 
 	/**
 	 * Informs whether this call stack object is context-sensitive in nature.
@@ -135,11 +135,11 @@ public class CallStack {
 	}
 
 	//
-	//	public Stack<CallStatement> getStackCopy() {
-	//		Stack<CallStatement> callStackCopy = new Stack<CallStatement>();
-	//		callStackCopy.addAll(callStack);
-	//		return callStackCopy;
-	//	}
+	// public Stack<CallStatement> getStackCopy() {
+	// Stack<CallStatement> callStackCopy = new Stack<CallStatement>();
+	// callStackCopy.addAll(callStack);
+	// return callStackCopy;
+	// }
 
 	@Override
 	public boolean equals(Object obj) {
@@ -152,17 +152,17 @@ public class CallStack {
 		} else {
 			return false;
 		}
-		//		if (this.callStack.size() != other.callStack.size()) {
-		//			return false;
-		//		}
-		//		for (CallStatement callStmtThis : callStack) {
-		//			int index = callStack.indexOf(callStmtThis);
-		//			CallStatement callStmtOther = other.callStack.get(index);
-		//			if (!callStmtThis.equals(callStmtOther)) {
-		//				return false;
-		//			}
-		//		}
-		//		return true;
+		// if (this.callStack.size() != other.callStack.size()) {
+		// return false;
+		// }
+		// for (CallStatement callStmtThis : callStack) {
+		// int index = callStack.indexOf(callStmtThis);
+		// CallStatement callStmtOther = other.callStack.get(index);
+		// if (!callStmtThis.equals(callStmtOther)) {
+		// return false;
+		// }
+		// }
+		// return true;
 	}
 
 	@Override
@@ -171,6 +171,6 @@ public class CallStack {
 		int result = 1;
 		result = prime * result + ((callStack == null) ? 0 : callStack.hashCode());
 		return result;
-		//		return Arrays.hashCode(new Object[] {this.callStack});
+		// return Arrays.hashCode(new Object[] {this.callStack});
 	}
 }

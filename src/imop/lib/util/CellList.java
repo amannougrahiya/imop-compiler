@@ -96,9 +96,9 @@ public class CellList extends CellCollection {
 				internalRepresentation.add(s);
 				this.freeVariableCount = Integer.MAX_VALUE;
 				this.containsUniversal = true;
-				//				this.freeVariableCount = getAllCells().stream().filter((x) -> {
-				//					return x instanceof FreeVariable;
-				//				}).toArray().length;
+				// this.freeVariableCount = getAllCells().stream().filter((x) -> {
+				// return x instanceof FreeVariable;
+				// }).toArray().length;
 				CellCollection.addCollectionToDerived(this);
 				return s;
 			}
@@ -138,9 +138,9 @@ public class CellList extends CellCollection {
 				internalRepresentation.add(s);
 				this.freeVariableCount = Integer.MAX_VALUE;
 				this.containsUniversal = true;
-				//				this.freeVariableCount = getAllCells().stream().filter((x) -> {
-				//					return x instanceof FreeVariable;
-				//				}).toArray().length;
+				// this.freeVariableCount = getAllCells().stream().filter((x) -> {
+				// return x instanceof FreeVariable;
+				// }).toArray().length;
 				CellCollection.addCollectionToDerived(this);
 				return true;
 			}
@@ -169,9 +169,9 @@ public class CellList extends CellCollection {
 			internalRepresentation.add(s);
 			this.freeVariableCount = Integer.MAX_VALUE;
 			this.containsUniversal = true;
-			//			this.freeVariableCount = getAllCells().stream().filter((x) -> {
-			//				return x instanceof FreeVariable;
-			//			}).toArray().length;
+			// this.freeVariableCount = getAllCells().stream().filter((x) -> {
+			// return x instanceof FreeVariable;
+			// }).toArray().length;
 			CellCollection.addCollectionToDerived(this);
 			return;
 		} else {
@@ -222,9 +222,9 @@ public class CellList extends CellCollection {
 				internalRepresentation = new LinkedList<>(getAllCells());
 				this.freeVariableCount = Integer.MAX_VALUE;
 				this.containsUniversal = false;
-				//				this.freeVariableCount = getAllCells().stream().filter((x) -> {
-				//					return x instanceof FreeVariable;
-				//				}).toArray().length;
+				// this.freeVariableCount = getAllCells().stream().filter((x) -> {
+				// return x instanceof FreeVariable;
+				// }).toArray().length;
 				internalRepresentation.remove(s);
 				if (s instanceof FreeVariable) {
 					freeVariableCount--;
@@ -308,9 +308,9 @@ public class CellList extends CellCollection {
 			internalRepresentation = new LinkedList<>(getAllCells());
 			this.freeVariableCount = Integer.MAX_VALUE;
 			this.containsUniversal = false;
-			//			this.freeVariableCount = getAllCells().stream().filter((x) -> {
-			//				return x instanceof FreeVariable;
-			//			}).toArray().length;
+			// this.freeVariableCount = getAllCells().stream().filter((x) -> {
+			// return x instanceof FreeVariable;
+			// }).toArray().length;
 			((LinkedList<Cell>) internalRepresentation).replaceAll(operator);
 			CellCollection.addCollectionToDerived(this);
 		} else {

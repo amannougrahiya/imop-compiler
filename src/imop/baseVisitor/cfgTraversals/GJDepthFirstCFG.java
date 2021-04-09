@@ -44,12 +44,12 @@ public abstract class GJDepthFirstCFG<R, A> extends GJDepthFirstProcess<R, A> {
 	 */
 	@Override
 	abstract public R visit(BeginNode n, A argu);
-	//	{
-	//		R _ret=null;
-	//		initProcess(n, argu);
-	//		endProcess(n, argu);
-	//		return _ret;
-	//	}
+	// {
+	// R _ret=null;
+	// initProcess(n, argu);
+	// endProcess(n, argu);
+	// return _ret;
+	// }
 
 	/**
 	 * Special Node

@@ -147,9 +147,9 @@ public class CellMap<V> extends AbstractMap<Cell, V> {
 	 * then the internal map is cleared and the new mapping is added to the map.
 	 * 
 	 * @param key
-	 *            key for the mapping to be added.
+	 *              key for the mapping to be added.
 	 * @param value
-	 *            value for the mapping to be added.
+	 *              value for the mapping to be added.
 	 * @return
 	 *         the value that is mapped to {@code key}. If no such mapping
 	 *         exists, then the value mapped to {@link getGenericCell()},
@@ -192,7 +192,7 @@ public class CellMap<V> extends AbstractMap<Cell, V> {
 	 * existing explicit cell mappings.
 	 * 
 	 * @param value
-	 *            value which a generic cell should be mapped to.
+	 *              value which a generic cell should be mapped to.
 	 * @return
 	 *         the old value that was mapped to the generic cell, else
 	 *         {@code null}.
@@ -385,7 +385,7 @@ public class CellMap<V> extends AbstractMap<Cell, V> {
 		for (FreeVariable f : freeCells) {
 			Symbol sym = Misc.getSymbolEntry(f.getFreeVariableName(), f.getNodeToken());
 			if (sym != null) {
-				//				CellCollection.removeCellFromDerivedCollections(f);
+				// CellCollection.removeCellFromDerivedCollections(f);
 				this.put(sym, this.internalRepresentation.get(f));
 				this.remove(f);
 			}
@@ -401,7 +401,7 @@ public class CellMap<V> extends AbstractMap<Cell, V> {
 		}
 		Symbol sym = Misc.getSymbolEntry(((FreeVariable) o).getFreeVariableName(), ((FreeVariable) o).getNodeToken());
 		if (sym != null) {
-			//			CellCollection.removeCellFromDerivedCollections(o);
+			// CellCollection.removeCellFromDerivedCollections(o);
 			V value = this.internalRepresentation.get(o);
 			this.internalRepresentation.remove(o);
 			freeVariableCount--;
@@ -417,17 +417,22 @@ public class CellMap<V> extends AbstractMap<Cell, V> {
 	 * provided by {@code mergeMethod}.
 	 * 
 	 * @param thatMap
-	 *            map, of same value type, which needs to be merged into this
-	 *            map.
+	 *                      map, of same value type, which needs to be merged into
+	 *                      this
+	 *                      map.
 	 * @param mergeMethod
-	 *            a binary operator, that takes two arguments and returns a
-	 *            value of the same type. This lambda is used to specify the
-	 *            merge operation given two elements from the co-domain of this
-	 *            map. Note that this method should take care of {@code null}
-	 *            values as well (for the first argument).
+	 *                      a binary operator, that takes two arguments and returns
+	 *                      a
+	 *                      value of the same type. This lambda is used to specify
+	 *                      the
+	 *                      merge operation given two elements from the co-domain of
+	 *                      this
+	 *                      map. Note that this method should take care of
+	 *                      {@code null}
+	 *                      values as well (for the first argument).
 	 * @param selectedCells
-	 *            set of cells for which merge has to be performed; value
-	 *            {@code null} represents all cells.
+	 *                      set of cells for which merge has to be performed; value
+	 *                      {@code null} represents all cells.
 	 * @return
 	 *         true, if this method changed the state (except for the internal
 	 *         free variable to symbol conversions) of the receiver object.
@@ -446,7 +451,8 @@ public class CellMap<V> extends AbstractMap<Cell, V> {
 			}
 			V thatValue = thatMap.get(thatCell);
 			V thisValue = thisMap.get(thatCell);
-			// Note that thisValue may be null. We assume that mergeMethod takes care of that.
+			// Note that thisValue may be null. We assume that mergeMethod takes care of
+			// that.
 			V newValue = mergeMethod.apply(thisValue, thatValue);
 			if (!newValue.equals(thisValue)) {
 				changed = true;
@@ -488,7 +494,8 @@ public class CellMap<V> extends AbstractMap<Cell, V> {
 			} else {
 				// Handle implicit cells of thisMap.
 				V thisGenericValue = thisMap.get(Cell.genericCell);
-				// Note that thisGenericValye may be null. We assume that mergeMethod takes care of this issue.
+				// Note that thisGenericValye may be null. We assume that mergeMethod takes care
+				// of this issue.
 				V newGenericValue = mergeMethod.apply(thisGenericValue, thatGenericValue);
 				if (!newGenericValue.equals(thisGenericValue)) {
 					changed = true;

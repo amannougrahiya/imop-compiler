@@ -22,12 +22,8 @@ public class IncompleteEdge extends Annotation {
 	private final CaseLabel caseLabel;
 
 	public static enum TypeOfIncompleteness {
-		UNKNOWN_CASE_SOURCE,
-		UNKNOWN_DEFAULT_SOURCE,
-		UNKNOWN_GOTO_DESTINATION,
-		UNKNOWN_BREAK_DESTINATION,
-		UNKNOWN_CONTINUE_DESTINATION,
-		UNKNOWN_RETURN_DESTINATION
+		UNKNOWN_CASE_SOURCE, UNKNOWN_DEFAULT_SOURCE, UNKNOWN_GOTO_DESTINATION, UNKNOWN_BREAK_DESTINATION,
+		UNKNOWN_CONTINUE_DESTINATION, UNKNOWN_RETURN_DESTINATION
 	}
 
 	public IncompleteEdge(TypeOfIncompleteness typeOfIncompleteness, Node incompleteNode) {

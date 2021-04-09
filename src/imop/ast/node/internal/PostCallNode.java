@@ -69,44 +69,45 @@ public class PostCallNode extends Node {
 		return (CallStatement) super.getParent();
 	}
 
-	//	@Override
-	//	public boolean equals(Object obj) {
-	//		if (obj == null) {
-	//			return false;
-	//		}
-	//		if (!(obj instanceof PostCallNode)) {
-	//			return false;
-	//		}
-	//		PostCallNode that = (PostCallNode) obj;
-	//		if (this.returnReceiver == null) {
-	//			if (that.returnReceiver == null) {
-	//				return true;
-	//			} else {
-	//				return false;
-	//			}
-	//		}
-	//		if (that.returnReceiver == null) {
-	//			if (this.returnReceiver == null) {
-	//				return true;
-	//			} else {
-	//				return false;
-	//			}
-	//		}
-	//		if (this.returnReceiver.equals(that.returnReceiver)) {
-	//			return true;
-	//		} else {
-	//			return false;
-	//		}
-	//	}
+	// @Override
+	// public boolean equals(Object obj) {
+	// if (obj == null) {
+	// return false;
+	// }
+	// if (!(obj instanceof PostCallNode)) {
+	// return false;
+	// }
+	// PostCallNode that = (PostCallNode) obj;
+	// if (this.returnReceiver == null) {
+	// if (that.returnReceiver == null) {
+	// return true;
+	// } else {
+	// return false;
+	// }
+	// }
+	// if (that.returnReceiver == null) {
+	// if (this.returnReceiver == null) {
+	// return true;
+	// } else {
+	// return false;
+	// }
+	// }
+	// if (this.returnReceiver.equals(that.returnReceiver)) {
+	// return true;
+	// } else {
+	// return false;
+	// }
+	// }
 	//
-	//	@Override
-	//	public int hashCode() {
-	//		final int prime = 31;
-	//		int result = 1;
-	//		result = prime * result + ((this.returnReceiver == null) ? 0 : this.returnReceiver.hashCode());
-	//		return result;
-	//		//		return Arrays.hashCode(new Object[]{this.returnReceiver});
-	//	}
+	// @Override
+	// public int hashCode() {
+	// final int prime = 31;
+	// int result = 1;
+	// result = prime * result + ((this.returnReceiver == null) ? 0 :
+	// this.returnReceiver.hashCode());
+	// return result;
+	// // return Arrays.hashCode(new Object[]{this.returnReceiver});
+	// }
 
 	@Override
 	public void accept(Visitor v) {

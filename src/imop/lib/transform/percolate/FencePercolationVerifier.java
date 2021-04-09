@@ -28,7 +28,7 @@ public class FencePercolationVerifier {
 	 * fences in {@code ph}.
 	 * 
 	 * @param ph
-	 *            a phase to be tested.
+	 *           a phase to be tested.
 	 * @return
 	 *         true if we do not need to perform any validation checks while
 	 *         moving code around fences in the given phase {@code ph}.
@@ -160,9 +160,9 @@ public class FencePercolationVerifier {
 	 * {@code n1} and {@code n2}.
 	 * 
 	 * @param n1
-	 *            a CFG node.
+	 *           a CFG node.
 	 * @param n2
-	 *            a CFG node.
+	 *           a CFG node.
 	 * @return
 	 *         true, if an intra-task intra-phase path may exits between n1 and
 	 *         n2.
@@ -192,9 +192,9 @@ public class FencePercolationVerifier {
 	 * swapped.
 	 * 
 	 * @param n1
-	 *            a CFG node.
+	 *           a CFG node.
 	 * @param n2
-	 *            a CFG node.
+	 *           a CFG node.
 	 * @return
 	 *         true, if an intra-task intra-phase path may exits between n1 and
 	 *         n2, such that {@code n1} and {@code n2} can be swapped along this

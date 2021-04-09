@@ -33,8 +33,8 @@ public class SplitCombinedConstructs {
 	 * enclosed within an OmpConstruct, then no such changes are employed.
 	 * 
 	 * @param node
-	 *            a node from within which all combined constructs need to be
-	 *            split into nesting of simpler constructs.
+	 *             a node from within which all combined constructs need to be
+	 *             split into nesting of simpler constructs.
 	 */
 	public static void splitCombinedConstructsWithin(Node node) {
 		Set<Class<? extends Node>> classList = new HashSet<>();
@@ -141,7 +141,7 @@ public class SplitCombinedConstructs {
 					|| clause instanceof OmpFirstPrivateClause || clause instanceof OmpLastPrivateClause
 					|| clause instanceof OmpSharedClause || clause instanceof OmpCopyinClause
 					|| clause instanceof OmpDfltSharedClause || clause instanceof OmpDfltNoneClause
-			//					|| clause instanceof OmpReductionClause) {}
+			// || clause instanceof OmpReductionClause) {}
 			) {
 				parSpecificClauses.append(" " + clause.getInfo().getString() + " ");
 			} else {
@@ -161,12 +161,13 @@ public class SplitCombinedConstructs {
 			e.printStackTrace();
 		}
 		ParallelConstruct parCons = (ParallelConstruct) Misc.getCFGNodeFor(parConsOmpConstruct);
-		//		/*
-		//		 * Now, let's try to trigger automated update by using elementary transformations.
-		//		 */
-		//		Statement nullStmt = FrontEnd.parseAndNormalize(";", Statement.class);
-		//		NodeReplacer.replaceNodes(parCons, nullStmt);
-		//		NodeReplacer.replaceNodes(nullStmt, parCons);
+		// /*
+		// * Now, let's try to trigger automated update by using elementary
+		// transformations.
+		// */
+		// Statement nullStmt = FrontEnd.parseAndNormalize(";", Statement.class);
+		// NodeReplacer.replaceNodes(parCons, nullStmt);
+		// NodeReplacer.replaceNodes(nullStmt, parCons);
 
 		SectionsConstruct secCons = FrontEnd.parseAndNormalize(
 				"\n#pragma omp sections " + secSpecificClauses + "\n" + "{}", SectionsConstruct.class);

@@ -24,7 +24,7 @@ import java.util.Set;
 public class MainProject {
 
 	public static void main(String[] args) {
-		args = new String[] { "-f", "runner/cgo-eg/example.c", "-nru"};
+		args = new String[] { "-f", "runner/cgo-eg/example.c", "-nru" };
 		Program.parseNormalizeInput(args);
 		/*
 		 * Check if a barrier-directive is required to preserve
@@ -46,8 +46,7 @@ public class MainProject {
 	public static void demo9() {
 		for (BarrierDirective barrier : Misc.getInheritedEncloseeList(Program.getRoot(), BarrierDirective.class)) {
 			Set<Phase> allPhaseSet = new HashSet<>();
-			for (ParallelConstruct parConsNode : Misc.getExactEnclosee(Program.getRoot(),
-					ParallelConstruct.class)) {
+			for (ParallelConstruct parConsNode : Misc.getExactEnclosee(Program.getRoot(), ParallelConstruct.class)) {
 				allPhaseSet.addAll((Collection<? extends Phase>) parConsNode.getInfo().getConnectedPhases());
 			}
 			Set<Phase> phasesAbove = (Set<Phase>) barrier.getInfo().getNodePhaseInfo().getPhaseSet();

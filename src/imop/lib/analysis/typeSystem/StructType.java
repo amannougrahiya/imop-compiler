@@ -67,10 +67,11 @@ public class StructType extends DerivedType implements Scopeable {
 		this.typeTable = typeTable;
 	}
 
-	//	public void populateTypeTable() {
-	//		setTypeTable(new HashMap<String, Type>());
-	//		Type.getTypeTree((Declaration) Misc.getEnclosingNode(this.definingNode, Declaration.class));
-	//	}
+	// public void populateTypeTable() {
+	// setTypeTable(new HashMap<String, Type>());
+	// Type.getTypeTree((Declaration) Misc.getEnclosingNode(this.definingNode,
+	// Declaration.class));
+	// }
 
 	@Override
 	public HashMap<String, Type> getTypeTable() {

@@ -45,7 +45,7 @@ public class AssignmentGetter {
 	 * ExpressionTree has been created for all the parsed Expressions.
 	 * 
 	 * @param node
-	 *            node for which the possible {@link Assignment}s are required.
+	 *             node for which the possible {@link Assignment}s are required.
 	 * @return
 	 *         a list of {@link Assignment}s that may get executed, and are
 	 *         lexically present within the node {@code node}.
@@ -95,7 +95,7 @@ public class AssignmentGetter {
 	 * ExpressionTree has been created for all the parsed Expressions.
 	 * 
 	 * @param node
-	 *            node for which the possible {@link Assignment}s are required.
+	 *             node for which the possible {@link Assignment}s are required.
 	 * @return
 	 *         a list of {@link Assignment}s that may get executed, and are
 	 *         reachable within the node {@code node} (or its called functions).
@@ -240,8 +240,8 @@ public class AssignmentGetter {
 				if (paramList.size() == 1 && paramList.get(0).toString().trim().equals("void")) {
 					paramList = new ArrayList<>();
 				}
-				assert (paramList.size() == n.getArgumentList().size()) : "Parameter list " + paramList
-						+ " does not match with " + n.getArgumentList();
+				assert (paramList.size() == n.getArgumentList().size())
+						: "Parameter list " + paramList + " does not match with " + n.getArgumentList();
 				int index = 0;
 				for (SimplePrimaryExpression spe : n.getArgumentList()) {
 					ParameterDeclaration param = paramList.get(index);

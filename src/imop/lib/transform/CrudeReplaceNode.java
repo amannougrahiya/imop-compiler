@@ -26,8 +26,11 @@ public class CrudeReplaceNode {
 	 * @return
 	 */
 	public static <T extends Node> boolean replace(T oldNode, T newNode) {
-		//		assert (oldNode.getClass().getSimpleName().equals(newNode.getClass().getSimpleName())) : "Trying to replace a "
-		//				+ oldNode.getClass().getSimpleName() + " with a " + newNode.getClass().getSimpleName() + "!";
+		// assert
+		// (oldNode.getClass().getSimpleName().equals(newNode.getClass().getSimpleName()))
+		// : "Trying to replace a "
+		// + oldNode.getClass().getSimpleName() + " with a " +
+		// newNode.getClass().getSimpleName() + "!";
 		Node parent = oldNode.getParent();
 		CrudeNodeReplacer replacer = new CrudeNodeReplacer(oldNode, newNode);
 		if (parent == null) {

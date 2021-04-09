@@ -68,7 +68,7 @@ public class EndPhasePoint extends PhasePoint {
 	@Override
 	public Set<Node> getReachableNodes() {
 		Thread.dumpStack();
-	    Misc.exitDueToError("We don't require reachable nodes for an EndPhasePoint!");
+		Misc.exitDueToError("We don't require reachable nodes for an EndPhasePoint!");
 		return null;
 	}
 

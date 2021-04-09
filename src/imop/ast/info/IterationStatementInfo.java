@@ -13,37 +13,39 @@ import imop.lib.util.Misc;
 
 public class IterationStatementInfo extends StatementInfo {
 
-    public IterationStatementInfo(Node owner) {
-        super(owner);
-    }
+	public IterationStatementInfo(Node owner) {
+		super(owner);
+	}
 
-    //	public int getCurrentUnrollFactor() {
-    //		return currentUnrollFactor;
-    //	}
-    //
-    //	public void incrementUnrollFactor() {
-    //		currentUnrollFactor++;
-    //	}
-    //
-    //	public void decremenetUnrollFactor() {
-    //		currentUnrollFactor--;
-    //	}
-    //
-    //	public IterationStatement getOriginalLoopBody() {
-    //		return originalLoopBody;
-    //	}
-    //
-    //	public void setOriginalLoopBody(IterationStatement originalLoopBody) {
-    //		this.originalLoopBody = originalLoopBody;
-    //	}
-    //
-    public void unrollLoop(int unrollingFactor) {
-        Misc.exitDueToLackOfFeature("No implementation found to unroll the loop: " + this.getNode() + " of type " + this.getNode().getClass().getSimpleName());
-    }
+	// public int getCurrentUnrollFactor() {
+	// return currentUnrollFactor;
+	// }
+	//
+	// public void incrementUnrollFactor() {
+	// currentUnrollFactor++;
+	// }
+	//
+	// public void decremenetUnrollFactor() {
+	// currentUnrollFactor--;
+	// }
+	//
+	// public IterationStatement getOriginalLoopBody() {
+	// return originalLoopBody;
+	// }
+	//
+	// public void setOriginalLoopBody(IterationStatement originalLoopBody) {
+	// this.originalLoopBody = originalLoopBody;
+	// }
+	//
+	public void unrollLoop(int unrollingFactor) {
+		Misc.exitDueToLackOfFeature("No implementation found to unroll the loop: " + this.getNode() + " of type "
+				+ this.getNode().getClass().getSimpleName());
+	}
 
-    public Node getLoopEntryPoint() {
-        assert (false) : "Attempted invocation of getLoopEntryPoint on a loop that is not a do-while-, while-, or for-loop.";
-        return null;
-    }
+	public Node getLoopEntryPoint() {
+		assert (false)
+				: "Attempted invocation of getLoopEntryPoint on a loop that is not a do-while-, while-, or for-loop.";
+		return null;
+	}
 
 }

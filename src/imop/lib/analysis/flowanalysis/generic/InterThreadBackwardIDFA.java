@@ -186,8 +186,8 @@ public abstract class InterThreadBackwardIDFA<F extends FlowFact> extends GJDept
 	 * already present.</i>
 	 * 
 	 * @param funcDef
-	 *            function-definition on which this analysis has to be
-	 *            performed.
+	 *                function-definition on which this analysis has to be
+	 *                performed.
 	 */
 	public void run(FunctionDefinition funcDef) {
 		this.fuseSet = new HashSet<>();
@@ -195,7 +195,7 @@ public abstract class InterThreadBackwardIDFA<F extends FlowFact> extends GJDept
 		this.computeSet.clear();
 		this.computeSet.add(new NodeStatePair(endNode, false));
 		this.processBackwardIteratively();
-		//		this.processNodeBackward(endNode);
+		// this.processNodeBackward(endNode);
 	}
 
 	/**
@@ -206,7 +206,7 @@ public abstract class InterThreadBackwardIDFA<F extends FlowFact> extends GJDept
 	 * already present.</i>
 	 * 
 	 * @param computeSet
-	 *            a set of nodes which must be (re)analyzed.
+	 *                   a set of nodes which must be (re)analyzed.
 	 */
 	public void modularUpdateIDFA(Set<Node> computeSet) {
 		InterThreadBackwardIDFA.programHasBeenUpdated = true;
@@ -239,7 +239,7 @@ public abstract class InterThreadBackwardIDFA<F extends FlowFact> extends GJDept
 			FunctionDefinitionInfo mainInfo = Program.getRoot().getInfo().getMainFunction().getInfo();
 			this.computeSet.add(new NodeStatePair(mainInfo.getCFGInfo().getNestedCFG().getEnd(), false));
 			this.processBackwardIteratively();
-			//			this.run(computeSet);
+			// this.run(computeSet);
 		}
 	}
 
@@ -257,7 +257,7 @@ public abstract class InterThreadBackwardIDFA<F extends FlowFact> extends GJDept
 	 * Process the predecessors, if needed.
 	 * 
 	 * @param node
-	 *            node that has to be processed by this IDFA analysis.
+	 *             node that has to be processed by this IDFA analysis.
 	 */
 	@SuppressWarnings("unchecked")
 	protected void processNodeBackward(Node node, boolean stateINChanged) {
@@ -303,45 +303,49 @@ public abstract class InterThreadBackwardIDFA<F extends FlowFact> extends GJDept
 		// Step 3: Process the successors, if needed.
 		if (((newOUT == newIN) && stateINChanged) || (oldIN == null || !newIN.isEqualTo(oldIN))) {
 			for (IDFAEdge idfaEdge : this.getInterTaskLeafPredecessors(node)) {
-				//				Node predecessor = idfaEdge.getNode();
-				//				Set<Node> predSuccs = predecessor.getInfo().getCFGInfo().getInterTaskLeafSuccessorNodes();
-				//				if (predSuccs.size() == 1) {
-				//					this.computeSet.add(new NodeStatePair(idfaEdge.getNode(), stateINChanged));
-				//					// Old code.
-				//					//					F predOUT = (F) predecessor.getInfo().getOUT(analysisName);
-				//					//					if (predOUT == newIN) {
-				//					//						this.computeSet.add(new NodeStatePair(idfaEdge.getNode(), true));
-				//					//					} else {
-				//					//						//						this.computeSet.add(new NodeStatePair(idfaEdge.getNode(), false));
-				//					//						this.computeSet.add(new NodeStatePair(idfaEdge.getNode(), stateINChanged));
-				//					//					}
-				//				} else {
+				// Node predecessor = idfaEdge.getNode();
+				// Set<Node> predSuccs =
+				// predecessor.getInfo().getCFGInfo().getInterTaskLeafSuccessorNodes();
+				// if (predSuccs.size() == 1) {
+				// this.computeSet.add(new NodeStatePair(idfaEdge.getNode(), stateINChanged));
+				// // Old code.
+				// // F predOUT = (F) predecessor.getInfo().getOUT(analysisName);
+				// // if (predOUT == newIN) {
+				// // this.computeSet.add(new NodeStatePair(idfaEdge.getNode(), true));
+				// // } else {
+				// // // this.computeSet.add(new NodeStatePair(idfaEdge.getNode(), false));
+				// // this.computeSet.add(new NodeStatePair(idfaEdge.getNode(),
+				// stateINChanged));
+				// // }
+				// } else {
 				this.computeSet.add(new NodeStatePair(idfaEdge.getNode(), false));
-				//				}
+				// }
 			}
 		}
 		// Old Code: Now this is done in the visit of BarrierDirective, if required.
-		//		/*
-		//		 * Step 4: If node is a BarrierDirective, and if its IN has changed,
-		//		 * re-evaluate equations for OUT of sibling barriers.
-		//		 */
+		// /*
+		// * Step 4: If node is a BarrierDirective, and if its IN has changed,
+		// * re-evaluate equations for OUT of sibling barriers.
+		// */
 		//
-		//		if (node instanceof BarrierDirective) {
-		//			if ((oldOUT == null || !oldOUT.isEqualTo(newOUT)) && (!newOUT.isEqualTo(this.topElement))) {
-		//				for (Phase ph : node.getInfo().getNodePhaseInfo().getPhaseSetCopy()) {
-		//					for (PhasePoint endingPhasePoint : ph.getEndPointsCopy()) {
-		//						if (!(endingPhasePoint.getNode() instanceof BarrierDirective)) {
-		//							continue;
-		//						}
-		//						BarrierDirective siblingBarrier = (BarrierDirective) endingPhasePoint.getNode();
-		//						if (node == siblingBarrier) {
-		//							continue;
-		//						}
-		//						this.computeSet.add(siblingBarrier);
-		//					}
-		//				}
-		//			}
-		//		}
+		// if (node instanceof BarrierDirective) {
+		// if ((oldOUT == null || !oldOUT.isEqualTo(newOUT)) &&
+		// (!newOUT.isEqualTo(this.topElement))) {
+		// for (Phase ph : node.getInfo().getNodePhaseInfo().getPhaseSetCopy()) {
+		// for (PhasePoint endingPhasePoint : ph.getEndPointsCopy()) {
+		// if (!(endingPhasePoint.getNode() instanceof BarrierDirective)) {
+		// continue;
+		// }
+		// BarrierDirective siblingBarrier = (BarrierDirective)
+		// endingPhasePoint.getNode();
+		// if (node == siblingBarrier) {
+		// continue;
+		// }
+		// this.computeSet.add(siblingBarrier);
+		// }
+		// }
+		// }
+		// }
 	}
 
 	/**
@@ -653,14 +657,15 @@ public abstract class InterThreadBackwardIDFA<F extends FlowFact> extends GJDept
 	 * flow-function of the write to the parameter that happens implicitly.
 	 * 
 	 * @param parameter
-	 *            a {@code ParameterDeclaration} which needs to be assigned with
-	 *            the {@code argument}.
+	 *                    a {@code ParameterDeclaration} which needs to be assigned
+	 *                    with
+	 *                    the {@code argument}.
 	 * @param argument
-	 *            a {@code SimplePrimaryExpression} which is assigned to the
-	 *            {@code parameter}.
+	 *                    a {@code SimplePrimaryExpression} which is assigned to the
+	 *                    {@code parameter}.
 	 * @param flowFactOUT
-	 *            the IN flow-fact for the implicit assignment of the
-	 *            {@code argument} to the {@code parameter}.
+	 *                    the IN flow-fact for the implicit assignment of the
+	 *                    {@code argument} to the {@code parameter}.
 	 * @return
 	 *         the OUT flow-fact, as a result of the implicit assignment of the
 	 *         {@code argument} to the {@code parameter}.
@@ -939,9 +944,9 @@ public abstract class InterThreadBackwardIDFA<F extends FlowFact> extends GJDept
 	@Override
 	public F visit(BeginNode n, F flowFactOUT) {
 		return flowFactOUT;
-		//		F flowFactIN;
-		//		flowFactIN = initProcess(n, flowFactOUT);
-		//		return flowFactIN;
+		// F flowFactIN;
+		// flowFactIN = initProcess(n, flowFactOUT);
+		// return flowFactIN;
 	}
 
 	/**
@@ -950,9 +955,9 @@ public abstract class InterThreadBackwardIDFA<F extends FlowFact> extends GJDept
 	@Override
 	public F visit(EndNode n, F flowFactOUT) {
 		return flowFactOUT;
-		//		F flowFactIN;
-		//		flowFactIN = initProcess(n, flowFactOUT);
-		//		return flowFactIN;
+		// F flowFactIN;
+		// flowFactIN = initProcess(n, flowFactOUT);
+		// return flowFactIN;
 	}
 
 	/**
@@ -981,7 +986,7 @@ public abstract class InterThreadBackwardIDFA<F extends FlowFact> extends GJDept
 	 * this {@code node}.
 	 * 
 	 * @param node
-	 *            node whose successors have to be found.
+	 *             node whose successors have to be found.
 	 * @return
 	 *         a set of successor nodes for this {@code node}, along with
 	 *         symbols via which information may flow on the edge connecting the
@@ -1012,7 +1017,7 @@ public abstract class InterThreadBackwardIDFA<F extends FlowFact> extends GJDept
 	 * this {@code node}.
 	 * 
 	 * @param node
-	 *            node whose predecessors have to be found.
+	 *             node whose predecessors have to be found.
 	 * @return
 	 *         a set of predecessor nodes for this {@code node}, along with
 	 *         symbols via which information may flow on the edge connecting the
@@ -1036,62 +1041,65 @@ public abstract class InterThreadBackwardIDFA<F extends FlowFact> extends GJDept
 		return node.getInfo().getCFGInfo().getInterTaskLeafPredecessorEdges(this.analysisDimension.getSVEDimension());
 	}
 
-	//	/**
-	//	 * Perform the analysis, starting at the end node of the function
-	//	 * {@code funcDef}.<br>
-	//	 * <i>Note that this method does not clear the analysis information, if
-	//	 * already present.</i>
-	//	 * 
-	//	 * @param funcDef
-	//	 *            function-definition on which this analysis has to be
-	//	 *            performed.
-	//	 */
-	//	@Deprecated
-	//	public void runButFuse(FunctionDefinition funcDef, Set<Node> fuseSet) {
-	//		this.fuseSet = fuseSet;
-	//		EndNode endNode = funcDef.getInfo().getCFGInfo().getNestedCFG().getEnd();
-	//		this.computeSet.clear();
-	//		this.computeSet.add(endNode);
-	//		this.processBackwardIteratively();
-	//		//		this.processNodeBackward(endNode);
-	//	}
+	// /**
+	// * Perform the analysis, starting at the end node of the function
+	// * {@code funcDef}.<br>
+	// * <i>Note that this method does not clear the analysis information, if
+	// * already present.</i>
+	// *
+	// * @param funcDef
+	// * function-definition on which this analysis has to be
+	// * performed.
+	// */
+	// @Deprecated
+	// public void runButFuse(FunctionDefinition funcDef, Set<Node> fuseSet) {
+	// this.fuseSet = fuseSet;
+	// EndNode endNode = funcDef.getInfo().getCFGInfo().getNestedCFG().getEnd();
+	// this.computeSet.clear();
+	// this.computeSet.add(endNode);
+	// this.processBackwardIteratively();
+	// // this.processNodeBackward(endNode);
+	// }
 	//
-	//	/**
-	//	 * Start this analysis from all the nodes of {@code computeSet}.
-	//	 * Computation of these nodes may trigger computations of other nodes as
-	//	 * well.<br>
-	//	 * <i>Note that this method does not clear the analysis information, if
-	//	 * already present.</i>
-	//	 * 
-	//	 * @param computeSet
-	//	 *            a set of nodes which must be (re)analyzed.
-	//	 */
-	//	@Deprecated
-	//	public void runButFuse(Set<Node> computeSet, Set<Node> fuseSet) {
-	//		this.fuseSet = fuseSet;
-	//		this.computeSet = computeSet;
-	//		this.processBackwardIteratively();
-	//		//		for (Node node : computeSet) {
-	//		//			this.processNodeBackward(node);
-	//		//		}
-	//	}
+	// /**
+	// * Start this analysis from all the nodes of {@code computeSet}.
+	// * Computation of these nodes may trigger computations of other nodes as
+	// * well.<br>
+	// * <i>Note that this method does not clear the analysis information, if
+	// * already present.</i>
+	// *
+	// * @param computeSet
+	// * a set of nodes which must be (re)analyzed.
+	// */
+	// @Deprecated
+	// public void runButFuse(Set<Node> computeSet, Set<Node> fuseSet) {
+	// this.fuseSet = fuseSet;
+	// this.computeSet = computeSet;
+	// this.processBackwardIteratively();
+	// // for (Node node : computeSet) {
+	// // this.processNodeBackward(node);
+	// // }
+	// }
 	//
-	//	/**
-	//	 * Perform this analysis on all the functions.<br>
-	//	 * <i>Note that this method does not clear the analysis information, if
-	//	 * already present.</i>
-	//	 */
-	//	@Deprecated
-	//	public void runButFuse(Set<Node> fuseSet) {
-	//		if (this.analysisDimension.getProceduralDimension() == ProceduralDimension.INTRA_PROCEDURAL) {
-	//			for (Node funcDefNode : Misc.getInheritedEnclosee(Main.root, FunctionDefinition.class)) {
-	//				this.run((FunctionDefinition) funcDefNode);
-	//			}
-	//		} else {
-	//			this.computeSet.clear();
-	//			FunctionDefinitionInfo mainInfo = Main.root.getInfo().getMainFunction().getInfo();
-	//			this.computeSet.add(mainInfo.getCFGInfo().getNestedCFG().getBegin());
-	//			this.runButFuse(computeSet, fuseSet);
-	//		}
-	//	}
+	// /**
+	// * Perform this analysis on all the functions.<br>
+	// * <i>Note that this method does not clear the analysis information, if
+	// * already present.</i>
+	// */
+	// @Deprecated
+	// public void runButFuse(Set<Node> fuseSet) {
+	// if (this.analysisDimension.getProceduralDimension() ==
+	// ProceduralDimension.INTRA_PROCEDURAL) {
+	// for (Node funcDefNode : Misc.getInheritedEnclosee(Main.root,
+	// FunctionDefinition.class)) {
+	// this.run((FunctionDefinition) funcDefNode);
+	// }
+	// } else {
+	// this.computeSet.clear();
+	// FunctionDefinitionInfo mainInfo =
+	// Main.root.getInfo().getMainFunction().getInfo();
+	// this.computeSet.add(mainInfo.getCFGInfo().getNestedCFG().getBegin());
+	// this.runButFuse(computeSet, fuseSet);
+	// }
+	// }
 }

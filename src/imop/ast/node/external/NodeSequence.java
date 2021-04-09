@@ -98,7 +98,7 @@ public class NodeSequence extends NodeListClass {
 	}
 
 	public void setNodes(List<Node> nodes) {
-		for (Node n: nodes) {
+		for (Node n : nodes) {
 			n.setParent(this);
 		}
 		this.nodes = nodes;

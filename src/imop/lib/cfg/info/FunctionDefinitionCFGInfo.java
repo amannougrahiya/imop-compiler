@@ -39,24 +39,27 @@ public class FunctionDefinitionCFGInfo extends CFGInfo {
 		}
 
 		// OLD Code
-		//		FunctionDefinition owner = (FunctionDefinition) this.owner;
-		//		ParameterTypeListClosed paramTypeListClosed = (ParameterTypeListClosed) Misc
-		//				.getSingleton(Misc.getInheritedEnclosee(owner.f1, ParameterTypeListClosed.class));
+		// FunctionDefinition owner = (FunctionDefinition) this.owner;
+		// ParameterTypeListClosed paramTypeListClosed = (ParameterTypeListClosed) Misc
+		// .getSingleton(Misc.getInheritedEnclosee(owner.f1,
+		// ParameterTypeListClosed.class));
 		//
-		//		NodeListOptional newNodeListOptional = new NodeListOptional();
-		//		for (ParameterDeclaration newParam : parameterDeclarations) {
-		//			int index = parameterDeclarations.indexOf(newParam);
-		//			if (index != 0) {
-		//				NodeSequence nodeSeq = new NodeSequence(2);
-		//				nodeSeq.addNode(new NodeToken(","));
-		//				nodeSeq.addNode(newParam);
-		//				newNodeListOptional.addNode(nodeSeq);
-		//			}
-		//		}
-		//		ParameterList paramList = new ParameterList(parameterDeclarations.get(0), newNodeListOptional);
-		//		ParameterTypeList newParameterTypeList = new ParameterTypeList(paramList, new NodeOptional());
-		//		newParameterTypeList.parent = paramTypeListClosed.f1;
-		//		paramTypeListClosed.f1.node = newParameterTypeList;
+		// NodeListOptional newNodeListOptional = new NodeListOptional();
+		// for (ParameterDeclaration newParam : parameterDeclarations) {
+		// int index = parameterDeclarations.indexOf(newParam);
+		// if (index != 0) {
+		// NodeSequence nodeSeq = new NodeSequence(2);
+		// nodeSeq.addNode(new NodeToken(","));
+		// nodeSeq.addNode(newParam);
+		// newNodeListOptional.addNode(nodeSeq);
+		// }
+		// }
+		// ParameterList paramList = new ParameterList(parameterDeclarations.get(0),
+		// newNodeListOptional);
+		// ParameterTypeList newParameterTypeList = new ParameterTypeList(paramList, new
+		// NodeOptional());
+		// newParameterTypeList.parent = paramTypeListClosed.f1;
+		// paramTypeListClosed.f1.node = newParameterTypeList;
 	}
 
 	public List<ParameterDeclaration> getParameterDeclarationList() {
@@ -91,8 +94,8 @@ public class FunctionDefinitionCFGInfo extends CFGInfo {
 	 * corresponding FunctionDefinition.
 	 * 
 	 * @param paramDecl
-	 *            parameter that has to be removed from the corresponding
-	 *            FunctionDefinition.
+	 *                  parameter that has to be removed from the corresponding
+	 *                  FunctionDefinition.
 	 * @return
 	 *         true, if the parameter could have been removed from the list of
 	 *         parameters.
@@ -209,7 +212,7 @@ public class FunctionDefinitionCFGInfo extends CFGInfo {
 		AutomatedUpdater.flushCaches();
 		NodeRemover.removeNodeIfConnected(compStmt);
 		FunctionDefinition owner = (FunctionDefinition) this.getOwner();
-		
+
 		PointsToAnalysis.handleNodeAdditionOrRemovalForHeuristic(compStmt);
 		PointsToAnalysis.handleNodeAdditionOrRemovalForHeuristic(owner.getF3());
 		compStmt.setParent(owner);
@@ -231,8 +234,10 @@ public class FunctionDefinitionCFGInfo extends CFGInfo {
 		AutomatedUpdater.updatePhaseAndInterTaskEdgesUponRemoval(affectedBeginPhasePoints);
 		AutomatedUpdater.updateInformationForAddition(compStmt);
 		AutomatedUpdater.updateFlowFactsForward(rerunNodesForward); // Called here after replacement is successful.
-		//		AutomatedUpdater.invalidateSymbolsInNode(owner.getF3());// Added, so that any changes from points-to may be reflected here.
-		//		AutomatedUpdater.invalidateSymbolsInNode(compStmt);// Added, so that any changes from points-to may be reflected here.
+		// AutomatedUpdater.invalidateSymbolsInNode(owner.getF3());// Added, so that any
+		// changes from points-to may be reflected here.
+		// AutomatedUpdater.invalidateSymbolsInNode(compStmt);// Added, so that any
+		// changes from points-to may be reflected here.
 		AutomatedUpdater.updateFlowFactsBackward(rerunNodesBackward);
 	}
 

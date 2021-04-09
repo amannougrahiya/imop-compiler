@@ -39,8 +39,8 @@ public class Copier {
 	public static <T extends Node> T getDeepCopy(T baseNode) {
 		T targetNode;
 		targetNode = (T) baseNode.accept(deepCopier);
-		//		// 3. Setting the parent pointer of the targetNode.
-		//		targetNode.parent = baseNode.parent;
+		// // 3. Setting the parent pointer of the targetNode.
+		// targetNode.parent = baseNode.parent;
 		CFGGenerator.createCFGEdgesIn(targetNode);
 		return targetNode;
 	}
@@ -61,9 +61,9 @@ public class Copier {
 		 * The latter part is automatically taken care of, recursively.)<br>
 		 * 
 		 * @param oldNode
-		 *            old node, from which certain information has to be copied.
+		 *                old node, from which certain information has to be copied.
 		 * @param newNode
-		 *            new node, to which certain information has to be copied.
+		 *                new node, to which certain information has to be copied.
 		 */
 		public void copyInfo(Node oldNode, Node newNode) {
 			assert (oldNode.getClass() == newNode.getClass());
@@ -89,12 +89,12 @@ public class Copier {
 				}
 			}
 
-			//			Info newInfo = newNode.getInfoCopied(oldNode);
-			//			Info oldInfo = oldNode.getInfo();
-			//			newNode.isCFGNode = oldNode.isCFGNode;
-			//			newInfo.idNumber = oldInfo.idNumber;
-			//			newNode.getInfo().getCFGInfo().clearAllEdges();
-			//			newNode.getInfo().setInfo(oldNode.getInfo());
+			// Info newInfo = newNode.getInfoCopied(oldNode);
+			// Info oldInfo = oldNode.getInfo();
+			// newNode.isCFGNode = oldNode.isCFGNode;
+			// newInfo.idNumber = oldInfo.idNumber;
+			// newNode.getInfo().getCFGInfo().clearAllEdges();
+			// newNode.getInfo().setInfo(oldNode.getInfo());
 		}
 
 		@Override
@@ -147,9 +147,9 @@ public class Copier {
 		@Override
 		public Node visit(NodeChoice oldNode) {
 			Node newNode = null;
-			//			if (oldNode.getChoice() == null) {
-			//				System.out.println(oldNode.getParent().getInfo().getString());
-			//			}
+			// if (oldNode.getChoice() == null) {
+			// System.out.println(oldNode.getParent().getInfo().getString());
+			// }
 			newNode = oldNode.getChoice().accept(this);
 			newNode = new NodeChoice(newNode);
 			copyInfo(oldNode, newNode);

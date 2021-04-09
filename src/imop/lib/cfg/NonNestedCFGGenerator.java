@@ -52,7 +52,7 @@ public class NonNestedCFGGenerator extends DepthFirstProcess {
 			for (Node nestedSucc : nestedSuccessors) { // For all the nestedSuccessors of the node n
 				List<Node> leavesOnThisPath = Misc.getFirstLeaves(nestedSucc); // Get the first leaf nodes
 				for (Node nextLeaf : leavesOnThisPath) {
-					connect(n, nextLeaf);	// Connect n to the first leaf nodes 
+					connect(n, nextLeaf); // Connect n to the first leaf nodes
 				}
 			}
 		}

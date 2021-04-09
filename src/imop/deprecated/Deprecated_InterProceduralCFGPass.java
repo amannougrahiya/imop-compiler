@@ -78,28 +78,36 @@ public abstract class Deprecated_InterProceduralCFGPass<F extends Deprecated_Flo
 	 * a context-insensitive or -sensitive iterative data-flow analysis.
 	 *
 	 * @param targetNodes
-	 *            Set of nodes which may get analyzed with this analysis.
-	 *            IN/OUT of these nodes are supposed to be initialized in the
-	 *            overridden
-	 *            initFlowFactsForNodes() method.
+	 *                          Set of nodes which may get analyzed with this
+	 *                          analysis.
+	 *                          IN/OUT of these nodes are supposed to be initialized
+	 *                          in the
+	 *                          overridden
+	 *                          initFlowFactsForNodes() method.
 	 * @param contextDimension
-	 *            Specifies whether the nature of this traversal/analysis is
-	 *            supposed
-	 *            to be context-sensitive or -insensitive.
+	 *                          Specifies whether the nature of this
+	 *                          traversal/analysis is
+	 *                          supposed
+	 *                          to be context-sensitive or -insensitive.
 	 * @param analysisDirection
-	 *            Specifies whether the analysis is forward or backward in
-	 *            nature.
+	 *                          Specifies whether the analysis is forward or
+	 *                          backward in
+	 *                          nature.
 	 * @param analysisName
-	 *            Enumerator value that is used to hash into the flowFactsMap of
-	 *            nodes
-	 *            for obtaining the flowFacts related to this analysis.
+	 *                          Enumerator value that is used to hash into the
+	 *                          flowFactsMap of
+	 *                          nodes
+	 *                          for obtaining the flowFacts related to this
+	 *                          analysis.
 	 * @param contextStack
-	 *            An initial stack of call-sites call-stack (if ever needed).
+	 *                          An initial stack of call-sites call-stack (if ever
+	 *                          needed).
 	 */
 	public Deprecated_InterProceduralCFGPass(Node entryNode, Set<Node> targetNodes,
 			Deprecated_ContextDimension contextDimension, Deprecated_AnalysisDirection analysisDirection,
 			AnalysisName analysisName, Stack<CallSite> contextStack) {
-		// TODO: Remove the following check after implementing the context-sensitive version of the analysis correctly.
+		// TODO: Remove the following check after implementing the context-sensitive
+		// version of the analysis correctly.
 		if (contextDimension == Deprecated_ContextDimension.CONTEXT_SENSITIVE) {
 			Misc.exitDueToLackOfFeature("Context-sensitive inter-procedural analysis.");
 		}
@@ -119,7 +127,8 @@ public abstract class Deprecated_InterProceduralCFGPass<F extends Deprecated_Flo
 	public Deprecated_InterProceduralCFGPass(Node entryNode, Set<Node> targetNodes,
 			Deprecated_ContextDimension contextDimension, Deprecated_AnalysisDirection analysisDirection,
 			AnalysisName analysisName) {
-		// TODO: Remove the following check after implementing the context-sensitive version of the analysis correctly.
+		// TODO: Remove the following check after implementing the context-sensitive
+		// version of the analysis correctly.
 		if (contextDimension == Deprecated_ContextDimension.CONTEXT_SENSITIVE) {
 			Misc.exitDueToLackOfFeature("Context-sensitive inter-procedural analysis.");
 		}
@@ -135,14 +144,18 @@ public abstract class Deprecated_InterProceduralCFGPass<F extends Deprecated_Flo
 		visitedNodes = new HashSet<>();
 	}
 
-	//    /**
-	//     * For each node (say <code>n</code>) in targetSet that has to analyzed with this analysis,
-	//     * this method should create an object of the associated FlowFact type,
-	//     * and insert that object along with an appropriate enumeration key (of type AnalysisName)
-	//     * in the map <code>n.getInfo().flowFactsIN</code> (and similarly for <code>n.getInfo().flowFactsOUT</code>).
-	//     * Note: Unless this step is done, method imop.ast.info.Info#getFlowFact* will return null.
-	//     */
-	//    public abstract void initFlowFactsForNodes();
+	// /**
+	// * For each node (say <code>n</code>) in targetSet that has to analyzed with
+	// this analysis,
+	// * this method should create an object of the associated FlowFact type,
+	// * and insert that object along with an appropriate enumeration key (of type
+	// AnalysisName)
+	// * in the map <code>n.getInfo().flowFactsIN</code> (and similarly for
+	// <code>n.getInfo().flowFactsOUT</code>).
+	// * Note: Unless this step is done, method imop.ast.info.Info#getFlowFact* will
+	// return null.
+	// */
+	// public abstract void initFlowFactsForNodes();
 
 	/**
 	 * This method should be overridden to return an object of supertype
@@ -223,7 +236,7 @@ public abstract class Deprecated_InterProceduralCFGPass<F extends Deprecated_Flo
 	 * for the OUT/IN of various nodes.
 	 * 
 	 * @param entryNode
-	 *            Node at which the analysis has to start.
+	 *                  Node at which the analysis has to start.
 	 */
 	public final void run() {
 		this.initAnalysis();
@@ -267,7 +280,7 @@ public abstract class Deprecated_InterProceduralCFGPass<F extends Deprecated_Flo
 			visitedNodes.add(n);
 		}
 		System.err.println("Analyzing node (" + n.getClass().getSimpleName() + ")");
-		//n.getInfo().printNode();
+		// n.getInfo().printNode();
 		/*
 		 * STEP I: IN of $n$ = meet of OUT of all the predecessors of $n$.
 		 * Note: Make sure that the run method should initialize the OUT of all
@@ -301,7 +314,8 @@ public abstract class Deprecated_InterProceduralCFGPass<F extends Deprecated_Flo
 		 */
 		F oldOUT = (F) n.getInfo().getFlowFactOUT(analysisName, this);
 		n.getInfo().setFlowFactOUT(analysisName, newOUT);
-		boolean outChanged = ((oldOUT != newOUT) && !oldOUT.isEqualTo(newOUT)); // To make sure that all the subclasses of FlowFact must specify equality,
+		boolean outChanged = ((oldOUT != newOUT) && !oldOUT.isEqualTo(newOUT)); // To make sure that all the subclasses
+																				// of FlowFact must specify equality,
 		// we need this abstract method, rather than equals.
 		for (InterProceduralNode succ : this.getSuccessorsOf(n, contextStack)) {
 			if (skipNode(n, succ)) {
@@ -313,7 +327,7 @@ public abstract class Deprecated_InterProceduralCFGPass<F extends Deprecated_Flo
 					System.err.println("Old OUT: ");
 					oldOUT.printFact();
 					System.err.println("New OUT: ");
-					//newOUT = (F) n.getInfo().getFlowFactIN(analysisName);
+					// newOUT = (F) n.getInfo().getFlowFactIN(analysisName);
 					newOUT.printFact();
 				}
 				/* Temp Code Ends */
@@ -364,10 +378,10 @@ public abstract class Deprecated_InterProceduralCFGPass<F extends Deprecated_Flo
 	 * just after the analysis of $parent$ is done.
 	 * 
 	 * @param parent
-	 *            Parent node that has just been analyzed.
+	 *               Parent node that has just been analyzed.
 	 * @param node
-	 *            Successor node that might be analyzed next, if
-	 *            this method return false.
+	 *               Successor node that might be analyzed next, if
+	 *               this method return false.
 	 * @return
 	 *         true, if the analysis should not be performed on $node$.
 	 */
@@ -402,7 +416,8 @@ public abstract class Deprecated_InterProceduralCFGPass<F extends Deprecated_Flo
 			}
 			return predSet;
 		} else {
-			// Check if the intra-procedural predecessors of $n$ have any call sites in them.
+			// Check if the intra-procedural predecessors of $n$ have any call sites in
+			// them.
 			outer: for (Node pred : n.getInfo().getCFGInfo().getPredecessors()) {
 				List<CallSite> predCallSites = pred.getInfo().getCallSites();
 				if (!predCallSites.isEmpty()) {

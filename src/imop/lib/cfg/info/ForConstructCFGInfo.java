@@ -62,8 +62,10 @@ public class ForConstructCFGInfo extends CFGInfo {
 		AutomatedUpdater.updatePhaseAndInterTaskEdgesUponRemoval(affectedBeginPhasePoints);
 		AutomatedUpdater.updateInformationForAddition(initExpression);
 		AutomatedUpdater.updateFlowFactsForward(rerunNodesForward); // Called here after replacement is successful.
-		//		AutomatedUpdater.invalidateSymbolsInNode(owner.getF2().getF2());// Added, so that any changes from points-to may be reflected here.
-		//		AutomatedUpdater.invalidateSymbolsInNode(initExpression);// Added, so that any changes from points-to may be reflected here.
+		// AutomatedUpdater.invalidateSymbolsInNode(owner.getF2().getF2());// Added, so
+		// that any changes from points-to may be reflected here.
+		// AutomatedUpdater.invalidateSymbolsInNode(initExpression);// Added, so that
+		// any changes from points-to may be reflected here.
 		AutomatedUpdater.updateFlowFactsBackward(rerunNodesBackward);
 	}
 
@@ -98,8 +100,10 @@ public class ForConstructCFGInfo extends CFGInfo {
 		AutomatedUpdater.updatePhaseAndInterTaskEdgesUponRemoval(affectedBeginPhasePoints);
 		AutomatedUpdater.updateInformationForAddition(forCondition);
 		AutomatedUpdater.updateFlowFactsForward(rerunNodesForward); // Called here after replacement is successful.
-		//		AutomatedUpdater.invalidateSymbolsInNode(owner.getF2().getF4());// Added, so that any changes from points-to may be reflected here.
-		//		AutomatedUpdater.invalidateSymbolsInNode(forCondition);// Added, so that any changes from points-to may be reflected here.
+		// AutomatedUpdater.invalidateSymbolsInNode(owner.getF2().getF4());// Added, so
+		// that any changes from points-to may be reflected here.
+		// AutomatedUpdater.invalidateSymbolsInNode(forCondition);// Added, so that any
+		// changes from points-to may be reflected here.
 		AutomatedUpdater.updateFlowFactsBackward(rerunNodesBackward);
 	}
 
@@ -134,8 +138,10 @@ public class ForConstructCFGInfo extends CFGInfo {
 		AutomatedUpdater.updatePhaseAndInterTaskEdgesUponRemoval(affectedBeginPhasePoints);
 		AutomatedUpdater.updateInformationForAddition(reinitExpression);
 		AutomatedUpdater.updateFlowFactsForward(rerunNodesForward); // Called here after replacement is successful.
-		//		AutomatedUpdater.invalidateSymbolsInNode(owner.getF2().getF6());// Added, so that any changes from points-to may be reflected here.
-		//		AutomatedUpdater.invalidateSymbolsInNode(reinitExpression);// Added, so that any changes from points-to may be reflected here.
+		// AutomatedUpdater.invalidateSymbolsInNode(owner.getF2().getF6());// Added, so
+		// that any changes from points-to may be reflected here.
+		// AutomatedUpdater.invalidateSymbolsInNode(reinitExpression);// Added, so that
+		// any changes from points-to may be reflected here.
 		AutomatedUpdater.updateFlowFactsBackward(rerunNodesBackward);
 	}
 
@@ -155,7 +161,8 @@ public class ForConstructCFGInfo extends CFGInfo {
 		List<SideEffect> splitSE = SplitCombinedConstructs.splitCombinedConstructForTheStatement(stmt);
 		if (!splitSE.isEmpty()) {
 			NodeUpdated nodeUpdatedSE = (NodeUpdated) splitSE.get(0);
-			// Note: Here we reparse the parallel construct so that we can perform other normalizations within it.
+			// Note: Here we reparse the parallel construct so that we can perform other
+			// normalizations within it.
 			ParallelConstruct splitParCons = FrontEnd.parseAndNormalize(nodeUpdatedSE.affectedNode.toString(),
 					ParallelConstruct.class);
 			sideEffectList.add(new NodeUpdated(splitParCons, nodeUpdatedSE.getUpdateMessage()));
@@ -195,13 +202,16 @@ public class ForConstructCFGInfo extends CFGInfo {
 
 		stmt = Normalization.normalizeLeafNodes(stmt, sideEffectList);
 
-		//		this.getOwner().accept(new CompoundStatementEnforcer()); // COMMENTED RECENTLY.
+		// this.getOwner().accept(new CompoundStatementEnforcer()); // COMMENTED
+		// RECENTLY.
 		Program.invalidColumnNum = Program.invalidLineNum = true;
 		AutomatedUpdater.updatePhaseAndInterTaskEdgesUponRemoval(affectedBeginPhasePoints);
 		AutomatedUpdater.updateInformationForAddition(stmt);
 		AutomatedUpdater.updateFlowFactsForward(rerunNodesForward); // Called here after replacement is successful.
-		//		AutomatedUpdater.invalidateSymbolsInNode(owner.getF3());// Added, so that any changes from points-to may be reflected here.
-		//		AutomatedUpdater.invalidateSymbolsInNode(stmt);// Added, so that any changes from points-to may be reflected here.
+		// AutomatedUpdater.invalidateSymbolsInNode(owner.getF3());// Added, so that any
+		// changes from points-to may be reflected here.
+		// AutomatedUpdater.invalidateSymbolsInNode(stmt);// Added, so that any changes
+		// from points-to may be reflected here.
 		AutomatedUpdater.updateFlowFactsBackward(rerunNodesBackward);
 		return sideEffectList;
 	}
@@ -214,10 +224,10 @@ public class ForConstructCFGInfo extends CFGInfo {
 	private void updateCFGForOmpForInitExpressionRemoval(OmpForInitExpression removed) {
 		// Remove stale edges.
 		removed.getInfo().getCFGInfo().clearAllEdges();
-		//		for (Node components : this.getAllComponents()) {
-		//			disconnectAndAdjustEndReachability(removed, components);
-		//			disconnectAndAdjustEndReachability(components, removed);
-		//		}
+		// for (Node components : this.getAllComponents()) {
+		// disconnectAndAdjustEndReachability(removed, components);
+		// disconnectAndAdjustEndReachability(components, removed);
+		// }
 	}
 
 	private void updateCFGForOmpForInitExpressionAddition(OmpForInitExpression added) {
@@ -230,10 +240,10 @@ public class ForConstructCFGInfo extends CFGInfo {
 	private void updateCFGForOmpForConditionRemoval(OmpForCondition removed) {
 		// Remove stale edges.
 		removed.getInfo().getCFGInfo().clearAllEdges();
-		//		for (Node components : this.getAllComponents()) {
-		//			disconnectAndAdjustEndReachability(removed, components);
-		//			disconnectAndAdjustEndReachability(components, removed);
-		//		}
+		// for (Node components : this.getAllComponents()) {
+		// disconnectAndAdjustEndReachability(removed, components);
+		// disconnectAndAdjustEndReachability(components, removed);
+		// }
 	}
 
 	private void updateCFGForOmpForConditionAddition(OmpForCondition added) {
@@ -247,11 +257,11 @@ public class ForConstructCFGInfo extends CFGInfo {
 
 	private void updateCFGForOmpForReinitExpressionRemoval(OmpForReinitExpression removed) {
 		removed.getInfo().getCFGInfo().clearAllEdges();
-		//		this.getBody().getInfo().getIncompleteSemantics().adjustContinueSemanticsForLoopExpressionRemoval();
-		//		for (Node components : this.getAllComponents()) {
-		//			disconnectAndAdjustEndReachability(removed, components);
-		//			disconnectAndAdjustEndReachability(components, removed);
-		//		}
+		// this.getBody().getInfo().getIncompleteSemantics().adjustContinueSemanticsForLoopExpressionRemoval();
+		// for (Node components : this.getAllComponents()) {
+		// disconnectAndAdjustEndReachability(removed, components);
+		// disconnectAndAdjustEndReachability(components, removed);
+		// }
 	}
 
 	private void updateCFGForOmpForReinitExpressionAddition(OmpForReinitExpression added) {
@@ -270,10 +280,10 @@ public class ForConstructCFGInfo extends CFGInfo {
 		removed.getInfo().getIncompleteSemantics().adjustSemanticsForOwnerRemoval();
 		// 2. Remove stale edges.
 		removed.getInfo().getCFGInfo().clearAllEdges();
-		//		for (Node components : this.getAllComponents()) {
-		//			disconnectAndAdjustEndReachability(removed, components);
-		//			disconnectAndAdjustEndReachability(components, removed);
-		//		}
+		// for (Node components : this.getAllComponents()) {
+		// disconnectAndAdjustEndReachability(removed, components);
+		// disconnectAndAdjustEndReachability(components, removed);
+		// }
 	}
 
 	private void updateCFGForBodyAddition(Statement added) {

@@ -61,8 +61,10 @@ public class IfStatementCFGInfo extends CFGInfo {
 		AutomatedUpdater.updatePhaseAndInterTaskEdgesUponRemoval(affectedBeginPhasePoints);
 		AutomatedUpdater.updateInformationForAddition(predicate);
 		AutomatedUpdater.updateFlowFactsForward(rerunNodesForward); // Called here after replacement is successful.
-		//		AutomatedUpdater.invalidateSymbolsInNode(owner.getF2());// Added, so that any changes from points-to may be reflected here.
-		//		AutomatedUpdater.invalidateSymbolsInNode(predicate);// Added, so that any changes from points-to may be reflected here.
+		// AutomatedUpdater.invalidateSymbolsInNode(owner.getF2());// Added, so that any
+		// changes from points-to may be reflected here.
+		// AutomatedUpdater.invalidateSymbolsInNode(predicate);// Added, so that any
+		// changes from points-to may be reflected here.
 		AutomatedUpdater.updateFlowFactsBackward(rerunNodesBackward);
 	}
 
@@ -82,7 +84,8 @@ public class IfStatementCFGInfo extends CFGInfo {
 		List<SideEffect> splitSE = SplitCombinedConstructs.splitCombinedConstructForTheStatement(stmt);
 		if (!splitSE.isEmpty()) {
 			NodeUpdated nodeUpdatedSE = (NodeUpdated) splitSE.get(0);
-			// Note: Here we reparse the parallel construct so that we can perform other normalizations within it.
+			// Note: Here we reparse the parallel construct so that we can perform other
+			// normalizations within it.
 			ParallelConstruct splitParCons = FrontEnd.parseAndNormalize(nodeUpdatedSE.affectedNode.toString(),
 					ParallelConstruct.class);
 			sideEffectList.add(new NodeUpdated(splitParCons, nodeUpdatedSE.getUpdateMessage()));
@@ -122,13 +125,16 @@ public class IfStatementCFGInfo extends CFGInfo {
 
 		stmt = Normalization.normalizeLeafNodes(stmt, sideEffectList);
 
-		//		this.getOwner().accept(new CompoundStatementEnforcer());// COMMENTED RECENTLY.
+		// this.getOwner().accept(new CompoundStatementEnforcer());// COMMENTED
+		// RECENTLY.
 		Program.invalidColumnNum = Program.invalidLineNum = true;
 		AutomatedUpdater.updatePhaseAndInterTaskEdgesUponRemoval(affectedBeginPhasePoints);
 		AutomatedUpdater.updateInformationForAddition(stmt);
 		AutomatedUpdater.updateFlowFactsForward(rerunNodesForward); // Called here after replacement is successful.
-		//		AutomatedUpdater.invalidateSymbolsInNode(owner.getF4());// Added, so that any changes from points-to may be reflected here.
-		//		AutomatedUpdater.invalidateSymbolsInNode(stmt);// Added, so that any changes from points-to may be reflected here.
+		// AutomatedUpdater.invalidateSymbolsInNode(owner.getF4());// Added, so that any
+		// changes from points-to may be reflected here.
+		// AutomatedUpdater.invalidateSymbolsInNode(stmt);// Added, so that any changes
+		// from points-to may be reflected here.
 		AutomatedUpdater.updateFlowFactsBackward(rerunNodesBackward);
 		return sideEffectList;
 	}
@@ -149,7 +155,8 @@ public class IfStatementCFGInfo extends CFGInfo {
 		List<SideEffect> splitSE = SplitCombinedConstructs.splitCombinedConstructForTheStatement(stmt);
 		if (!splitSE.isEmpty()) {
 			NodeUpdated nodeUpdatedSE = (NodeUpdated) splitSE.get(0);
-			// Note: Here we reparse the parallel construct so that we can perform other normalizations within it.
+			// Note: Here we reparse the parallel construct so that we can perform other
+			// normalizations within it.
 			ParallelConstruct splitParCons = FrontEnd.parseAndNormalize(nodeUpdatedSE.affectedNode.toString(),
 					ParallelConstruct.class);
 			sideEffectList.add(new NodeUpdated(splitParCons, nodeUpdatedSE.getUpdateMessage()));
@@ -192,12 +199,14 @@ public class IfStatementCFGInfo extends CFGInfo {
 
 			stmt = Normalization.normalizeLeafNodes(stmt, sideEffectList);
 
-			//			this.getOwner().accept(new CompoundStatementEnforcer());// COMMENTED RECENTLY.
+			// this.getOwner().accept(new CompoundStatementEnforcer());// COMMENTED
+			// RECENTLY.
 			Program.invalidColumnNum = Program.invalidLineNum = true;
 			AutomatedUpdater.updatePhaseAndInterTaskEdgesUponRemoval(affectedBeginPhasePoints);
 			AutomatedUpdater.updateInformationForAddition(stmt);
 			AutomatedUpdater.updateFlowFactsForward(rerunNodesForward); // Called here after replacement is successful.
-			//			AutomatedUpdater.invalidateSymbolsInNode(stmt);// Added, so that any changes from points-to may be reflected here.
+			// AutomatedUpdater.invalidateSymbolsInNode(stmt);// Added, so that any changes
+			// from points-to may be reflected here.
 			AutomatedUpdater.updateFlowFactsBackward(rerunNodesBackward);
 			return sideEffectList;
 		} else {
@@ -212,10 +221,12 @@ public class IfStatementCFGInfo extends CFGInfo {
 
 			stmt = Normalization.normalizeLeafNodes(stmt, sideEffectList);
 
-			//			this.getOwner().accept(new CompoundStatementEnforcer());// COMMENTED RECENTLY.
+			// this.getOwner().accept(new CompoundStatementEnforcer());// COMMENTED
+			// RECENTLY.
 			Program.invalidColumnNum = Program.invalidLineNum = true;
 			AutomatedUpdater.updateInformationForAddition(stmt);
-			AutomatedUpdater.invalidateSymbolsInNode(stmt);// Added, so that any changes from points-to may be reflected here.
+			AutomatedUpdater.invalidateSymbolsInNode(stmt);// Added, so that any changes from points-to may be reflected
+															// here.
 			return sideEffectList;
 		}
 	}
@@ -236,7 +247,8 @@ public class IfStatementCFGInfo extends CFGInfo {
 	public void removeElseBody() {
 		AutomatedUpdater.flushCaches();
 		IfStatement owner = (IfStatement) this.getOwner();
-		// TODO: Why no CFG updates here?!!! The next four lines have been added temporarily. Kindly verify.
+		// TODO: Why no CFG updates here?!!! The next four lines have been added
+		// temporarily. Kindly verify.
 		NodeSequence nodeSeq = (NodeSequence) owner.getF5().getNode();
 		if (nodeSeq == null) {
 			// This implies that there was no else-body.
@@ -256,17 +268,18 @@ public class IfStatementCFGInfo extends CFGInfo {
 		Program.invalidColumnNum = Program.invalidLineNum = true;
 		AutomatedUpdater.updatePhaseAndInterTaskEdgesUponRemoval(affectedBeginPhasePoints);
 		AutomatedUpdater.updateFlowFactsForward(rerunNodesForward); // Called here after removal is successful.
-		//		AutomatedUpdater.invalidateSymbolsInNode(oldElseBody);// Added, so that any changes from points-to may be reflected here.
+		// AutomatedUpdater.invalidateSymbolsInNode(oldElseBody);// Added, so that any
+		// changes from points-to may be reflected here.
 		AutomatedUpdater.updateFlowFactsBackward(rerunNodesBackward);
 	}
 
 	private void updateCFGForPredicateRemoval(Expression removed) {
 		// Remove stale edges.
 		removed.getInfo().getCFGInfo().clearAllEdges();
-		//		for (Node components : this.getAllComponents()) {
-		//			disconnectAndAdjustEndReachability(removed, components);
-		//			disconnectAndAdjustEndReachability(components, removed);
-		//		}
+		// for (Node components : this.getAllComponents()) {
+		// disconnectAndAdjustEndReachability(removed, components);
+		// disconnectAndAdjustEndReachability(components, removed);
+		// }
 	}
 
 	private void updateCFGForPredicateAddition(Expression added) {
@@ -290,10 +303,10 @@ public class IfStatementCFGInfo extends CFGInfo {
 
 		// 2. Remove stale edges.
 		removed.getInfo().getCFGInfo().clearAllEdges();
-		//		for (Node components : this.getAllComponents()) {
-		//			disconnectAndAdjustEndReachability(removed, components);
-		//			disconnectAndAdjustEndReachability(components, removed);
-		//		}
+		// for (Node components : this.getAllComponents()) {
+		// disconnectAndAdjustEndReachability(removed, components);
+		// disconnectAndAdjustEndReachability(components, removed);
+		// }
 	}
 
 	private void updateCFGForThenBodyAddition(Statement added) {
@@ -318,10 +331,10 @@ public class IfStatementCFGInfo extends CFGInfo {
 		NestedCFG ncfg = getOwner().getInfo().getCFGInfo().getNestedCFG();
 		connectAndAdjustEndReachability(this.getPredicate(), ncfg.getEnd());
 		removed.getInfo().getCFGInfo().clearAllEdges();
-		//		for (Node components : this.getAllComponents()) {
-		//			disconnectAndAdjustEndReachability(removed, components);
-		//			disconnectAndAdjustEndReachability(components, removed);
-		//		}
+		// for (Node components : this.getAllComponents()) {
+		// disconnectAndAdjustEndReachability(removed, components);
+		// disconnectAndAdjustEndReachability(components, removed);
+		// }
 	}
 
 	private void updateCFGForElseBodyAddition(Statement added) {

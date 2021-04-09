@@ -53,15 +53,20 @@ public class ReversePostOrderWorkList {
 			 * This does not seem to be a connected node. Is it, though? Let's
 			 * check.
 			 */
-			//			assert (!Program.getRoot().getInfo().getCFGInfo().getLexicalCFGContents().contains(node)) : node
-			//					+ " of type " + node.getClass().getSimpleName()
-			//					+ " does not have a reverse postorder id, despite having the following parent: "
-			//					+ node.getParent().getInfo().getDebugString();
+			// assert
+			// (!Program.getRoot().getInfo().getCFGInfo().getLexicalCFGContents().contains(node))
+			// : node
+			// + " of type " + node.getClass().getSimpleName()
+			// + " does not have a reverse postorder id, despite having the following
+			// parent: "
+			// + node.getParent().getInfo().getDebugString();
 			return false; // This is not a connected node.
 		}
-		//		assert (ind >= 0) : "The node " + node + " of type " + node.getClass().getSimpleName() + " has no valid reverse postorder index!"
-		//				+ " It is " + ind + ". "
-		//						+ "The node is connected within " + node.getParent().getInfo().getDebugString();
+		// assert (ind >= 0) : "The node " + node + " of type " +
+		// node.getClass().getSimpleName() + " has no valid reverse postorder index!"
+		// + " It is " + ind + ". "
+		// + "The node is connected within " +
+		// node.getParent().getInfo().getDebugString();
 		int insertionIndex = Collections.binarySearch(this.nonBarrierList, node, new Comparator<Node>() {
 			@Override
 			public int compare(Node n1, Node n2) {
@@ -103,7 +108,8 @@ public class ReversePostOrderWorkList {
 		this.nonBarrierList.add(insertionIndex, node);
 		return true;
 		// OLD CODE:
-		//			this.insertUsingBinarySearch(selectedList, node, nodeOrder, 0, selectedList.size() - 1);
+		// this.insertUsingBinarySearch(selectedList, node, nodeOrder, 0,
+		// selectedList.size() - 1);
 
 	}
 
@@ -139,14 +145,14 @@ public class ReversePostOrderWorkList {
 		return ret;
 	}
 	//
-	//	private String foo(List<Node> list) {
-	//		String s = "[";
-	//		for (Node n : list) {
-	//			s += n.hashCode() + "; ";
-	//		}
-	//		s += "]";
-	//		return s;
-	//	}
+	// private String foo(List<Node> list) {
+	// String s = "[";
+	// for (Node n : list) {
+	// s += n.hashCode() + "; ";
+	// }
+	// s += "]";
+	// return s;
+	// }
 
 	public void addAll(Collection<Node> collection) {
 		for (Node n : collection) {

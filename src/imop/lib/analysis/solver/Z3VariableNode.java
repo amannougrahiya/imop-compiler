@@ -92,9 +92,9 @@ public class Z3VariableNode {
 	 * 
 	 * 
 	 * @param assertions
-	 *            a set of assertions, where each entity is a conjunction of
-	 *            lists of the form {@code op x e}, where {@code op} is an
-	 *            equality or relational operator.
+	 *                   a set of assertions, where each entity is a conjunction of
+	 *                   lists of the form {@code op x e}, where {@code op} is an
+	 *                   equality or relational operator.
 	 * @return
 	 *         a dependence graph.
 	 */
@@ -143,7 +143,7 @@ public class Z3VariableNode {
 	 * paths in the graph.
 	 * 
 	 * @param dependenceGraph
-	 *            a Z3 variable dependence graph.
+	 *                        a Z3 variable dependence graph.
 	 * @return
 	 *         set of all the cycles in the provided graph.
 	 */
@@ -198,9 +198,9 @@ public class Z3VariableNode {
 	 * one) cycle of which the node is a part.
 	 * 
 	 * @param node
-	 *            a node in Z3 variable graph.
+	 *                     a node in Z3 variable graph.
 	 * @param visitedNodes
-	 *            list of nodes visited so far.
+	 *                     list of nodes visited so far.
 	 * @return
 	 *         a cyclic path of which {@code node} is a part; otherwise, if no
 	 *         cycle exists, then an empty list is returned.

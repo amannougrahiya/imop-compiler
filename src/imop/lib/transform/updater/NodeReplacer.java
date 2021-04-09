@@ -479,24 +479,24 @@ public class NodeReplacer {
 			return null;
 		}
 		//
-		//		public List<UpdateSideEffects> visit(GotoLink link) {
-		//			initProcess(link);
-		//			endProcess(link);
-		//		}
+		// public List<UpdateSideEffects> visit(GotoLink link) {
+		// initProcess(link);
+		// endProcess(link);
+		// }
 		//
-		//		public List<UpdateSideEffects> visit(BreakLink link) {
-		//			initProcess(link);
-		//			endProcess(link);
-		//		}
+		// public List<UpdateSideEffects> visit(BreakLink link) {
+		// initProcess(link);
+		// endProcess(link);
+		// }
 		//
-		//		public List<UpdateSideEffects> visit(ContinueLink link) {
-		//			initProcess(link);
-		//			endProcess(link);
-		//		}
+		// public List<UpdateSideEffects> visit(ContinueLink link) {
+		// initProcess(link);
+		// endProcess(link);
+		// }
 		//
-		//		public List<UpdateSideEffects> visit(ReturnLink link) {
-		//			initProcess(link);
-		//			endProcess(link);
-		//		}
+		// public List<UpdateSideEffects> visit(ReturnLink link) {
+		// initProcess(link);
+		// endProcess(link);
+		// }
 	}
 }

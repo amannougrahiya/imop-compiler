@@ -52,62 +52,67 @@ public class HigherLevelCFGTransformationTest {
 		assertEquals("Assert failed.", 0, 0);
 	}
 
-	//	@Test
-	//	public void iis____() throws FileNotFoundException {
-	//		String[] args = { "-f", "src/imop/lib/testcases/higher/____.c" };
-	//		Program.parseNormalizeInput(args);
-	//		List<UpdateSideEffects> sideEffectList = new ArrayList<>();
-	//		String rootInput = Program.root.toString();
-	//		for (ForStatement ownerNode : Misc.getInheritedEnclosee(Program.root, ForStatement.class)) {
-	//			for (Node element : ownerNode.getInfo().getCFGInfo().getAllComponents()) {
-	//				CFGLink link = CFGLinkFinder.getCFGLinkFor(element);
-	//				if (link instanceof ____) {
-	//					InsertImmediateSuccessor.insertAggressive(element,
-	//							FrontEnd.parseAndNormalize("x + 12345;", ExpressionStatement.class));
-	//				}
-	//				//			}
-	//			//		}
-	//		Misc.dumpRootOrError("outS", sideEffectList);
-	//		assertEquals("Assert passed.", 0, 0);
-	//	}
+	// @Test
+	// public void iis____() throws FileNotFoundException {
+	// String[] args = { "-f", "src/imop/lib/testcases/higher/____.c" };
+	// Program.parseNormalizeInput(args);
+	// List<UpdateSideEffects> sideEffectList = new ArrayList<>();
+	// String rootInput = Program.root.toString();
+	// for (ForStatement ownerNode : Misc.getInheritedEnclosee(Program.root,
+	// ForStatement.class)) {
+	// for (Node element : ownerNode.getInfo().getCFGInfo().getAllComponents()) {
+	// CFGLink link = CFGLinkFinder.getCFGLinkFor(element);
+	// if (link instanceof ____) {
+	// InsertImmediateSuccessor.insertAggressive(element,
+	// FrontEnd.parseAndNormalize("x + 12345;", ExpressionStatement.class));
+	// }
+	// // }
+	// // }
+	// Misc.dumpRootOrError("outS", sideEffectList);
+	// assertEquals("Assert passed.", 0, 0);
+	// }
 	//
-	//	@Test
-	//	public void iip____() throws FileNotFoundException {
-	//		String[] args = { "-f", "src/imop/lib/testcases/higher/____.c" };
-	//		Program.parseNormalizeInput(args);
-	//		List<UpdateSideEffects> sideEffectList = new ArrayList<>();
-	//		String rootInput = Program.root.toString();
-	//		for (ForStatement ownerNode : Misc.getInheritedEnclosee(Program.root, ForStatement.class)) {
-	//			for (Node element : ownerNode.getInfo().getCFGInfo().getAllComponents()) {
-	//				CFGLink link = CFGLinkFinder.getCFGLinkFor(element);
-	//				if (link instanceof ____) {
-	//					InsertImmediatePredecessor.insertAggressive(element,
-	//							FrontEnd.parseAndNormalize("x + 12345;", ExpressionStatement.class));
-	//				}
-	//				//			}
-	//			//		}
-	//		Misc.dumpRootOrError("outP", sideEffectList);
-	//		assertEquals("Assert passed.", 0, 0);
-	//	}
+	// @Test
+	// public void iip____() throws FileNotFoundException {
+	// String[] args = { "-f", "src/imop/lib/testcases/higher/____.c" };
+	// Program.parseNormalizeInput(args);
+	// List<UpdateSideEffects> sideEffectList = new ArrayList<>();
+	// String rootInput = Program.root.toString();
+	// for (ForStatement ownerNode : Misc.getInheritedEnclosee(Program.root,
+	// ForStatement.class)) {
+	// for (Node element : ownerNode.getInfo().getCFGInfo().getAllComponents()) {
+	// CFGLink link = CFGLinkFinder.getCFGLinkFor(element);
+	// if (link instanceof ____) {
+	// InsertImmediatePredecessor.insertAggressive(element,
+	// FrontEnd.parseAndNormalize("x + 12345;", ExpressionStatement.class));
+	// }
+	// // }
+	// // }
+	// Misc.dumpRootOrError("outP", sideEffectList);
+	// assertEquals("Assert passed.", 0, 0);
+	// }
 	//
-	//	@Test
-	//	public void iote____() throws FileNotFoundException {
-	//		String[] args = { "-f", "src/imop/lib/testcases/higher/____.c" };
-	//		Program.parseNormalizeInput(args);
-	//		List<UpdateSideEffects> sideEffectList = new ArrayList<>();
-	//		String rootInput = Program.root.toString();
-	//		for (ForStatement ownerNode : Misc.getInheritedEnclosee(Program.root, ForStatement.class)) {
-	//			for (Node element : ownerNode.getInfo().getCFGInfo().getAllComponents()) {
-	//				CFGLink link = CFGLinkFinder.getCFGLinkFor(element);
-	//				if (link instanceof ____) {
-	//					if (element.getInfo().getCFGInfo().getLeafSuccessors().size() != 0) sideEffectList = InsertOnTheEdge.insertAggressive(element, element.getInfo().getCFGInfo().getLeafSuccessors().get(0), 
-	//							FrontEnd.parseAndNormalize("x + 12345;", ExpressionStatement.class));
-	//				}
-	//				//			}
-	//			//		}
-	//		Misc.dumpRootOrError("outIOTE", sideEffectList);
-	//		assertEquals("Assert passed.", 0, 0);
-	//	}
+	// @Test
+	// public void iote____() throws FileNotFoundException {
+	// String[] args = { "-f", "src/imop/lib/testcases/higher/____.c" };
+	// Program.parseNormalizeInput(args);
+	// List<UpdateSideEffects> sideEffectList = new ArrayList<>();
+	// String rootInput = Program.root.toString();
+	// for (ForStatement ownerNode : Misc.getInheritedEnclosee(Program.root,
+	// ForStatement.class)) {
+	// for (Node element : ownerNode.getInfo().getCFGInfo().getAllComponents()) {
+	// CFGLink link = CFGLinkFinder.getCFGLinkFor(element);
+	// if (link instanceof ____) {
+	// if (element.getInfo().getCFGInfo().getLeafSuccessors().size() != 0)
+	// sideEffectList = InsertOnTheEdge.insertAggressive(element,
+	// element.getInfo().getCFGInfo().getLeafSuccessors().get(0),
+	// FrontEnd.parseAndNormalize("x + 12345;", ExpressionStatement.class));
+	// }
+	// // }
+	// // }
+	// Misc.dumpRootOrError("outIOTE", sideEffectList);
+	// assertEquals("Assert passed.", 0, 0);
+	// }
 
 	// Testcase to test insertion of an immediate predecessor in AtomicBeginLink
 	@Test
@@ -2341,7 +2346,8 @@ public class HigherLevelCFGTransformationTest {
 		assertEquals("Assert passed.", 0, 0);
 	}
 
-	// Testcase to test insertion of an immediate predecessor in FunctionParameterLink
+	// Testcase to test insertion of an immediate predecessor in
+	// FunctionParameterLink
 	@Test
 	public void iisFunctionParameterLink() throws FileNotFoundException {
 		String[] args = { "-f", "src/imop/lib/testcases/higher/succ/FunctionParameterLink.c" };
@@ -3874,7 +3880,8 @@ public class HigherLevelCFGTransformationTest {
 		assertEquals("Assert passed.", 0, 0);
 	}
 
-	// Testcase to test insertion of an immediate predecessor in SectionsSectionBodyLink
+	// Testcase to test insertion of an immediate predecessor in
+	// SectionsSectionBodyLink
 	@Test
 	public void iisSectionsSectionBodyLink() throws FileNotFoundException {
 		String[] args = { "-f", "src/imop/lib/testcases/higher/succ/SectionsSectionBodyLink.c" };
@@ -3894,7 +3901,8 @@ public class HigherLevelCFGTransformationTest {
 		assertEquals("Assert passed.", 0, 0);
 	}
 
-	// Testcase to test insertion of an immediate successor in SectionsSectionBodyLink
+	// Testcase to test insertion of an immediate successor in
+	// SectionsSectionBodyLink
 	@Test
 	public void iipSectionsSectionBodyLink() throws FileNotFoundException {
 		String[] args = { "-f", "src/imop/lib/testcases/higher/pred/SectionsSectionBodyLink.c" };

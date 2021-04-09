@@ -61,6 +61,5 @@ public class InfiExactASTNodeListGetter<T extends Node> extends DepthFirstProces
 		n.getExpF1().accept(this);
 		endProcess(n);
 	}
-	
-	
+
 }

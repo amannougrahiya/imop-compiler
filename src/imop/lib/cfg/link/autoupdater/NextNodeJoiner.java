@@ -30,8 +30,8 @@ public class NextNodeJoiner {
 	 * is reached.
 	 * 
 	 * @param node
-	 *            node that needs to be connected to all its immediate
-	 *            successors.
+	 *             node that needs to be connected to all its immediate
+	 *             successors.
 	 */
 	public static void joinToNextNode(Node node) {
 		assert (!(node instanceof EndNode));

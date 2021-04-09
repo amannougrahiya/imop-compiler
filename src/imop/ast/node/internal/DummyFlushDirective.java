@@ -126,7 +126,7 @@ public class DummyFlushDirective extends FlushDirective {
 		List<Cell> retList = new ArrayList<>(writtenCells.getReadOnlyInternal());
 		Collections.sort(retList);
 		return retList;
-		//		return writtenCells;
+		// return writtenCells;
 	}
 
 	public List<Cell> noUpdateGetReadAfterCells() {
@@ -136,7 +136,7 @@ public class DummyFlushDirective extends FlushDirective {
 		List<Cell> retList = new ArrayList<>(readCells.getReadOnlyInternal());
 		Collections.sort(retList);
 		return retList;
-		//		return readCells;
+		// return readCells;
 	}
 
 	public Set<Node> getWrittenBeforeNodes() {

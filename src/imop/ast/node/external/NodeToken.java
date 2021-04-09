@@ -35,7 +35,7 @@ public class NodeToken extends Node {
 	private String tokenImage;
 
 	// Stores a list of NodeTokens
-	//	private Vector<NodeToken> specialTokens;
+	// private Vector<NodeToken> specialTokens;
 
 	private int lineNum = -1;
 	private int columnNum = -1;
@@ -57,47 +57,48 @@ public class NodeToken extends Node {
 		this.setEndColumn(endColumn);
 	}
 
-	//	public NodeToken getSpecialAt(int i) {
-	//		if (getSpecialTokens() == null) {
-	//			throw new java.util.NoSuchElementException("No specials in token");
-	//		}
-	//		return getSpecialTokens().elementAt(i);
-	//	}
+	// public NodeToken getSpecialAt(int i) {
+	// if (getSpecialTokens() == null) {
+	// throw new java.util.NoSuchElementException("No specials in token");
+	// }
+	// return getSpecialTokens().elementAt(i);
+	// }
 	//
-	//	public int numSpecials() {
-	//		if (getSpecialTokens() == null) {
-	//			return 0;
-	//		}
-	//		return getSpecialTokens().size();
-	//	}
+	// public int numSpecials() {
+	// if (getSpecialTokens() == null) {
+	// return 0;
+	// }
+	// return getSpecialTokens().size();
+	// }
 	//
-	//	public void addSpecial(NodeToken s) {
-	//		if (getSpecialTokens() == null) {
-	//			setSpecialTokens(new Vector<>());
-	//		}
-	//		getSpecialTokens().addElement(s);
-	//	}
+	// public void addSpecial(NodeToken s) {
+	// if (getSpecialTokens() == null) {
+	// setSpecialTokens(new Vector<>());
+	// }
+	// getSpecialTokens().addElement(s);
+	// }
 	//
-	//	public void trimSpecials() {
-	//		if (getSpecialTokens() == null) {
-	//			return;
-	//		}
-	//		getSpecialTokens().trimToSize();
-	//	}
-	//	public String withSpecials() {
-	//		if (getSpecialTokens() == null) {
-	//			return getTokenImage();
-	//		}
+	// public void trimSpecials() {
+	// if (getSpecialTokens() == null) {
+	// return;
+	// }
+	// getSpecialTokens().trimToSize();
+	// }
+	// public String withSpecials() {
+	// if (getSpecialTokens() == null) {
+	// return getTokenImage();
+	// }
 	//
-	//		StringBuffer buf = new StringBuffer();
+	// StringBuffer buf = new StringBuffer();
 	//
-	//		for (Enumeration<NodeToken> e = getSpecialTokens().elements(); e.hasMoreElements();) {
-	//			buf.append(e.nextElement().toString());
-	//		}
+	// for (Enumeration<NodeToken> e = getSpecialTokens().elements();
+	// e.hasMoreElements();) {
+	// buf.append(e.nextElement().toString());
+	// }
 	//
-	//		buf.append(getTokenImage());
-	//		return buf.toString();
-	//	}
+	// buf.append(getTokenImage());
+	// return buf.toString();
+	// }
 
 	@Override
 	public String toString() {
@@ -132,13 +133,13 @@ public class NodeToken extends Node {
 		this.tokenImage = tokenImage;
 	}
 
-	//	public Vector<NodeToken> getSpecialTokens() {
-	//		return specialTokens;
-	//	}
+	// public Vector<NodeToken> getSpecialTokens() {
+	// return specialTokens;
+	// }
 	//
-	//	public void setSpecialTokens(Vector<NodeToken> specialTokens) {
-	//		this.specialTokens = specialTokens;
-	//	}
+	// public void setSpecialTokens(Vector<NodeToken> specialTokens) {
+	// this.specialTokens = specialTokens;
+	// }
 
 	public int getKind() {
 		return kind;

@@ -33,16 +33,16 @@ public class DoStatementInfo extends IterationStatementInfo {
 
 	@Override
 	public Node getLoopEntryPoint() {
-	    return this.getCFGInfo().getNestedCFG().getBegin();
+		return this.getCFGInfo().getNestedCFG().getBegin();
 	}
 
 	/**
 	 * Unroll this owner loop to achieve the given {@code unrollingFactor}.
 	 *
 	 * @param unrollingFactor
-	 *            number of copies of iteration-body in the final state.
-	 *            <p>
-	 *            Note: Unrolling factor of 1 would mean no unrolling.
+	 *                        number of copies of iteration-body in the final state.
+	 *                        <p>
+	 *                        Note: Unrolling factor of 1 would mean no unrolling.
 	 */
 	@Override
 	public void unrollLoop(int unrollingFactor) {

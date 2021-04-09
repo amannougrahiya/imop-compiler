@@ -31,8 +31,8 @@ public class SyntacticAccessExpressionGetter {
 	 * within the node {@code node} (inter-procedurally).
 	 * 
 	 * @param node
-	 *            a node from within which syntactic AccessExpression that are
-	 *            read have to be found.
+	 *             a node from within which syntactic AccessExpression that are
+	 *             read have to be found.
 	 * @return
 	 *         list of syntactic AccessExpressions that may be read within the
 	 *         provided node {@code node}.
@@ -68,8 +68,8 @@ public class SyntacticAccessExpressionGetter {
 	 * within the node {@code node} (inter-procedurally).
 	 * 
 	 * @param node
-	 *            a node from within which syntactic AccessExpression that are
-	 *            written have to be found.
+	 *             a node from within which syntactic AccessExpression that are
+	 *             written have to be found.
 	 * @return
 	 *         list of syntactic AccessExpressions that may be written within
 	 *         the
@@ -99,8 +99,8 @@ public class SyntacticAccessExpressionGetter {
 	 * node.
 	 * 
 	 * @param node
-	 *            a node for whose location the corresponding syntactic
-	 *            AccessExpressions have to be found.
+	 *             a node for whose location the corresponding syntactic
+	 *             AccessExpressions have to be found.
 	 * @return
 	 *         list of syntactic AccessExpressions that may be represented by
 	 *         the provided node {@code node}.
@@ -145,8 +145,8 @@ public class SyntacticAccessExpressionGetter {
 		 * Obtain access-expressions from within a given (Expression) node.
 		 * 
 		 * @param node
-		 *            an Expression or similar node from within which we need to
-		 *            obtain the list of accessed access-expressions.
+		 *             an Expression or similar node from within which we need to
+		 *             obtain the list of accessed access-expressions.
 		 * @return
 		 *         list of access-expressions within {@code node}.
 		 */
@@ -200,7 +200,8 @@ public class SyntacticAccessExpressionGetter {
 			if (n.getF1().getNode() != null) {
 				addReads(((NodeSequence) n.getF1().getNode()).getNodes().get(1).accept(this));
 			}
-			// This return null is correct -- the expression does not represent LHS location.
+			// This return null is correct -- the expression does not represent LHS
+			// location.
 			return null;
 		}
 
@@ -455,7 +456,7 @@ public class SyntacticAccessExpressionGetter {
 			if (n.getExpF1().getNodes().isEmpty()) {
 				return n.getExpF0().accept(this);
 			} else {
-				assert (false); //ExpressionSimplification should have removed the comma operator.
+				assert (false); // ExpressionSimplification should have removed the comma operator.
 				return null;
 			}
 		}
@@ -1083,7 +1084,8 @@ public class SyntacticAccessExpressionGetter {
 
 		@Override
 		public List<SyntacticAccessExpression> visit(CallStatement n) {
-			// AccessGetter should be called only on leaf nodes or their parts. CallStatement is NOT a leaf node now.
+			// AccessGetter should be called only on leaf nodes or their parts.
+			// CallStatement is NOT a leaf node now.
 			assert (false);
 			return null;
 		}

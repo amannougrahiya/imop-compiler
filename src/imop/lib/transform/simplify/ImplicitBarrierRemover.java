@@ -46,8 +46,8 @@ public class ImplicitBarrierRemover {
 					OmpConstructInfo constructInfo = forCons.getInfo();
 					if (!constructInfo.hasNowaitClause()) {
 						indexOfNode = enclosingComp.getInfo().getCFGInfo().getElementList().indexOf(stmtNode);
-						assert (indexOfNode != -1) : "Could not find proper enclosing compound-statement for the node: "
-								+ stmtNode;
+						assert (indexOfNode != -1)
+								: "Could not find proper enclosing compound-statement for the node: " + stmtNode;
 						forCons.getInfo().addNowaitClause();
 						new AddedNowaitClause(forCons);
 					} else {
@@ -58,8 +58,8 @@ public class ImplicitBarrierRemover {
 					OmpConstructInfo constructInfo = secCons.getInfo();
 					if (!constructInfo.hasNowaitClause()) {
 						indexOfNode = enclosingComp.getInfo().getCFGInfo().getElementList().indexOf(stmtNode);
-						assert (indexOfNode != -1) : "Could not find proper enclosing compound-statement for the node: "
-								+ stmtNode;
+						assert (indexOfNode != -1)
+								: "Could not find proper enclosing compound-statement for the node: " + stmtNode;
 						secCons.getInfo().addNowaitClause();
 						new AddedNowaitClause(secCons);
 					} else {
@@ -70,8 +70,8 @@ public class ImplicitBarrierRemover {
 					OmpConstructInfo constructInfo = singleCons.getInfo();
 					if (!constructInfo.hasNowaitClause()) {
 						indexOfNode = enclosingComp.getInfo().getCFGInfo().getElementList().indexOf(stmtNode);
-						assert (indexOfNode != -1) : "Could not find proper enclosing compound-statement for the node: "
-								+ stmtNode;
+						assert (indexOfNode != -1)
+								: "Could not find proper enclosing compound-statement for the node: " + stmtNode;
 						singleCons.getInfo().addNowaitClause();
 						new AddedNowaitClause(singleCons);
 					} else {
@@ -176,7 +176,8 @@ public class ImplicitBarrierRemover {
 	 * Otherwise {@code inNode} is returned.
 	 * 
 	 * @param inNode
-	 *            node that has to be checked for removal of implicit barriers.
+	 *                       node that has to be checked for removal of implicit
+	 *                       barriers.
 	 * @param sideEffectList
 	 * @return
 	 *         A {@link CompoundStatement} with implicit barriers made explicit;

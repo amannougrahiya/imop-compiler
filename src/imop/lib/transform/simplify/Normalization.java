@@ -56,14 +56,16 @@ public class Normalization {
 		for (Node leaf : node.getInfo().getCFGInfo().getLexicalCFGLeafContentsInPostOrder()) {
 			CompoundStatement enclosingBlock = (CompoundStatement) Misc.getEnclosingBlock(leaf);
 			if (enclosingBlock == null) {
-				continue; // We cannot perform the normalization yet; when the parent would be connected, we will.
+				continue; // We cannot perform the normalization yet; when the parent would be connected,
+							// we will.
 			}
 			if (!Normalization.needsNormalization(leaf)) {
 				continue;
 			}
 			ExpressionSimplifier.SimplificationString simplifiedString = leaf.accept(simplifier);
 			for (Declaration d : simplifiedString.getTemporaryDeclarations()) {
-				enclosingBlock.getInfo().getCFGInfo().addDeclaration(d); // Ignore the side effects returned by this invocation.
+				enclosingBlock.getInfo().getCFGInfo().addDeclaration(d); // Ignore the side effects returned by this
+																			// invocation.
 			}
 
 			Node replacementLeaf = FrontEnd.parseAndNormalize(simplifiedString.getReplacementString().toString(),
@@ -76,13 +78,15 @@ public class Normalization {
 			} else {
 				NodeReplacer.replaceNodes(leaf, replacementLeaf);
 				new NodeUpdated(replacementLeaf,
-						"This node was obtained as a result of normalization of some other node."); // Don't add this to sideEffects.
+						"This node was obtained as a result of normalization of some other node."); // Don't add this to
+																									// sideEffects.
 			}
 
 			CompoundStatement preludeBlock = FrontEnd
 					.parseAndNormalize("{" + simplifiedString.getPrelude().toString() + "}", CompoundStatement.class);
 			for (Node elem : preludeBlock.getInfo().getCFGInfo().getElementList()) {
-				InsertImmediatePredecessor.insert(replacementLeaf, elem); // Handle these side effects at call sites of this method, if required.
+				InsertImmediatePredecessor.insert(replacementLeaf, elem); // Handle these side effects at call sites of
+																			// this method, if required.
 			}
 		}
 		return retNode;
@@ -93,7 +97,7 @@ public class Normalization {
 	 * {@code node} which needs normalization of its expression or declarations.
 	 * 
 	 * @param node
-	 *            node to be checked for normalizations.
+	 *             node to be checked for normalizations.
 	 * @return
 	 *         <i>true</i> if there exists any leaf node in the given
 	 *         {@code node} which needs normalization of expression or
@@ -130,15 +134,19 @@ public class Normalization {
 			StructUnionOrEnumInfoGetter aggregateInfoGetter = new StructUnionOrEnumInfoGetter();
 			n.accept(aggregateInfoGetter);
 			if (aggregateInfoGetter.isUserDefinedDefinitionOrAssociatedTypedef) {
-				// Simplification would be required to separate out the definition of user-defined types.
-				// No further checks (such as multiple declarators) are required in this context.
+				// Simplification would be required to separate out the definition of
+				// user-defined types.
+				// No further checks (such as multiple declarators) are required in this
+				// context.
 				needsSimplification = true;
 				return;
 			} else {
-				// This accept would look into the simplification requirements, if any, of the initializer(s).
+				// This accept would look into the simplification requirements, if any, of the
+				// initializer(s).
 				n.getF1().accept(this);
 				if (!needsSimplification) {
-					// If the flag isn't set yet, check if simplification is required due to multiple declarators.
+					// If the flag isn't set yet, check if simplification is required due to
+					// multiple declarators.
 					InitDeclaratorList initDeclList = (InitDeclaratorList) n.getF1().getNode();
 					if (initDeclList.getF1().present()) {
 						needsSimplification = true;

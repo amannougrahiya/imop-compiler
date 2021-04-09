@@ -34,8 +34,8 @@ public class DeclarationEscalator {
 	 * escalation only for the body of a while-statement.
 	 * 
 	 * @param body
-	 *            a compound-statement from which all top level declarations
-	 *            should be moved outside.
+	 *             a compound-statement from which all top level declarations
+	 *             should be moved outside.
 	 */
 	public static void pushAllDeclarationsUpFromLevel(CompoundStatement body) {
 		CFGLink bodyLink = CFGLinkFinder.getCFGLinkFor(body);
@@ -151,7 +151,8 @@ public class DeclarationEscalator {
 			for (Node declNode : topLevelDeclList) {
 				Declaration decl = (Declaration) declNode;
 				if (decl.toString().contains("static")) {
-					// This is a fairly conservative check, since we do not model the type qualifiers semantically.
+					// This is a fairly conservative check, since we do not model the type
+					// qualifiers semantically.
 					disallowedDeclList.add(decl);
 					continue;
 				}

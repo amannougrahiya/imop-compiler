@@ -30,7 +30,7 @@ public class PointerType extends DerivedType {
 	 * 
 	 * @param pointeeType
 	 * @param oldType
-	 *            "array of T", or a "function returning T"
+	 *                    "array of T", or a "function returning T"
 	 * 
 	 */
 	public PointerType(Type pointeeType, Type oldType) {
@@ -53,51 +53,51 @@ public class PointerType extends DerivedType {
 		return pointeeType;
 	}
 
-	//	@Override
-	//	protected String preDeclarationString() {
-	//		StringBuilder stringBuilder = new StringBuilder();
-	//		stringBuilder.append(" ");
-	//		stringBuilder.append(pointeeType.preDeclarationString());
-	//		stringBuilder.append(" ");
-	//		return stringBuilder.toString();
-	//	}
+	// @Override
+	// protected String preDeclarationString() {
+	// StringBuilder stringBuilder = new StringBuilder();
+	// stringBuilder.append(" ");
+	// stringBuilder.append(pointeeType.preDeclarationString());
+	// stringBuilder.append(" ");
+	// return stringBuilder.toString();
+	// }
 	//
-	//	@Override
-	//	protected String postDeclarationString(String tempName) {
-	//		if (pointeeType instanceof FunctionType) {
-	//			return pointeeType.getDeclarationPostString(" (* " + tempName + ")", false);
-	//		} else if (pointeeType instanceof PointerType) {
-	//			return pointeeType.postDeclarationString(" * " + tempName + " ");
-	//		} else if (pointeeType instanceof ArrayType) {
-	//			return pointeeType.getDeclarationPostString("(* " + tempName + ")", false);
-	//		} else {
-	//			StringBuilder stringBuilder = new StringBuilder();
-	//			stringBuilder.append(" * ");
-	//			stringBuilder.append(tempName);
-	//			stringBuilder.append(" ");
-	//			return stringBuilder.toString();
-	//		}
-	//	}
+	// @Override
+	// protected String postDeclarationString(String tempName) {
+	// if (pointeeType instanceof FunctionType) {
+	// return pointeeType.getDeclarationPostString(" (* " + tempName + ")", false);
+	// } else if (pointeeType instanceof PointerType) {
+	// return pointeeType.postDeclarationString(" * " + tempName + " ");
+	// } else if (pointeeType instanceof ArrayType) {
+	// return pointeeType.getDeclarationPostString("(* " + tempName + ")", false);
+	// } else {
+	// StringBuilder stringBuilder = new StringBuilder();
+	// stringBuilder.append(" * ");
+	// stringBuilder.append(tempName);
+	// stringBuilder.append(" ");
+	// return stringBuilder.toString();
+	// }
+	// }
 	//
-	//	@Override
-	//	public String toString() {
-	//		String returnString = this.getDeclarationSpecifiersString();
-	//		if (pointeeType instanceof FunctionType) {
-	//			returnString += pointeeType.getDeclaratorString(" (* ) ", false);
-	//		} else if (pointeeType instanceof PointerType) {
-	//			returnString += pointeeType.getDeclaratorString(" * ");
-	//		} else if (pointeeType instanceof ArrayType) {
-	//			returnString += pointeeType.getDeclaratorString(" (* ) ", false);
-	//		} else {
-	//			returnString += " * ";
-	//		}
-	//		return returnString;
-	//	}
+	// @Override
+	// public String toString() {
+	// String returnString = this.getDeclarationSpecifiersString();
+	// if (pointeeType instanceof FunctionType) {
+	// returnString += pointeeType.getDeclaratorString(" (* ) ", false);
+	// } else if (pointeeType instanceof PointerType) {
+	// returnString += pointeeType.getDeclaratorString(" * ");
+	// } else if (pointeeType instanceof ArrayType) {
+	// returnString += pointeeType.getDeclaratorString(" (* ) ", false);
+	// } else {
+	// returnString += " * ";
+	// }
+	// return returnString;
+	// }
 
 	@Override
 	protected String preDeclarationString() {
 		String retString = "";
-		//		retString += this.pointeeType.preStringForCopy();
+		// retString += this.pointeeType.preStringForCopy();
 		if (pointeeType instanceof StructType || pointeeType instanceof UnionType || pointeeType instanceof EnumType) {
 			retString += this.pointeeType.preDeclarationString();
 		} else {

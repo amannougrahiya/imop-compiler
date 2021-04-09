@@ -61,7 +61,7 @@ public class LoopInstructionsRescheduler {
 	 * method.
 	 * 
 	 * @param itStmt
-	 *            loop that needs to be optimized.
+	 *               loop that needs to be optimized.
 	 */
 	public static void tryDifferentSchedulings(IterationStatement itStmt, int minPhaseCount) {
 		boolean changed;
@@ -152,22 +152,23 @@ public class LoopInstructionsRescheduler {
 			 * such a way that those nodes that exist in early phases should get
 			 * processed first.
 			 */
-			//			/*
-			//			 * Debug code starts.
-			//			 */
-			//			List<Cell> deterministic = new ArrayList<>();
-			//			deterministic.add(multiAccessedCells.getReadOnlyInternal().stream().filter(c -> c.toString().equals("diff_imopVarPre77"))
-			//					.findAny().get());
-			//			deterministic.add(multiAccessedCells.getReadOnlyInternal().stream()
-			//					.filter(c -> c.toString().equals("diff")).findAny().get());
-			//			deterministic.add(multiAccessedCells.getReadOnlyInternal().stream()
-			//					.filter(c -> c.toString().equals("diff_imopVarPre76")).findAny().get());
-			//			/*
-			//			 * Debug code ends.
-			//			 */
+			// /*
+			// * Debug code starts.
+			// */
+			// List<Cell> deterministic = new ArrayList<>();
+			// deterministic.add(multiAccessedCells.getReadOnlyInternal().stream().filter(c
+			// -> c.toString().equals("diff_imopVarPre77"))
+			// .findAny().get());
+			// deterministic.add(multiAccessedCells.getReadOnlyInternal().stream()
+			// .filter(c -> c.toString().equals("diff")).findAny().get());
+			// deterministic.add(multiAccessedCells.getReadOnlyInternal().stream()
+			// .filter(c -> c.toString().equals("diff_imopVarPre76")).findAny().get());
+			// /*
+			// * Debug code ends.
+			// */
 			//
-			//			for (Cell cell : deterministic) {
-			//			} 
+			// for (Cell cell : deterministic) {
+			// }
 			for (Cell cell : multiAccessedCells) {
 				List<Node> freeInstructionNodes = freeInstMap.get(cell);
 				if (freeInstructionNodes.isEmpty()) {
@@ -217,7 +218,8 @@ public class LoopInstructionsRescheduler {
 				assert (Misc.isCFGNode(firstFree));
 				firstFreeLeaf = firstFree.getInfo().getCFGInfo().getNestedCFG().getBegin();
 			}
-			//			assert (!firstFreeLeaf.getInfo().getNodePhaseInfo().getStablePhaseSet().isEmpty());
+			// assert
+			// (!firstFreeLeaf.getInfo().getNodePhaseInfo().getStablePhaseSet().isEmpty());
 			if (firstFreeLeaf.getInfo().getNodePhaseInfo().getPhaseSet().isEmpty()) {
 				continue;
 			}
@@ -343,14 +345,15 @@ public class LoopInstructionsRescheduler {
 	 * {{@link #tryDifferentSchedulings(IterationStatement)}}.
 	 * 
 	 * @param itStmt
-	 *            loop to be processed.
+	 *                           loop to be processed.
 	 * @param cell
-	 *            cell whose accesses should be moved.
+	 *                           cell whose accesses should be moved.
 	 * @param multiAccessedCells
-	 *            set of all those cells that have more than one accesses in the
-	 *            loop, such that at least one access is write.
+	 *                           set of all those cells that have more than one
+	 *                           accesses in the
+	 *                           loop, such that at least one access is write.
 	 * @param internalNodes
-	 *            set of all the internal leaf nodes of itStmt.
+	 *                           set of all the internal leaf nodes of itStmt.
 	 * @return
 	 *         set of all the free lead nodes of cell in itStmt.
 	 */
@@ -388,11 +391,11 @@ public class LoopInstructionsRescheduler {
 		Set<Phase> visitedPhases = new HashSet<>();
 		for (AbstractPhase<?, ?> absPh : predicate.getInfo().getNodePhaseInfo().getPhaseSet()) {
 			Phase ph = (Phase) absPh;
-			//			if (visitedPhases.contains(ph)) {
-			//				continue;
-			//			} else {
-			//				visitedPhases.add(ph);
-			//			}
+			// if (visitedPhases.contains(ph)) {
+			// continue;
+			// } else {
+			// visitedPhases.add(ph);
+			// }
 			/*
 			 * GENERAL STEPS FOR ALL PHASES IN LOOP:
 			 * Step A.1: Obtain the list of nodes in this phase, within the
@@ -442,7 +445,8 @@ public class LoopInstructionsRescheduler {
 					if (Misc.getInheritedEnclosee(element, ContinueStatement.class).stream()
 							.anyMatch(c -> c.getInfo().getTargetPredicate() == predicate)) {
 						thisPhaseNodeList.add(element);
-						// Note that we conservatively stop at the first block that may contain a continue statement.
+						// Note that we conservatively stop at the first block that may contain a
+						// continue statement.
 						break;
 					}
 					thisPhaseNodeList.add(element);
@@ -502,7 +506,8 @@ public class LoopInstructionsRescheduler {
 				 * instructionNodes and constrainedNodes.
 				 */
 				processPhaseNodeList(thisPhaseNodeList, instructionNodes, constrainedNodes, cell, multiAccessedCells);
-				//				System.out.println("For " + ph.getPhaseId() + ", and barrier #" + Misc.getLineNum(barrier) + ": "+ thisPhaseNodeList.toString());
+				// System.out.println("For " + ph.getPhaseId() + ", and barrier #" +
+				// Misc.getLineNum(barrier) + ": "+ thisPhaseNodeList.toString());
 			}
 			Phase thisPhase = ph;
 			visitedPhases = new HashSet<>();
@@ -591,8 +596,9 @@ public class LoopInstructionsRescheduler {
 						}
 						thisPhaseNodeList.add(element);
 					}
-					//					System.out.println("For " + thisPhase.getPhaseId() + " cell " + cell + ", and barrier #"
-					//							+ Misc.getLineNum(barrier) + ": " + thisPhaseNodeList.toString());
+					// System.out.println("For " + thisPhase.getPhaseId() + " cell " + cell + ", and
+					// barrier #"
+					// + Misc.getLineNum(barrier) + ": " + thisPhaseNodeList.toString());
 					/*
 					 * Step A.2: Process the list to obtain instructionNodes and
 					 * constrainedNodes.
@@ -642,8 +648,10 @@ public class LoopInstructionsRescheduler {
 			}
 		}
 		if (thisInstructionNodes.isEmpty()) {
-			// We remove this condition below, since for each phaseNodeList, we should process the node once.
-			//				|| thisInstructionNodes.stream().allMatch(i -> instructionNodes.contains(i))) {}
+			// We remove this condition below, since for each phaseNodeList, we should
+			// process the node once.
+			// || thisInstructionNodes.stream().allMatch(i -> instructionNodes.contains(i)))
+			// {}
 			return;
 		}
 		thisInstructionNodes.removeAll(thisInstructionNodes.stream().filter(n -> !n.getInfo().isControlConfined())
@@ -863,14 +871,15 @@ public class LoopInstructionsRescheduler {
 				 * quagmire.
 				 * Hence, we use "return" instead of "break".
 				 */
-				//				indexOfBarrier = i;
-				//				break;
+				// indexOfBarrier = i;
+				// break;
 				return false;
 			}
 		}
 		WhileStatement whileStmt = (WhileStatement) itStmt;
 		if (indexOfBarrier == -1) {
-			//			Misc.printToFile("// " + freeInst + "\n" + itStmt, "tM" + (counter - 1) + "_" + (recCounter++) + ".c");
+			// Misc.printToFile("// " + freeInst + "\n" + itStmt, "tM" + (counter - 1) + "_"
+			// + (recCounter++) + ".c");
 			if (whileStmt.getInfo().getCFGInfo().getBody() == compStmtCFGInfo.getOwner()) {
 				boolean couldMove = moveInstructionBeyondLoopHeader(freeInst, itStmt, internalNodes);
 				/*
@@ -893,40 +902,44 @@ public class LoopInstructionsRescheduler {
 					 * "getJumpedPredicate()" of these copies.
 					 */
 					Expression predicate = whileStmt.getInfo().getCFGInfo().getPredicate();
-					//					for (Node pred : predicate.getInfo().getCFGInfo().getInterProceduralLeafPredecessors()) {
-					//						if (pred instanceof BeginNode) {
-					//							// We handle the copies in this direction below this for loop.
-					//							continue;
-					//						}
+					// for (Node pred :
+					// predicate.getInfo().getCFGInfo().getInterProceduralLeafPredecessors()) {
+					// if (pred instanceof BeginNode) {
+					// // We handle the copies in this direction below this for loop.
+					// continue;
+					// }
 					//
-					//						Node freeInstCopy = null;
-					//						Node tempNode = pred;
-					//						while (!tempNode.toString().trim().equals(freeInst.toString().trim())) {
-					//							// Note that we would have inserted the freeInst in the same basic-block as that of pred.
-					//							Set<Node> predecessors = tempNode.getInfo().getCFGInfo()
-					//									.getInterProceduralLeafPredecessors();
-					//							if (predecessors.isEmpty()) {
-					//								tempNode = null;
-					//							}
-					//							if (predecessors.size() != 1) {
-					//								tempNode = null;
-					//								break;
-					//							} else {
-					//								tempNode = Misc.getAnyElement(predecessors);
-					//							}
-					//						}
-					//						if (tempNode != null) {
-					//							freeInstCopy = tempNode;
-					//						} else {
-					//							System.err.println(
-					//									"Couldn't find the copy of the following instruciton after moving it beyond the back-edge(s): "
-					//											+ freeInst);
-					//							continue;
-					//						}
-					//						freeInstCopy.getInfo().getJumpedPredicates().add(predicate);
-					//						hasFreeInstMoved |= moveFreeInstructionAgainstControlFlowInLoop(freeInstCopy, cell,
-					//								multiAccessedCells, itStmt, internalNodes);
-					//					}
+					// Node freeInstCopy = null;
+					// Node tempNode = pred;
+					// while (!tempNode.toString().trim().equals(freeInst.toString().trim())) {
+					// // Note that we would have inserted the freeInst in the same basic-block as
+					// that of pred.
+					// Set<Node> predecessors = tempNode.getInfo().getCFGInfo()
+					// .getInterProceduralLeafPredecessors();
+					// if (predecessors.isEmpty()) {
+					// tempNode = null;
+					// }
+					// if (predecessors.size() != 1) {
+					// tempNode = null;
+					// break;
+					// } else {
+					// tempNode = Misc.getAnyElement(predecessors);
+					// }
+					// }
+					// if (tempNode != null) {
+					// freeInstCopy = tempNode;
+					// } else {
+					// System.err.println(
+					// "Couldn't find the copy of the following instruciton after moving it beyond
+					// the back-edge(s): "
+					// + freeInst);
+					// continue;
+					// }
+					// freeInstCopy.getInfo().getJumpedPredicates().add(predicate);
+					// hasFreeInstMoved |= moveFreeInstructionAgainstControlFlowInLoop(freeInstCopy,
+					// cell,
+					// multiAccessedCells, itStmt, internalNodes);
+					// }
 					/*
 					 * Assuming that whilePredicate is 1, we would have only one
 					 * copy that should lie in the same basic-block as that of
@@ -977,9 +990,10 @@ public class LoopInstructionsRescheduler {
 							 * This would give wider berth to other accesses
 							 * of cell.
 							 */
-							//							System.err.println(
-							//									"Could not move the following instruction that was copied outside the loop during its peeling: "
-							//											+ outsideNode + ". Hence, we peel the first barrier.");
+							// System.err.println(
+							// "Could not move the following instruction that was copied outside the loop
+							// during its peeling: "
+							// + outsideNode + ". Hence, we peel the first barrier.");
 							peelFirstBarrier(itStmt);
 						}
 					}
@@ -1028,7 +1042,7 @@ public class LoopInstructionsRescheduler {
 			}
 			// Now, we will move the statement upwards, beyond the barrier.
 			List<SideEffect> sideEffects = NodeRemover.removeNode(element);
-			//			List<UpdateSideEffects> sideEffects = compStmtCFGInfo.removeElement(element);
+			// List<UpdateSideEffects> sideEffects = compStmtCFGInfo.removeElement(element);
 			if (!Misc.changePerformed(sideEffects)) {
 				movingPointer++;
 				continue outer;
@@ -1037,8 +1051,8 @@ public class LoopInstructionsRescheduler {
 				if (sideEffect.getClass().getSimpleName().equals("IndexIncremented")
 						|| sideEffect instanceof AddedDFDPredecessor) {
 					// TODO: Verify this.
-					//				if (sideEffect == UpdateSideEffect.INDEX_INCREMENTED
-					//						|| sideEffect == UpdateSideEffect.ADDED_DFD_PREDECESSOR) {
+					// if (sideEffect == UpdateSideEffect.INDEX_INCREMENTED
+					// || sideEffect == UpdateSideEffect.ADDED_DFD_PREDECESSOR) {
 					movingPointer++;
 				}
 			}
@@ -1115,7 +1129,8 @@ public class LoopInstructionsRescheduler {
 					peelFirstBarrier(itStmt);
 					return;
 				} else {
-					//					System.err.println("Cannot move the first barrier due to the following instruction: " + element);
+					// System.err.println("Cannot move the first barrier due to the following
+					// instruction: " + element);
 					return;
 				}
 			}
@@ -1163,8 +1178,8 @@ public class LoopInstructionsRescheduler {
 	 * back-edges of the whileStmt, and swaps it with the provided element.
 	 * 
 	 * @param element
-	 *            a node that should replace, in AST, its copy at the end of the
-	 *            loop.
+	 *                a node that should replace, in AST, its copy at the end of the
+	 *                loop.
 	 * @return
 	 *         the copy which was swapped with element; null, if the swap didn't
 	 *         happen.
@@ -1258,8 +1273,9 @@ public class LoopInstructionsRescheduler {
 		}
 	}
 
-	//	private static boolean moveInstructionBeyondLoopHeader(Node freeInst, Cell cell, CellSet multiAccessedCells,
-	//			IterationStatement itStmt, Set<Node> internalNodes) {}
+	// private static boolean moveInstructionBeyondLoopHeader(Node freeInst, Cell
+	// cell, CellSet multiAccessedCells,
+	// IterationStatement itStmt, Set<Node> internalNodes) {}
 	private static boolean moveInstructionBeyondLoopHeader(final Node freeInst, IterationStatement itStmt,
 			Set<Node> internalNodes) {
 		if (!(itStmt instanceof WhileStatement)) {
@@ -1307,7 +1323,8 @@ public class LoopInstructionsRescheduler {
 				}
 			}
 		}
-		//		System.out.println("Trying to move the following node beyond the loop header: " + freeInst);
+		// System.out.println("Trying to move the following node beyond the loop header:
+		// " + freeInst);
 
 		/*
 		 * Accumulate the list of statements that should be moved across the
@@ -1317,7 +1334,8 @@ public class LoopInstructionsRescheduler {
 		 * should try and move only that code across the back-edges which
 		 * doesn't interfere with the previous phases of this barrier.
 		 */
-		//		int moveUptil = obtainCodeIndexToBeMoved(freeInst, cell, multiAccessedCells, whileStmt, internalNodes);
+		// int moveUptil = obtainCodeIndexToBeMoved(freeInst, cell, multiAccessedCells,
+		// whileStmt, internalNodes);
 		int moveUptil = obtainCodeIndexToBeMoved(freeInst, whileStmt, internalNodes);
 		if (moveUptil == -1) {
 			/*
@@ -1331,7 +1349,7 @@ public class LoopInstructionsRescheduler {
 		Set<Node> sharedNodesMoved = new HashSet<>();
 		for (int i = 0; i <= moveUptil; i++) {
 			Node elementToBeMoved = compStmtCFGInfo.getElementList().get(ptr);
-			//			System.out.println(elementToBeMoved);
+			// System.out.println(elementToBeMoved);
 			List<SideEffect> sideEffects = compStmtCFGInfo.removeElement(elementToBeMoved);
 			if (elementToBeMoved instanceof DummyFlushDirective) {
 				ptr++;
@@ -1504,7 +1522,7 @@ public class LoopInstructionsRescheduler {
 			// Now, we will move the statement upwards, beyond the barrier.
 
 			List<SideEffect> sideEffects = NodeRemover.removeNode(element);
-			//			List<UpdateSideEffects> sideEffects = compStmtCFGInfo.removeElement(element);
+			// List<UpdateSideEffects> sideEffects = compStmtCFGInfo.removeElement(element);
 			if (!Misc.changePerformed(sideEffects)) {
 				movingPointer++;
 				continue outer;
@@ -1513,8 +1531,8 @@ public class LoopInstructionsRescheduler {
 				if (sideEffect.getClass().getSimpleName().equals("IndexIncremented")
 						|| sideEffect instanceof AddedDFDPredecessor) {
 					// TODO: Verify this.
-					//				if (sideEffect == UpdateSideEffect.INDEX_INCREMENTED
-					//						|| sideEffect == UpdateSideEffect.ADDED_DFD_PREDECESSOR) {
+					// if (sideEffect == UpdateSideEffect.INDEX_INCREMENTED
+					// || sideEffect == UpdateSideEffect.ADDED_DFD_PREDECESSOR) {
 					movingPointer++;
 				}
 			}
@@ -1544,8 +1562,9 @@ public class LoopInstructionsRescheduler {
 
 	}
 
-	//	private static int obtainCodeIndexToBeMoved(Node freeInst, Cell cell, CellSet multiAccessedCells,
-	//			WhileStatement whileStmt, Set<Node> internalNodes) {}
+	// private static int obtainCodeIndexToBeMoved(Node freeInst, Cell cell, CellSet
+	// multiAccessedCells,
+	// WhileStatement whileStmt, Set<Node> internalNodes) {}
 	private static int obtainCodeIndexToBeMoved(Node freeInst, WhileStatement whileStmt, Set<Node> internalNodes) {
 		/*
 		 * Note subtle differences between this code,
@@ -1558,22 +1577,25 @@ public class LoopInstructionsRescheduler {
 		Expression predicate = whileStmt.getInfo().getCFGInfo().getPredicate();
 		int instIndex = elemList.indexOf(freeInst);
 		if (instIndex == -1) {
-			//			System.out.println(
-			//					"The following instruction doesn't appear directly at the level of the loop, and hence can't be moved across the back-edge: "
-			//							+ freeInst);
+			// System.out.println(
+			// "The following instruction doesn't appear directly at the level of the loop,
+			// and hence can't be moved across the back-edge: "
+			// + freeInst);
 			return -1;
 		}
 
-		int stackPointer = -1; // Pointer to the last valid location (inclusive) in stack of statement that should be moved.
+		int stackPointer = -1; // Pointer to the last valid location (inclusive) in stack of statement that
+								// should be moved.
 		int movingPointer = 0;
 		outer: while (movingPointer <= instIndex) {
 			Node element = elemList.get(movingPointer);
-			// Old code: Why would this be required!? This method doesn't move code across barriers.
-			//			if (element.getInfo().getAccesses().getReadOnlyInternal().stream()
-			//					.anyMatch(c -> c != cell && multiAccessedCells.contains(c))) {
-			//				movingPointer++;
-			//				continue outer;
-			//			}
+			// Old code: Why would this be required!? This method doesn't move code across
+			// barriers.
+			// if (element.getInfo().getAccesses().getReadOnlyInternal().stream()
+			// .anyMatch(c -> c != cell && multiAccessedCells.contains(c))) {
+			// movingPointer++;
+			// continue outer;
+			// }
 			if (element.getInfo().getJumpedPredicates().contains(predicate)) {
 				movingPointer++;
 				continue outer;
@@ -1599,7 +1621,7 @@ public class LoopInstructionsRescheduler {
 
 			// Now, we will move the statement upwards in the movable stack.
 			List<SideEffect> sideEffects = NodeRemover.removeNode(element);
-			//			List<UpdateSideEffects> sideEffects = compStmtCFGInfo.removeElement(element);
+			// List<UpdateSideEffects> sideEffects = compStmtCFGInfo.removeElement(element);
 			if (!Misc.changePerformed(sideEffects)) {
 				movingPointer++;
 				continue outer;
@@ -1608,8 +1630,8 @@ public class LoopInstructionsRescheduler {
 				if (sideEffect.getClass().getSimpleName().equals("IndexIncremented")
 						|| sideEffect instanceof AddedDFDPredecessor) {
 					// TODO: Verify this.
-					//				if (sideEffect == UpdateSideEffect.INDEX_INCREMENTED
-					//						|| sideEffect == UpdateSideEffect.ADDED_DFD_PREDECESSOR) {
+					// if (sideEffect == UpdateSideEffect.INDEX_INCREMENTED
+					// || sideEffect == UpdateSideEffect.ADDED_DFD_PREDECESSOR) {
 					movingPointer++;
 				}
 			}
@@ -1620,7 +1642,8 @@ public class LoopInstructionsRescheduler {
 				continue outer;
 			}
 			elemList = compStmtCFGInfo.getElementList();
-			stackPointer = elemList.indexOf(element); // To be safe from cases when index gets changed unexpectedly due to side-effects.
+			stackPointer = elemList.indexOf(element); // To be safe from cases when index gets changed unexpectedly due
+														// to side-effects.
 			movingPointer++;
 		}
 		return stackPointer;
@@ -1632,15 +1655,16 @@ public class LoopInstructionsRescheduler {
 	 * instruction that may access other cells from multiAccessedCells.
 	 * 
 	 * @param itStmt
-	 *            loop to be processed.
+	 *                           loop to be processed.
 	 * @param inst
-	 *            instruction that needs to be tested for motion.
+	 *                           instruction that needs to be tested for motion.
 	 * @param cell
-	 *            cell accessed by {@code inst}.
+	 *                           cell accessed by {@code inst}.
 	 * @param multiAccessedCells
-	 *            all cells whose instructions are candidates of motion.
+	 *                           all cells whose instructions are candidates of
+	 *                           motion.
 	 * @param internalNodes
-	 *            set of all the internal leaf nodes of itStmt.
+	 *                           set of all the internal leaf nodes of itStmt.
 	 * @return
 	 */
 	@SuppressWarnings("unused")
@@ -1747,7 +1771,7 @@ public class LoopInstructionsRescheduler {
 		CompoundStatementCFGInfo compStmtInfo = compStmt.getInfo().getCFGInfo();
 		assert (compStmtInfo.getElementList().contains(compElement));
 		assert (compElement.getInfo().getSharedAccesses().contains(cell));
-		//		int instIndex = compStmtInfo.getElementList().indexOf(compElement);
+		// int instIndex = compStmtInfo.getElementList().indexOf(compElement);
 		return false;
 	}
 
@@ -1757,7 +1781,7 @@ public class LoopInstructionsRescheduler {
 		CompoundStatementCFGInfo compStmtInfo = compStmt.getInfo().getCFGInfo();
 		assert (compStmtInfo.getElementList().contains(compElement));
 		assert (compElement.getInfo().getSharedAccesses().contains(cell));
-		//		int instIndex = compStmtInfo.getElementList().indexOf(compElement);
+		// int instIndex = compStmtInfo.getElementList().indexOf(compElement);
 		return false;
 	}
 

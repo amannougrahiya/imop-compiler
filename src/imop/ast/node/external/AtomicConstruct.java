@@ -148,7 +148,7 @@ public class AtomicConstruct extends OmpConstruct {
 	}
 
 	public void setF4(Statement f4) {
-		//		assert (f4 instanceof ExpressionStatement || f4 instanceof CallStatement);
+		// assert (f4 instanceof ExpressionStatement || f4 instanceof CallStatement);
 		f4.setParent(this);
 		this.f4 = f4;
 	}

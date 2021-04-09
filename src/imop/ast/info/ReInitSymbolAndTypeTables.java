@@ -53,7 +53,7 @@ public class ReInitSymbolAndTypeTables extends DepthFirstVisitor {
 	public void visit(CompoundStatement n) {
 		CompoundStatementInfo compStmtInfo = n.getInfo();
 		// Old code below
-		//		compStmtInfo.populateSymbolTable();
+		// compStmtInfo.populateSymbolTable();
 		n.getF1().accept(this);
 	}
 

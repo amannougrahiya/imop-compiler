@@ -25,16 +25,16 @@ public class FreeVariable extends Cell {
 
 	public FreeVariable(String freeVariableName) {
 		this.nodeToken = new NodeToken(freeVariableName);
-		//		if (!dontSave) {
-		//			allCells.add(this);
-		//		}
+		// if (!dontSave) {
+		// allCells.add(this);
+		// }
 	}
 
 	public FreeVariable(NodeToken nodeToken) {
 		this.nodeToken = nodeToken;
-		//		if (!dontSave) {
-		//			allCells.add(this);
-		//		}
+		// if (!dontSave) {
+		// allCells.add(this);
+		// }
 	}
 
 	public String getFreeVariableName() {
@@ -49,7 +49,7 @@ public class FreeVariable extends Cell {
 	public CellSet deprecated_getPointsTo(Node node) {
 		CellSet pointsToSet = new CellSet();
 		// TODO: Discuss this.
-		//		pointsToSet.add(Cell.getGenericCell());
+		// pointsToSet.add(Cell.getGenericCell());
 		return pointsToSet;
 	}
 

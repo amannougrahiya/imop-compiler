@@ -53,7 +53,7 @@ public class InfiExactMultiTypeASTNodeListGetter extends DepthFirstProcess {
 			astContents.add(n);
 		}
 	}
-	
+
 	/**
 	 * f0 ::= AssignmentExpression()
 	 * f1 ::= ( "," AssignmentExpression() )*

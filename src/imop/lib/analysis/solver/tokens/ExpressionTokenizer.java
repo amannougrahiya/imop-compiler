@@ -31,7 +31,8 @@ public class ExpressionTokenizer {
 	 * Returns a list of {@link Tokenizable} tokens for the given expressions.
 	 * 
 	 * @param expression
-	 *            input expression for which a list of tokens have to be found.
+	 *                   input expression for which a list of tokens have to be
+	 *                   found.
 	 * @
 	 */
 	public static List<Tokenizable> getInfixTokens(Node expression) {
@@ -39,7 +40,8 @@ public class ExpressionTokenizer {
 		if (!(expression instanceof Expression) && !(expression instanceof OmpForInitExpression)
 				&& !(expression instanceof OmpForReinitExpression) && !(expression instanceof OmpForCondition)) {
 			// Such nodes cannot be represented by a list of Tokenizable tokens.
-			//			Misc.warnDueToLackOfFeature("Cannot express " + expression + " as a list of tokens.", null);
+			// Misc.warnDueToLackOfFeature("Cannot express " + expression + " as a list of
+			// tokens.", null);
 			return new ArrayList<>();
 		}
 		Node cfgLeaf = Misc.getCFGNodeFor(expression);
@@ -47,7 +49,8 @@ public class ExpressionTokenizer {
 		expression.accept(tokenListGetter);
 		retList = tokenListGetter.tokenList;
 		if (retList.isEmpty() || tokenListGetter.inexpressible) {
-			//			Misc.warnDueToLackOfFeature("Cannot express " + expression + " as a list of tokens.", null);
+			// Misc.warnDueToLackOfFeature("Cannot express " + expression + " as a list of
+			// tokens.", null);
 			return new ArrayList<>();
 		}
 		return retList;
@@ -141,7 +144,7 @@ public class ExpressionTokenizer {
 	 * given list).
 	 * 
 	 * @param prefixList
-	 *            an input list representing an expression in prefix form.
+	 *                   an input list representing an expression in prefix form.
 	 * @return
 	 *         first operand at the top-most level.
 	 */
@@ -179,7 +182,7 @@ public class ExpressionTokenizer {
 	 * tree of the given list).
 	 * 
 	 * @param prefixList
-	 *            an input list representing an expression in prefix form.
+	 *                   an input list representing an expression in prefix form.
 	 * @return
 	 *         second operand at the top-most level; an empty list if the query
 	 *         is not valid.
@@ -210,10 +213,11 @@ public class ExpressionTokenizer {
 	 * which doesn't depend upon itself, cyclically.
 	 * 
 	 * @param inTokens
-	 *            input list of tokens, representing an expression that needs to
-	 *            be expanded.
+	 *                    input list of tokens, representing an expression that
+	 *                    needs to
+	 *                    be expanded.
 	 * @param readSymbols
-	 *            set of symbols that have already been seen.
+	 *                    set of symbols that have already been seen.
 	 * @return
 	 *         a new list of tokens where variables are replaced by their
 	 *         reaching definitions whenever there is exactly one reaching
@@ -240,7 +244,7 @@ public class ExpressionTokenizer {
 				}
 			}
 		}
-		//		Set<Node> reachingDefs = cfgNode.getInfo().getReachingDefinitions();
+		// Set<Node> reachingDefs = cfgNode.getInfo().getReachingDefinitions();
 		HashMap<String, List<Tokenizable>> replacementMap = new HashMap<>();
 		for (Symbol read : symSet) {
 			if (readSymbols.contains(read)) {
@@ -249,11 +253,11 @@ public class ExpressionTokenizer {
 			}
 			// TODO: What if cfgNode is null?
 			Set<Definition> readDefs = cfgNode.getInfo().getReachingDefinitions(read);
-			//			for (Node rd : reachingDefs) {
-			//				if (rd.getInfo().getWrites().contains(read)) {
-			//					readDefs.add(rd);
-			//				}
-			//			}
+			// for (Node rd : reachingDefs) {
+			// if (rd.getInfo().getWrites().contains(read)) {
+			// readDefs.add(rd);
+			// }
+			// }
 			if (readDefs == null || readDefs.isEmpty() || readDefs.size() != 1) {
 				continue;
 			} else {
@@ -315,7 +319,7 @@ public class ExpressionTokenizer {
 	 * operators.
 	 * 
 	 * @param defTokens
-	 *            a C definition represented in prefix form.
+	 *                  a C definition represented in prefix form.
 	 * @return
 	 *         output map, for getting normalized form, free from
 	 *         side-effects, for various writes that may happen in
@@ -390,7 +394,7 @@ public class ExpressionTokenizer {
 	 * Checks whether this list has any side-effects.
 	 * 
 	 * @param inTokens
-	 *            list of tokens, representing an expression.
+	 *                 list of tokens, representing an expression.
 	 * @return
 	 *         {@code true}, if the list has any side-effects.
 	 */
@@ -404,7 +408,7 @@ public class ExpressionTokenizer {
 	 * constant.
 	 * 
 	 * @param inTokens
-	 *            list of tokens to be inspected.
+	 *                 list of tokens to be inspected.
 	 * @return
 	 *         true, if {@code inTokens} is a positive constant; false, if
 	 *         information cannot be obtained with a simple check.
@@ -440,7 +444,7 @@ public class ExpressionTokenizer {
 	 * constant.
 	 * 
 	 * @param inTokens
-	 *            list of tokens to be inspected.
+	 *                 list of tokens to be inspected.
 	 * @return
 	 *         true, if {@code inTokens} is a negative constant; false, if
 	 *         information cannot be obtained with a simple check.
@@ -497,7 +501,7 @@ public class ExpressionTokenizer {
 	 * Remove side-effect operators from {@code inTokens}.
 	 * 
 	 * @param inTokens
-	 *            a C expression in prefix form.
+	 *                 a C expression in prefix form.
 	 * @return
 	 *         an equivalent C expression with removal of ++, and -- operators;
 	 *         if {@code inTokens} contain {@link OperatorToken#ASSIGN}
@@ -541,7 +545,7 @@ public class ExpressionTokenizer {
 	 * From a C definition, obtain its equivalent prefix form.
 	 * 
 	 * @param node
-	 *            a C definition.
+	 *             a C definition.
 	 * @return
 	 *         equivalent prefix form of the provided C definition.
 	 *         <br>
@@ -603,10 +607,10 @@ public class ExpressionTokenizer {
 	 * list with renaming performed as per the map.
 	 * 
 	 * @param inTokens
-	 *            a list of tokens, representing an expression.
+	 *                 a list of tokens, representing an expression.
 	 * @param map
-	 *            a map from set of old names to set of new names for various
-	 *            identifiers in the {@code inTokens}.
+	 *                 a map from set of old names to set of new names for various
+	 *                 identifiers in the {@code inTokens}.
 	 * @return
 	 *         a new list with renaming performed.
 	 */
@@ -644,7 +648,7 @@ public class ExpressionTokenizer {
 	 * Note that this information should not be relied upon for expanded-forms.
 	 * 
 	 * @param tokens
-	 *            list of tokens representing a C expression in prefix form.
+	 *               list of tokens representing a C expression in prefix form.
 	 * @return
 	 *         CFG node corresponding to the provided (non-expanded) list.
 	 */
@@ -662,9 +666,9 @@ public class ExpressionTokenizer {
 	 * Returns the prefix form min of the given two expressions.
 	 * 
 	 * @param first
-	 *            an expression in prefix form.
+	 *               an expression in prefix form.
 	 * @param second
-	 *            an expression in prefix form.
+	 *               an expression in prefix form.
 	 * @return
 	 *         a prefix form expression which would represent the max of
 	 *         {@code first} and {@code second}.
@@ -680,25 +684,25 @@ public class ExpressionTokenizer {
 		maxValue.addAll(second);
 		maxValue.addAll(first);
 		// Old code:
-		//		maxValue.add(OperatorToken.DIV);
-		//		maxValue.add(OperatorToken.MINUS);
-		//		maxValue.add(OperatorToken.PLUS);
-		//		maxValue.addAll(first);
-		//		maxValue.addAll(second);
-		//		maxValue.add(OperatorToken.MUL);
-		//		maxValue.add(OperatorToken.MINUS);
-		//		maxValue.addAll(first);
-		//		maxValue.addAll(second);
-		//		maxValue.add(OperatorToken.MOD);
-		//		maxValue.add(OperatorToken.PLUS);
-		//		maxValue.add(OperatorToken.MUL);
-		//		maxValue.add(IdOrConstToken.getNewConstantToken("2"));
-		//		maxValue.add(OperatorToken.MINUS);
-		//		maxValue.addAll(first);
-		//		maxValue.addAll(second);
-		//		maxValue.add(IdOrConstToken.getNewConstantToken("1"));
-		//		maxValue.add(IdOrConstToken.getNewConstantToken("2"));
-		//		maxValue.add(IdOrConstToken.getNewConstantToken("2"));
+		// maxValue.add(OperatorToken.DIV);
+		// maxValue.add(OperatorToken.MINUS);
+		// maxValue.add(OperatorToken.PLUS);
+		// maxValue.addAll(first);
+		// maxValue.addAll(second);
+		// maxValue.add(OperatorToken.MUL);
+		// maxValue.add(OperatorToken.MINUS);
+		// maxValue.addAll(first);
+		// maxValue.addAll(second);
+		// maxValue.add(OperatorToken.MOD);
+		// maxValue.add(OperatorToken.PLUS);
+		// maxValue.add(OperatorToken.MUL);
+		// maxValue.add(IdOrConstToken.getNewConstantToken("2"));
+		// maxValue.add(OperatorToken.MINUS);
+		// maxValue.addAll(first);
+		// maxValue.addAll(second);
+		// maxValue.add(IdOrConstToken.getNewConstantToken("1"));
+		// maxValue.add(IdOrConstToken.getNewConstantToken("2"));
+		// maxValue.add(IdOrConstToken.getNewConstantToken("2"));
 		return maxValue;
 	}
 
@@ -706,9 +710,9 @@ public class ExpressionTokenizer {
 	 * Returns the prefix form max of the given two expressions.
 	 * 
 	 * @param first
-	 *            an expression in prefix form.
+	 *               an expression in prefix form.
 	 * @param second
-	 *            an expression in prefix form.
+	 *               an expression in prefix form.
 	 * @return
 	 *         a prefix form expression which would represent the max of
 	 *         {@code first} and {@code second}.
@@ -724,25 +728,25 @@ public class ExpressionTokenizer {
 		maxValue.addAll(first);
 		maxValue.addAll(second);
 		// Old code:
-		//		maxValue.add(OperatorToken.DIV);
-		//		maxValue.add(OperatorToken.PLUS);
-		//		maxValue.add(OperatorToken.PLUS);
-		//		maxValue.addAll(first);
-		//		maxValue.addAll(second);
-		//		maxValue.add(OperatorToken.MUL);
-		//		maxValue.add(OperatorToken.MINUS);
-		//		maxValue.addAll(first);
-		//		maxValue.addAll(second);
-		//		maxValue.add(OperatorToken.MOD);
-		//		maxValue.add(OperatorToken.PLUS);
-		//		maxValue.add(OperatorToken.MUL);
-		//		maxValue.add(IdOrConstToken.getNewConstantToken("2"));
-		//		maxValue.add(OperatorToken.MINUS);
-		//		maxValue.addAll(first);
-		//		maxValue.addAll(second);
-		//		maxValue.add(IdOrConstToken.getNewConstantToken("1"));
-		//		maxValue.add(IdOrConstToken.getNewConstantToken("2"));
-		//		maxValue.add(IdOrConstToken.getNewConstantToken("2"));
+		// maxValue.add(OperatorToken.DIV);
+		// maxValue.add(OperatorToken.PLUS);
+		// maxValue.add(OperatorToken.PLUS);
+		// maxValue.addAll(first);
+		// maxValue.addAll(second);
+		// maxValue.add(OperatorToken.MUL);
+		// maxValue.add(OperatorToken.MINUS);
+		// maxValue.addAll(first);
+		// maxValue.addAll(second);
+		// maxValue.add(OperatorToken.MOD);
+		// maxValue.add(OperatorToken.PLUS);
+		// maxValue.add(OperatorToken.MUL);
+		// maxValue.add(IdOrConstToken.getNewConstantToken("2"));
+		// maxValue.add(OperatorToken.MINUS);
+		// maxValue.addAll(first);
+		// maxValue.addAll(second);
+		// maxValue.add(IdOrConstToken.getNewConstantToken("1"));
+		// maxValue.add(IdOrConstToken.getNewConstantToken("2"));
+		// maxValue.add(IdOrConstToken.getNewConstantToken("2"));
 		return maxValue;
 	}
 
@@ -750,7 +754,7 @@ public class ExpressionTokenizer {
 	 * Returns the prefix form max of the given two expressions.
 	 * 
 	 * @param first
-	 *            an expression in prefix form.
+	 *              an expression in prefix form.
 	 * @return
 	 *         a prefix form expression which would represent the max of
 	 *         {@code first} and {@code second}.
@@ -775,7 +779,7 @@ public class ExpressionTokenizer {
 	 * are being read.
 	 * 
 	 * @param tokens
-	 *            an expression in its prefix form.
+	 *               an expression in its prefix form.
 	 * @return
 	 *         a set of symbols that have been read in the expression.
 	 */
@@ -801,7 +805,7 @@ public class ExpressionTokenizer {
 	 * Obtain the list of identifiers read in the given token list.
 	 * 
 	 * @param tokens
-	 *            given token list, representing a C expression in prefix form.
+	 *               given token list, representing a C expression in prefix form.
 	 * @return
 	 *         a set of identifier strings accessed in the given list of
 	 *         {@code tokens}.
@@ -1174,8 +1178,8 @@ public class ExpressionTokenizer {
 				NodeSequence nodeSeq = (NodeSequence) n.getF1().getNode();
 				nodeSeq.getNodes().get(1).accept(this);
 				nodeSeq.getNodes().get(3).accept(this);
-				//				assert (false);
-				//				inexpressible = true;
+				// assert (false);
+				// inexpressible = true;
 			} else {
 				n.getF0().accept(this);
 			}
@@ -1189,8 +1193,8 @@ public class ExpressionTokenizer {
 		public void visit(LogicalORExpression n) {
 			n.getF0().accept(this);
 			if (n.getF1().present()) {
-				//				assert (false);
-				//				inexpressible = true;
+				// assert (false);
+				// inexpressible = true;
 				tokenList.add(OperatorToken.LOGIC_OR);
 				n.getF1().accept(this);
 			}

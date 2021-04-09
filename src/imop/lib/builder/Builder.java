@@ -173,7 +173,7 @@ public class Builder {
 
 		ElementsOfTranslation elemOfTranslation = Misc.getEnclosingNode(decl, ElementsOfTranslation.class);
 		root.getF0().removeNode(elemOfTranslation);
-		root.getInfo().removeDeclarationEffects(decl);	// TODO: This line needs to be tested.
+		root.getInfo().removeDeclarationEffects(decl); // TODO: This line needs to be tested.
 	}
 
 	/**
@@ -200,7 +200,7 @@ public class Builder {
 
 	/**
 	 * @param baseSymbol
-	 *            Symbol from which type is taken to create a new symbol.
+	 *                   Symbol from which type is taken to create a new symbol.
 	 * @return a declaration for a new variable which is of the type same
 	 *         as that of the baseSymbol.
 	 *         IMPORTANT:
@@ -286,9 +286,9 @@ public class Builder {
 
 	/**
 	 * @param func
-	 *            : A function
+	 *             : A function
 	 * @param num
-	 *            : A parameter number (starts from 0)
+	 *             : A parameter number (starts from 0)
 	 * @return a declaration for a new variable which is of the type same as
 	 *         that
 	 *         of the num-th parameter of given function.
@@ -368,7 +368,8 @@ public class Builder {
 
 					// Obtain a new declaration, as required.
 					Declaration newDecl = FrontEnd.parseAlone(declStringGetter.declCodeString, Declaration.class);
-					// System.out.println("Declaration created is: " + newDecl.getInfo().getString());
+					// System.out.println("Declaration created is: " +
+					// newDecl.getInfo().getString());
 					return newDecl;
 				}
 			}
@@ -483,7 +484,7 @@ public class Builder {
 				}
 			}
 		}
-		//		newCopy += "}";
+		// newCopy += "}";
 		return newCopy;
 	}
 

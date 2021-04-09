@@ -81,7 +81,8 @@ public class SectionsConstructCFGInfo extends CFGInfo {
 		Program.invalidColumnNum = Program.invalidLineNum = true;
 		AutomatedUpdater.updatePhaseAndInterTaskEdgesUponRemoval(affectedBeginPhasePoints);
 		AutomatedUpdater.updateFlowFactsForward(rerunNodesForward); // Called here after removal is successful.
-		//		AutomatedUpdater.invalidateSymbolsInNode(aSection);// Added, so that any changes from points-to may be reflected here.
+		// AutomatedUpdater.invalidateSymbolsInNode(aSection);// Added, so that any
+		// changes from points-to may be reflected here.
 		AutomatedUpdater.updateFlowFactsBackward(rerunNodesBackward);
 		return true;
 	}
@@ -99,7 +100,8 @@ public class SectionsConstructCFGInfo extends CFGInfo {
 		List<SideEffect> splitSE = SplitCombinedConstructs.splitCombinedConstructForTheStatement(stmt);
 		if (!splitSE.isEmpty()) {
 			NodeUpdated nodeUpdatedSE = (NodeUpdated) splitSE.get(0);
-			// Note: Here we reparse the parallel construct so that we can perform other normalizations within it.
+			// Note: Here we reparse the parallel construct so that we can perform other
+			// normalizations within it.
 			ParallelConstruct splitParCons = FrontEnd.parseAndNormalize(nodeUpdatedSE.affectedNode.toString(),
 					ParallelConstruct.class);
 			sideEffectList.add(new NodeUpdated(splitParCons, nodeUpdatedSE.getUpdateMessage()));
@@ -137,10 +139,12 @@ public class SectionsConstructCFGInfo extends CFGInfo {
 
 		stmt = Normalization.normalizeLeafNodes(stmt, sideEffectList);
 
-		//		this.getOwner().accept(new CompoundStatementEnforcer());// COMMENTED RECENTLY.
+		// this.getOwner().accept(new CompoundStatementEnforcer());// COMMENTED
+		// RECENTLY.
 		Program.invalidColumnNum = Program.invalidLineNum = true;
 		AutomatedUpdater.updateInformationForAddition(stmt);
-		//		AutomatedUpdater.invalidateSymbolsInNode(newSection);// Added, so that any changes from points-to may be reflected here.
+		// AutomatedUpdater.invalidateSymbolsInNode(newSection);// Added, so that any
+		// changes from points-to may be reflected here.
 		return sideEffectList;
 	}
 
@@ -154,8 +158,8 @@ public class SectionsConstructCFGInfo extends CFGInfo {
 
 	private void updateCFGForSectionRemoval(Statement removed) {
 		removed = (Statement) Misc.getInternalFirstCFGNode(removed);
-		//		// 1. Adjust incompleteness.
-		//		removed.getInfo().getIncompleteSemantics().adjustSemanticsForOwnerRemoval();
+		// // 1. Adjust incompleteness.
+		// removed.getInfo().getIncompleteSemantics().adjustSemanticsForOwnerRemoval();
 
 		// 2. Remove stale edges.
 		NestedCFG ncfg = getOwner().getInfo().getCFGInfo().getNestedCFG();
@@ -164,10 +168,10 @@ public class SectionsConstructCFGInfo extends CFGInfo {
 			connectAndAdjustEndReachability(ncfg.getBegin(), ncfg.getEnd());
 		}
 		removed.getInfo().getCFGInfo().clearAllEdges();
-		//		for (Node components : this.getAllComponents()) {
-		//			disconnectAndAdjustEndReachability(removed, components);
-		//			disconnectAndAdjustEndReachability(components, removed);
-		//		}
+		// for (Node components : this.getAllComponents()) {
+		// disconnectAndAdjustEndReachability(removed, components);
+		// disconnectAndAdjustEndReachability(components, removed);
+		// }
 	}
 
 	private void updateCFGForSectionAddition(Statement added) {
@@ -181,8 +185,8 @@ public class SectionsConstructCFGInfo extends CFGInfo {
 			connectAndAdjustEndReachability(body, ncfg.getEnd());
 		}
 
-		//		// 2. Adjust incompleteness
-		//		added.getInfo().getIncompleteSemantics().adjustSemanticsForOwnerAddition();
+		// // 2. Adjust incompleteness
+		// added.getInfo().getIncompleteSemantics().adjustSemanticsForOwnerAddition();
 
 		NodeListOptional sectionList = ((SectionsConstruct) getOwner()).getF4().getF2();
 		if (sectionList.size() == 1) {

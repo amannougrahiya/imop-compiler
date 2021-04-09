@@ -43,7 +43,8 @@ public class UpwardPercolater {
 			percolateUp = false;
 			for (AbstractPhase<?, ?> absPhase : new ArrayList<>(parConsInfo.getConnectedPhases())) {
 				Phase phase = (Phase) absPhase;
-				//				System.err.println("Trying to percolate code upwards in phase #" + phase.getPhaseId());
+				// System.err.println("Trying to percolate code upwards in phase #" +
+				// phase.getPhaseId());
 				boolean tempRet = phase.percolateCodeUpwardsInLoop(null);
 				if (tempRet) {
 					percolateUp = true;
@@ -72,9 +73,9 @@ public class UpwardPercolater {
 	 * This method moves a node $movee$ up into its predecessor $pred$.
 	 * 
 	 * @param movee
-	 *            : The node to be moved up.
+	 *              : The node to be moved up.
 	 * @param pred
-	 *            : The predecessor into which the $movee$ has to be moved.
+	 *              : The predecessor into which the $movee$ has to be moved.
 	 * @return true if the $movee$ could successfully be moved inside $pred$.
 	 */
 	public static boolean moveUpANode(Node movee, Node pred) {

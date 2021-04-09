@@ -27,43 +27,58 @@ public class OmpClauseInfo extends NodeInfo {
 		OmpClause newClause;
 		newClause = FrontEnd.parseAndNormalize(ompClause.toString(), ompClause.getClass());
 		return newClause;
-		//		if (ompClause instanceof AtomicClause) {
-		//			newClause = FrontEnd.parseAndNormalize(ompClause.toString(), AtomicClause.class);
-		//		} else if (ompClause instanceof FinalClause) {
-		//			newClause = FrontEnd.parseAndNormalize(ompClause.toString(), FinalClause.class);
-		//		} else if (ompClause instanceof IfClause) {
-		//			newClause = FrontEnd.parseAndNormalize(ompClause.toString(), IfClause.class);
-		//		} else if (ompClause instanceof MergeableClause) {
-		//			newClause = FrontEnd.parseAndNormalize(ompClause.toString(), MergeableClause.class);
-		//		} else if (ompClause instanceof NowaitClause) {
-		//			newClause = FrontEnd.parseAndNormalize(ompClause.toString(), NowaitClause.class);
-		//		} else if (ompClause instanceof NumThreadsClause) {
-		//			newClause = FrontEnd.parseAndNormalize(ompClause.toString(), NumThreadsClause.class);
-		//		} else if (ompClause instanceof OmpCopyinClause) {
-		//			newClause = FrontEnd.parseAndNormalize(ompClause.toString(), OmpCopyinClause.class);
-		//		} else if (ompClause instanceof OmpDfltSharedClause) {
-		//			newClause = FrontEnd.parseAndNormalize(ompClause.toString(), OmpDfltSharedClause.class);
-		//		} else if (ompClause instanceof OmpDfltNoneClause) {
-		//			newClause = FrontEnd.parseAndNormalize(ompClause.toString(), OmpDfltNoneClause.class);
-		//		} else if (ompClause instanceof OmpFirstPrivateClause) {
-		//			newClause = FrontEnd.parseAndNormalize(ompClause.toString(), OmpFirstPrivateClause.class);
-		//		} else if (ompClause instanceof OmpLastPrivateClause) {
-		//			newClause = FrontEnd.parseAndNormalize(ompClause.toString(), OmpLastPrivateClause.class);
-		//		} else if (ompClause instanceof OmpPrivateClause) {
-		//			newClause = FrontEnd.parseAndNormalize(ompClause.toString(), OmpPrivateClause.class);
-		//		} else if (ompClause instanceof OmpReductionClause) {
-		//			newClause = FrontEnd.parseAndNormalize(ompClause.toString(), OmpReductionClause.class);
-		//		} else if (ompClause instanceof OmpSharedClause) {
-		//			newClause = FrontEnd.parseAndNormalize(ompClause.toString(), OmpSharedClause.class);
-		//		} else if (ompClause instanceof UniqueForClause) {
-		//			newClause = FrontEnd.parseAndNormalize(ompClause.toString(), UniqueForClause.class);
-		//		} else if (ompClause instanceof UntiedClause) {
-		//			newClause = FrontEnd.parseAndNormalize(ompClause.toString(), UntiedClause.class);
-		//		} else {
-		//			assert (false);
-		//			newClause = null;
-		//		}
-		//		return newClause;
+		// if (ompClause instanceof AtomicClause) {
+		// newClause = FrontEnd.parseAndNormalize(ompClause.toString(),
+		// AtomicClause.class);
+		// } else if (ompClause instanceof FinalClause) {
+		// newClause = FrontEnd.parseAndNormalize(ompClause.toString(),
+		// FinalClause.class);
+		// } else if (ompClause instanceof IfClause) {
+		// newClause = FrontEnd.parseAndNormalize(ompClause.toString(), IfClause.class);
+		// } else if (ompClause instanceof MergeableClause) {
+		// newClause = FrontEnd.parseAndNormalize(ompClause.toString(),
+		// MergeableClause.class);
+		// } else if (ompClause instanceof NowaitClause) {
+		// newClause = FrontEnd.parseAndNormalize(ompClause.toString(),
+		// NowaitClause.class);
+		// } else if (ompClause instanceof NumThreadsClause) {
+		// newClause = FrontEnd.parseAndNormalize(ompClause.toString(),
+		// NumThreadsClause.class);
+		// } else if (ompClause instanceof OmpCopyinClause) {
+		// newClause = FrontEnd.parseAndNormalize(ompClause.toString(),
+		// OmpCopyinClause.class);
+		// } else if (ompClause instanceof OmpDfltSharedClause) {
+		// newClause = FrontEnd.parseAndNormalize(ompClause.toString(),
+		// OmpDfltSharedClause.class);
+		// } else if (ompClause instanceof OmpDfltNoneClause) {
+		// newClause = FrontEnd.parseAndNormalize(ompClause.toString(),
+		// OmpDfltNoneClause.class);
+		// } else if (ompClause instanceof OmpFirstPrivateClause) {
+		// newClause = FrontEnd.parseAndNormalize(ompClause.toString(),
+		// OmpFirstPrivateClause.class);
+		// } else if (ompClause instanceof OmpLastPrivateClause) {
+		// newClause = FrontEnd.parseAndNormalize(ompClause.toString(),
+		// OmpLastPrivateClause.class);
+		// } else if (ompClause instanceof OmpPrivateClause) {
+		// newClause = FrontEnd.parseAndNormalize(ompClause.toString(),
+		// OmpPrivateClause.class);
+		// } else if (ompClause instanceof OmpReductionClause) {
+		// newClause = FrontEnd.parseAndNormalize(ompClause.toString(),
+		// OmpReductionClause.class);
+		// } else if (ompClause instanceof OmpSharedClause) {
+		// newClause = FrontEnd.parseAndNormalize(ompClause.toString(),
+		// OmpSharedClause.class);
+		// } else if (ompClause instanceof UniqueForClause) {
+		// newClause = FrontEnd.parseAndNormalize(ompClause.toString(),
+		// UniqueForClause.class);
+		// } else if (ompClause instanceof UntiedClause) {
+		// newClause = FrontEnd.parseAndNormalize(ompClause.toString(),
+		// UntiedClause.class);
+		// } else {
+		// assert (false);
+		// newClause = null;
+		// }
+		// return newClause;
 	}
 
 	public Set<String> getListedNames() {
