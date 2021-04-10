@@ -41,7 +41,7 @@ public class StatementInfo extends NodeInfo {
 	 * @return list of labels that annotate the owner node directly.
 	 */
 	public List<Label> getLabelAnnotations() {
-		ProfileSS.addChangePoint(ProfileSS.labSet);
+		ProfileSS.addRelevantChangePoint(ProfileSS.labSet);
 		if (this.getNode() instanceof OmpConstruct || this.getNode() instanceof OmpDirective) {
 			return new ArrayList<>();
 		}
@@ -63,7 +63,7 @@ public class StatementInfo extends NodeInfo {
 	 * @param newLabel
 	 */
 	public void initAddLabelAnnotation(Label newLabel) {
-		ProfileSS.addChangePoint(ProfileSS.labSet);
+		ProfileSS.addRelevantChangePoint(ProfileSS.labSet);
 		if (this.getNode() instanceof OmpConstruct || this.getNode() instanceof OmpDirective) {
 			Misc.exitDueToError("Cannot add the label " + newLabel + " to an OpenMP construct/directive.");
 		}
@@ -114,7 +114,7 @@ public class StatementInfo extends NodeInfo {
 	 */
 	public void addLabelAnnotation(int index, Label newLabel) {
 		PointsToAnalysis.disableHeuristic();
-		ProfileSS.addChangePoint(ProfileSS.labSet);
+		ProfileSS.addRelevantChangePoint(ProfileSS.labSet);
 		if (this.getNode() instanceof OmpConstruct || this.getNode() instanceof OmpDirective) {
 			Misc.exitDueToError("Cannot add the label " + newLabel + " to an OpenMP construct/directive.");
 		}
@@ -219,7 +219,7 @@ public class StatementInfo extends NodeInfo {
 	 */
 	public boolean removeSimpleLabelAnnotation(String string) {
 		PointsToAnalysis.disableHeuristic();
-		ProfileSS.addChangePoint(ProfileSS.labSet);
+		ProfileSS.addRelevantChangePoint(ProfileSS.labSet);
 		if (this.getNode() instanceof OmpConstruct || this.getNode() instanceof OmpDirective) {
 			return false;
 		}
@@ -315,7 +315,8 @@ public class StatementInfo extends NodeInfo {
 				startNodes.add(endNode);
 			}
 		}
-		if (Program.updateCategory == UpdateCategory.EGINV || Program.updateCategory == UpdateCategory.LZINV) {
+		if (Program.updateCategory == UpdateCategory.EGINV || Program.updateCategory == UpdateCategory.LZINV
+				|| Program.updateCategory == UpdateCategory.CPINV) {
 			AutomatedUpdater.updateFlowFactsForward(new HashSet<>());
 			AutomatedUpdater.updateFlowFactsBackward(new HashSet<>());
 		} else {
@@ -484,7 +485,7 @@ public class StatementInfo extends NodeInfo {
 	 */
 	public boolean removeLabelAnnotation(Label oldLabel) {
 		PointsToAnalysis.disableHeuristic();
-		ProfileSS.addChangePoint(ProfileSS.labSet);
+		ProfileSS.addRelevantChangePoint(ProfileSS.labSet);
 		if (this.getNode() instanceof OmpConstruct || this.getNode() instanceof OmpDirective) {
 			return false;
 		}
@@ -529,7 +530,8 @@ public class StatementInfo extends NodeInfo {
 				startNodes.add(endNode);
 			}
 		}
-		if (Program.updateCategory == UpdateCategory.EGINV || Program.updateCategory == UpdateCategory.LZINV) {
+		if (Program.updateCategory == UpdateCategory.EGINV || Program.updateCategory == UpdateCategory.LZINV
+				|| Program.updateCategory == UpdateCategory.CPINV) {
 			AutomatedUpdater.updateFlowFactsForward(new HashSet<>());
 			AutomatedUpdater.updateFlowFactsBackward(new HashSet<>());
 		} else {
@@ -670,7 +672,8 @@ public class StatementInfo extends NodeInfo {
 				startNodes.add(endNode);
 			}
 		}
-		if (Program.updateCategory == UpdateCategory.EGINV || Program.updateCategory == UpdateCategory.LZINV) {
+		if (Program.updateCategory == UpdateCategory.EGINV || Program.updateCategory == UpdateCategory.LZINV
+				|| Program.updateCategory == UpdateCategory.CPINV) {
 			AutomatedUpdater.updateFlowFactsForward(new HashSet<>());
 			AutomatedUpdater.updateFlowFactsBackward(new HashSet<>());
 		} else {
@@ -715,7 +718,8 @@ public class StatementInfo extends NodeInfo {
 				startNodes.add(endNode);
 			}
 		}
-		if (Program.updateCategory == UpdateCategory.EGINV || Program.updateCategory == UpdateCategory.LZINV) {
+		if (Program.updateCategory == UpdateCategory.EGINV || Program.updateCategory == UpdateCategory.LZINV
+				|| Program.updateCategory == UpdateCategory.CPINV) {
 			AutomatedUpdater.updateFlowFactsForward(new HashSet<>());
 			AutomatedUpdater.updateFlowFactsBackward(new HashSet<>());
 		} else {
@@ -800,7 +804,7 @@ public class StatementInfo extends NodeInfo {
 	 */
 	public void clearLabelAnnotations() {
 		PointsToAnalysis.disableHeuristic();
-		ProfileSS.addChangePoint(ProfileSS.labSet);
+		ProfileSS.addRelevantChangePoint(ProfileSS.labSet);
 		if (this.getNode() instanceof OmpConstruct || this.getNode() instanceof OmpDirective) {
 			return;
 		}
@@ -823,7 +827,7 @@ public class StatementInfo extends NodeInfo {
 	 * @return
 	 */
 	public boolean hasLabelAnnotations() {
-		ProfileSS.addChangePoint(ProfileSS.labSet);
+		ProfileSS.addRelevantChangePoint(ProfileSS.labSet);
 		if (this.getNode() instanceof OmpConstruct || this.getNode() instanceof OmpDirective) {
 			return false;
 		}
@@ -847,7 +851,7 @@ public class StatementInfo extends NodeInfo {
 	 */
 	public boolean containsLabel(String string) {
 		// if (!Misc.isCFGNode(this.getNode()))
-		ProfileSS.addChangePoint(ProfileSS.labSet);
+		ProfileSS.addRelevantChangePoint(ProfileSS.labSet);
 		if (this.getNode() instanceof OmpConstruct || this.getNode() instanceof OmpDirective) {
 			return false;
 		}

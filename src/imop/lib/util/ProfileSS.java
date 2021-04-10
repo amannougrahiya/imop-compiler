@@ -18,13 +18,13 @@ import imop.parser.Program;
  * evaluations.
  */
 public class ProfileSS {
-	public static Set<Integer> ptaSet = new HashSet<>(); // ID: 0
-	public static Set<Integer> cfgSet = new HashSet<>(); // ID: 1
-	public static Set<Integer> cgSet = new HashSet<>(); // ID: 2
-	public static Set<Integer> iteSet = new HashSet<>(); // ID: 3
-	public static Set<Integer> symSet = new HashSet<>(); // ID: 4
-	public static Set<Integer> labSet = new HashSet<>(); // ID: 5
-	public static Set<Integer> phSet = new HashSet<>(); // ID: 6
+	public static Set<Integer> ptaSet = new HashSet<>();
+	public static Set<Integer> cfgSet = new HashSet<>();
+	public static Set<Integer> cgSet = new HashSet<>();
+	public static Set<Integer> iteSet = new HashSet<>();
+	public static Set<Integer> symSet = new HashSet<>();
+	public static Set<Integer> labSet = new HashSet<>();
+	public static Set<Integer> phSet = new HashSet<>();
 	public static int currentCP = -1;
 
 	private static boolean flagRaised = false;
@@ -48,7 +48,7 @@ public class ProfileSS {
 	 *
 	 * @param set
 	 */
-	public static void addChangePoint(Set<Integer> set) {
+	public static void addRelevantChangePoint(Set<Integer> set) {
 		if (!Program.addRelCPs) {
 			return;
 		}

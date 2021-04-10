@@ -159,7 +159,7 @@ public class ParallelConstructInfo extends OmpConstructInfo {
 	}
 
 	public List<? extends AbstractPhase<?, ?>> getAllPhaseList() {
-		ProfileSS.addChangePoint(ProfileSS.phSet);
+		ProfileSS.addRelevantChangePoint(ProfileSS.phSet);
 		return allPhaseList;
 	}
 

@@ -75,31 +75,35 @@ public class DriverModule {
 			DumpSnapshot.dumpPhases("merged-rem" + Program.mhpUpdateCategory);
 		}
 		// TODO: Uncomment starting this.
-		FunctionDefinition mainFunc = Program.getRoot().getInfo().getMainFunction();
-		FunctionInliner.inline(mainFunc);
-		if (dumpIntermediate) {
-			DumpSnapshot.dumpRoot("merged-rem-inlined" + Program.mhpUpdateCategory);
-			DumpSnapshot.dumpPointsTo("merged-rem-inlined" + Program.updateCategory);
-			DumpSnapshot.dumpPhases("merged-rem-inlined" + Program.mhpUpdateCategory);
-		}
-		ParallelConstructExpander.mergeParallelRegions(Program.getRoot());
-		Program.getRoot().getInfo().removeUnusedElements();
-		ProfileSS.insertCP(); // RCP
-		AutomatedUpdater.stabilizePTAInCPModes();
-		if (dumpIntermediate) {
-			DumpSnapshot.dumpRoot("merged-rem-inlined-merged" + Program.mhpUpdateCategory);
-			DumpSnapshot.dumpPointsTo("merged-rem-inlined-merged" + Program.updateCategory);
-			DumpSnapshot.dumpPhases("merged-rem-inlined-merged" + Program.mhpUpdateCategory);
-		}
-		// Program.getRoot().getInfo().removeExtraScopes();
-		if (Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.ICON) {
-			RedundantSynchronizationRemoval.removeBarriers(Program.getRoot());
-		} else {
-			RedundantSynchronizationRemovalForYA.removeBarriers(Program.getRoot());
-		}
-		if (dumpIntermediate) {
-			DumpSnapshot.dumpRoot("merged-rem-inlined-merged-rem" + Program.mhpUpdateCategory);
-		}
+		// FunctionDefinition mainFunc = Program.getRoot().getInfo().getMainFunction();
+		// FunctionInliner.inline(mainFunc);
+		// if (dumpIntermediate) {
+		// DumpSnapshot.dumpRoot("merged-rem-inlined" + Program.mhpUpdateCategory);
+		// DumpSnapshot.dumpPointsTo("merged-rem-inlined" + Program.updateCategory);
+		// DumpSnapshot.dumpPhases("merged-rem-inlined" + Program.mhpUpdateCategory);
+		// }
+		// ParallelConstructExpander.mergeParallelRegions(Program.getRoot());
+		// Program.getRoot().getInfo().removeUnusedElements();
+		// ProfileSS.insertCP(); // RCP
+		// AutomatedUpdater.stabilizePTAInCPModes();
+		// if (dumpIntermediate) {
+		// DumpSnapshot.dumpRoot("merged-rem-inlined-merged" +
+		// Program.mhpUpdateCategory);
+		// DumpSnapshot.dumpPointsTo("merged-rem-inlined-merged" +
+		// Program.updateCategory);
+		// DumpSnapshot.dumpPhases("merged-rem-inlined-merged" +
+		// Program.mhpUpdateCategory);
+		// }
+		// // Program.getRoot().getInfo().removeExtraScopes();
+		// if (Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.ICON) {
+		// RedundantSynchronizationRemoval.removeBarriers(Program.getRoot());
+		// } else {
+		// RedundantSynchronizationRemovalForYA.removeBarriers(Program.getRoot());
+		// }
+		// if (dumpIntermediate) {
+		// DumpSnapshot.dumpRoot("merged-rem-inlined-merged-rem" +
+		// Program.mhpUpdateCategory);
+		// }
 		// TODO: Uncomment till here.
 		double totTime = (System.nanoTime() - Main.totalTime) / (1.0 * 1e9);
 		double incMHPTime = 0.0;

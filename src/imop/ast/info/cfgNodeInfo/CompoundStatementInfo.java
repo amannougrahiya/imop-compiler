@@ -355,7 +355,7 @@ public class CompoundStatementInfo extends StatementInfo {
 	}
 
 	public HashMap<String, Symbol> getSymbolTable() {
-		ProfileSS.addChangePoint(ProfileSS.symSet);
+		ProfileSS.addRelevantChangePoint(ProfileSS.symSet);
 		if (symbolTable == null) {
 			populateSymbolTable();
 		}
@@ -363,7 +363,7 @@ public class CompoundStatementInfo extends StatementInfo {
 	}
 
 	public HashMap<String, Typedef> getTypedefTable() {
-		ProfileSS.addChangePoint(ProfileSS.symSet);
+		ProfileSS.addRelevantChangePoint(ProfileSS.symSet);
 		if (typedefTable == null) {
 			populateSymbolTable();
 		}
@@ -371,7 +371,7 @@ public class CompoundStatementInfo extends StatementInfo {
 	}
 
 	public HashMap<String, Type> getTypeTable() {
-		ProfileSS.addChangePoint(ProfileSS.symSet);
+		ProfileSS.addRelevantChangePoint(ProfileSS.symSet);
 		if (typeTable == null) {
 			populateSymbolTable();
 		}

@@ -2,7 +2,7 @@
  * Copyright (c) 2019 Aman Nougrahiya, V Krishna Nandivada, IIT Madras.
  * This file is a part of the project IMOP, licensed under the MIT license.
  * See LICENSE.md for the full text of the license.
- * 
+ *
  * The above notice shall be included in all copies or substantial
  * portions of this file.
  */
@@ -29,7 +29,7 @@ import java.util.Set;
 
 public class PointsToAnalysis extends InterThreadForwardCellularAnalysis<PointsToAnalysis.PointsToFlowMap> {
 
-	public static boolean isHeuristicEnabled = true; // Also enable Program.ptaHeuristicEnabled
+	public static boolean isHeuristicEnabled = false; // Also enable Program.ptaHeuristicEnabled
 	public static CellSet affectedCellsInThisEpoch = new CellSet();
 
 	public static void handleNodeAdditionOrRemovalForHeuristic(Node affectedNode) {
@@ -85,7 +85,10 @@ public class PointsToAnalysis extends InterThreadForwardCellularAnalysis<PointsT
 		 */
 		this.workList.recreate();
 		Set<Node> remSet = new HashSet<>();
-		for (Node n : nodesToBeUpdated) {
+		// TODO: Check why on Earth are we getting a ConcurrentModificationException
+		// here for EGUPD mode of IDFA-stabilization! This might mostly be due to some
+		// assert in the add().
+		for (Node n : new HashSet<>(nodesToBeUpdated)) {
 			boolean added = this.workList.add(n);
 			if (added) {
 				remSet.add(n);
@@ -706,7 +709,7 @@ public class PointsToAnalysis extends InterThreadForwardCellularAnalysis<PointsT
 	 * simple-primary-expression {@code argument} that represents the argument
 	 * for this parameter from some call-site, this method should model the
 	 * flow-function of the write to the parameter that happens implicitly.
-	 * 
+	 *
 	 * @param parameter
 	 *                   a {@code ParameterDeclaration} which needs to be assigned
 	 *                   with
@@ -790,11 +793,11 @@ public class PointsToAnalysis extends InterThreadForwardCellularAnalysis<PointsT
 	}
 
 	/**
-	 * 
+	 *
 	 * This visitor is used to obtain the "modifications" in the points-to sets
 	 * of various symbols, as a result of the symbolic execution of the visited
 	 * expression.
-	 * 
+	 *
 	 * @author Aman Nougrahiya
 	 *
 	 */

@@ -42,8 +42,8 @@ public class Program {
 				// analysis.
 		EGUPD, // eager update, upon each elementary transformation, with incremental update to
 				// the analysis data.
-		// CPINV, // cp-based invalidation
-		// CPUPD, // cp-based update
+		CPINV, // CP-based invalidation
+		CPUPD, // CP-based update
 		LZINV, // lazy invalidation, involving rerun of the analysis, whenever first read is
 				// performed after transformation.
 		LZUPD // lazy update, with incremental update to the analysis data, whenever first
@@ -88,7 +88,7 @@ public class Program {
 	 * Decided whether the PTA-heuristic that looks at the cell being dereferenced,
 	 * is enabled.
 	 */
-	public static boolean ptaHeuristicEnabled = true;
+	public static boolean ptaHeuristicEnabled = false;
 	public static UpdateCategory updateCategory = UpdateCategory.LZUPD;
 	public static UpdateCategory mhpUpdateCategory = UpdateCategory.LZUPD;
 	/*
@@ -99,7 +99,7 @@ public class Program {
 	 * this heuristic would not be correct for Yuan's concurrency analysis.
 	 */
 	public static boolean useHeuristicWithYuan = false;
-	public static boolean useHeuristicWithIcon = false;
+	public static boolean useHeuristicWithIcon = true;
 	public static boolean useInterProceduralPredicateAnalysis;
 	/**
 	 * Set the default SVE sensitivity for the whole program.<br>
@@ -129,7 +129,7 @@ public class Program {
 	 * When set to true, the call-stacks can never contain two call-statements
 	 * that have same function-designator node (string-wise).
 	 */
-	public static boolean oneEntryPerFDInCallStack;
+	public static boolean oneEntryPerFDInCallStack = true;
 	/**
 	 * When this flag is set, points-to information is not obtained from the
 	 * corresponding flow-facts. Just before
@@ -152,8 +152,9 @@ public class Program {
 	public static boolean disableLineNumbers = false;
 	public static int numExpansionAllowed = 100; // Default, applicable for the command-line arguments. This is set
 													// again in the method {@link defaultCommandLineArguments()}.
-	public static boolean addRelCPs = true; // Default: false; when true, we profile to obtain and print the set of
-											// relevant CPs.
+	public static final boolean addRelCPs = false; // Default: false; when true, we profile to obtain and print the set
+													// of
+	// relevant CPs.
 
 	public static void rememberInitialPhasesIfRequired() {
 		if (Program.getRoot() == null) {
@@ -198,7 +199,7 @@ public class Program {
 		Program.basePointsTo = true;
 		Program.memoizeAccesses = 0;
 		Program.preciseDFDEdges = false;
-		Program.updateCategory = UpdateCategory.LZUPD; // Default is LZUPD.
+		Program.updateCategory = UpdateCategory.EGUPD; // Default is LZUPD.
 		Program.concurrencyAlgorithm = ConcurrencyAlgorithm.ICON;
 		Program.mhpUpdateCategory = UpdateCategory.LZUPD; // Default is LZUPD.
 		Program.sveSensitive = SVEDimension.SVE_INSENSITIVE;
@@ -210,7 +211,6 @@ public class Program {
 		Program.useHeuristicWithYuan = false;
 		Program.phaseEmptySetChecker = false;
 		Program.ptaHeuristicEnabled = false;
-		Program.addRelCPs = true; // Default is false.
 
 		// Just a safety check below.
 		if (Program.concurrencyAlgorithm == ConcurrencyAlgorithm.YUANMHP) {
@@ -231,12 +231,12 @@ public class Program {
 		//
 		// filePath = ("../output-dump/ft-bimop_output_LZINC.i"); // SVE-all: 29s.
 		filePath = ("../tests/npb-post/bt3-0.i"); // SVE-all: 29s.
-		// filePath = ("../tests/npb-post/cg3-0.i"); // SVE-all: 2.50s.
+		filePath = ("../tests/npb-post/cg3-0.i"); // SVE-all: 2.50s.
 		// filePath = ("../tests/npb-post/ep3-0.i"); // SVE-all: 0.55s
 		// filePath = ("../tests/npb-post/ft3-0.i"); // SVE-all: 3.73s.
 		// filePath = ("../tests/npb-post/is3-0.i"); // SVE-all: 0.69
 		// filePath = ("../tests/npb-post/lu3-0.i"); // SVE-all: 16.26s.
-		filePath = ("../tests/npb-post/mg3-0.i"); // SVE-all: 9.88s;
+		// filePath = ("../tests/npb-post/mg3-0.i"); // SVE-all: 9.88s;
 		// filePath = ("../tests/npb-post/sp3-0.i"); // SVE-all: 23s.
 		//
 		// filePath = "../output-dump/imop_useful.i";
@@ -388,8 +388,8 @@ public class Program {
 		// filePath = ("../tests/barr-opt-tests/jacobi-1d-imper.i");
 		// filePath = ("../tests/jacobi-1d-imper-postpass.i");
 		// filePath = ("../tests/dijkstra_while_openmp.i");
-		filePath = ("../tests/jacobi-while.i");
-		filePath = ("../runner/cgo-eg/example.c");
+		// filePath = ("../tests/jacobi-while.i");
+		// filePath = ("../runner/cgo-eg/example.c");
 		// filePath = ("../tests/ziggurat_openmp.i");
 		// filePath = ("../tests/fft_openmp.i");
 		// filePath = ("../tests/quake.i");
@@ -482,17 +482,24 @@ public class Program {
 				case "EGINV":
 					Program.updateCategory = UpdateCategory.EGINV;
 					break;
+				case "CPINV":
+					Program.updateCategory = UpdateCategory.CPINV;
+					break;
 				case "LZINV":
 					Program.updateCategory = UpdateCategory.LZINV;
 					break;
 				case "EGUPD":
 					Program.updateCategory = UpdateCategory.EGUPD;
 					break;
+				case "CPUPD":
+					Program.updateCategory = UpdateCategory.CPUPD;
+					break;
 				case "LZUPD":
 					Program.updateCategory = UpdateCategory.LZUPD;
 					break;
 				default:
-					System.out.println("Please use a valid identifier for category: EGINV, LZINV, EGUPD, or LZUPD.");
+					System.out.println(
+							"Please use a valid identifier for IDFA update category: EGINV, CPINV, LZINV, EGUPD, CPUPD, or LZUPD.");
 					System.out.println("Read the documentation for more details. Exiting..");
 					System.exit(0);
 				}
@@ -513,7 +520,8 @@ public class Program {
 					Program.mhpUpdateCategory = UpdateCategory.LZUPD;
 					break;
 				default:
-					System.out.println("Please use a valid identifier for category: EGINV, LZINV, EGUPD, or LZUPD.");
+					System.out.println(
+							"Please use a valid identifier for MHP update category: EGINV, LZINV, EGUPD, or LZUPD.");
 					System.out.println("Read the documentation for more details. Exiting..");
 					System.exit(0);
 				}

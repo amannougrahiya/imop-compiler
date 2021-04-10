@@ -299,7 +299,7 @@ public class FunctionDefinitionInfo extends NodeInfo {
 	}
 
 	public HashMap<String, Symbol> getSymbolTable() {
-		ProfileSS.addChangePoint(ProfileSS.symSet);
+		ProfileSS.addRelevantChangePoint(ProfileSS.symSet);
 		if (symbolTable == null) {
 			populateSymbolTable();
 		}
@@ -405,7 +405,7 @@ public class FunctionDefinitionInfo extends NodeInfo {
 	 * @return
 	 */
 	public Set<CallStatement> getCallersOfThis() {
-		ProfileSS.addChangePoint(ProfileSS.cgSet);
+		ProfileSS.addRelevantChangePoint(ProfileSS.cgSet);
 		Set<CallStatement> possibleSites = new HashSet<>();
 		for (CallStatement callSite : Program.getRoot().getInfo().getLexicallyEnclosedCallStatements()) {
 			for (FunctionDefinition funcDef : callSite.getInfo().getCalledDefinitions()) {

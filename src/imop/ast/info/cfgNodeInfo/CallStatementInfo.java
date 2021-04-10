@@ -114,7 +114,7 @@ public class CallStatementInfo extends StatementInfo {
 	 * @return
 	 */
 	public List<FunctionDefinition> getCalledDefinitions() {
-		ProfileSS.addChangePoint(ProfileSS.cgSet);
+		ProfileSS.addRelevantChangePoint(ProfileSS.cgSet);
 		if (this.calledDefinitions == null) {
 			this.calledDefinitions = new ArrayList<>();
 			if (this.isACallByFunctionPointer()) {
@@ -161,7 +161,7 @@ public class CallStatementInfo extends StatementInfo {
 	 * @return
 	 */
 	public CellList getCalledSymbols() {
-		ProfileSS.addChangePoint(ProfileSS.cgSet);
+		ProfileSS.addRelevantChangePoint(ProfileSS.cgSet);
 		if (this.calledFunctions == null) {
 			this.calledFunctions = new CellList();
 			Cell funcDesig = this.getFunctionDesignator();

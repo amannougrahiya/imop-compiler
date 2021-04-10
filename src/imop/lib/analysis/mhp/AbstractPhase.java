@@ -46,7 +46,7 @@ public abstract class AbstractPhase<B extends AbstractPhasePointable, E extends 
 	protected final int phaseId;
 
 	public Set<Node> getNodeSet() {
-		ProfileSS.addChangePoint(ProfileSS.phSet);
+		ProfileSS.addRelevantChangePoint(ProfileSS.phSet);
 		if (Program.mhpUpdateCategory == Program.UpdateCategory.EGINV
 				|| Program.mhpUpdateCategory == Program.UpdateCategory.EGUPD) {
 			return this.nodeSet;
@@ -111,7 +111,7 @@ public abstract class AbstractPhase<B extends AbstractPhasePointable, E extends 
 	}
 
 	public Set<? extends AbstractPhase<?, ?>> getSuccPhases() {
-		ProfileSS.addChangePoint(ProfileSS.phSet);
+		ProfileSS.addRelevantChangePoint(ProfileSS.phSet);
 		if (Program.mhpUpdateCategory == Program.UpdateCategory.EGINV
 				|| Program.mhpUpdateCategory == Program.UpdateCategory.EGUPD) {
 			return this.succPhases;
@@ -128,7 +128,7 @@ public abstract class AbstractPhase<B extends AbstractPhasePointable, E extends 
 	}
 
 	public Set<? extends AbstractPhase<?, ?>> getPredPhases() {
-		ProfileSS.addChangePoint(ProfileSS.phSet);
+		ProfileSS.addRelevantChangePoint(ProfileSS.phSet);
 		if (Program.mhpUpdateCategory == Program.UpdateCategory.EGINV
 				|| Program.mhpUpdateCategory == Program.UpdateCategory.EGUPD) {
 			return this.predPhases;
@@ -248,7 +248,7 @@ public abstract class AbstractPhase<B extends AbstractPhasePointable, E extends 
 	}
 
 	public final Set<Node> getStaleNodeSet() {
-		ProfileSS.addChangePoint(ProfileSS.phSet);
+		ProfileSS.addRelevantChangePoint(ProfileSS.phSet);
 		return this.nodeSet;
 	}
 

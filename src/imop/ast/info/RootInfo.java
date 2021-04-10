@@ -349,7 +349,7 @@ public class RootInfo extends NodeInfo {
 	}
 
 	public HashMap<String, Symbol> getSymbolTable() {
-		ProfileSS.addChangePoint(ProfileSS.symSet);
+		ProfileSS.addRelevantChangePoint(ProfileSS.symSet);
 		if (symbolTable == null) {
 			populateSymbolTable();
 		}
@@ -357,7 +357,7 @@ public class RootInfo extends NodeInfo {
 	}
 
 	public HashMap<String, Typedef> getTypedefTable() {
-		ProfileSS.addChangePoint(ProfileSS.symSet);
+		ProfileSS.addRelevantChangePoint(ProfileSS.symSet);
 		if (typedefTable == null) {
 			populateSymbolTable();
 		}
@@ -365,7 +365,7 @@ public class RootInfo extends NodeInfo {
 	}
 
 	public HashMap<String, Symbol> getThreadPrivateList() {
-		ProfileSS.addChangePoint(ProfileSS.symSet);
+		ProfileSS.addRelevantChangePoint(ProfileSS.symSet);
 		if (threadPrivateList == null) {
 			populateThreadPrivateList();
 		}

@@ -98,7 +98,7 @@ public class DummyFlushDirectiveInfo extends FlushDirectiveInfo {
 	}
 
 	public Set<InterTaskEdge> getStaleIncomingInterTaskEdges() {
-		ProfileSS.addChangePoint(ProfileSS.iteSet);
+		ProfileSS.addRelevantChangePoint(ProfileSS.iteSet);
 		if (incomingInterTaskEdges == null) {
 			incomingInterTaskEdges = new HashSet<>();
 		}
@@ -106,7 +106,7 @@ public class DummyFlushDirectiveInfo extends FlushDirectiveInfo {
 	}
 
 	public Set<InterTaskEdge> getIncomingInterTaskEdges() {
-		ProfileSS.addChangePoint(ProfileSS.iteSet);
+		ProfileSS.addRelevantChangePoint(ProfileSS.iteSet);
 		if (incomingInterTaskEdges == null) {
 			incomingInterTaskEdges = new HashSet<>();
 		}
@@ -128,7 +128,7 @@ public class DummyFlushDirectiveInfo extends FlushDirectiveInfo {
 	}
 
 	public Set<InterTaskEdge> getStaleOutgoingInterTaskEdges() {
-		ProfileSS.addChangePoint(ProfileSS.iteSet);
+		ProfileSS.addRelevantChangePoint(ProfileSS.iteSet);
 		if (outgoingInterTaskEdges == null) {
 			outgoingInterTaskEdges = new HashSet<>();
 		}
@@ -136,7 +136,7 @@ public class DummyFlushDirectiveInfo extends FlushDirectiveInfo {
 	}
 
 	public Set<InterTaskEdge> getOutgoingInterTaskEdges() {
-		ProfileSS.addChangePoint(ProfileSS.iteSet);
+		ProfileSS.addRelevantChangePoint(ProfileSS.iteSet);
 		if (outgoingInterTaskEdges == null) {
 			outgoingInterTaskEdges = new HashSet<>();
 		}

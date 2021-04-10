@@ -61,7 +61,7 @@ public class NodePhaseInfo {
 	}
 
 	public NodePhaseInfo(Node node) {
-		ProfileSS.addChangePoint(ProfileSS.phSet);
+		ProfileSS.addRelevantChangePoint(ProfileSS.phSet);
 		assert (Misc.isCFGLeafNode(node));
 		this.node = node;
 		if (Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.YUANMHP) {
@@ -72,12 +72,12 @@ public class NodePhaseInfo {
 	}
 
 	public Set<? extends AbstractPhase<?, ?>> getStalePhaseSet() {
-		ProfileSS.addChangePoint(ProfileSS.phSet);
+		ProfileSS.addRelevantChangePoint(ProfileSS.phSet);
 		return this.phaseSet;
 	}
 
 	public Set<? extends AbstractPhase<?, ?>> getPhaseSet() {
-		ProfileSS.addChangePoint(ProfileSS.phSet);
+		ProfileSS.addRelevantChangePoint(ProfileSS.phSet);
 		if (Program.mhpUpdateCategory == UpdateCategory.EGINV || Program.mhpUpdateCategory == UpdateCategory.EGUPD) {
 			return this.phaseSet;
 		} else if (Program.mhpUpdateCategory == UpdateCategory.LZINV

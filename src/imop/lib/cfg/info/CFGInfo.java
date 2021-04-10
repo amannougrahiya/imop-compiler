@@ -188,7 +188,7 @@ public class CFGInfo {
 	 *         EndNode}.)
 	 */
 	public List<Node> getSuccBlocks() {
-		ProfileSS.addChangePoint(ProfileSS.cfgSet);
+		ProfileSS.addRelevantChangePoint(ProfileSS.cfgSet);
 		if (succBlocks == null) {
 			succBlocks = new ArrayList<>();
 		}
@@ -207,7 +207,7 @@ public class CFGInfo {
 	 *         BeginNode}.)
 	 */
 	public List<Node> getPredBlocks() {
-		ProfileSS.addChangePoint(ProfileSS.cfgSet);
+		ProfileSS.addRelevantChangePoint(ProfileSS.cfgSet);
 		if (predBlocks == null) {
 			predBlocks = new ArrayList<>();
 		}
@@ -1658,7 +1658,7 @@ public class CFGInfo {
 	}
 
 	public NestedCFG getNestedCFG() {
-		ProfileSS.addChangePoint(ProfileSS.cfgSet);
+		ProfileSS.addRelevantChangePoint(ProfileSS.cfgSet);
 		if (nestedCFG == null) {
 			nestedCFG = new NestedCFG(getOwner());
 		}

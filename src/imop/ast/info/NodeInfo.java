@@ -573,7 +573,7 @@ public class NodeInfo implements Cloneable {
 	}
 
 	public FlowFact getIN(AnalysisName analysisName, Cell thisCell) {
-		ProfileSS.addChangePoint(ProfileSS.ptaSet);
+		ProfileSS.addRelevantChangePoint(ProfileSS.ptaSet);
 		checkFirstRun(analysisName);
 		/*
 		 * Step 1: Get the analysis. If the analysis is INVALID, then mark it to
@@ -585,7 +585,9 @@ public class NodeInfo implements Cloneable {
 			 * For this forward analysis, let's make the state consistent first,
 			 * if required.
 			 */
-			if (Program.updateCategory == UpdateCategory.EGINV || Program.updateCategory == UpdateCategory.EGUPD) {
+			if (Program.updateCategory == UpdateCategory.EGINV || Program.updateCategory == UpdateCategory.EGUPD
+					|| Program.updateCategory == UpdateCategory.CPINV
+					|| Program.updateCategory == UpdateCategory.CPUPD) {
 				assert (!analysisHandle.stateIsInvalid());
 			} else if (Program.updateCategory == UpdateCategory.LZINV) {
 				if (Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.YUANMHP
@@ -746,7 +748,7 @@ public class NodeInfo implements Cloneable {
 	 * @return
 	 */
 	public FlowFact getOUT(AnalysisName analysisName) {
-		ProfileSS.addChangePoint(ProfileSS.ptaSet);
+		ProfileSS.addRelevantChangePoint(ProfileSS.ptaSet);
 		checkFirstRun(analysisName);
 		/*
 		 * Step 1: Get the analysis. If the analysis is INVALID, then mark it to
@@ -758,7 +760,9 @@ public class NodeInfo implements Cloneable {
 			 * For this forward analysis, let's make the state consistent first,
 			 * if required.
 			 */
-			if (Program.updateCategory == UpdateCategory.EGINV || Program.updateCategory == UpdateCategory.EGUPD) {
+			if (Program.updateCategory == UpdateCategory.EGINV || Program.updateCategory == UpdateCategory.EGUPD
+					|| Program.updateCategory == UpdateCategory.CPINV
+					|| Program.updateCategory == UpdateCategory.CPUPD) {
 				assert (!analysisHandle.stateIsInvalid());
 			} else if (Program.updateCategory == UpdateCategory.LZINV) {
 				if (Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.YUANMHP
