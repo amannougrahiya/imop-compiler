@@ -17,6 +17,7 @@ import imop.lib.analysis.mhp.incMHP.EndPhasePoint;
 import imop.lib.analysis.mhp.incMHP.Phase;
 import imop.lib.analysis.solver.FieldSensitivity;
 import imop.lib.cfg.info.CompoundStatementCFGInfo;
+import imop.lib.cfg.link.autoupdater.AutomatedUpdater;
 import imop.lib.transform.updater.NodeRemover;
 import imop.lib.util.CellSet;
 import imop.lib.util.DumpSnapshot;
@@ -163,9 +164,11 @@ public class RedundantSynchronizationRemoval {
 				// csCFGInfo.addElement(index, flush);
 				csCFGInfo.removeElement(barrier);
 				ProfileSS.insertCP(); // RCP
+				AutomatedUpdater.stabilizePTAInCPModes();
 				// Phase.removeUnreachablePhases(); // Newly added code.
 				removeBarriers(root);
 				ProfileSS.insertCP(); // RCP
+				AutomatedUpdater.stabilizePTAInCPModes();
 				return;
 			}
 		}

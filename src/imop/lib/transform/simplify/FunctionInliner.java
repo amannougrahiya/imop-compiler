@@ -16,6 +16,7 @@ import imop.lib.analysis.typeSystem.ArrayType;
 import imop.lib.analysis.typeSystem.FunctionType;
 import imop.lib.builder.Builder;
 import imop.lib.cfg.CFGLinkFinder;
+import imop.lib.cfg.link.autoupdater.AutomatedUpdater;
 import imop.lib.cfg.link.node.CompoundElementLink;
 import imop.lib.transform.BasicTransform;
 import imop.lib.transform.updater.InsertImmediateSuccessor;
@@ -57,6 +58,7 @@ public class FunctionInliner {
 		long timer = System.nanoTime();
 		FunctionInliner.inlineRecursive(root);
 		ProfileSS.insertCP(); // RCP
+		AutomatedUpdater.stabilizePTAInCPModes();
 		timer = System.nanoTime() - timer;
 		inliningTimer += timer;
 	}
@@ -93,6 +95,7 @@ public class FunctionInliner {
 			 */
 			FunctionInliner.inlineRecursive(funcDef);
 			ProfileSS.insertCP(); // RCP
+			AutomatedUpdater.stabilizePTAInCPModes();
 			/*
 			 * After inlining the internal call-statements, inline this
 			 * call-statement. Rest assured that this call-statement is still

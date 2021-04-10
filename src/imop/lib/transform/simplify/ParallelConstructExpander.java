@@ -18,6 +18,7 @@ import imop.lib.analysis.flowanalysis.Symbol;
 import imop.lib.analysis.typeSystem.ArrayType;
 import imop.lib.analysis.typeSystem.VoidType;
 import imop.lib.cfg.info.CompoundStatementCFGInfo;
+import imop.lib.cfg.link.autoupdater.AutomatedUpdater;
 import imop.lib.cg.CallStack;
 import imop.lib.cg.NodeWithStack;
 import imop.lib.transform.BasicTransform;
@@ -67,7 +68,8 @@ public class ParallelConstructExpander {
 				 */
 
 				changed = expandParRegion(parCons);
-				ProfileSS.insertCP();
+				ProfileSS.insertCP(); // RCP
+				AutomatedUpdater.stabilizePTAInCPModes();
 				counter++;
 				if (!parCons.getInfo().isConnectedToProgram()) {
 					continue outer;
@@ -79,6 +81,7 @@ public class ParallelConstructExpander {
 				changed |= interchangeUp(parCons);
 				if (changed) {
 					ProfileSS.insertCP(); // RCP
+					AutomatedUpdater.stabilizePTAInCPModes();
 					continue outer;
 				}
 			}
@@ -99,6 +102,7 @@ public class ParallelConstructExpander {
 		boolean changed = false;
 		changed |= expandDownward(parCons, scope, indexOfPar);
 		ProfileSS.insertCP(); // RCP
+		AutomatedUpdater.stabilizePTAInCPModes();
 		indexOfPar = scope.getInfo().getCFGInfo().getElementList().indexOf(parCons);
 		changed |= expandUpward(parCons, scope, indexOfPar);
 		ProfileSS.insertCP();
@@ -159,6 +163,7 @@ public class ParallelConstructExpander {
 				ProfileSS.insertCP();
 				scope.getInfo().getCFGInfo().addElement(index, decl);
 				ProfileSS.insertCP(); // RCP
+				AutomatedUpdater.stabilizePTAInCPModes();
 				index++;
 				nextIndex++;
 
@@ -177,6 +182,7 @@ public class ParallelConstructExpander {
 				ParallelConstruct nextPar = (ParallelConstruct) nextNode;
 				changed = ParallelConstructExpander.merge(parCons, nextPar);
 				ProfileSS.insertCP(); // RCP
+				AutomatedUpdater.stabilizePTAInCPModes();
 				if (!changed) {
 					return changed;
 				}
@@ -218,6 +224,7 @@ public class ParallelConstructExpander {
 				// scope.getInfo().getCFGInfo().removeElement(nextNode);
 				InsertImmediatePredecessor.insert(masterCons.getInfo().getCFGInfo().getNestedCFG().getEnd(), nextNode);
 				ProfileSS.insertCP(); // RCP
+				AutomatedUpdater.stabilizePTAInCPModes();
 
 				// Set this only if the size has been reduced by one.
 				assert (size == scope.getInfo().getCFGInfo().getElementList().size() + 1);
@@ -381,6 +388,7 @@ public class ParallelConstructExpander {
 					if (!BasicTransform.pushDeclarationUp(decl).stream()
 							.anyMatch(s -> s instanceof SyntacticConstraint)) {
 						ProfileSS.insertCP(); // RCP
+						AutomatedUpdater.stabilizePTAInCPModes();
 						if (testedDecls.contains(prevNode)) {
 							return changed;
 						} else {
@@ -450,6 +458,7 @@ public class ParallelConstructExpander {
 						CompoundStatement parBody = (CompoundStatement) parCons.getInfo().getCFGInfo().getBody();
 						parBody.getInfo().getCFGInfo().addDeclaration(0, decl);
 						ProfileSS.insertCP(); // RCP
+						AutomatedUpdater.stabilizePTAInCPModes();
 						// Set this only if the size has been reduced by one.
 						assert (size == scope.getInfo().getCFGInfo().getElementList().size() + 1);
 						changed = true;
@@ -468,6 +477,7 @@ public class ParallelConstructExpander {
 					if (!BasicTransform.pushDeclarationUp(decl).stream()
 							.anyMatch(s -> s instanceof SyntacticConstraint)) {
 						ProfileSS.insertCP(); // RCP
+						AutomatedUpdater.stabilizePTAInCPModes();
 						if (testedDecls.contains(prevNode)) {
 							return changed;
 						} else {
@@ -490,6 +500,7 @@ public class ParallelConstructExpander {
 				ProfileSS.insertCP();
 				// Set this only if the size has been reduced by one.
 				ProfileSS.insertCP(); // RCP
+				AutomatedUpdater.stabilizePTAInCPModes();
 				assert (size == scope.getInfo().getCFGInfo().getElementList().size() + 1);
 				changed = true;
 				continue outer;
@@ -547,6 +558,7 @@ public class ParallelConstructExpander {
 				// scope.getInfo().getCFGInfo().removeElement(prevNode);
 				InsertImmediateSuccessor.insert(masterCons.getInfo().getCFGInfo().getNestedCFG().getBegin(), prevNode);
 				ProfileSS.insertCP(); // RCP
+				AutomatedUpdater.stabilizePTAInCPModes();
 				// Set this only if the size has been reduced by one.
 				assert (size == scope.getInfo().getCFGInfo().getElementList().size() + 1);
 				changed = true;
@@ -1121,6 +1133,7 @@ public class ParallelConstructExpander {
 				return false;
 			}
 			ProfileSS.insertCP(); // RCP
+			AutomatedUpdater.stabilizePTAInCPModes();
 			return functionSwappableAggressive(func, parCons);
 		} else if (encloser instanceof WhileStatement) {
 			Set<String> privateIdNames = parCons.getInfo().getListedPrivateNames();

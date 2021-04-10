@@ -57,6 +57,7 @@ public class DriverModule {
 		ParallelConstructExpander.mergeParallelRegions(Program.getRoot());
 		Program.getRoot().getInfo().removeUnusedElements();
 		ProfileSS.insertCP(); // RCP
+		AutomatedUpdater.stabilizePTAInCPModes();
 		if (dumpIntermediate) {
 			DumpSnapshot.dumpRoot("merged" + Program.updateCategory);
 			DumpSnapshot.dumpPointsTo("merged" + Program.updateCategory);
@@ -83,7 +84,8 @@ public class DriverModule {
 		}
 		ParallelConstructExpander.mergeParallelRegions(Program.getRoot());
 		Program.getRoot().getInfo().removeUnusedElements();
-		ProfileSS.insertCP();
+		ProfileSS.insertCP(); // RCP
+		AutomatedUpdater.stabilizePTAInCPModes();
 		if (dumpIntermediate) {
 			DumpSnapshot.dumpRoot("merged-rem-inlined-merged" + Program.mhpUpdateCategory);
 			DumpSnapshot.dumpPointsTo("merged-rem-inlined-merged" + Program.updateCategory);

@@ -42,6 +42,8 @@ public class Program {
 				// analysis.
 		EGUPD, // eager update, upon each elementary transformation, with incremental update to
 				// the analysis data.
+		// CPINV, // cp-based invalidation
+		// CPUPD, // cp-based update
 		LZINV, // lazy invalidation, involving rerun of the analysis, whenever first read is
 				// performed after transformation.
 		LZUPD // lazy update, with incremental update to the analysis data, whenever first
@@ -150,7 +152,8 @@ public class Program {
 	public static boolean disableLineNumbers = false;
 	public static int numExpansionAllowed = 100; // Default, applicable for the command-line arguments. This is set
 													// again in the method {@link defaultCommandLineArguments()}.
-	public static boolean addRelCPs = true; // Default: false; when true, we profile to obtain and print the set of relevant CPs.
+	public static boolean addRelCPs = true; // Default: false; when true, we profile to obtain and print the set of
+											// relevant CPs.
 
 	public static void rememberInitialPhasesIfRequired() {
 		if (Program.getRoot() == null) {

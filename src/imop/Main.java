@@ -63,6 +63,7 @@ public class Main {
 
 	public static void main(String[] args) throws FileNotFoundException, InterruptedException {
 		// Thread.sleep(7000);
+		totalTime = System.nanoTime();
 		Program.parseNormalizeInput(args);
 
 		// demo1("L1");
@@ -108,7 +109,6 @@ public class Main {
 		// dumpAccessibleCells("");
 		// dumpLoopHeadersOnSTDOUT();
 		// ********* Those methods that never return.*********
-		totalTime = System.nanoTime();
 		// DriverModule.askQueries();
 		DriverModule.clientAutoUpdateHomeostasis();
 		// DriverModule.mergeParRegs();
