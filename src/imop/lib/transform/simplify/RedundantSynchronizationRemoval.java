@@ -162,10 +162,10 @@ public class RedundantSynchronizationRemoval {
 				// FlushDirective.class);
 				// csCFGInfo.addElement(index, flush);
 				csCFGInfo.removeElement(barrier);
-				ProfileSS.nextCP();
+				ProfileSS.insertCP(); // RCP
 				// Phase.removeUnreachablePhases(); // Newly added code.
 				removeBarriers(root);
-				ProfileSS.nextCP();
+				ProfileSS.insertCP(); // RCP
 				return;
 			}
 		}

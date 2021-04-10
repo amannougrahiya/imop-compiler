@@ -29,6 +29,7 @@ import imop.lib.transform.updater.sideeffect.SyntacticConstraint;
 import imop.lib.util.CellList;
 import imop.lib.util.CellSet;
 import imop.lib.util.Misc;
+import imop.lib.util.ProfileSS;
 import imop.parser.FrontEnd;
 import imop.parser.Program;
 
@@ -66,15 +67,18 @@ public class ParallelConstructExpander {
 				 */
 
 				changed = expandParRegion(parCons);
+				ProfileSS.insertCP();
 				counter++;
 				if (!parCons.getInfo().isConnectedToProgram()) {
 					continue outer;
 				}
 				if (changed) {
 					parCons.getInfo().removeExtraScopes();
+					ProfileSS.insertCP();
 				}
 				changed |= interchangeUp(parCons);
 				if (changed) {
+					ProfileSS.insertCP(); // RCP
 					continue outer;
 				}
 			}
@@ -94,10 +98,10 @@ public class ParallelConstructExpander {
 				+ parCons.getInfo().getCFGInfo().getIntraTaskCFGLeafContents().size());
 		boolean changed = false;
 		changed |= expandDownward(parCons, scope, indexOfPar);
-		// ProfileSS.nextCP();
+		ProfileSS.insertCP(); // RCP
 		indexOfPar = scope.getInfo().getCFGInfo().getElementList().indexOf(parCons);
 		changed |= expandUpward(parCons, scope, indexOfPar);
-		// ProfileSS.nextCP();
+		ProfileSS.insertCP();
 		return changed;
 	}
 
@@ -152,9 +156,9 @@ public class ParallelConstructExpander {
 				}
 
 				scope.getInfo().getCFGInfo().removeElement(decl);
-				// ProfileSS.nextCP();
+				ProfileSS.insertCP();
 				scope.getInfo().getCFGInfo().addElement(index, decl);
-				// ProfileSS.nextCP();
+				ProfileSS.insertCP(); // RCP
 				index++;
 				nextIndex++;
 
@@ -172,7 +176,7 @@ public class ParallelConstructExpander {
 			} else if (nextNode instanceof ParallelConstruct) {
 				ParallelConstruct nextPar = (ParallelConstruct) nextNode;
 				changed = ParallelConstructExpander.merge(parCons, nextPar);
-				// ProfileSS.nextCP();
+				ProfileSS.insertCP(); // RCP
 				if (!changed) {
 					return changed;
 				}
@@ -205,15 +209,15 @@ public class ParallelConstructExpander {
 					}
 				}
 				MasterConstruct masterCons = setAndGetLastMaster(parCons);
-				// ProfileSS.nextCP();
+				ProfileSS.insertCP();
 				if (masterCons == null) {
 					return changed;
 				}
 				NodeRemover.removeNode(nextNode);
-				// ProfileSS.nextCP();
-				// scope.getInfo().getCFGInfo().removeElement(nextNode);ProfileSS.nextCP();
+				ProfileSS.insertCP();
+				// scope.getInfo().getCFGInfo().removeElement(nextNode);
 				InsertImmediatePredecessor.insert(masterCons.getInfo().getCFGInfo().getNestedCFG().getEnd(), nextNode);
-				// ProfileSS.nextCP();
+				ProfileSS.insertCP(); // RCP
 
 				// Set this only if the size has been reduced by one.
 				assert (size == scope.getInfo().getCFGInfo().getElementList().size() + 1);
@@ -251,19 +255,19 @@ public class ParallelConstructExpander {
 						BarrierDirective barr = FrontEnd.parseAndNormalize("#pragma omp barrier \n",
 								BarrierDirective.class);
 						bodyCFGInfo.addElement(size - 1, barr);
-						// ProfileSS.nextCP();
+						ProfileSS.insertCP();
 					}
 					return (MasterConstruct) lastElem;
 				}
 			} else {
 				BarrierDirective barr = FrontEnd.parseAndNormalize("#pragma omp barrier \n", BarrierDirective.class);
 				bodyCFGInfo.addElement(size, barr);
-				// ProfileSS.nextCP();
+				ProfileSS.insertCP();
 				MasterConstruct newMasterCons = FrontEnd.parseAndNormalize("#pragma omp master \n {}",
 						MasterConstruct.class);
 				// Note: "size+2" below since insertion of a barrier increases the size by 2.
 				bodyCFGInfo.addElement(size + 2, newMasterCons);
-				// ProfileSS.nextCP();
+				ProfileSS.insertCP();
 				return newMasterCons;
 			}
 		}
@@ -376,7 +380,7 @@ public class ParallelConstructExpander {
 				if (Misc.doIntersect(writtenCells, accessedLater)) {
 					if (!BasicTransform.pushDeclarationUp(decl).stream()
 							.anyMatch(s -> s instanceof SyntacticConstraint)) {
-						// ProfileSS.nextCP();
+						ProfileSS.insertCP(); // RCP
 						if (testedDecls.contains(prevNode)) {
 							return changed;
 						} else {
@@ -442,11 +446,11 @@ public class ParallelConstructExpander {
 						 * the parCons.
 						 */
 						scope.getInfo().getCFGInfo().removeDeclaration(decl);
-						// ProfileSS.nextCP();
+						ProfileSS.insertCP();
 						CompoundStatement parBody = (CompoundStatement) parCons.getInfo().getCFGInfo().getBody();
 						parBody.getInfo().getCFGInfo().addDeclaration(0, decl);
-						// ProfileSS.nextCP();
-						// Set this only if the size has been reduced by one.ProfileSS.nextCP();
+						ProfileSS.insertCP(); // RCP
+						// Set this only if the size has been reduced by one.
 						assert (size == scope.getInfo().getCFGInfo().getElementList().size() + 1);
 						changed = true;
 						continue outer;
@@ -463,7 +467,7 @@ public class ParallelConstructExpander {
 				if (usedApartFromMaster && writtenWithin) {
 					if (!BasicTransform.pushDeclarationUp(decl).stream()
 							.anyMatch(s -> s instanceof SyntacticConstraint)) {
-						// ProfileSS.nextCP();
+						ProfileSS.insertCP(); // RCP
 						if (testedDecls.contains(prevNode)) {
 							return changed;
 						} else {
@@ -480,11 +484,12 @@ public class ParallelConstructExpander {
 				 * the parCons.
 				 */
 				scope.getInfo().getCFGInfo().removeDeclaration(decl);
-				// ProfileSS.nextCP();
+				ProfileSS.insertCP();
 				CompoundStatement parBody = (CompoundStatement) parCons.getInfo().getCFGInfo().getBody();
 				parBody.getInfo().getCFGInfo().addDeclaration(0, decl);
-				// ProfileSS.nextCP();
-				// Set this only if the size has been reduced by one.ProfileSS.nextCP();
+				ProfileSS.insertCP();
+				// Set this only if the size has been reduced by one.
+				ProfileSS.insertCP(); // RCP
 				assert (size == scope.getInfo().getCFGInfo().getElementList().size() + 1);
 				changed = true;
 				continue outer;
@@ -533,15 +538,15 @@ public class ParallelConstructExpander {
 
 				}
 				MasterConstruct masterCons = setAndGetFirstMaster(parCons);
-				// ProfileSS.nextCP();
+				ProfileSS.insertCP();
 				if (masterCons == null) {
 					return changed;
 				}
 				NodeRemover.removeNode(prevNode);
-				// ProfileSS.nextCP();
-				// scope.getInfo().getCFGInfo().removeElement(prevNode);ProfileSS.nextCP();
+				ProfileSS.insertCP();
+				// scope.getInfo().getCFGInfo().removeElement(prevNode);
 				InsertImmediateSuccessor.insert(masterCons.getInfo().getCFGInfo().getNestedCFG().getBegin(), prevNode);
-				// ProfileSS.nextCP();
+				ProfileSS.insertCP(); // RCP
 				// Set this only if the size has been reduced by one.
 				assert (size == scope.getInfo().getCFGInfo().getElementList().size() + 1);
 				changed = true;
@@ -676,11 +681,11 @@ public class ParallelConstructExpander {
 				MasterConstruct newMasterCons = FrontEnd.parseAndNormalize("#pragma omp master \n {}",
 						MasterConstruct.class);
 				bodyCFGInfo.addElement(0, newMasterCons);
-				// ProfileSS.nextCP();
+				ProfileSS.insertCP();
 				BarrierDirective barr = FrontEnd.parseAndNormalize("#pragma omp barrier \n", BarrierDirective.class);
-				// ProfileSS.nextCP();
+				ProfileSS.insertCP();
 				bodyCFGInfo.addElement(1, barr);
-				// ProfileSS.nextCP();
+				ProfileSS.insertCP();
 				return newMasterCons;
 			}
 		}
@@ -802,34 +807,34 @@ public class ParallelConstructExpander {
 							CompoundStatement enclosingCS = (CompoundStatement) Misc.getEnclosingCFGNonLeafNode(ifStmt);
 							int indexOfIf = enclosingCS.getInfo().getCFGInfo().getElementList().indexOf(ifStmt);
 							enclosingCS.getInfo().getCFGInfo().removeElement(indexOfIf);
-							// ProfileSS.nextCP();
+							ProfileSS.insertCP();
 							CompoundStatement parBody = (CompoundStatement) parCons.getInfo().getCFGInfo().getBody();
 							BarrierDirective barr = FrontEnd.parseAndNormalize("#pragma omp barrier\n",
 									BarrierDirective.class);
 							parBody.getInfo().getCFGInfo().addAtLast(barr);
-							// ProfileSS.nextCP();
+							ProfileSS.insertCP();
 							CompoundStatement newParBody = FrontEnd.parseAndNormalize("{}", CompoundStatement.class);
-							// ProfileSS.nextCP();
+							ProfileSS.insertCP();
 							parCons.getInfo().getCFGInfo().setBody(newParBody);
-							// ProfileSS.nextCP();
+							ProfileSS.insertCP();
 							IfStatement newIfStmt = FrontEnd.parseAndNormalize("if (1) {}", IfStatement.class);
 							newParBody.getInfo().getCFGInfo().addAtLast(newIfStmt);
-							// ProfileSS.nextCP();
+							ProfileSS.insertCP();
 							enclosingCS.getInfo().getCFGInfo().addElement(indexOfIf, parCons);
-							// ProfileSS.nextCP();
+							ProfileSS.insertCP();
 							newIfStmt.getInfo().getCFGInfo().setThenBody(parBody);
-							// ProfileSS.nextCP();
+							ProfileSS.insertCP();
 							newIfStmt.getInfo().getCFGInfo().setPredicate(ifStmt.getInfo().getCFGInfo().getPredicate());
-							// ProfileSS.nextCP();
-							// Handle the else body now.ProfileSS.nextCP();
+							ProfileSS.insertCP();
+							// Handle the else body now.
 							CompoundStatement newElseBody = FrontEnd.parseAndNormalize("{\n#pragma omp master\n{}}",
 									CompoundStatement.class);
 							newIfStmt.getInfo().getCFGInfo().setElseBody(newElseBody);
-							// ProfileSS.nextCP();
+							ProfileSS.insertCP();
 							MasterConstruct master = (MasterConstruct) newElseBody.getInfo().getCFGInfo()
 									.getElementList().get(0);
 							master.getInfo().getCFGInfo().setBody(elseBody);
-							// ProfileSS.nextCP();
+							ProfileSS.insertCP();
 							return true;
 						}
 					} else if (scope == ifStmt.getInfo().getCFGInfo().getElseBody()) {
@@ -849,32 +854,32 @@ public class ParallelConstructExpander {
 										.getEnclosingCFGNonLeafNode(ifStmt);
 								int indexOfIf = enclosingCS.getInfo().getCFGInfo().getElementList().indexOf(ifStmt);
 								enclosingCS.getInfo().getCFGInfo().removeElement(indexOfIf);
-								// ProfileSS.nextCP();
+								ProfileSS.insertCP();
 
 								CompoundStatement parBody = (CompoundStatement) parCons.getInfo().getCFGInfo()
 										.getBody();
 								BarrierDirective barr = FrontEnd.parseAndNormalize("#pragma omp barrier\n",
 										BarrierDirective.class);
 								parBody.getInfo().getCFGInfo().addAtLast(barr);
-								// ProfileSS.nextCP();
+								ProfileSS.insertCP();
 								CompoundStatement newParBody = FrontEnd.parseAndNormalize("{}",
 										CompoundStatement.class);
 								parCons.getInfo().getCFGInfo().setBody(newParBody);
-								// ProfileSS.nextCP();
+								ProfileSS.insertCP();
 
 								IfStatement newIfStmt = FrontEnd.parseAndNormalize("if (1) {}", IfStatement.class);
 								newParBody.getInfo().getCFGInfo().addAtLast(newIfStmt);
-								// ProfileSS.nextCP();
+								ProfileSS.insertCP();
 								enclosingCS.getInfo().getCFGInfo().addElement(indexOfIf, parCons);
-								// ProfileSS.nextCP();
+								ProfileSS.insertCP();
 
 								newIfStmt.getInfo().getCFGInfo().setElseBody(parBody);
-								// ProfileSS.nextCP();
+								ProfileSS.insertCP();
 								newIfStmt.getInfo().getCFGInfo()
 										.setPredicate(ifStmt.getInfo().getCFGInfo().getPredicate());
-								// ProfileSS.nextCP();
+								ProfileSS.insertCP();
 								newIfStmt.getInfo().getCFGInfo().setThenBody(thenPar.getInfo().getCFGInfo().getBody());
-								// ProfileSS.nextCP();
+								ProfileSS.insertCP();
 								return true;
 							}
 						}
@@ -886,35 +891,35 @@ public class ParallelConstructExpander {
 						CompoundStatement enclosingCS = (CompoundStatement) Misc.getEnclosingCFGNonLeafNode(ifStmt);
 						int indexOfIf = enclosingCS.getInfo().getCFGInfo().getElementList().indexOf(ifStmt);
 						enclosingCS.getInfo().getCFGInfo().removeElement(indexOfIf);
-						// ProfileSS.nextCP();
+						ProfileSS.insertCP();
 						CompoundStatement parBody = (CompoundStatement) parCons.getInfo().getCFGInfo().getBody();
 						BarrierDirective barr = FrontEnd.parseAndNormalize("#pragma omp barrier\n",
 								BarrierDirective.class);
 						parBody.getInfo().getCFGInfo().addAtLast(barr);
-						// ProfileSS.nextCP();
+						ProfileSS.insertCP();
 						CompoundStatement newParBody = FrontEnd.parseAndNormalize("{}", CompoundStatement.class);
-						// ProfileSS.nextCP();
+						ProfileSS.insertCP();
 						parCons.getInfo().getCFGInfo().setBody(newParBody);
-						// ProfileSS.nextCP();
+						ProfileSS.insertCP();
 						IfStatement newIfStmt = FrontEnd.parseAndNormalize("if (1) {}", IfStatement.class);
 						newParBody.getInfo().getCFGInfo().addAtLast(newIfStmt);
-						// ProfileSS.nextCP();
+						ProfileSS.insertCP();
 						enclosingCS.getInfo().getCFGInfo().addElement(indexOfIf, parCons);
-						// ProfileSS.nextCP();
+						ProfileSS.insertCP();
 						newIfStmt.getInfo().getCFGInfo().setPredicate(ifStmt.getInfo().getCFGInfo().getPredicate());
-						// ProfileSS.nextCP();
+						ProfileSS.insertCP();
 						newIfStmt.getInfo().getCFGInfo().setElseBody(parBody);
-						// ProfileSS.nextCP();
-						// Handle the else body now.ProfileSS.nextCP();
+						ProfileSS.insertCP();
+						// Handle the else body now.
 						CompoundStatement newThenBody = FrontEnd.parseAndNormalize("{\n#pragma omp master\n{}}",
 								CompoundStatement.class);
 						newIfStmt.getInfo().getCFGInfo().setThenBody(newThenBody);
-						// ProfileSS.nextCP();
+						ProfileSS.insertCP();
 						MasterConstruct master = (MasterConstruct) newThenBody.getInfo().getCFGInfo().getElementList()
 								.get(0);
-						// ProfileSS.nextCP();
+						ProfileSS.insertCP();
 						master.getInfo().getCFGInfo().setBody(thenBody);
-						// ProfileSS.nextCP();
+						ProfileSS.insertCP();
 						return true;
 					} else {
 						assert (false);
@@ -1115,7 +1120,7 @@ public class ParallelConstructExpander {
 			if (func.getInfo().isRecursive()) {
 				return false;
 			}
-			// ProfileSS.nextCP();
+			ProfileSS.insertCP(); // RCP
 			return functionSwappableAggressive(func, parCons);
 		} else if (encloser instanceof WhileStatement) {
 			Set<String> privateIdNames = parCons.getInfo().getListedPrivateNames();
@@ -1313,10 +1318,10 @@ public class ParallelConstructExpander {
 		CompoundStatement compStmt = FrontEnd.parseAndNormalize("{}", CompoundStatement.class);
 		CompoundStatement parBody = (CompoundStatement) parCons.getInfo().getCFGInfo().getBody();
 		parCons.getInfo().getCFGInfo().setBody(compStmt);
-		// ProfileSS.nextCP();
+		ProfileSS.insertCP();
 		if (elementList.size() == 1) {
 			func.getInfo().getCFGInfo().setBody(parBody);
-			// ProfileSS.nextCP();
+			ProfileSS.insertCP();
 		} else {
 			NodeReplacer.replaceNodes(parCons, parBody);
 		}
@@ -1409,9 +1414,9 @@ public class ParallelConstructExpander {
 			ParallelConstruct parConsNew = FrontEnd.parseAndNormalize("#pragma omp parallel \n {}",
 					ParallelConstruct.class);
 			InsertImmediatePredecessor.insert(callStmt, parConsNew);
-			// ProfileSS.nextCP();
+			ProfileSS.insertCP();
 			NodeRemover.removeNode(callStmt);
-			// ProfileSS.nextCP();
+			ProfileSS.insertCP();
 			for (OmpClause newClause : newClauses) {
 				OmpClause newClauseCopy = OmpClauseInfo.getCopy(newClause);
 				parConsNew.getInfo().addClause(newClauseCopy);
@@ -1419,7 +1424,7 @@ public class ParallelConstructExpander {
 
 			CompoundStatement newParBody = (CompoundStatement) parConsNew.getInfo().getCFGInfo().getBody();
 			newParBody.getInfo().getCFGInfo().addElement(callStmt);
-			// ProfileSS.nextCP();
+			ProfileSS.insertCP();
 
 		}
 		return true;
@@ -2011,14 +2016,14 @@ public class ParallelConstructExpander {
 		CompoundStatement scope = (CompoundStatement) Misc.getEnclosingCFGNonLeafNode(parConsAbove);
 		parConsBelow.getInfo().getCFGInfo().setBody(FrontEnd.parseAndNormalize(";", Statement.class));
 		scope.getInfo().getCFGInfo().removeElement(parConsBelow);
-		// ProfileSS.nextCP();
+		ProfileSS.insertCP();
 		BarrierDirective barr = FrontEnd.parseAndNormalize("#pragma omp barrier \n", BarrierDirective.class);
 		thisBody.getInfo().getCFGInfo().addAtLast(barr);
-		// ProfileSS.nextCP();
+		ProfileSS.insertCP();
 		thisBody.getInfo().getCFGInfo().addAtLast(nextBody);
-		// ProfileSS.nextCP();
+		ProfileSS.insertCP();
 		thisBody.getInfo().removeExtraScopes();
-		// ProfileSS.nextCP();
+		ProfileSS.insertCP();
 		return true;
 	}
 

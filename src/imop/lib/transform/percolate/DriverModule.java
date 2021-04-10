@@ -49,6 +49,320 @@ import java.util.*;
 public class DriverModule {
 	public static int counter = 0;
 
+	public static void clientAutoUpdateHomeostasis() {
+		// DumpSnapshot.dumpVisibleSharedReadWrittenCells("first" +
+		// Program.updateCategory);
+		boolean dumpIntermediate = Program.dumpIntermediateStates;
+		Program.sveSensitive = SVEDimension.SVE_INSENSITIVE; // Note: We keep SVE-sensitivity disabled for this client.
+		ParallelConstructExpander.mergeParallelRegions(Program.getRoot());
+		Program.getRoot().getInfo().removeUnusedElements();
+		ProfileSS.insertCP(); // RCP
+		if (dumpIntermediate) {
+			DumpSnapshot.dumpRoot("merged" + Program.updateCategory);
+			DumpSnapshot.dumpPointsTo("merged" + Program.updateCategory);
+			DumpSnapshot.dumpPhases("merged" + Program.mhpUpdateCategory);
+		}
+		// OLD CODE: BasicTransform.removeUnusedFunctions(Program.getRoot());
+		if (Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.ICON) {
+			RedundantSynchronizationRemoval.removeBarriers(Program.getRoot());
+		} else {
+			RedundantSynchronizationRemovalForYA.removeBarriers(Program.getRoot());
+		}
+		if (dumpIntermediate) {
+			DumpSnapshot.dumpRoot("merged-rem" + Program.updateCategory);
+			DumpSnapshot.dumpPointsTo("merged-rem" + Program.updateCategory);
+			DumpSnapshot.dumpPhases("merged-rem" + Program.mhpUpdateCategory);
+		}
+		// TODO: Uncomment starting this.
+		FunctionDefinition mainFunc = Program.getRoot().getInfo().getMainFunction();
+		FunctionInliner.inline(mainFunc);
+		if (dumpIntermediate) {
+			DumpSnapshot.dumpRoot("merged-rem-inlined" + Program.mhpUpdateCategory);
+			DumpSnapshot.dumpPointsTo("merged-rem-inlined" + Program.updateCategory);
+			DumpSnapshot.dumpPhases("merged-rem-inlined" + Program.mhpUpdateCategory);
+		}
+		ParallelConstructExpander.mergeParallelRegions(Program.getRoot());
+		Program.getRoot().getInfo().removeUnusedElements();
+		ProfileSS.insertCP();
+		if (dumpIntermediate) {
+			DumpSnapshot.dumpRoot("merged-rem-inlined-merged" + Program.mhpUpdateCategory);
+			DumpSnapshot.dumpPointsTo("merged-rem-inlined-merged" + Program.updateCategory);
+			DumpSnapshot.dumpPhases("merged-rem-inlined-merged" + Program.mhpUpdateCategory);
+		}
+		// Program.getRoot().getInfo().removeExtraScopes();
+		if (Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.ICON) {
+			RedundantSynchronizationRemoval.removeBarriers(Program.getRoot());
+		} else {
+			RedundantSynchronizationRemovalForYA.removeBarriers(Program.getRoot());
+		}
+		if (dumpIntermediate) {
+			DumpSnapshot.dumpRoot("merged-rem-inlined-merged-rem" + Program.mhpUpdateCategory);
+		}
+		// TODO: Uncomment till here.
+		double totTime = (System.nanoTime() - Main.totalTime) / (1.0 * 1e9);
+		double incMHPTime = 0.0;
+		double incIDFATime = 0.0;
+		long incMHPTriggers = 0;
+		long incIDFATriggers = 0;
+		long finalIncNodes = 0;
+		long tarjanCount = 0;
+		double sccTime = 0.0;
+		System.err.println("Number of times IDFA update were triggered -- ");
+		for (FlowAnalysis<?> analysis : FlowAnalysis.getAllAnalyses().values()) {
+			System.err.println("\t For " + analysis.getAnalysisName() + ": " + analysis.autoUpdateTriggerCounter);
+			if (analysis.getAnalysisName() == AnalysisName.POINTSTO) {
+				incIDFATriggers = analysis.autoUpdateTriggerCounter;
+			}
+		}
+		System.err.println("Total number of times nodes were processed during automated IDFA update -- ");
+		for (FlowAnalysis<?> analysis : FlowAnalysis.getAllAnalyses().values()) {
+			System.err.println("\t For " + analysis.getAnalysisName() + ": " + analysis.nodesProcessedDuringUpdate);
+			if (analysis.getAnalysisName() == AnalysisName.POINTSTO) {
+				finalIncNodes = analysis.nodesProcessed;
+			}
+		}
+		System.err.println("Time spent in forward IDFA updates -- ");
+		for (FlowAnalysis<?> analysis : FlowAnalysis.getAllAnalyses().values()) {
+			System.err.println(
+					"\t For " + analysis.getAnalysisName() + ": " + analysis.flowAnalysisUpdateTimer / (1e9) + "s.");
+			if (analysis.getAnalysisName() == AnalysisName.POINTSTO) {
+				incIDFATime = analysis.flowAnalysisUpdateTimer / (1e9 * 1.0);
+			}
+		}
+		// System.err.println("Time spent in SVE queries: " + SVEChecker.sveTimer / (1e9
+		// * 1.0) + "s.");
+		System.err.println("Time spent in phase update: " + BeginPhasePoint.stabilizationTime / (1e9 * 1.0) + "s.");
+		incMHPTime = BeginPhasePoint.stabilizationTime / (1e9 * 1.0);
+		System.err.println("Number of stabilizations of phase analysis: " + AutomatedUpdater.reinitMHPCounter);
+		incMHPTriggers = AutomatedUpdater.reinitMHPCounter;
+		System.err.println("Time spent generating SCCs: " + SCC.SCCTimer / (1e9 * 1.0) + "s.");
+		sccTime = SCC.SCCTimer / (1e9 * 1.0);
+		System.err.println("Total invocations of Tarjan's algorithm: " + SCC.tarjanCount);
+		tarjanCount = SCC.tarjanCount;
+		if (Program.fieldSensitive) {
+			System.err.println("Number of field-sensitive queries: " + FieldSensitivity.counter);
+			System.err.println("Time spent in field-sensitive queries: " + FieldSensitivity.timer / (1e9 * 1.0) + "s.");
+		}
+		// System.err.println("Time spent in inlining: " + FunctionInliner.inliningTimer
+		// / (1e9 * 1.0) + "s.");
+		// System.err.println("Time spent in having uni-task precision in IDFA edge
+		// creation: "
+		// + CFGInfo.uniPrecisionTimer / (1e9 * 1.0) + "s.");
+		// System.err.println("Number of field-sensitive queries: " +
+		// FieldSensitivity.counter);
+		// System.err.println("Time spent in field-sensitive queries: " +
+		// FieldSensitivity.timer / (1e9 * 1.0) + "s.");
+		// System.err.println("Time spent in generating reverse postordering of the
+		// program nodes: "
+		// + TraversalOrderObtainer.orderGenerationTime / (1e9 * 1.0) + "s.");
+		// if (Program.fieldSensitive) {
+		// Misc.printToFile(ConstraintsGenerator.allConstraintString, Program.fileName +
+		// "_z3_queries.txt");
+		// }
+		System.err.println("TOTAL TIME (including disk I/O time): " + totTime + "s.");
+		System.err.println("This execution ran in " + Program.updateCategory + " mode for IDFA update.");
+		System.err.println("Optimized a total of " + AutomatedUpdater.hasBeenOtimized + " stale markings.");
+		System.err
+				.println("Number of times PTA would have had to run in semi-eager mode: " + ProfileSS.flagSwitchCount);
+		DumpSnapshot.printToFile(Program.getRoot(),
+				(Program.fileName + "imop_output_" + Program.mhpUpdateCategory + ".i").trim());
+		DumpSnapshot.dumpPointsTo("final" + Program.updateCategory);
+		DumpSnapshot.dumpPhases("final" + Program.mhpUpdateCategory);
+		if (dumpIntermediate) {
+			DumpSnapshot.dumpNestedCFG(Program.getRoot(), "optimized" + Program.mhpUpdateCategory);
+		}
+		DecimalFormat df2 = Program.df2;
+		System.out.println(Program.fileName + " " + Program.updateCategory + " " + df2.format(totTime) + " "
+				+ df2.format(incMHPTime) + " " + df2.format(incIDFATime) + " " + incMHPTriggers + " " + incIDFATriggers
+				+ " " + finalIncNodes + " " + tarjanCount + " " + df2.format(sccTime));
+		/*
+		 * NOTE: This commented portion is used to print all those traces from where the
+		 * flushing of the abstractions has been invoked. To enable this, we also need
+		 * to uncomment the call to Misc.isCalledFromMethod() in
+		 * AutomatedUpdate.flushCaches().
+		 *
+		 * String finalStrTrace = "";
+		 * for (String str : Misc.uniqueTraces) {
+		 * finalStrTrace += str + "\n";
+		 * }
+		 * System.out.println(finalStrTrace);
+		 */
+
+		if (Program.addRelCPs) {
+			System.out.println("Active change-points for points-to analysis: " + ProfileSS.ptaSet);
+			System.out.println("Active change-points for CFG: " + ProfileSS.cfgSet);
+			System.out.println("Active change-points for CG: " + ProfileSS.cgSet);
+			System.out.println("Active change-points for inter-task edges: " + ProfileSS.iteSet);
+			System.out.println("Active change-points for symbol tables: " + ProfileSS.symSet);
+			System.out.println("Active change-points for label-lookups: " + ProfileSS.labSet);
+			System.out.println("Active change-points for phase-queries: " + ProfileSS.phSet);
+		}
+		System.exit(0);
+	}
+
+	public static void clientAutoUpdateIncEPA() {
+		// DumpSnapshot.dumpVisibleSharedReadWrittenCells("first" +
+		// Program.updateCategory);
+		// DumpSnapshot.dumpPhases("first_" + Program.concurrencyAlgorithm + "_" +
+		// Program.updateCategory);
+		// boolean dumpIntermediate = Program.dumpIntermediateStates;
+		boolean dumpIntermediate = false;
+		ParallelConstructExpander.mergeParallelRegions(Program.getRoot());
+		// DriverModule.searchExample();
+		// System.exit(0);
+
+		Program.getRoot().getInfo().removeUnusedElements();
+		ProfileSS.insertCP();
+		if (dumpIntermediate) {
+			DumpSnapshot.dumpRoot("merged" + Program.updateCategory);
+			DumpSnapshot.dumpPointsTo("merged" + Program.updateCategory);
+			DumpSnapshot.dumpPhases("merged" + Program.mhpUpdateCategory);
+		}
+		// OLD CODE: BasicTransform.removeUnusedFunctions(Program.getRoot());
+		if (Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.ICON) {
+			RedundantSynchronizationRemoval.removeBarriers(Program.getRoot());
+		} else {
+			RedundantSynchronizationRemovalForYA.removeBarriers(Program.getRoot());
+		}
+		// RedundantSynchronizationRemoval.removeBarriersFromAllParConsWithin(Program.getRoot());
+		if (dumpIntermediate) {
+			DumpSnapshot.dumpRoot("merged-rem" + Program.updateCategory);
+			DumpSnapshot.dumpPointsTo("merged-rem" + Program.updateCategory);
+			DumpSnapshot.dumpPhases("merged-rem" + Program.mhpUpdateCategory);
+		}
+		// TODO: Uncomment starting this.
+		FunctionDefinition mainFunc = Program.getRoot().getInfo().getMainFunction();
+		FunctionInliner.inline(mainFunc);
+		if (dumpIntermediate) {
+			DumpSnapshot.dumpRoot("merged-rem-inlined" + Program.mhpUpdateCategory);
+			DumpSnapshot.dumpPointsTo("merged-rem-inlined" + Program.updateCategory);
+			DumpSnapshot.dumpPhases("merged-rem-inlined" + Program.mhpUpdateCategory);
+		}
+		ParallelConstructExpander.mergeParallelRegions(Program.getRoot());
+		Program.getRoot().getInfo().removeUnusedElements();
+		ProfileSS.insertCP();
+		if (dumpIntermediate) {
+			DumpSnapshot.dumpRoot("merged-rem-inlined-merged" + Program.mhpUpdateCategory);
+			DumpSnapshot.dumpPointsTo("merged-rem-inlined-merged" + Program.updateCategory);
+			DumpSnapshot.dumpPhases("merged-rem-inlined-merged" + Program.mhpUpdateCategory);
+		}
+		// Program.getRoot().getInfo().removeExtraScopes();
+		if (Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.ICON) {
+			RedundantSynchronizationRemoval.removeBarriers(Program.getRoot());
+		} else {
+			RedundantSynchronizationRemovalForYA.removeBarriers(Program.getRoot());
+		}
+		// RedundantSynchronizationRemoval.removeBarriersFromAllParConsWithin(Program.getRoot());
+		// if (dumpIntermediate) {
+		// DumpSnapshot.dumpRoot("merged-rem-inlined-merged-rem" +
+		// Program.mhpUpdateCategory);
+		// }
+		// TODO: Uncomment till here.
+		double totTime = (System.nanoTime() - Main.totalTime) / (1.0 * 1e9);
+		double incMHPTime = 0.0;
+		double incIDFATime = 0.0;
+		long incMHPTriggers = 0;
+		long incIDFATriggers = 0;
+		long finalIncNodes = 0;
+		long tarjanCount = 0;
+		double sccTime = 0.0;
+		// List<Long> triggerSizeCountList = null;
+		System.err.println("Number of times IDFA update were triggered -- ");
+		for (FlowAnalysis<?> analysis : FlowAnalysis.getAllAnalyses().values()) {
+			System.err.println("\t For " + analysis.getAnalysisName() + ": " + analysis.autoUpdateTriggerCounter);
+			if (analysis.getAnalysisName() == AnalysisName.POINTSTO) {
+				incIDFATriggers = analysis.autoUpdateTriggerCounter;
+				// triggerSizeCountList = analysis.localList;
+			}
+		}
+		System.err.println("Total number of times nodes were processed during automated IDFA update -- ");
+		for (FlowAnalysis<?> analysis : FlowAnalysis.getAllAnalyses().values()) {
+			System.err.println("\t For " + analysis.getAnalysisName() + ": " + analysis.nodesProcessedDuringUpdate);
+			if (analysis.getAnalysisName() == AnalysisName.POINTSTO) {
+				finalIncNodes = analysis.nodesProcessed;
+			}
+		}
+		System.err.println("Time spent in forward IDFA updates -- ");
+		for (FlowAnalysis<?> analysis : FlowAnalysis.getAllAnalyses().values()) {
+			System.err.println(
+					"\t For " + analysis.getAnalysisName() + ": " + analysis.flowAnalysisUpdateTimer / (1e9) + "s.");
+			if (analysis.getAnalysisName() == AnalysisName.POINTSTO) {
+				incIDFATime = analysis.flowAnalysisUpdateTimer / (1e9 * 1.0);
+			}
+		}
+		// System.err.println("Time spent in SVE queries: " + SVEChecker.sveTimer / (1e9
+		// * 1.0) + "s.");
+		System.err.println("Time spent in phase update: " + BeginPhasePoint.stabilizationTime / (1e9 * 1.0) + "s.");
+		incMHPTime = BeginPhasePoint.stabilizationTime / (1e9 * 1.0);
+		System.err.println("Number of stabilizations of phase analysis: " + AutomatedUpdater.reinitMHPCounter);
+		incMHPTriggers = AutomatedUpdater.reinitMHPCounter;
+		System.err.println("Time spent generating SCCs: " + SCC.SCCTimer / (1e9 * 1.0) + "s.");
+		sccTime = SCC.SCCTimer / (1e9 * 1.0);
+		System.err.println("Total invocations of Tarjan's algorithm: " + SCC.tarjanCount);
+		tarjanCount = SCC.tarjanCount;
+		if (Program.fieldSensitive) {
+			System.err.println("Number of field-sensitive queries: " + FieldSensitivity.counter);
+			System.err.println("Time spent in field-sensitive queries: " + FieldSensitivity.timer / (1e9 * 1.0) + "s.");
+		}
+		// System.err.println("Time spent in inlining: " + FunctionInliner.inliningTimer
+		// / (1e9 * 1.0) + "s.");
+		// System.err.println("Time spent in having uni-task precision in IDFA edge
+		// creation: "
+		// + CFGInfo.uniPrecisionTimer / (1e9 * 1.0) + "s.");
+		// System.err.println("Number of field-sensitive queries: " +
+		// FieldSensitivity.counter);
+		// System.err.println("Time spent in field-sensitive queries: " +
+		// FieldSensitivity.timer / (1e9 * 1.0) + "s.");
+		// System.err.println("Time spent in generating reverse postordering of the
+		// program nodes: "
+		// + TraversalOrderObtainer.orderGenerationTime / (1e9 * 1.0) + "s.");
+		// if (Program.fieldSensitive) {
+		// Misc.printToFile(ConstraintsGenerator.allConstraintString, Program.fileName +
+		// "_z3_queries.txt");
+		// }
+		System.err.println("TOTAL TIME (including disk I/O time): " + totTime + "s.");
+		System.err.println("This execution ran in " + Program.updateCategory + " mode for IDFA update, and in "
+				+ Program.mhpUpdateCategory + " mode for MHP update.");
+		System.err.println("Optimized a total of " + AutomatedUpdater.hasBeenOtimized + " stale markings.");
+		System.err
+				.println("Number of times PTA would have had to run in semi-eager mode: " + ProfileSS.flagSwitchCount);
+		String s = (Program.sveSensitive == SVEDimension.SVE_SENSITIVE) ? "S" : "U";
+		DumpSnapshot.printToFile(Program.getRoot(), (Program.fileName + "imop_output_" + Program.concurrencyAlgorithm
+				+ "_" + Program.mhpUpdateCategory + s + ".i").trim());
+		DumpSnapshot.dumpPointsTo("final" + Program.updateCategory);
+		DumpSnapshot.dumpPhases("final" + Program.concurrencyAlgorithm + "_" + Program.mhpUpdateCategory + s);
+		DumpSnapshot.dumpPredicates("final" + Program.concurrencyAlgorithm + "_" + Program.mhpUpdateCategory + s);
+		if (dumpIntermediate) {
+			DumpSnapshot.dumpNestedCFG(Program.getRoot(), "optimized" + Program.mhpUpdateCategory + s);
+		}
+		DecimalFormat df2 = Program.df2;
+		// Count the number of aggregate phases
+		int numPhases = 0;
+		for (ParallelConstruct parCons : Misc.getExactEnclosee(Program.getRoot(), ParallelConstruct.class)) {
+			numPhases += parCons.getInfo().getConnectedPhases().size();
+		}
+
+		// Count the number of explicit barriers.
+		int numExplicitBarriers = Misc.getExactEnclosee(Program.getRoot(), BarrierDirective.class).size();
+		StringBuilder resultString = new StringBuilder(Program.fileName + " "
+				+ ((Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.YUANMHP) ? "YUAN" : "ICON") + " "
+				+ Program.mhpUpdateCategory + " "
+				+ ((Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.YUANMHP) ? "SVE-sensitive"
+						: ((Program.sveSensitive == SVEDimension.SVE_SENSITIVE)
+								? ("SVE-sensitive (" + df2.format(SVEChecker.sveTimer * 1.0 / 1e9) + ")")
+								: "SVE-insensitive (0)"))
+				+ " " + df2.format(totTime) + " " + df2.format(incMHPTime) + " " + df2.format(incIDFATime) + " "
+				+ incMHPTriggers + " " + incIDFATriggers + " " + finalIncNodes + " " + tarjanCount + " "
+				+ df2.format(sccTime) + " " + numPhases + " " + numExplicitBarriers);
+		System.out.println(resultString);
+		System.err.println(resultString);
+		// DumpSnapshot.printToFile(Program.stabilizationStackDump.toString(),
+		// "stabilization-dump" + Program.concurrencyAlgorithm +
+		// Program.mhpUpdateCategory + s + ".txt");
+		// System.err.println("Trigger count: " + triggerSizeCountList);
+		System.exit(0);
+	}
+
 	public static void resetStaticFields() {
 		DriverModule.counter = 0;
 	}
@@ -65,7 +379,7 @@ public class DriverModule {
 		double totTime = (System.nanoTime() - Main.totalTime) / (1.0 * 1e9);
 		Program.getRoot().getInfo().removeUnusedElements();
 
-		ProfileSS.nextCP();
+		ProfileSS.insertCP();
 		if (dumpIntermediate) {
 			DumpSnapshot.dumpRoot("merged" + Program.updateCategory);
 			DumpSnapshot.dumpPointsTo("merged" + Program.updateCategory);
@@ -235,168 +549,6 @@ public class DriverModule {
 				+ " " + df2.format(totTime) + " " + df2.format(incMHPTime) + " " + df2.format(incIDFATime) + " "
 				+ incMHPTriggers + " " + incIDFATriggers + " " + finalIncNodes + " " + tarjanCount + " "
 				+ df2.format(sccTime) + " " + numPhases + " " + numExplicitBarriers + " " + counter + " " + tim + "s.");
-		System.out.println(resultString);
-		System.err.println(resultString);
-		// DumpSnapshot.printToFile(Program.stabilizationStackDump.toString(),
-		// "stabilization-dump" + Program.concurrencyAlgorithm +
-		// Program.mhpUpdateCategory + s + ".txt");
-		// System.err.println("Trigger count: " + triggerSizeCountList);
-		System.exit(0);
-	}
-
-	public static void clientAutoUpdate() {
-		// DumpSnapshot.dumpVisibleSharedReadWrittenCells("first" +
-		// Program.updateCategory);
-		// DumpSnapshot.dumpPhases("first_" + Program.concurrencyAlgorithm + "_" +
-		// Program.updateCategory);
-		// boolean dumpIntermediate = Program.dumpIntermediateStates;
-		boolean dumpIntermediate = false;
-		ParallelConstructExpander.mergeParallelRegions(Program.getRoot());
-		DriverModule.searchExample();
-		System.exit(0);
-
-		Program.getRoot().getInfo().removeUnusedElements();
-		ProfileSS.nextCP();
-		if (dumpIntermediate) {
-			DumpSnapshot.dumpRoot("merged" + Program.updateCategory);
-			DumpSnapshot.dumpPointsTo("merged" + Program.updateCategory);
-			DumpSnapshot.dumpPhases("merged" + Program.mhpUpdateCategory);
-		}
-		// OLD CODE: BasicTransform.removeUnusedFunctions(Program.getRoot());
-		if (Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.ICON) {
-			RedundantSynchronizationRemoval.removeBarriers(Program.getRoot());
-		} else {
-			RedundantSynchronizationRemovalForYA.removeBarriers(Program.getRoot());
-		}
-		// RedundantSynchronizationRemoval.removeBarriersFromAllParConsWithin(Program.getRoot());
-		if (dumpIntermediate) {
-			DumpSnapshot.dumpRoot("merged-rem" + Program.updateCategory);
-			DumpSnapshot.dumpPointsTo("merged-rem" + Program.updateCategory);
-			DumpSnapshot.dumpPhases("merged-rem" + Program.mhpUpdateCategory);
-		}
-		// TODO: Uncomment starting this.
-		FunctionDefinition mainFunc = Program.getRoot().getInfo().getMainFunction();
-		FunctionInliner.inline(mainFunc);
-		if (dumpIntermediate) {
-			DumpSnapshot.dumpRoot("merged-rem-inlined" + Program.mhpUpdateCategory);
-			DumpSnapshot.dumpPointsTo("merged-rem-inlined" + Program.updateCategory);
-			DumpSnapshot.dumpPhases("merged-rem-inlined" + Program.mhpUpdateCategory);
-		}
-		ParallelConstructExpander.mergeParallelRegions(Program.getRoot());
-		Program.getRoot().getInfo().removeUnusedElements();
-		ProfileSS.nextCP();
-		if (dumpIntermediate) {
-			DumpSnapshot.dumpRoot("merged-rem-inlined-merged" + Program.mhpUpdateCategory);
-			DumpSnapshot.dumpPointsTo("merged-rem-inlined-merged" + Program.updateCategory);
-			DumpSnapshot.dumpPhases("merged-rem-inlined-merged" + Program.mhpUpdateCategory);
-		}
-		// Program.getRoot().getInfo().removeExtraScopes();
-		if (Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.ICON) {
-			RedundantSynchronizationRemoval.removeBarriers(Program.getRoot());
-		} else {
-			RedundantSynchronizationRemovalForYA.removeBarriers(Program.getRoot());
-		}
-		// RedundantSynchronizationRemoval.removeBarriersFromAllParConsWithin(Program.getRoot());
-		if (dumpIntermediate) {
-			DumpSnapshot.dumpRoot("merged-rem-inlined-merged-rem" + Program.mhpUpdateCategory);
-		}
-		// TODO: Uncomment till here.
-		double totTime = (System.nanoTime() - Main.totalTime) / (1.0 * 1e9);
-		double incMHPTime = 0.0;
-		double incIDFATime = 0.0;
-		long incMHPTriggers = 0;
-		long incIDFATriggers = 0;
-		long finalIncNodes = 0;
-		long tarjanCount = 0;
-		double sccTime = 0.0;
-		// List<Long> triggerSizeCountList = null;
-		System.err.println("Number of times IDFA update were triggered -- ");
-		for (FlowAnalysis<?> analysis : FlowAnalysis.getAllAnalyses().values()) {
-			System.err.println("\t For " + analysis.getAnalysisName() + ": " + analysis.autoUpdateTriggerCounter);
-			if (analysis.getAnalysisName() == AnalysisName.POINTSTO) {
-				incIDFATriggers = analysis.autoUpdateTriggerCounter;
-				// triggerSizeCountList = analysis.localList;
-			}
-		}
-		System.err.println("Total number of times nodes were processed during automated IDFA update -- ");
-		for (FlowAnalysis<?> analysis : FlowAnalysis.getAllAnalyses().values()) {
-			System.err.println("\t For " + analysis.getAnalysisName() + ": " + analysis.nodesProcessedDuringUpdate);
-			if (analysis.getAnalysisName() == AnalysisName.POINTSTO) {
-				finalIncNodes = analysis.nodesProcessed;
-			}
-		}
-		System.err.println("Time spent in forward IDFA updates -- ");
-		for (FlowAnalysis<?> analysis : FlowAnalysis.getAllAnalyses().values()) {
-			System.err.println(
-					"\t For " + analysis.getAnalysisName() + ": " + analysis.flowAnalysisUpdateTimer / (1e9) + "s.");
-			if (analysis.getAnalysisName() == AnalysisName.POINTSTO) {
-				incIDFATime = analysis.flowAnalysisUpdateTimer / (1e9 * 1.0);
-			}
-		}
-		// System.err.println("Time spent in SVE queries: " + SVEChecker.sveTimer / (1e9
-		// * 1.0) + "s.");
-		System.err.println("Time spent in phase update: " + BeginPhasePoint.stabilizationTime / (1e9 * 1.0) + "s.");
-		incMHPTime = BeginPhasePoint.stabilizationTime / (1e9 * 1.0);
-		System.err.println("Number of stabilizations of phase analysis: " + AutomatedUpdater.reinitMHPCounter);
-		incMHPTriggers = AutomatedUpdater.reinitMHPCounter;
-		System.err.println("Time spent generating SCCs: " + SCC.SCCTimer / (1e9 * 1.0) + "s.");
-		sccTime = SCC.SCCTimer / (1e9 * 1.0);
-		System.err.println("Total invocations of Tarjan's algorithm: " + SCC.tarjanCount);
-		tarjanCount = SCC.tarjanCount;
-		if (Program.fieldSensitive) {
-			System.err.println("Number of field-sensitive queries: " + FieldSensitivity.counter);
-			System.err.println("Time spent in field-sensitive queries: " + FieldSensitivity.timer / (1e9 * 1.0) + "s.");
-		}
-		// System.err.println("Time spent in inlining: " + FunctionInliner.inliningTimer
-		// / (1e9 * 1.0) + "s.");
-		// System.err.println("Time spent in having uni-task precision in IDFA edge
-		// creation: "
-		// + CFGInfo.uniPrecisionTimer / (1e9 * 1.0) + "s.");
-		// System.err.println("Number of field-sensitive queries: " +
-		// FieldSensitivity.counter);
-		// System.err.println("Time spent in field-sensitive queries: " +
-		// FieldSensitivity.timer / (1e9 * 1.0) + "s.");
-		// System.err.println("Time spent in generating reverse postordering of the
-		// program nodes: "
-		// + TraversalOrderObtainer.orderGenerationTime / (1e9 * 1.0) + "s.");
-		// if (Program.fieldSensitive) {
-		// Misc.printToFile(ConstraintsGenerator.allConstraintString, Program.fileName +
-		// "_z3_queries.txt");
-		// }
-		System.err.println("TOTAL TIME (including disk I/O time): " + totTime + "s.");
-		System.err.println("This execution ran in " + Program.updateCategory + " mode for IDFA update, and in "
-				+ Program.mhpUpdateCategory + " mode for MHP update.");
-		System.err.println("Optimized a total of " + AutomatedUpdater.hasBeenOtimized + " stale markings.");
-		System.err
-				.println("Number of times PTA would have had to run in semi-eager mode: " + ProfileSS.flagSwitchCount);
-		String s = (Program.sveSensitive == SVEDimension.SVE_SENSITIVE) ? "S" : "U";
-		DumpSnapshot.printToFile(Program.getRoot(), (Program.fileName + "imop_output_" + Program.concurrencyAlgorithm
-				+ "_" + Program.mhpUpdateCategory + s + ".i").trim());
-		DumpSnapshot.dumpPointsTo("final" + Program.updateCategory);
-		DumpSnapshot.dumpPhases("final" + Program.concurrencyAlgorithm + "_" + Program.mhpUpdateCategory + s);
-		DumpSnapshot.dumpPredicates("final" + Program.concurrencyAlgorithm + "_" + Program.mhpUpdateCategory + s);
-		if (dumpIntermediate) {
-			DumpSnapshot.dumpNestedCFG(Program.getRoot(), "optimized" + Program.mhpUpdateCategory + s);
-		}
-		DecimalFormat df2 = Program.df2;
-		// Count the number of aggregate phases
-		int numPhases = 0;
-		for (ParallelConstruct parCons : Misc.getExactEnclosee(Program.getRoot(), ParallelConstruct.class)) {
-			numPhases += parCons.getInfo().getConnectedPhases().size();
-		}
-
-		// Count the number of explicit barriers.
-		int numExplicitBarriers = Misc.getExactEnclosee(Program.getRoot(), BarrierDirective.class).size();
-		StringBuilder resultString = new StringBuilder(Program.fileName + " "
-				+ ((Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.YUANMHP) ? "YUAN" : "ICON") + " "
-				+ Program.mhpUpdateCategory + " "
-				+ ((Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.YUANMHP) ? "SVE-sensitive"
-						: ((Program.sveSensitive == SVEDimension.SVE_SENSITIVE)
-								? ("SVE-sensitive (" + df2.format(SVEChecker.sveTimer * 1.0 / 1e9) + ")")
-								: "SVE-insensitive (0)"))
-				+ " " + df2.format(totTime) + " " + df2.format(incMHPTime) + " " + df2.format(incIDFATime) + " "
-				+ incMHPTriggers + " " + incIDFATriggers + " " + finalIncNodes + " " + tarjanCount + " "
-				+ df2.format(sccTime) + " " + numPhases + " " + numExplicitBarriers);
 		System.out.println(resultString);
 		System.err.println(resultString);
 		// DumpSnapshot.printToFile(Program.stabilizationStackDump.toString(),

@@ -69,6 +69,7 @@ public class AutomatedUpdater {
 		Program.invalidateReversePostorder();
 		CFGInfo.isSCCStale = true;
 		ConstraintsGenerator.reinitInductionSet();
+		//		Misc.isCalledFromMethod("clientAutoUpdateHomeostasis");
 	}
 
 	public static int hasBeenOtimized = 0;
@@ -130,6 +131,10 @@ public class AutomatedUpdater {
 		 * updated.
 		 */
 		updateSetForAddition.add(AutomatedUpdater::updateFlowFactsForAddition);
+	}
+
+	public static void stabilizePTAInCPModes() {
+		// TODO: Code here.
 	}
 
 	/**

@@ -85,10 +85,10 @@ public class RedundantSynchronizationRemovalForYA {
 				// FlushDirective.class);
 				// csCFGInfo.addElement(index, flush);
 				csCFGInfo.removeElement(barrier);
-				ProfileSS.nextCP();
+				ProfileSS.insertCP();
 				// Phase.removeUnreachablePhases(); // Newly added code.
 				removeBarriers(root);
-				ProfileSS.nextCP();
+				ProfileSS.insertCP();
 				return;
 			}
 		}

@@ -56,7 +56,7 @@ public class FunctionInliner {
 	public static void inline(Node root) {
 		long timer = System.nanoTime();
 		FunctionInliner.inlineRecursive(root);
-		ProfileSS.nextCP();
+		ProfileSS.insertCP(); // RCP
 		timer = System.nanoTime() - timer;
 		inliningTimer += timer;
 	}
@@ -92,7 +92,7 @@ public class FunctionInliner {
 			 * inlined.
 			 */
 			FunctionInliner.inlineRecursive(funcDef);
-			ProfileSS.nextCP();
+			ProfileSS.insertCP(); // RCP
 			/*
 			 * After inlining the internal call-statements, inline this
 			 * call-statement. Rest assured that this call-statement is still
@@ -100,7 +100,7 @@ public class FunctionInliner {
 			 */
 			assert (callStmt.getInfo().isConnectedToProgram());
 			FunctionInliner.inlineFunctionDefinition(callStmt);
-			ProfileSS.nextCP();
+			ProfileSS.insertCP();
 			if (Program.dumpIntermediateStates) {
 				DumpSnapshot.dumpRoot("inlined" + Program.updateCategory + counter);
 				DumpSnapshot.dumpPointsTo("inlined" + Program.updateCategory + counter);
@@ -112,7 +112,7 @@ public class FunctionInliner {
 			 * loop.
 			 */
 			FunctionInliner.inlineRecursive(root);
-			ProfileSS.nextCP();
+			ProfileSS.insertCP();
 			return;
 		}
 	}
@@ -372,7 +372,7 @@ public class FunctionInliner {
 		FunctionInliner.handleParameterNameConflicts(callStmt, funcDef, newDeclarationList, renamingMap);
 		FunctionInliner.performInliningWithLocalVariableConflictRemoval(callStmt, funcDef, newDeclarationList,
 				renamingMap);
-		ProfileSS.nextCP();
+		ProfileSS.insertCP();
 		System.err.println("\tInlining successful.");
 		return true;
 	}
@@ -470,7 +470,7 @@ public class FunctionInliner {
 		}
 		Set<String> allSymbolNamesAtCaller = callStmt.getInfo().getAllSymbolNamesAtNodes();
 		NodeRemover.removeNode(callStmt, LabelShiftingMode.LABELS_WITH_NODE);
-		ProfileSS.nextCP();
+		ProfileSS.insertCP();
 
 		/*
 		 * Step 1: Insert all the parameter declarations, that need to be
@@ -479,7 +479,7 @@ public class FunctionInliner {
 		for (Declaration declForParam : parameterDeclarationList) {
 			List<SideEffect> sideEffects = callerScope.getInfo().getCFGInfo().addDeclaration(callStmtIndex++,
 					declForParam);
-			ProfileSS.nextCP();
+			ProfileSS.insertCP();
 			for (SideEffect sideEffect : sideEffects) {
 				if (sideEffect.getClass().getSimpleName().equals("IndexIncremented")
 						|| sideEffect instanceof AddedDFDPredecessor || sideEffect instanceof AddedDFDSuccessor
@@ -535,7 +535,7 @@ public class FunctionInliner {
 			assignStr += " = " + argList.get(index) + ";";
 			ExpressionStatement assignStmt = FrontEnd.parseAndNormalize(assignStr, ExpressionStatement.class);
 			List<SideEffect> sideEffects = callerScope.getInfo().getCFGInfo().addElement(callStmtIndex++, assignStmt);
-			ProfileSS.nextCP();
+			ProfileSS.insertCP();
 			for (SideEffect sideEffect : sideEffects) {
 				if (sideEffect.getClass().getSimpleName().equals("IndexIncremented")
 						|| sideEffect instanceof AddedDFDPredecessor || sideEffect instanceof AddedDFDSuccessor
@@ -572,7 +572,7 @@ public class FunctionInliner {
 				Statement jumpStmt = FrontEnd.parseAndNormalize(jumpString, Statement.class);
 				callerScope.getInfo().getCFGInfo().addElement(callStmtIndex, jumpStmt); // index shouldn't be
 																						// incremented here.
-				ProfileSS.nextCP();
+				ProfileSS.insertCP();
 			}
 		}
 
@@ -589,13 +589,13 @@ public class FunctionInliner {
 				Declaration newDecl = FunctionInliner.obtainDeclarationForLocal((Declaration) element, callStmt,
 						funcDef, allRenamingMap, allSymbolNamesAtCaller);
 				callerScope.getInfo().getCFGInfo().addDeclaration(callStmtIndex++, newDecl);
-				ProfileSS.nextCP();
+				ProfileSS.insertCP();
 			} else if (element instanceof Statement) {
 				for (Statement newStmt : FunctionInliner.getStmtToInline((Statement) element, callStmt, allRenamingMap,
 						jumpLabel)) {
 					List<SideEffect> sideEffects = callerScope.getInfo().getCFGInfo().addElement(callStmtIndex++,
 							newStmt);
-					ProfileSS.nextCP();
+					ProfileSS.insertCP();
 					for (SideEffect sideEffect : sideEffects) {
 						if (sideEffect.getClass().getSimpleName().equals("IndexIncremented")
 								|| sideEffect instanceof AddedDFDPredecessor || sideEffect instanceof AddedDFDSuccessor
@@ -608,7 +608,7 @@ public class FunctionInliner {
 					}
 					// Handle internal return statements of newStmt
 					handleInternalReturnStatements(callStmt, jumpLabel, newStmt);
-					ProfileSS.nextCP();
+					ProfileSS.insertCP();
 					if (!labelsHandled) {
 						labelsHandled = true;
 						assert (newStmt.getInfo().isConnectedToProgram());
@@ -652,17 +652,17 @@ public class FunctionInliner {
 				}
 				// Renaming would already have been done in the return expression.
 				NodeReplacer.replaceNodes(internalRetStmt, currentNode);
-				ProfileSS.nextCP();
+				ProfileSS.insertCP();
 			}
 			// Add jump statement as the successor of current node, if a jump exists.
 			if (jumpLabel != null) {
 				Statement jumpStmt = FrontEnd.parseAndNormalize("goto " + jumpLabel + ";", Statement.class);
 				if (currentNode != internalRetStmt) {
 					InsertImmediateSuccessor.insert(currentNode, jumpStmt);
-					ProfileSS.nextCP();
+					ProfileSS.insertCP();
 				} else {
 					NodeReplacer.replaceNodes(internalRetStmt, jumpStmt);
-					ProfileSS.nextCP();
+					ProfileSS.insertCP();
 				}
 			}
 		}

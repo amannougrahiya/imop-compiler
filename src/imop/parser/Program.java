@@ -104,8 +104,8 @@ public class Program {
 	 * Note that IDFA's <i>may</i> have their fixed SVE
 	 * sensitivity values, defined in their constructors.
 	 */
-	public static SVEDimension sveSensitive = SVEDimension.SVE_SENSITIVE;
-	public static SVEDimension sveSensitivityOfIDFAEdges = SVEDimension.SVE_SENSITIVE;
+	public static SVEDimension sveSensitive = SVEDimension.SVE_INSENSITIVE;
+	public static SVEDimension sveSensitivityOfIDFAEdges = SVEDimension.SVE_INSENSITIVE;
 
 	public static final StringBuilder stabilizationStackDump = null; // new StringBuilder();
 
@@ -150,6 +150,7 @@ public class Program {
 	public static boolean disableLineNumbers = false;
 	public static int numExpansionAllowed = 100; // Default, applicable for the command-line arguments. This is set
 													// again in the method {@link defaultCommandLineArguments()}.
+	public static boolean addRelCPs = true; // Default: false; when true, we profile to obtain and print the set of relevant CPs.
 
 	public static void rememberInitialPhasesIfRequired() {
 		if (Program.getRoot() == null) {
@@ -197,8 +198,8 @@ public class Program {
 		Program.updateCategory = UpdateCategory.LZUPD; // Default is LZUPD.
 		Program.concurrencyAlgorithm = ConcurrencyAlgorithm.ICON;
 		Program.mhpUpdateCategory = UpdateCategory.LZUPD; // Default is LZUPD.
-		Program.sveSensitive = SVEDimension.SVE_SENSITIVE;
-		Program.sveSensitivityOfIDFAEdges = SVEDimension.SVE_SENSITIVE;
+		Program.sveSensitive = SVEDimension.SVE_INSENSITIVE;
+		Program.sveSensitivityOfIDFAEdges = SVEDimension.SVE_INSENSITIVE;
 		Program.useInterProceduralPredicateAnalysis = false;
 		Program.useHeuristicWithIcon = true;
 		Program.sveNoCheck = true;
@@ -206,6 +207,7 @@ public class Program {
 		Program.useHeuristicWithYuan = false;
 		Program.phaseEmptySetChecker = false;
 		Program.ptaHeuristicEnabled = false;
+		Program.addRelCPs = true; // Default is false.
 
 		// Just a safety check below.
 		if (Program.concurrencyAlgorithm == ConcurrencyAlgorithm.YUANMHP) {
