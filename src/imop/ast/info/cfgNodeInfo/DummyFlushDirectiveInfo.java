@@ -113,7 +113,7 @@ public class DummyFlushDirectiveInfo extends FlushDirectiveInfo {
 		if (Program.mhpUpdateCategory == UpdateCategory.EGINV || Program.mhpUpdateCategory == UpdateCategory.EGUPD) {
 			return this.incomingInterTaskEdges;
 		} else if (Program.mhpUpdateCategory == UpdateCategory.LZINV
-				|| Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.YUANMHP) {
+				|| Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.YCON) {
 			if (AbstractPhase.globalMHPStale) {
 				AbstractPhase.globalMHPStale = false;
 				AutomatedUpdater.reinitMHP();
@@ -143,7 +143,7 @@ public class DummyFlushDirectiveInfo extends FlushDirectiveInfo {
 		if (Program.mhpUpdateCategory == UpdateCategory.EGINV || Program.mhpUpdateCategory == UpdateCategory.EGUPD) {
 			return this.outgoingInterTaskEdges;
 		} else if (Program.mhpUpdateCategory == UpdateCategory.LZINV
-				|| Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.YUANMHP) {
+				|| Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.YCON) {
 			if (AbstractPhase.globalMHPStale) {
 				AbstractPhase.globalMHPStale = false;
 				AutomatedUpdater.reinitMHP();

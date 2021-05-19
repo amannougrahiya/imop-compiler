@@ -1351,7 +1351,7 @@ public class AutomatedUpdater {
 		}
 		node = Misc.getCFGNodeFor(node);
 		long timer = System.nanoTime();
-		if (Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.YUANMHP) {
+		if (Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.YCON) {
 			if (Program.useHeuristicWithYuan) {
 				if (AutomatedUpdater.stabilizeMHPLocallyUponAddition(node)) {
 					BeginPhasePoint.stabilizationTime += (System.nanoTime() - timer);
@@ -1428,7 +1428,7 @@ public class AutomatedUpdater {
 		}
 		node = Misc.getCFGNodeFor(node);
 		long timer = System.nanoTime();
-		if (Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.YUANMHP) {
+		if (Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.YCON) {
 			if (Program.useHeuristicWithYuan) {
 				if (AutomatedUpdater.stabilizeMHPLocallyUponRemoval(node)) {
 					BeginPhasePoint.stabilizationTime += (System.nanoTime() - timer);
@@ -1490,7 +1490,7 @@ public class AutomatedUpdater {
 			AutomatedUpdater.reinitMHP();
 			// The method above already calculates the time taken in stabilization.
 			return;
-		} else if (Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.YUANMHP) {
+		} else if (Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.YCON) {
 			if (!Program.useHeuristicWithYuan) {
 				AbstractPhase.globalMHPStale = true;
 			}
@@ -1524,7 +1524,7 @@ public class AutomatedUpdater {
 			// The method above already calculates the time taken for stabilization.
 			return;
 		} else if (Program.mhpUpdateCategory == UpdateCategory.LZINV
-				|| Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.YUANMHP) {
+				|| Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.YCON) {
 			AbstractPhase.globalMHPStale = true;
 			return;
 		}

@@ -41,7 +41,7 @@ public class BeginPhasePoint extends PhasePoint {
 	 * that have been marked as stale.
 	 */
 	public static void stabilizeStaleBeginPhasePoints() {
-		if (Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.YUANMHP) {
+		if (Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.YCON) {
 			Thread.dumpStack();
 			assert (false) : "Unexpected path.";
 			return;
@@ -132,7 +132,7 @@ public class BeginPhasePoint extends PhasePoint {
 
 	private BeginPhasePoint(Node sink, CallStack callStack) {
 		super(sink, callStack);
-		if (Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.YUANMHP) {
+		if (Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.YCON) {
 			Thread.dumpStack();
 			assert (false) : "Unexpected path.";
 		}
@@ -146,7 +146,7 @@ public class BeginPhasePoint extends PhasePoint {
 
 	private BeginPhasePoint(NodeWithStack nodeWithStack) {
 		super(nodeWithStack.getNode(), nodeWithStack.getCallStack());
-		if (Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.YUANMHP) {
+		if (Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.YCON) {
 			Thread.dumpStack();
 			assert (false) : "Unexpected path.";
 		}
@@ -156,7 +156,7 @@ public class BeginPhasePoint extends PhasePoint {
 	}
 
 	public static BeginPhasePoint getBeginPhasePoint(Node sink, CallStack callStack, Phase ph) {
-		if (Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.YUANMHP) {
+		if (Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.YCON) {
 			Thread.dumpStack();
 			assert (false) : "Unexpected path.";
 			return null;
@@ -177,7 +177,7 @@ public class BeginPhasePoint extends PhasePoint {
 	}
 
 	public static BeginPhasePoint getBeginPhasePoint(NodeWithStack nodeWithStack) {
-		if (Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.YUANMHP) {
+		if (Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.YCON) {
 			Thread.dumpStack();
 			assert (false) : "Unexpected path.";
 			return null;
@@ -197,7 +197,7 @@ public class BeginPhasePoint extends PhasePoint {
 	}
 
 	public static BeginPhasePoint getBeginPhasePoint(NodeWithStack barrierNodeWithStack, Phase ph) {
-		if (Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.YUANMHP) {
+		if (Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.YCON) {
 			Thread.dumpStack();
 			assert (false) : "Unexpected path.";
 			return null;
@@ -256,7 +256,7 @@ public class BeginPhasePoint extends PhasePoint {
 	 *         parallelism-nesting level.
 	 */
 	public static Set<BeginPhasePoint> getRelatedBPPs(Node node) {
-		if (Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.YUANMHP) {
+		if (Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.YCON) {
 			Thread.dumpStack();
 			assert (false) : "Unexpected path.";
 			return null;
@@ -301,7 +301,7 @@ public class BeginPhasePoint extends PhasePoint {
 	}
 
 	public static Set<BeginPhasePoint> getRelatedBPPsNoStaleRemoval(Node node) {
-		if (Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.YUANMHP) {
+		if (Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.YCON) {
 			Thread.dumpStack();
 			assert (false) : "Unexpected path.";
 			return null;
@@ -335,7 +335,7 @@ public class BeginPhasePoint extends PhasePoint {
 	}
 
 	public static Set<BeginPhasePoint> getStaleBeginPhasePoints() {
-		if (Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.YUANMHP) {
+		if (Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.YCON) {
 			Thread.dumpStack();
 			assert (false) : "Unexpected path.";
 			return null;
@@ -344,7 +344,7 @@ public class BeginPhasePoint extends PhasePoint {
 	}
 
 	public static void addStaleBeginPhasePoints(Set<BeginPhasePoint> staleBPPs) {
-		if (Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.YUANMHP) {
+		if (Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.YCON) {
 			Thread.dumpStack();
 			assert (false) : "Unexpected path.";
 			return;
@@ -431,7 +431,7 @@ public class BeginPhasePoint extends PhasePoint {
 		if (Program.mhpUpdateCategory == UpdateCategory.EGINV || Program.mhpUpdateCategory == UpdateCategory.EGUPD) {
 			return this.getInternalNextBarriers();
 		} else if (Program.mhpUpdateCategory == UpdateCategory.LZINV
-				|| Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.YUANMHP) {
+				|| Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.YCON) {
 			if (AbstractPhase.globalMHPStale) {
 				AbstractPhase.globalMHPStale = false;
 				AutomatedUpdater.reinitMHP();
@@ -452,7 +452,7 @@ public class BeginPhasePoint extends PhasePoint {
 		if (Program.mhpUpdateCategory == UpdateCategory.EGINV || Program.mhpUpdateCategory == UpdateCategory.EGUPD) {
 			return this.phaseSet;
 		} else if (Program.mhpUpdateCategory == UpdateCategory.LZINV
-				|| Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.YUANMHP) {
+				|| Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.YCON) {
 			if (AbstractPhase.globalMHPStale) {
 				AbstractPhase.globalMHPStale = false;
 				AutomatedUpdater.reinitMHP();
@@ -470,7 +470,7 @@ public class BeginPhasePoint extends PhasePoint {
 		if (Program.mhpUpdateCategory == UpdateCategory.EGINV || Program.mhpUpdateCategory == UpdateCategory.EGUPD) {
 			return this.getInternalReachables();
 		} else if (Program.mhpUpdateCategory == UpdateCategory.LZINV
-				|| Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.YUANMHP) {
+				|| Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.YCON) {
 			if (AbstractPhase.globalMHPStale) {
 				AbstractPhase.globalMHPStale = false;
 				AutomatedUpdater.reinitMHP();

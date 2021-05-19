@@ -128,7 +128,7 @@ public class ParallelConstructInfo extends OmpConstructInfo {
 		for (AbstractPhase<?, ?> ph : new ArrayList<>(this.allPhaseList)) {
 			ph.flushMHPData();
 		}
-		if (Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.YUANMHP) {
+		if (Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.YCON) {
 			if (btPairs == null) {
 				btPairs = new HashSet<>();
 			}
@@ -141,7 +141,7 @@ public class ParallelConstructInfo extends OmpConstructInfo {
 		for (AbstractPhase<?, ?> ph : this.allPhaseList) {
 			ph.flushALLMHPData();
 		}
-		if (Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.YUANMHP) {
+		if (Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.YCON) {
 			if (btPairs == null) {
 				btPairs = new HashSet<>();
 			}
@@ -208,7 +208,7 @@ public class ParallelConstructInfo extends OmpConstructInfo {
 	}
 
 	public AbstractPhase<?, ?> getFirstPhase() {
-		assert (Program.concurrencyAlgorithm != Program.ConcurrencyAlgorithm.YUANMHP) : "Unexpected path.";
+		assert (Program.concurrencyAlgorithm != Program.ConcurrencyAlgorithm.YCON) : "Unexpected path.";
 		for (AbstractPhase<?, ?> ph : this.getCFGInfo().getNestedCFG().getBegin().getInfo().getNodePhaseInfo()
 				.getPhaseSet()) {
 			if (ph.getParConstruct() == this.getNode()) {

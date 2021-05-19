@@ -64,7 +64,7 @@ public class NodePhaseInfo {
 		ProfileSS.addRelevantChangePoint(ProfileSS.phSet);
 		assert (Misc.isCFGLeafNode(node));
 		this.node = node;
-		if (Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.YUANMHP) {
+		if (Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.YCON) {
 			this.phaseSet = new HashSet<YPhase>();
 		} else {
 			this.phaseSet = new HashSet<Phase>();
@@ -81,7 +81,7 @@ public class NodePhaseInfo {
 		if (Program.mhpUpdateCategory == UpdateCategory.EGINV || Program.mhpUpdateCategory == UpdateCategory.EGUPD) {
 			return this.phaseSet;
 		} else if (Program.mhpUpdateCategory == UpdateCategory.LZINV
-				|| Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.YUANMHP) {
+				|| Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.YCON) {
 			if (AbstractPhase.globalMHPStale) {
 				AbstractPhase.globalMHPStale = false;
 				AutomatedUpdater.reinitMHP();
@@ -156,7 +156,7 @@ public class NodePhaseInfo {
 				assert (incomingITE.getDestinationNode() == this.getNode());
 				DummyFlushDirective thatNode = incomingITE.getSourceNode();
 				boolean haveCommonPhase;
-				if (Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.YUANMHP) {
+				if (Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.YCON) {
 					haveCommonPhase = Misc.doIntersect((Set<YPhase>) this.phaseSet,
 							(Set<YPhase>) thatNode.getInfo().getNodePhaseInfo().phaseSet);
 				} else {
@@ -193,7 +193,7 @@ public class NodePhaseInfo {
 				assert (outgoingITE.getSourceNode() == this.getNode());
 				DummyFlushDirective thatNode = outgoingITE.getDestinationNode();
 				boolean haveCommonPhase;
-				if (Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.YUANMHP) {
+				if (Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.YCON) {
 					haveCommonPhase = Misc.doIntersect((Set<YPhase>) this.phaseSet,
 							(Set<YPhase>) thatNode.getInfo().getNodePhaseInfo().phaseSet);
 				} else {
@@ -234,13 +234,13 @@ public class NodePhaseInfo {
 		// BeginPhasePoint.stabilizeStaleBeginPhasePoints();
 		// Phase.stabilizePhases();
 		if (this.phaseSet != null) {
-			if (Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.YUANMHP) {
+			if (Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.YCON) {
 				inputPhaseSet = new HashSet<YPhase>((Collection<? extends YPhase>) this.phaseSet);
 			} else {
 				inputPhaseSet = new HashSet<Phase>((Collection<? extends Phase>) this.phaseSet);
 			}
 		} else {
-			if (Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.YUANMHP) {
+			if (Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.YCON) {
 				inputPhaseSet = new HashSet<YPhase>();
 			} else {
 				inputPhaseSet = new HashSet<Phase>();
@@ -272,7 +272,7 @@ public class NodePhaseInfo {
 	@Deprecated
 	public NodePhaseInfo getCopy(Node copyOwner) {
 		NodePhaseInfo newPhaseInfo = new NodePhaseInfo(copyOwner);
-		if (Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.YUANMHP) {
+		if (Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.YCON) {
 			newPhaseInfo.crudeSetPhaseSet(new HashSet<YPhase>((Collection<? extends YPhase>) phaseSet));
 		} else {
 			newPhaseInfo.crudeSetPhaseSet(new HashSet<Phase>((Collection<? extends Phase>) phaseSet));

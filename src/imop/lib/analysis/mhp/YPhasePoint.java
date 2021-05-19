@@ -77,7 +77,7 @@ public class YPhasePoint implements AbstractPhasePointable {
 				|| Program.mhpUpdateCategory == Program.UpdateCategory.EGUPD) {
 			return this.getInternalReachables();
 		} else if (Program.mhpUpdateCategory == Program.UpdateCategory.LZINV
-				|| Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.YUANMHP) {
+				|| Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.YCON) {
 			if (AbstractPhase.globalMHPStale) {
 				AbstractPhase.globalMHPStale = false;
 				AutomatedUpdater.reinitMHP();
@@ -95,7 +95,7 @@ public class YPhasePoint implements AbstractPhasePointable {
 				|| Program.mhpUpdateCategory == Program.UpdateCategory.EGUPD) {
 			return this.phaseSet;
 		} else if (Program.mhpUpdateCategory == Program.UpdateCategory.LZINV
-				|| Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.YUANMHP) {
+				|| Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.YCON) {
 			if (AbstractPhase.globalMHPStale) {
 				AbstractPhase.globalMHPStale = false;
 				AutomatedUpdater.reinitMHP();
@@ -113,7 +113,7 @@ public class YPhasePoint implements AbstractPhasePointable {
 				|| Program.mhpUpdateCategory == Program.UpdateCategory.EGUPD) {
 			return this.getInternalNextBarriers();
 		} else if (Program.mhpUpdateCategory == Program.UpdateCategory.LZINV
-				|| Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.YUANMHP) {
+				|| Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.YCON) {
 			if (AbstractPhase.globalMHPStale) {
 				AbstractPhase.globalMHPStale = false;
 				AutomatedUpdater.reinitMHP();

@@ -25,7 +25,7 @@ public class YPhase extends AbstractPhase<YPhasePoint, YPhasePoint> {
 
 	public YPhase(ParallelConstructInfo ownerInfo) {
 		super((ParallelConstruct) ownerInfo.getNode());
-		assert (Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.YUANMHP);
+		assert (Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.YCON);
 		Collection<YPhase> allPhaseList = (Collection<YPhase>) ownerInfo.getAllPhaseList();
 		this.succPhases = new HashSet<YPhase>();
 		this.predPhases = new HashSet<YPhase>();

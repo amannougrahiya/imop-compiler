@@ -51,7 +51,7 @@ public abstract class AbstractPhase<B extends AbstractPhasePointable, E extends 
 				|| Program.mhpUpdateCategory == Program.UpdateCategory.EGUPD) {
 			return this.nodeSet;
 		} else if (Program.mhpUpdateCategory == Program.UpdateCategory.LZINV
-				|| Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.YUANMHP) {
+				|| Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.YCON) {
 			if (AbstractPhase.globalMHPStale) {
 				AbstractPhase.globalMHPStale = false;
 				AutomatedUpdater.reinitMHP();
@@ -71,7 +71,7 @@ public abstract class AbstractPhase<B extends AbstractPhasePointable, E extends 
 				|| Program.mhpUpdateCategory == Program.UpdateCategory.EGUPD) {
 			return this.beginPoints;
 		} else if (Program.mhpUpdateCategory == Program.UpdateCategory.LZINV
-				|| Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.YUANMHP) {
+				|| Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.YCON) {
 			if (AbstractPhase.globalMHPStale) {
 				AbstractPhase.globalMHPStale = false;
 				AutomatedUpdater.reinitMHP();
@@ -95,7 +95,7 @@ public abstract class AbstractPhase<B extends AbstractPhasePointable, E extends 
 				|| Program.mhpUpdateCategory == Program.UpdateCategory.EGUPD) {
 			return this.endPoints;
 		} else if (Program.mhpUpdateCategory == Program.UpdateCategory.LZINV
-				|| Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.YUANMHP) {
+				|| Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.YCON) {
 			if (AbstractPhase.globalMHPStale) {
 				AbstractPhase.globalMHPStale = false;
 				AutomatedUpdater.reinitMHP();
@@ -116,7 +116,7 @@ public abstract class AbstractPhase<B extends AbstractPhasePointable, E extends 
 				|| Program.mhpUpdateCategory == Program.UpdateCategory.EGUPD) {
 			return this.succPhases;
 		} else if (Program.mhpUpdateCategory == Program.UpdateCategory.LZINV
-				|| Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.YUANMHP) {
+				|| Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.YCON) {
 			if (AbstractPhase.globalMHPStale) {
 				AbstractPhase.globalMHPStale = false;
 				AutomatedUpdater.reinitMHP();
@@ -133,7 +133,7 @@ public abstract class AbstractPhase<B extends AbstractPhasePointable, E extends 
 				|| Program.mhpUpdateCategory == Program.UpdateCategory.EGUPD) {
 			return this.predPhases;
 		} else if (Program.mhpUpdateCategory == Program.UpdateCategory.LZINV
-				|| Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.YUANMHP) {
+				|| Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.YCON) {
 			if (AbstractPhase.globalMHPStale) {
 				AbstractPhase.globalMHPStale = false;
 				AutomatedUpdater.reinitMHP();

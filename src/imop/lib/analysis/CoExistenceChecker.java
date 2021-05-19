@@ -107,7 +107,7 @@ public class CoExistenceChecker {
 		if (Program.sveSensitive == SVEDimension.SVE_INSENSITIVE) {
 			return true;
 		}
-		assert Program.concurrencyAlgorithm != Program.ConcurrencyAlgorithm.YUANMHP : "Unexpected path";
+		assert Program.concurrencyAlgorithm != Program.ConcurrencyAlgorithm.YCON : "Unexpected path";
 		NodePair nP = new NodePair(n1, n2);
 		if (knownCoExistingNodes.contains(nP)) {
 			return true;
@@ -118,7 +118,7 @@ public class CoExistenceChecker {
 		Set<? extends AbstractPhase<?, ?>> n1Phases = n1.getInfo().getNodePhaseInfo().getPhaseSet();
 		Set<? extends AbstractPhase<?, ?>> n2Phases = n2.getInfo().getNodePhaseInfo().getPhaseSet();
 		Set<? extends AbstractPhase<?, ?>> commonPhases;
-		if (Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.YUANMHP) {
+		if (Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.YCON) {
 			commonPhases = Misc.setIntersection((Set<YPhase>) n1Phases, (Set<YPhase>) n2Phases);
 		} else {
 			commonPhases = Misc.setIntersection((Set<Phase>) n1Phases, (Set<Phase>) n2Phases);
@@ -134,7 +134,7 @@ public class CoExistenceChecker {
 	}
 
 	public static boolean canCoExistInPhase(Node n1, Node n2, AbstractPhase<?, ?> ph) {
-		assert Program.concurrencyAlgorithm != Program.ConcurrencyAlgorithm.YUANMHP : "Unexpected path";
+		assert Program.concurrencyAlgorithm != Program.ConcurrencyAlgorithm.YCON : "Unexpected path";
 		// TODO: Check the following heuristic.
 		if (Program.sveNoCheck && n1 instanceof BarrierDirective && n2 instanceof BarrierDirective) {
 			return false;
@@ -394,7 +394,7 @@ public class CoExistenceChecker {
 
 	private static boolean canBarriersCoExistInPhase(BeginPhasePoint bPP1, BeginPhasePoint bPP2,
 			AbstractPhase<?, ?> absPh, Set<NodePair> nodePairs, Set<Expression> expSet) {
-		assert (Program.concurrencyAlgorithm != Program.ConcurrencyAlgorithm.YUANMHP);
+		assert (Program.concurrencyAlgorithm != Program.ConcurrencyAlgorithm.YCON);
 		if (bPP1 == null || bPP2 == null) {
 			return true; // Conservatively.
 		}
@@ -414,7 +414,7 @@ public class CoExistenceChecker {
 																														// Code:
 																														// bPP2.getPhaseSet().contains(absPh);
 		if (oneIsEntry && twoIsEntry) {
-			if (Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.YUANMHP) {
+			if (Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.YCON) {
 				Thread.dumpStack();
 				assert (false) : "Unexpected path.";
 				return true;
@@ -601,7 +601,7 @@ public class CoExistenceChecker {
 	@Deprecated
 	static boolean deprecated_canCoExistInPhase(Node n1, Node n2, Phase ph, Set<NodePair> nodePairs,
 			Set<Expression> expSet) {
-		assert (Program.concurrencyAlgorithm != Program.ConcurrencyAlgorithm.YUANMHP);
+		assert (Program.concurrencyAlgorithm != Program.ConcurrencyAlgorithm.YCON);
 		if (Program.sveSensitive == SVEDimension.SVE_INSENSITIVE) {
 			return true;
 		}

@@ -2854,7 +2854,7 @@ public class Misc {
 			return true;
 		}
 		boolean ifVal;
-		if (Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.YUANMHP) {
+		if (Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.YCON) {
 			ifVal = !Misc.doIntersect((Set<YPhase>) n1.getInfo().getNodePhaseInfo().getPhaseSet(),
 					(Set<YPhase>) n2.getInfo().getNodePhaseInfo().getPhaseSet());
 		} else {

@@ -32,7 +32,7 @@ import java.util.Set;
 
 public class RedundantSynchronizationRemoval {
 	public static void mergePhasesOf(ParallelConstruct parCons) {
-		if (Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.YUANMHP) {
+		if (Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.YCON) {
 			Thread.dumpStack();
 			assert (false) : "Unexpected path.";
 			return;

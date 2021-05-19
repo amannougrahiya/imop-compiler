@@ -590,7 +590,7 @@ public class NodeInfo implements Cloneable {
 					|| Program.updateCategory == UpdateCategory.CPUPD) {
 				assert (!analysisHandle.stateIsInvalid());
 			} else if (Program.updateCategory == UpdateCategory.LZINV) {
-				if (Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.YUANMHP
+				if (Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.YCON
 						|| Program.mhpUpdateCategory == UpdateCategory.LZINV) {
 					if (AbstractPhase.globalMHPStale) {
 						AbstractPhase.globalMHPStale = false;
@@ -607,7 +607,7 @@ public class NodeInfo implements Cloneable {
 				assert (Program.updateCategory == UpdateCategory.LZUPD);
 				if (thisCell == null) {
 					if (analysisHandle.stateIsInvalid()) {
-						if (Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.YUANMHP
+						if (Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.YCON
 								|| Program.mhpUpdateCategory == UpdateCategory.LZINV) {
 							if (AbstractPhase.globalMHPStale) {
 								AbstractPhase.globalMHPStale = false;
@@ -632,7 +632,7 @@ public class NodeInfo implements Cloneable {
 					if (analysisHandle.stateIsInvalid()
 							&& (analysisName != AnalysisName.POINTSTO || !PointsToAnalysis.isHeuristicEnabled
 									|| PointsToAnalysis.affectedCellsInThisEpoch.contains(thisCell))) {
-						if (Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.YUANMHP
+						if (Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.YCON
 								|| Program.mhpUpdateCategory == UpdateCategory.LZINV) {
 							if (AbstractPhase.globalMHPStale) {
 								AbstractPhase.globalMHPStale = false;
@@ -765,7 +765,7 @@ public class NodeInfo implements Cloneable {
 					|| Program.updateCategory == UpdateCategory.CPUPD) {
 				assert (!analysisHandle.stateIsInvalid());
 			} else if (Program.updateCategory == UpdateCategory.LZINV) {
-				if (Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.YUANMHP
+				if (Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.YCON
 						|| Program.mhpUpdateCategory == UpdateCategory.LZINV) {
 					if (AbstractPhase.globalMHPStale) {
 						AbstractPhase.globalMHPStale = false;
@@ -781,7 +781,7 @@ public class NodeInfo implements Cloneable {
 			} else {
 				assert (Program.updateCategory == UpdateCategory.LZUPD);
 				if (analysisHandle.stateIsInvalid()) {
-					if (Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.YUANMHP
+					if (Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.YCON
 							|| Program.mhpUpdateCategory == UpdateCategory.LZINV) {
 						if (AbstractPhase.globalMHPStale) {
 							AbstractPhase.globalMHPStale = false;

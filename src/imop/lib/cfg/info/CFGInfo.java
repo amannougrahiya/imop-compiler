@@ -1050,7 +1050,7 @@ public class CFGInfo {
 				} else if (set != null && !Misc.doIntersect(set, communicationCells)) {
 					continue;
 				} else {
-					if (Program.concurrencyAlgorithm != Program.ConcurrencyAlgorithm.YUANMHP
+					if (Program.concurrencyAlgorithm != Program.ConcurrencyAlgorithm.YCON
 							&& sveDimension == SVEDimension.SVE_SENSITIVE
 							&& !CoExistenceChecker.canCoExistInAnyPhase(tailFlush, headFlush)) {
 						continue;
@@ -1161,7 +1161,7 @@ public class CFGInfo {
 				} else if (set != null && !Misc.doIntersect(set, communicationCells)) {
 					continue;
 				} else {
-					if (Program.concurrencyAlgorithm != Program.ConcurrencyAlgorithm.YUANMHP
+					if (Program.concurrencyAlgorithm != Program.ConcurrencyAlgorithm.YCON
 							&& sveDimension == SVEDimension.SVE_SENSITIVE
 							&& !CoExistenceChecker.canCoExistInAnyPhase(tailFlush, headFlush)) {
 						continue;
@@ -1269,7 +1269,7 @@ public class CFGInfo {
 				} else if (set != null && !Misc.doIntersect(set, communicationCells)) {
 					continue;
 				} else {
-					if (Program.concurrencyAlgorithm != Program.ConcurrencyAlgorithm.YUANMHP
+					if (Program.concurrencyAlgorithm != Program.ConcurrencyAlgorithm.YCON
 							&& sveDimension == SVEDimension.SVE_SENSITIVE
 							&& !CoExistenceChecker.canCoExistInAnyPhase(tailFlush, headFlush)) {
 						continue;
@@ -1384,7 +1384,7 @@ public class CFGInfo {
 				} else if (set != null && !Misc.doIntersect(set, communicationCells)) {
 					continue;
 				} else {
-					if (Program.concurrencyAlgorithm != Program.ConcurrencyAlgorithm.YUANMHP
+					if (Program.concurrencyAlgorithm != Program.ConcurrencyAlgorithm.YCON
 							&& sveDimension == SVEDimension.SVE_SENSITIVE
 							&& !CoExistenceChecker.canCoExistInAnyPhase(tailFlush, headFlush)) {
 						continue;

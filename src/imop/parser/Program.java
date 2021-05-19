@@ -52,7 +52,7 @@ public class Program {
 	}
 
 	public enum ConcurrencyAlgorithm {
-		ICON, YUANMHP
+		ICON, YCON
 	}
 
 	private static TranslationUnit root;
@@ -199,10 +199,10 @@ public class Program {
 		Program.basePointsTo = true;
 		Program.memoizeAccesses = 0;
 		Program.preciseDFDEdges = false;
-		Program.updateCategory = UpdateCategory.EGUPD; // Default is LZUPD.
-		Program.concurrencyAlgorithm = ConcurrencyAlgorithm.ICON;
-		Program.mhpUpdateCategory = UpdateCategory.LZUPD; // Default is LZUPD.
-		Program.sveSensitive = SVEDimension.SVE_INSENSITIVE;
+		Program.updateCategory = UpdateCategory.LZUPD; // Default is LZUPD.
+		Program.concurrencyAlgorithm = ConcurrencyAlgorithm.YCON;
+		Program.mhpUpdateCategory = UpdateCategory.LZINV; // Default is LZUPD.
+		Program.sveSensitive = SVEDimension.SVE_SENSITIVE;
 		Program.sveSensitivityOfIDFAEdges = SVEDimension.SVE_INSENSITIVE;
 		Program.useInterProceduralPredicateAnalysis = false;
 		Program.useHeuristicWithIcon = true;
@@ -213,7 +213,7 @@ public class Program {
 		Program.ptaHeuristicEnabled = false;
 
 		// Just a safety check below.
-		if (Program.concurrencyAlgorithm == ConcurrencyAlgorithm.YUANMHP) {
+		if (Program.concurrencyAlgorithm == ConcurrencyAlgorithm.YCON) {
 			Program.mhpUpdateCategory = UpdateCategory.LZINV;
 			Program.sveNoCheck = true;
 			Program.updateCategory = UpdateCategory.LZUPD;
@@ -237,7 +237,7 @@ public class Program {
 		// filePath = ("../tests/npb-post/is3-0.i"); // SVE-all: 0.69
 		// filePath = ("../tests/npb-post/lu3-0.i"); // SVE-all: 16.26s.
 		// filePath = ("../tests/npb-post/mg3-0.i"); // SVE-all: 9.88s;
-		// filePath = ("../tests/npb-post/sp3-0.i"); // SVE-all: 23s.
+		filePath = ("../tests/npb-post/sp3-0.i"); // SVE-all: 23s.
 		//
 		// filePath = "../output-dump/imop_useful.i";
 		// filePath = ("../src/imop/lib/testcases/cfgTests/singleLooping.c");
@@ -394,7 +394,7 @@ public class Program {
 		// filePath = ("../tests/fft_openmp.i");
 		// filePath = ("../tests/quake.i");
 		// filePath = ("../tests/amgmk-postpass.i");
-		// filePath = ("../tests/sequoia/clomp.i");
+		filePath = ("../tests/sequoia/clomp.i");
 		// filePath = ("../tests/fsu/md_openmp.i");
 		// filePath = ("../tests/alternate.i");
 		// filePath = ("../tests/parboil/lbm.i");
@@ -466,7 +466,7 @@ public class Program {
 				Program.disableLineNumbers = true;
 			}
 			if (str.equals("--yuan") || str.equals("-yuan")) {
-				Program.concurrencyAlgorithm = ConcurrencyAlgorithm.YUANMHP;
+				Program.concurrencyAlgorithm = ConcurrencyAlgorithm.YCON;
 				Program.sveSensitive = SVEDimension.SVE_SENSITIVE;
 				Program.sveSensitivityOfIDFAEdges = SVEDimension.SVE_SENSITIVE;
 			}

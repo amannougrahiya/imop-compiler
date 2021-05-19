@@ -48,7 +48,7 @@ public class Phase extends AbstractPhase<BeginPhasePoint, EndPhasePoint> {
 	 */
 	public Phase(ParallelConstruct owner, Set<EndPhasePoint> endPPSet) {
 		this(owner.getInfo());
-		if (Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.YUANMHP) {
+		if (Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.YCON) {
 			Thread.dumpStack();
 			assert (false) : "Unexpected path.";
 			return;
@@ -80,7 +80,7 @@ public class Phase extends AbstractPhase<BeginPhasePoint, EndPhasePoint> {
 
 	public Phase(ParallelConstructInfo owner) {
 		super((ParallelConstruct) owner.getNode());
-		if (Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.YUANMHP) {
+		if (Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.YCON) {
 			Thread.dumpStack();
 			assert (false) : "Unexpected path.";
 			return;
@@ -127,7 +127,7 @@ public class Phase extends AbstractPhase<BeginPhasePoint, EndPhasePoint> {
 	 *         {@code rootBarrier}.
 	 */
 	public static boolean isNodeAllowedInNewPhasesAbove(Node n, BarrierDirective rootBarrier) {
-		if (Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.YUANMHP) {
+		if (Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.YCON) {
 			Thread.dumpStack();
 			assert (false) : "Unexpected path.";
 			return false;
@@ -228,7 +228,7 @@ public class Phase extends AbstractPhase<BeginPhasePoint, EndPhasePoint> {
 	 *         {@code rootBarrier}.
 	 */
 	public static boolean isNodeAllowedInNewPhasesBelow(Node n, BarrierDirective rootBarrier) {
-		if (Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.YUANMHP) {
+		if (Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.YCON) {
 			Thread.dumpStack();
 			Misc.exitDueToError("Unexpected path.");
 			return false;
@@ -338,7 +338,7 @@ public class Phase extends AbstractPhase<BeginPhasePoint, EndPhasePoint> {
 	}
 
 	public static void addStalePhases(Set<Phase> set) {
-		if (Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.YUANMHP) {
+		if (Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.YCON) {
 			Thread.dumpStack();
 			assert (false) : "Unexpected path.";
 			return;

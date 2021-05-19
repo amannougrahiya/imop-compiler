@@ -37,7 +37,7 @@ public abstract class DataFlowAnalysis<F extends FlowAnalysis.FlowFact> extends 
 	protected final void addAllSiblingBarriersToWorkList(BarrierDirective barrier) {
 		for (AbstractPhase<?, ?> ph : new HashSet<>(barrier.getInfo().getNodePhaseInfo().getPhaseSet())) {
 			for (AbstractPhasePointable abstractEndingPhasePoint : ph.getEndPoints()) {
-				if (Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.YUANMHP) {
+				if (Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.YCON) {
 					YPhasePoint endingPhasePoint = (YPhasePoint) abstractEndingPhasePoint;
 					if (!(endingPhasePoint.getNode() instanceof BarrierDirective)) {
 						continue;

@@ -354,7 +354,7 @@ public class DumpSnapshot {
 		if (Program.printNoFiles) {
 			return;
 		}
-		if (Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.YUANMHP) {
+		if (Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.YCON) {
 			return;
 		}
 		List<Commentor> commetors = new ArrayList<>();

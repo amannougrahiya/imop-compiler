@@ -252,17 +252,12 @@ public class DriverModule {
 			DumpSnapshot.dumpPointsTo("merged-rem-inlined-merged" + Program.updateCategory);
 			DumpSnapshot.dumpPhases("merged-rem-inlined-merged" + Program.mhpUpdateCategory);
 		}
-		// Program.getRoot().getInfo().removeExtraScopes();
+		Program.getRoot().getInfo().removeExtraScopes();
 		if (Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.ICON) {
 			RedundantSynchronizationRemoval.removeBarriers(Program.getRoot());
 		} else {
 			RedundantSynchronizationRemovalForYA.removeBarriers(Program.getRoot());
 		}
-		// RedundantSynchronizationRemoval.removeBarriersFromAllParConsWithin(Program.getRoot());
-		// if (dumpIntermediate) {
-		// DumpSnapshot.dumpRoot("merged-rem-inlined-merged-rem" +
-		// Program.mhpUpdateCategory);
-		// }
 		// TODO: Uncomment till here.
 		double totTime = (System.nanoTime() - Main.totalTime) / (1.0 * 1e9);
 		double incMHPTime = 0.0;
@@ -351,9 +346,9 @@ public class DriverModule {
 		// Count the number of explicit barriers.
 		int numExplicitBarriers = Misc.getExactEnclosee(Program.getRoot(), BarrierDirective.class).size();
 		StringBuilder resultString = new StringBuilder(Program.fileName + " "
-				+ ((Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.YUANMHP) ? "YUAN" : "ICON") + " "
+				+ ((Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.YCON) ? "YUAN" : "ICON") + " "
 				+ Program.mhpUpdateCategory + " "
-				+ ((Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.YUANMHP) ? "SVE-sensitive"
+				+ ((Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.YCON) ? "SVE-sensitive"
 						: ((Program.sveSensitive == SVEDimension.SVE_SENSITIVE)
 								? ("SVE-sensitive (" + df2.format(SVEChecker.sveTimer * 1.0 / 1e9) + ")")
 								: "SVE-insensitive (0)"))
@@ -454,7 +449,7 @@ public class DriverModule {
 					long timLoc = System.nanoTime();
 					if (Misc.doIntersect(new HashSet<>(dfd1.getInfo().getNodePhaseInfo().getPhaseSet()),
 							new HashSet<>(dfd2.getInfo().getNodePhaseInfo().getPhaseSet()))
-							&& Program.concurrencyAlgorithm != Program.ConcurrencyAlgorithm.YUANMHP) {
+							&& Program.concurrencyAlgorithm != Program.ConcurrencyAlgorithm.YCON) {
 						CoExistenceChecker.canCoExistInAnyPhase(dfd1, dfd2);
 					}
 					tim += System.nanoTime() - timLoc;
@@ -546,9 +541,9 @@ public class DriverModule {
 		// Count the number of explicit barriers.
 		int numExplicitBarriers = Misc.getExactEnclosee(Program.getRoot(), BarrierDirective.class).size();
 		StringBuilder resultString = new StringBuilder(Program.fileName + " "
-				+ ((Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.YUANMHP) ? "YUAN" : "ICON") + " "
+				+ ((Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.YCON) ? "YUAN" : "ICON") + " "
 				+ Program.mhpUpdateCategory + " "
-				+ ((Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.YUANMHP) ? "SVE-sensitive"
+				+ ((Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.YCON) ? "SVE-sensitive"
 						: ((Program.sveSensitive == SVEDimension.SVE_SENSITIVE)
 								? ("SVE-sensitive (" + df2.format(SVEChecker.sveTimer * 1.0 / 1e9) + ")")
 								: "SVE-insensitive (0)"))
@@ -565,7 +560,7 @@ public class DriverModule {
 	}
 
 	public static void searchExample() {
-		if (Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.YUANMHP) {
+		if (Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.YCON) {
 			return;
 		}
 		for (ParallelConstruct parCons : Misc.getExactEnclosee(Program.getRoot(), ParallelConstruct.class)) {
