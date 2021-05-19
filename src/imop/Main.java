@@ -65,7 +65,7 @@ public class Main {
 		// Thread.sleep(7000);
 		// totalTime = System.nanoTime();
 		Program.parseNormalizeInput(args);
-		System.out.print("Program parsed successfully.");
+		System.out.println("Program parsed successfully.");
 		System.exit(0);
 
 		// demo1("L1");
