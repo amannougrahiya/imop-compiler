@@ -62,9 +62,16 @@ public class Main {
 	public static long totalTime;
 
 	public static void main(String[] args) throws FileNotFoundException, InterruptedException {
+<<<<<<< HEAD
 		// Thread.sleep(5000);
 		totalTime = System.nanoTime();
+=======
+		// Thread.sleep(7000);
+		// totalTime = System.nanoTime();
+>>>>>>> f1a1d844b032a9c18ca35dd23bd852078be32569
 		Program.parseNormalizeInput(args);
+		System.out.println("Program parsed successfully.");
+		System.exit(0);
 
 		// demo1("L1");
 		// demo2();
