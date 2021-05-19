@@ -7,8 +7,8 @@
     <property environment="env"/>
     <property name="ECLIPSE_HOME" value="../../../../eclipse/egit-master/Eclipse.app/Contents/Eclipse/"/>
     <property name="debuglevel" value="source,lines,vars"/>
-    <property name="target" value="15"/>
-    <property name="source" value="15"/>
+    <property name="target" value="9"/>
+    <property name="source" value="9"/>
     <path id="imop-compiler.classpath">
         <pathelement location="bin"/>
         <pathelement location="third-party-tools/junit.jar"/>
