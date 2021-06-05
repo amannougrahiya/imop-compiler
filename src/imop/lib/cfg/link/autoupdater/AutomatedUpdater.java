@@ -134,18 +134,18 @@ public class AutomatedUpdater {
 	}
 
 	public static void stabilizePTAInCPModes() {
-		if (Program.updateCategory != UpdateCategory.CPINV && Program.updateCategory != UpdateCategory.CPUPD) {
+		if (Program.idfaUpdateCategory != UpdateCategory.CPINV && Program.idfaUpdateCategory != UpdateCategory.CPUPD) {
 			return;
 		}
 		for (FlowAnalysis<?> analysisHandle : FlowAnalysis.getAllAnalyses().values()) {
-			if (Program.updateCategory == UpdateCategory.CPINV) {
+			if (Program.idfaUpdateCategory == UpdateCategory.CPINV) {
 				BeginPhasePoint.stabilizeStaleBeginPhasePoints();
 				if (analysisHandle.stateIsInvalid()) {
 					analysisHandle.markStateToBeValid();
 					AutomatedUpdater.reinitIDFA(analysisHandle);
 				}
 			} else {
-				assert (Program.updateCategory == UpdateCategory.CPUPD);
+				assert (Program.idfaUpdateCategory == UpdateCategory.CPUPD);
 				// if (analysisHandle.stateIsInvalid()) {
 				if (analysisHandle.stateIsInvalid() && (analysisHandle.getAnalysisName() != AnalysisName.POINTSTO
 						|| !PointsToAnalysis.isHeuristicEnabled)) {
@@ -680,8 +680,8 @@ public class AutomatedUpdater {
 	 */
 	public static void updateFlowFactsForAddition(Node newNode) {
 		Node node = Misc.getCFGNodeFor(newNode);
-		if (Program.updateCategory == UpdateCategory.EGINV || Program.updateCategory == UpdateCategory.LZINV
-				|| Program.updateCategory == UpdateCategory.CPINV) {
+		if (Program.idfaUpdateCategory == UpdateCategory.EGINV || Program.idfaUpdateCategory == UpdateCategory.LZINV
+				|| Program.idfaUpdateCategory == UpdateCategory.CPINV) {
 			AutomatedUpdater.updateFlowFactsForward(null);
 			AutomatedUpdater.updateFlowFactsBackward(null);
 			return;
@@ -729,7 +729,7 @@ public class AutomatedUpdater {
 	 *                set of nodes starting which forward analyses have to be rerun.
 	 */
 	public static void updateFlowFactsForward(Set<Node> nodeSet) {
-		if (Program.updateCategory == UpdateCategory.EGINV) {
+		if (Program.idfaUpdateCategory == UpdateCategory.EGINV) {
 			assert (nodeSet == null || nodeSet.isEmpty());
 			for (FlowAnalysis<?> analysis : FlowAnalysis.getAllAnalyses().values()) {
 				if (analysis instanceof InterThreadForwardCellularAnalysis
@@ -737,7 +737,7 @@ public class AutomatedUpdater {
 					AutomatedUpdater.reinitIDFA(analysis);
 				}
 			}
-		} else if (Program.updateCategory == UpdateCategory.LZINV || Program.updateCategory == UpdateCategory.CPINV) {
+		} else if (Program.idfaUpdateCategory == UpdateCategory.LZINV || Program.idfaUpdateCategory == UpdateCategory.CPINV) {
 			assert (nodeSet == null || nodeSet.isEmpty());
 			for (FlowAnalysis<?> analysis : FlowAnalysis.getAllAnalyses().values()) {
 				if (analysis
@@ -750,7 +750,7 @@ public class AutomatedUpdater {
 				}
 			}
 
-		} else if (Program.updateCategory == UpdateCategory.EGUPD) {
+		} else if (Program.idfaUpdateCategory == UpdateCategory.EGUPD) {
 			for (FlowAnalysis<?> analysis : FlowAnalysis.getAllAnalyses().values()) {
 				if (analysis instanceof InterThreadForwardCellularAnalysis
 						|| analysis instanceof InterThreadForwardNonCellularAnalysis) {
@@ -771,7 +771,7 @@ public class AutomatedUpdater {
 					}
 				}
 			}
-		} else if (Program.updateCategory == UpdateCategory.LZUPD || Program.updateCategory == UpdateCategory.CPUPD) {
+		} else if (Program.idfaUpdateCategory == UpdateCategory.LZUPD || Program.idfaUpdateCategory == UpdateCategory.CPUPD) {
 			for (FlowAnalysis<?> analysis : FlowAnalysis.getAllAnalyses().values()) {
 				if (analysis
 						.getAnalysisName() == (Program.useInterProceduralPredicateAnalysis
@@ -817,7 +817,7 @@ public class AutomatedUpdater {
 	 *                rerun.
 	 */
 	public static void updateFlowFactsBackward(Set<Node> nodeSet) {
-		if (Program.updateCategory == UpdateCategory.EGINV) {
+		if (Program.idfaUpdateCategory == UpdateCategory.EGINV) {
 			assert (nodeSet == null || nodeSet.isEmpty());
 			for (FlowAnalysis<?> analysis : FlowAnalysis.getAllAnalyses().values()) {
 				if (analysis instanceof InterThreadBackwardCellularAnalysis
@@ -825,7 +825,7 @@ public class AutomatedUpdater {
 					AutomatedUpdater.reinitIDFA(analysis);
 				}
 			}
-		} else if (Program.updateCategory == UpdateCategory.LZINV || Program.updateCategory == UpdateCategory.CPINV) {
+		} else if (Program.idfaUpdateCategory == UpdateCategory.LZINV || Program.idfaUpdateCategory == UpdateCategory.CPINV) {
 			assert (nodeSet == null || nodeSet.isEmpty());
 			for (FlowAnalysis<?> analysis : FlowAnalysis.getAllAnalyses().values()) {
 				if (analysis instanceof InterThreadBackwardCellularAnalysis
@@ -833,7 +833,7 @@ public class AutomatedUpdater {
 					analysis.storeNodesToBeUpdated(new HashSet<>());
 				}
 			}
-		} else if (Program.updateCategory == UpdateCategory.EGUPD) {
+		} else if (Program.idfaUpdateCategory == UpdateCategory.EGUPD) {
 			for (FlowAnalysis<?> analysis : FlowAnalysis.getAllAnalyses().values()) {
 				if (analysis instanceof InterThreadBackwardCellularAnalysis
 						|| analysis instanceof InterThreadBackwardNonCellularAnalysis) {
@@ -849,7 +849,7 @@ public class AutomatedUpdater {
 				}
 			}
 		} else {
-			assert (Program.updateCategory == UpdateCategory.LZUPD || Program.updateCategory == UpdateCategory.CPUPD);
+			assert (Program.idfaUpdateCategory == UpdateCategory.LZUPD || Program.idfaUpdateCategory == UpdateCategory.CPUPD);
 			for (FlowAnalysis<?> analysis : FlowAnalysis.getAllAnalyses().values()) {
 				if (analysis instanceof InterThreadBackwardCellularAnalysis
 						|| analysis instanceof InterThreadBackwardNonCellularAnalysis) {
@@ -876,8 +876,8 @@ public class AutomatedUpdater {
 	 *         data-flow analyses.
 	 */
 	public static Set<Node> nodesForForwardRerunOnRemoval(Node oldNode) {
-		if (Program.updateCategory == UpdateCategory.EGINV || Program.updateCategory == UpdateCategory.LZINV
-				|| Program.updateCategory == UpdateCategory.CPINV) {
+		if (Program.idfaUpdateCategory == UpdateCategory.EGINV || Program.idfaUpdateCategory == UpdateCategory.LZINV
+				|| Program.idfaUpdateCategory == UpdateCategory.CPINV) {
 			return null;
 		}
 		Node node = Misc.getCFGNodeFor(oldNode);
@@ -927,8 +927,8 @@ public class AutomatedUpdater {
 	 * oldNode}, when traversing in the forward direction.
 	 */
 	public static Set<Node> unreachableAfterRemovalForward(Node oldNode) {
-		if (Program.updateCategory == UpdateCategory.EGINV || Program.updateCategory == UpdateCategory.LZINV
-				|| Program.updateCategory == UpdateCategory.CPINV) {
+		if (Program.idfaUpdateCategory == UpdateCategory.EGINV || Program.idfaUpdateCategory == UpdateCategory.LZINV
+				|| Program.idfaUpdateCategory == UpdateCategory.CPINV) {
 			return null;
 		}
 		Node node = Misc.getCFGNodeFor(oldNode);
@@ -985,8 +985,8 @@ public class AutomatedUpdater {
 	 *         data-flow analyses.
 	 */
 	public static Set<Node> nodesForBackwardRerunOnRemoval(Node oldNode) {
-		if (Program.updateCategory == UpdateCategory.EGINV || Program.updateCategory == UpdateCategory.LZINV
-				|| Program.updateCategory == UpdateCategory.CPINV) {
+		if (Program.idfaUpdateCategory == UpdateCategory.EGINV || Program.idfaUpdateCategory == UpdateCategory.LZINV
+				|| Program.idfaUpdateCategory == UpdateCategory.CPINV) {
 			return null;
 		}
 		Node node = Misc.getCFGNodeFor(oldNode);
@@ -1036,8 +1036,8 @@ public class AutomatedUpdater {
 	 * oldNode}, when traversing in the backward direction.
 	 */
 	public static Set<Node> unreachableAfterRemovalBackward(Node oldNode) {
-		if (Program.updateCategory == UpdateCategory.EGINV || Program.updateCategory == UpdateCategory.LZINV
-				|| Program.updateCategory == UpdateCategory.CPINV) {
+		if (Program.idfaUpdateCategory == UpdateCategory.EGINV || Program.idfaUpdateCategory == UpdateCategory.LZINV
+				|| Program.idfaUpdateCategory == UpdateCategory.CPINV) {
 			return null;
 		}
 		Node node = Misc.getCFGNodeFor(oldNode);

@@ -188,6 +188,11 @@ public class YuanConcurrencyAnalysis {
 			}
 			return foundBegin && foundEnd;
 		}
+
+		@Override
+		public String toString() {
+			return startingBarrier.hashCode() + ":" + endingBarrier.hashCode() + ";\n";
+		}
 	}
 
 	public static void performMHPByYuan() {

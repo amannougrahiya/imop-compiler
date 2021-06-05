@@ -2,7 +2,7 @@
  * Copyright (c) 2019 Aman Nougrahiya, V Krishna Nandivada, IIT Madras.
  * This file is a part of the project IMOP, licensed under the MIT license.
  * See LICENSE.md for the full text of the license.
- * 
+ *
  * The above notice shall be included in all copies or substantial
  * portions of this file.
  */
@@ -43,7 +43,7 @@ import java.util.*;
 /**
  * Represents all the methods which help in the front-end setup, including
  * parsing of the input, expression simplification, etc.
- * 
+ *
  * @author aman
  *
  */
@@ -86,7 +86,7 @@ public class FrontEnd {
 	 * for function prototypes.</li>
 	 * <li>Ensures that unnamed structs/unions/enums are given a name.</li>
 	 * </ol>
-	 * 
+	 *
 	 * @param parseText
 	 *                  string that holds the text of a complete translation-unit.
 	 * @return root node of the input AST corresponding to the string
@@ -115,7 +115,7 @@ public class FrontEnd {
 	 * for function prototypes.</li>
 	 * <li>Ensures that unnamed structs/unions/enums are given a name.</li>
 	 * </ol>
-	 * 
+	 *
 	 * @param inputTextStream
 	 *                        stream that holds the text of a complete
 	 *                        translation-unit.
@@ -144,7 +144,7 @@ public class FrontEnd {
 	 * for function prototypes.</li>
 	 * <li>Ensures that unnamed structs/unions/enums are given a name.</li>
 	 * </ol>
-	 * 
+	 *
 	 * @param input
 	 *                 stream that holds the text to be parsed.
 	 * @param nodeType
@@ -234,7 +234,7 @@ public class FrontEnd {
 	 * <li>Creates the CFG of the input. (Note that this step might fail if the
 	 * input is not simplified.)</li>
 	 * </ol>
-	 * 
+	 *
 	 * @param parseText
 	 *                  string that holds the text of a complete translation-unit.
 	 * @return root node of the input AST corresponding to the string
@@ -267,7 +267,7 @@ public class FrontEnd {
 	 * <li>Creates the CFG of the input. (Note that this step might fail if the
 	 * input is not simplified.)</li>
 	 * </ol>
-	 * 
+	 *
 	 * @param inputTextStream
 	 *                        stream that holds the text of a complete
 	 *                        translation-unit.
@@ -300,7 +300,7 @@ public class FrontEnd {
 	 * <li>Creates the CFG of the input. (Note that this step might fail if the
 	 * input is not simplified.)</li>
 	 * </ol>
-	 * 
+	 *
 	 * @param input
 	 *                 stream that holds the text to be parsed.
 	 * @param nodeType
@@ -375,7 +375,7 @@ public class FrontEnd {
 	 * </ul>
 	 * </li>
 	 * </ol>
-	 * 
+	 *
 	 * @param codeString
 	 *                   string that contains text to be parsed as a C program.
 	 * @return reference to the root node of the normalized AST of
@@ -439,7 +439,7 @@ public class FrontEnd {
 	 * </ul>
 	 * </li>
 	 * </ol>
-	 * 
+	 *
 	 * @param input
 	 *              stream that contains text to be parsed as a C program.
 	 * @return reference to the root node of the normalized AST of {@code input}
@@ -470,8 +470,14 @@ public class FrontEnd {
 		System.err.println("\tTime taken: " + timeTaken / 1000000000.0 + "s.");
 		DumpSnapshot.dumpNestedCFG(newNode, Program.fileName);
 
-		System.err.println("\tStats: Number of leaf nodes: "
-				+ Program.getRoot().getInfo().getCFGInfo().getIntraTaskCFGLeafContents().size() + ".");
+		long leafCount = 0;
+		for (Node leaf : Program.getRoot().getInfo().getCFGInfo().getLexicalCFGContents()) {
+			if (!(leaf instanceof BeginNode || leaf instanceof EndNode)) {
+				leafCount++;
+			}
+		}
+
+		System.err.println("\tStats: Number of leaf nodes: " +  leafCount + ".");
 
 		// Testing various traversals.
 		// FrontEnd.testTraversals(newNode);
@@ -507,7 +513,7 @@ public class FrontEnd {
 			// timeTaken = System.nanoTime() - timeStart;
 			// System.err.println("\tNodes processed " + pta.nodesProcessed + " times.");
 			// System.err.println("\tTime taken: " + timeTaken / 1000000000.0 + "s.");
-			DumpSnapshot.dumpPredicates("");
+			NodeInfo.performPredicateAnalysis();
 
 			System.err.println("Pass: Performing optimized points-to analysis.");
 			timeStart = System.nanoTime();
@@ -632,13 +638,13 @@ public class FrontEnd {
 	 * <li>Removes extra level of compound-statement scopes.</li>
 	 * <li>Populates CFG edges.</li>
 	 * </ol>
-	 * 
+	 *
 	 * @param codeString
 	 *                   string that contains text to be parsed as a
 	 *                   {@code nodeType}.
 	 * @param nodeType
 	 *                   type as which {@code codeString} has to be parsed.
-	 * 
+	 *
 	 * @return reference to the root node of the normalized AST of
 	 *         {@code codeString} when parsed as a {@code nodeType}.
 	 */
@@ -679,12 +685,12 @@ public class FrontEnd {
 	 * <li>Removes extra level of compound-statement scopes.</li>
 	 * <li>Populates CFG edges.</li>
 	 * </ol>
-	 * 
+	 *
 	 * @param input
 	 *                 stream that contains text to be parsed as a {@code nodeType}.
 	 * @param nodeType
 	 *                 type as which {@code input} has to be parsed.
-	 * 
+	 *
 	 * @return reference to the root node of the normalized AST of {@code input}
 	 *         when parsed as a {@code nodeType}.
 	 */
@@ -744,7 +750,7 @@ public class FrontEnd {
 	 * Parses {@code string} as a simplified function call, if possible.
 	 * Otherwise,
 	 * returns {@code null}.
-	 * 
+	 *
 	 * @param string
 	 *               input string that needs to be checked for representing a
 	 *               simplified function call.
@@ -813,7 +819,7 @@ public class FrontEnd {
 	 * Used by the static block of {#link {@link FrontEnd}} to parse various
 	 * library
 	 * and built-in methods.
-	 * 
+	 *
 	 * @param input
 	 *              a stream that contains prototype declarations for various
 	 *              library
@@ -859,7 +865,7 @@ public class FrontEnd {
 	 * Adds a new line character at the end of the input stream, if there isn't
 	 * one
 	 * already, in case if the {@code nodeType} demands it.
-	 * 
+	 *
 	 * @param input
 	 *                 input stream representing some piece of code.
 	 * @param nodeType
@@ -893,7 +899,7 @@ public class FrontEnd {
 	 * <br>
 	 * IMPORTANT NOTE: For efficiency reasons, automated updates are disabled in
 	 * the pre-pass phase.
-	 * 
+	 *
 	 * @param newNode
 	 *                  root of the AST to be simplified.
 	 * @param wholeTime
@@ -1000,7 +1006,7 @@ public class FrontEnd {
 	 * <li>Population of inter-task data-flow edges.</li>
 	 * <li>Lock-set analysis. (DISABLED)</li>
 	 * </ol>
-	 * 
+	 *
 	 * @param root
 	 *             reference to the root of AST on which various parallelism
 	 *             passes
@@ -1047,7 +1053,7 @@ public class FrontEnd {
 
 	/**
 	 * Performs various statistics collecting routines.
-	 * 
+	 *
 	 * @param root
 	 */
 	public static void checkStats(TranslationUnit root) {
@@ -1243,7 +1249,7 @@ public class FrontEnd {
 
 	/**
 	 * A temporary testing method that tries out some traversal mechanisms.
-	 * 
+	 *
 	 * @param root
 	 *             root of an AST.
 	 */
@@ -1358,7 +1364,7 @@ public class FrontEnd {
 	/**
 	 * Ensures that field-sensitivity is disabled if there are any incompatible
 	 * type-casts to pointers, present in the program.
-	 * 
+	 *
 	 * @param rootNode
 	 *                 node within which incompatible type-casts have to be checked
 	 *                 for.
@@ -13027,7 +13033,7 @@ public class FrontEnd {
 
 		/**
 		 * Added later.
-		 * 
+		 *
 		 * @param stream
 		 * @param parseACall
 		 * @author Aman Nougrahiya
@@ -13181,7 +13187,7 @@ public class FrontEnd {
 		static private final class LookaheadSuccess extends java.lang.Error {
 
 			/**
-			 * 
+			 *
 			 */
 			private static final long serialVersionUID = -4370572257618084435L;
 		}

@@ -351,7 +351,7 @@ public class DumpSnapshot {
 	}
 
 	public static void dumpPredicates(String string) {
-		if (Program.printNoFiles) {
+		if (Program.printNoFiles || Program.printNoPredicates) {
 			return;
 		}
 		if (Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.YCON) {

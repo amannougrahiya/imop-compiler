@@ -20,6 +20,7 @@ import imop.deprecated.Deprecated_FlowFact;
 import imop.deprecated.Deprecated_InterProceduralCFGPass;
 import imop.lib.analysis.Assignment;
 import imop.lib.analysis.AssignmentGetter;
+import imop.lib.analysis.SVEChecker;
 import imop.lib.analysis.flowanalysis.*;
 import imop.lib.analysis.flowanalysis.controlflow.DominanceAnalysis;
 import imop.lib.analysis.flowanalysis.controlflow.DominanceAnalysis.DominatorFlowFact;
@@ -458,7 +459,7 @@ public class NodeInfo implements Cloneable {
 		}
 	}
 
-	private static void performPredicateAnalysis() {
+	public static void performPredicateAnalysis() {
 		FunctionDefinition mainFunc = Program.getRoot().getInfo().getMainFunction();
 		if (mainFunc == null) {
 			return;
@@ -475,7 +476,8 @@ public class NodeInfo implements Cloneable {
 		}
 		long timeTaken = System.nanoTime() - timeStart;
 		System.err.println("\tNodes processed " + pa.nodesProcessed + " times.");
-		System.err.println("\tTime taken: " + timeTaken / 1000000000.0 + "s.");
+		System.err.println("\tTime taken: " + timeTaken / 1.0e9 + "s.");
+		SVEChecker.sveTimer += timeTaken;
 	}
 
 	private static void performLivenessAnalysis() {
@@ -585,11 +587,11 @@ public class NodeInfo implements Cloneable {
 			 * For this forward analysis, let's make the state consistent first,
 			 * if required.
 			 */
-			if (Program.updateCategory == UpdateCategory.EGINV || Program.updateCategory == UpdateCategory.EGUPD
-					|| Program.updateCategory == UpdateCategory.CPINV
-					|| Program.updateCategory == UpdateCategory.CPUPD) {
+			if (Program.idfaUpdateCategory == UpdateCategory.EGINV || Program.idfaUpdateCategory == UpdateCategory.EGUPD
+					|| Program.idfaUpdateCategory == UpdateCategory.CPINV
+					|| Program.idfaUpdateCategory == UpdateCategory.CPUPD) {
 				assert (!analysisHandle.stateIsInvalid());
-			} else if (Program.updateCategory == UpdateCategory.LZINV) {
+			} else if (Program.idfaUpdateCategory == UpdateCategory.LZINV) {
 				if (Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.YCON
 						|| Program.mhpUpdateCategory == UpdateCategory.LZINV) {
 					if (AbstractPhase.globalMHPStale) {
@@ -604,7 +606,7 @@ public class NodeInfo implements Cloneable {
 					AutomatedUpdater.reinitIDFA(analysisHandle);
 				}
 			} else {
-				assert (Program.updateCategory == UpdateCategory.LZUPD);
+				assert (Program.idfaUpdateCategory == UpdateCategory.LZUPD);
 				if (thisCell == null) {
 					if (analysisHandle.stateIsInvalid()) {
 						if (Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.YCON
@@ -760,11 +762,11 @@ public class NodeInfo implements Cloneable {
 			 * For this forward analysis, let's make the state consistent first,
 			 * if required.
 			 */
-			if (Program.updateCategory == UpdateCategory.EGINV || Program.updateCategory == UpdateCategory.EGUPD
-					|| Program.updateCategory == UpdateCategory.CPINV
-					|| Program.updateCategory == UpdateCategory.CPUPD) {
+			if (Program.idfaUpdateCategory == UpdateCategory.EGINV || Program.idfaUpdateCategory == UpdateCategory.EGUPD
+					|| Program.idfaUpdateCategory == UpdateCategory.CPINV
+					|| Program.idfaUpdateCategory == UpdateCategory.CPUPD) {
 				assert (!analysisHandle.stateIsInvalid());
-			} else if (Program.updateCategory == UpdateCategory.LZINV) {
+			} else if (Program.idfaUpdateCategory == UpdateCategory.LZINV) {
 				if (Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.YCON
 						|| Program.mhpUpdateCategory == UpdateCategory.LZINV) {
 					if (AbstractPhase.globalMHPStale) {
@@ -779,7 +781,7 @@ public class NodeInfo implements Cloneable {
 					AutomatedUpdater.reinitIDFA(analysisHandle);
 				}
 			} else {
-				assert (Program.updateCategory == UpdateCategory.LZUPD);
+				assert (Program.idfaUpdateCategory == UpdateCategory.LZUPD);
 				if (analysisHandle.stateIsInvalid()) {
 					if (Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.YCON
 							|| Program.mhpUpdateCategory == UpdateCategory.LZINV) {

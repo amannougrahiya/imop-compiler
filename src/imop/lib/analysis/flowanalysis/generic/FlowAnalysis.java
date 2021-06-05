@@ -92,9 +92,9 @@ public abstract class FlowAnalysis<F extends FlowAnalysis.FlowFact> extends GJDe
 			 * The state so far was correct. Set the invalid bit, clear the
 			 * nodesToBeUpdated set, and add updateSeedSet to them.
 			 */
-			if (Program.updateCategory == UpdateCategory.LZINV || Program.updateCategory == UpdateCategory.LZUPD
-					|| Program.updateCategory == UpdateCategory.CPINV
-					|| Program.updateCategory == UpdateCategory.CPUPD) {
+			if (Program.idfaUpdateCategory == UpdateCategory.LZINV || Program.idfaUpdateCategory == UpdateCategory.LZUPD
+					|| Program.idfaUpdateCategory == UpdateCategory.CPINV
+					|| Program.idfaUpdateCategory == UpdateCategory.CPUPD) {
 				this.isInvalid = true;
 			}
 			// nodesToBeUpdated.clear();

@@ -105,8 +105,8 @@ public class FunctionInliner {
 			FunctionInliner.inlineFunctionDefinition(callStmt);
 			ProfileSS.insertCP();
 			if (Program.dumpIntermediateStates) {
-				DumpSnapshot.dumpRoot("inlined" + Program.updateCategory + counter);
-				DumpSnapshot.dumpPointsTo("inlined" + Program.updateCategory + counter);
+				DumpSnapshot.dumpRoot("inlined" + Program.idfaUpdateCategory + counter);
+				DumpSnapshot.dumpPointsTo("inlined" + Program.idfaUpdateCategory + counter);
 				DumpSnapshot.dumpPhases("inlined" + Program.mhpUpdateCategory + counter++);
 			}
 			/*

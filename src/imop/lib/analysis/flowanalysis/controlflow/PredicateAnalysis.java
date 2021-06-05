@@ -26,6 +26,8 @@ import imop.lib.util.CellSet;
 import imop.lib.util.ImmutableList;
 import imop.lib.util.ImmutableSet;
 import imop.lib.util.Misc;
+import imop.parser.Program;
+import imop.parser.Program.CPredAMode;
 
 import java.util.*;
 
@@ -120,8 +122,15 @@ public class PredicateAnalysis extends InterProceduralControlFlowAnalysis<Predic
 		}
 
 		private static Set<ReversePath> simplifyPaths(Set<ReversePath> pathSet) {
-			pathSet = PredicateFlowFact.fusePredicateBranches(pathSet);
-			pathSet = PredicateFlowFact.obtainPrefixPaths(pathSet);
+			if (Program.cpaMode == CPredAMode.H1) {
+				return pathSet;
+			}
+			if (Program.cpaMode == CPredAMode.H1H2 || Program.cpaMode == CPredAMode.H1H2H3) {
+				pathSet = PredicateFlowFact.fusePredicateBranches(pathSet);
+			}
+			if (Program.cpaMode == CPredAMode.H1H3 || Program.cpaMode == CPredAMode.H1H2H3) {
+				pathSet = PredicateFlowFact.obtainPrefixPaths(pathSet);
+			}
 			return pathSet;
 		}
 

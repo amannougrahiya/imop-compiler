@@ -51,6 +51,13 @@ public class Program {
 
 	}
 
+	public enum CPredAMode {
+		H1, // keeping both H2 and H3 disabled in CPredA
+		H1H2, // enabling H3 (known to be quite slow when used in absence of H2)
+		H1H3, // enabling H2
+		H1H2H3 // the default mode for CPredA
+	}
+
 	public enum ConcurrencyAlgorithm {
 		ICON, YCON
 	}
@@ -79,6 +86,7 @@ public class Program {
 	 */
 	public static boolean dumpIntermediateStates = false;
 	public static boolean printNoFiles = false;
+	public static boolean printNoPredicates = true;
 	/*
 	 * When set, certain checks are performed regarding phase-set of a barrier while
 	 * it is being tested for removal.
@@ -89,7 +97,7 @@ public class Program {
 	 * is enabled.
 	 */
 	public static boolean ptaHeuristicEnabled = false;
-	public static UpdateCategory updateCategory = UpdateCategory.LZUPD;
+	public static UpdateCategory idfaUpdateCategory = UpdateCategory.LZUPD;
 	public static UpdateCategory mhpUpdateCategory = UpdateCategory.LZUPD;
 	/*
 	 * Decides whether the local-stabilization heuristic is used with Yuan
@@ -147,14 +155,15 @@ public class Program {
 	 */
 	public static int memoizeAccesses = 0;
 	private static boolean initialPhasesRemembered = false;
-	public static final long thresholdIDFAProcessingCount = (long) 1e6;
+	public static final long thresholdIDFAProcessingCount = (long) 1e4;
 	public static DecimalFormat df2 = new DecimalFormat("#.##");
 	public static boolean disableLineNumbers = false;
 	public static int numExpansionAllowed = 100; // Default, applicable for the command-line arguments. This is set
 													// again in the method {@link defaultCommandLineArguments()}.
 	public static final boolean addRelCPs = false; // Default: false; when true, we profile to obtain and print the set
-													// of
-	// relevant CPs.
+													// of relevant CPs.
+
+	public static CPredAMode cpaMode = CPredAMode.H1H2H3; // The default mode is H1H2H3.
 
 	public static void rememberInitialPhasesIfRequired() {
 		if (Program.getRoot() == null) {
@@ -199,13 +208,14 @@ public class Program {
 		Program.basePointsTo = true;
 		Program.memoizeAccesses = 0;
 		Program.preciseDFDEdges = false;
-		Program.updateCategory = UpdateCategory.LZUPD; // Default is LZUPD.
-		Program.concurrencyAlgorithm = ConcurrencyAlgorithm.YCON;
-		Program.mhpUpdateCategory = UpdateCategory.LZINV; // Default is LZUPD.
+		Program.idfaUpdateCategory = UpdateCategory.LZUPD; // Default is LZUPD.
+		Program.concurrencyAlgorithm = ConcurrencyAlgorithm.ICON;
+		Program.mhpUpdateCategory = UpdateCategory.LZUPD; // Default is LZUPD.
 		Program.sveSensitive = SVEDimension.SVE_SENSITIVE;
-		Program.sveSensitivityOfIDFAEdges = SVEDimension.SVE_INSENSITIVE;
+		Program.cpaMode = CPredAMode.H1;
 		Program.useInterProceduralPredicateAnalysis = false;
 		Program.useHeuristicWithIcon = true;
+		Program.sveSensitivityOfIDFAEdges = SVEDimension.SVE_INSENSITIVE;
 		Program.sveNoCheck = true;
 		Program.numExpansionAllowed = 100;
 		Program.useHeuristicWithYuan = false;
@@ -216,7 +226,7 @@ public class Program {
 		if (Program.concurrencyAlgorithm == ConcurrencyAlgorithm.YCON) {
 			Program.mhpUpdateCategory = UpdateCategory.LZINV;
 			Program.sveNoCheck = true;
-			Program.updateCategory = UpdateCategory.LZUPD;
+			Program.idfaUpdateCategory = UpdateCategory.LZUPD;
 		}
 
 		String filePath = "";
@@ -237,7 +247,7 @@ public class Program {
 		// filePath = ("../tests/npb-post/is3-0.i"); // SVE-all: 0.69
 		// filePath = ("../tests/npb-post/lu3-0.i"); // SVE-all: 16.26s.
 		// filePath = ("../tests/npb-post/mg3-0.i"); // SVE-all: 9.88s;
-		filePath = ("../tests/npb-post/sp3-0.i"); // SVE-all: 23s.
+		// filePath = ("../tests/npb-post/sp3-0.i"); // SVE-all: 23s.
 		//
 		// filePath = "../output-dump/imop_useful.i";
 		// filePath = ("../src/imop/lib/testcases/cfgTests/singleLooping.c");
@@ -391,10 +401,11 @@ public class Program {
 		// filePath = ("../tests/jacobi-while.i");
 		// filePath = ("../runner/cgo-eg/example.c");
 		// filePath = ("../tests/ziggurat_openmp.i");
+		// filePath = ("../tests/sgefa_openmp.i");
 		// filePath = ("../tests/fft_openmp.i");
 		// filePath = ("../tests/quake.i");
-		// filePath = ("../tests/amgmk-postpass.i");
-		filePath = ("../tests/sequoia/clomp.i");
+		// filePath = ("../tests/sequoia/clomp.i");
+		// filePath = ("../tests/tt.i");
 		// filePath = ("../tests/fsu/md_openmp.i");
 		// filePath = ("../tests/alternate.i");
 		// filePath = ("../tests/parboil/lbm.i");
@@ -476,26 +487,35 @@ public class Program {
 			if (str.equals("--intra-cp") || str.equals("-icp")) {
 				Program.useInterProceduralPredicateAnalysis = false;
 			}
+			if (str.equals("-h1h2h3")) {
+				Program.cpaMode = CPredAMode.H1H2H3;
+			} else if (str.equals("-h1h2")) {
+				Program.cpaMode = CPredAMode.H1H2;
+			} else if (str.equals("-h1h3")) {
+				Program.cpaMode = CPredAMode.H1H3;
+			} else if (str.equals("-h1")) {
+				Program.cpaMode = CPredAMode.H1;
+			}
 			if (str.equals("--category") || str.equals("-c")) {
 				String next = args[index + 1];
 				switch (next) {
 				case "EGINV":
-					Program.updateCategory = UpdateCategory.EGINV;
+					Program.idfaUpdateCategory = UpdateCategory.EGINV;
 					break;
 				case "CPINV":
-					Program.updateCategory = UpdateCategory.CPINV;
+					Program.idfaUpdateCategory = UpdateCategory.CPINV;
 					break;
 				case "LZINV":
-					Program.updateCategory = UpdateCategory.LZINV;
+					Program.idfaUpdateCategory = UpdateCategory.LZINV;
 					break;
 				case "EGUPD":
-					Program.updateCategory = UpdateCategory.EGUPD;
+					Program.idfaUpdateCategory = UpdateCategory.EGUPD;
 					break;
 				case "CPUPD":
-					Program.updateCategory = UpdateCategory.CPUPD;
+					Program.idfaUpdateCategory = UpdateCategory.CPUPD;
 					break;
 				case "LZUPD":
-					Program.updateCategory = UpdateCategory.LZUPD;
+					Program.idfaUpdateCategory = UpdateCategory.LZUPD;
 					break;
 				default:
 					System.out.println(

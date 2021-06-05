@@ -21,9 +21,12 @@ import imop.lib.analysis.flowanalysis.generic.AnalysisDimension.SVEDimension;
 import imop.lib.analysis.flowanalysis.generic.AnalysisName;
 import imop.lib.analysis.flowanalysis.generic.FlowAnalysis;
 import imop.lib.analysis.mhp.AbstractPhase;
+import imop.lib.analysis.mhp.DependenceCounter;
 import imop.lib.analysis.mhp.incMHP.BeginPhasePoint;
 import imop.lib.analysis.mhp.incMHP.EndPhasePoint;
 import imop.lib.analysis.mhp.incMHP.Phase;
+import imop.lib.analysis.mhp.yuan.YuanConcurrencyAnalysis;
+import imop.lib.analysis.mhp.yuan.YuanConcurrencyAnalysis.YuanStaticPhase;
 import imop.lib.analysis.solver.ConstraintsGenerator;
 import imop.lib.analysis.solver.FieldSensitivity;
 import imop.lib.analysis.typeSystem.ArrayType;
@@ -34,6 +37,7 @@ import imop.lib.cfg.info.WhileStatementCFGInfo;
 import imop.lib.cfg.link.autoupdater.AutomatedUpdater;
 import imop.lib.cg.CallStack;
 import imop.lib.cg.NodeWithStack;
+import imop.lib.getter.ParallelConstructGetter;
 import imop.lib.transform.BasicTransform;
 import imop.lib.transform.CopyEliminator;
 import imop.lib.transform.simplify.*;
@@ -59,8 +63,8 @@ public class DriverModule {
 		ProfileSS.insertCP(); // RCP
 		AutomatedUpdater.stabilizePTAInCPModes();
 		if (dumpIntermediate) {
-			DumpSnapshot.dumpRoot("merged" + Program.updateCategory);
-			DumpSnapshot.dumpPointsTo("merged" + Program.updateCategory);
+			DumpSnapshot.dumpRoot("merged" + Program.idfaUpdateCategory);
+			DumpSnapshot.dumpPointsTo("merged" + Program.idfaUpdateCategory);
 			DumpSnapshot.dumpPhases("merged" + Program.mhpUpdateCategory);
 		}
 		// OLD CODE: BasicTransform.removeUnusedFunctions(Program.getRoot());
@@ -70,8 +74,8 @@ public class DriverModule {
 			RedundantSynchronizationRemovalForYA.removeBarriers(Program.getRoot());
 		}
 		if (dumpIntermediate) {
-			DumpSnapshot.dumpRoot("merged-rem" + Program.updateCategory);
-			DumpSnapshot.dumpPointsTo("merged-rem" + Program.updateCategory);
+			DumpSnapshot.dumpRoot("merged-rem" + Program.idfaUpdateCategory);
+			DumpSnapshot.dumpPointsTo("merged-rem" + Program.idfaUpdateCategory);
 			DumpSnapshot.dumpPhases("merged-rem" + Program.mhpUpdateCategory);
 		}
 		// TODO: Uncomment starting this.
@@ -166,19 +170,19 @@ public class DriverModule {
 		// "_z3_queries.txt");
 		// }
 		System.err.println("TOTAL TIME (including disk I/O time): " + totTime + "s.");
-		System.err.println("This execution ran in " + Program.updateCategory + " mode for IDFA update.");
+		System.err.println("This execution ran in " + Program.idfaUpdateCategory + " mode for IDFA update.");
 		System.err.println("Optimized a total of " + AutomatedUpdater.hasBeenOtimized + " stale markings.");
 		System.err
 				.println("Number of times PTA would have had to run in semi-eager mode: " + ProfileSS.flagSwitchCount);
 		DumpSnapshot.printToFile(Program.getRoot(),
 				(Program.fileName + "imop_output_" + Program.mhpUpdateCategory + ".i").trim());
-		DumpSnapshot.dumpPointsTo("final" + Program.updateCategory);
+		DumpSnapshot.dumpPointsTo("final" + Program.idfaUpdateCategory);
 		DumpSnapshot.dumpPhases("final" + Program.mhpUpdateCategory);
 		if (dumpIntermediate) {
 			DumpSnapshot.dumpNestedCFG(Program.getRoot(), "optimized" + Program.mhpUpdateCategory);
 		}
 		DecimalFormat df2 = Program.df2;
-		System.out.println(Program.fileName + " " + Program.updateCategory + " " + df2.format(totTime) + " "
+		System.out.println(Program.fileName + " " + Program.idfaUpdateCategory + " " + df2.format(totTime) + " "
 				+ df2.format(incMHPTime) + " " + df2.format(incIDFATime) + " " + incMHPTriggers + " " + incIDFATriggers
 				+ " " + finalIncNodes + " " + tarjanCount + " " + df2.format(sccTime));
 		/*
@@ -220,8 +224,8 @@ public class DriverModule {
 		Program.getRoot().getInfo().removeUnusedElements();
 		ProfileSS.insertCP();
 		if (dumpIntermediate) {
-			DumpSnapshot.dumpRoot("merged" + Program.updateCategory);
-			DumpSnapshot.dumpPointsTo("merged" + Program.updateCategory);
+			DumpSnapshot.dumpRoot("merged" + Program.idfaUpdateCategory);
+			DumpSnapshot.dumpPointsTo("merged" + Program.idfaUpdateCategory);
 			DumpSnapshot.dumpPhases("merged" + Program.mhpUpdateCategory);
 		}
 		// OLD CODE: BasicTransform.removeUnusedFunctions(Program.getRoot());
@@ -232,8 +236,8 @@ public class DriverModule {
 		}
 		// RedundantSynchronizationRemoval.removeBarriersFromAllParConsWithin(Program.getRoot());
 		if (dumpIntermediate) {
-			DumpSnapshot.dumpRoot("merged-rem" + Program.updateCategory);
-			DumpSnapshot.dumpPointsTo("merged-rem" + Program.updateCategory);
+			DumpSnapshot.dumpRoot("merged-rem" + Program.idfaUpdateCategory);
+			DumpSnapshot.dumpPointsTo("merged-rem" + Program.idfaUpdateCategory);
 			DumpSnapshot.dumpPhases("merged-rem" + Program.mhpUpdateCategory);
 		}
 		// TODO: Uncomment starting this.
@@ -241,7 +245,7 @@ public class DriverModule {
 		FunctionInliner.inline(mainFunc);
 		if (dumpIntermediate) {
 			DumpSnapshot.dumpRoot("merged-rem-inlined" + Program.mhpUpdateCategory);
-			DumpSnapshot.dumpPointsTo("merged-rem-inlined" + Program.updateCategory);
+			DumpSnapshot.dumpPointsTo("merged-rem-inlined" + Program.idfaUpdateCategory);
 			DumpSnapshot.dumpPhases("merged-rem-inlined" + Program.mhpUpdateCategory);
 		}
 		ParallelConstructExpander.mergeParallelRegions(Program.getRoot());
@@ -249,7 +253,7 @@ public class DriverModule {
 		ProfileSS.insertCP();
 		if (dumpIntermediate) {
 			DumpSnapshot.dumpRoot("merged-rem-inlined-merged" + Program.mhpUpdateCategory);
-			DumpSnapshot.dumpPointsTo("merged-rem-inlined-merged" + Program.updateCategory);
+			DumpSnapshot.dumpPointsTo("merged-rem-inlined-merged" + Program.idfaUpdateCategory);
 			DumpSnapshot.dumpPhases("merged-rem-inlined-merged" + Program.mhpUpdateCategory);
 		}
 		Program.getRoot().getInfo().removeExtraScopes();
@@ -322,7 +326,7 @@ public class DriverModule {
 		// "_z3_queries.txt");
 		// }
 		System.err.println("TOTAL TIME (including disk I/O time): " + totTime + "s.");
-		System.err.println("This execution ran in " + Program.updateCategory + " mode for IDFA update, and in "
+		System.err.println("This execution ran in " + Program.idfaUpdateCategory + " mode for IDFA update, and in "
 				+ Program.mhpUpdateCategory + " mode for MHP update.");
 		System.err.println("Optimized a total of " + AutomatedUpdater.hasBeenOtimized + " stale markings.");
 		System.err
@@ -330,7 +334,7 @@ public class DriverModule {
 		String s = (Program.sveSensitive == SVEDimension.SVE_SENSITIVE) ? "S" : "U";
 		DumpSnapshot.printToFile(Program.getRoot(), (Program.fileName + "imop_output_" + Program.concurrencyAlgorithm
 				+ "_" + Program.mhpUpdateCategory + s + ".i").trim());
-		DumpSnapshot.dumpPointsTo("final" + Program.updateCategory);
+		DumpSnapshot.dumpPointsTo("final" + Program.idfaUpdateCategory);
 		DumpSnapshot.dumpPhases("final" + Program.concurrencyAlgorithm + "_" + Program.mhpUpdateCategory + s);
 		DumpSnapshot.dumpPredicates("final" + Program.concurrencyAlgorithm + "_" + Program.mhpUpdateCategory + s);
 		if (dumpIntermediate) {
@@ -342,6 +346,10 @@ public class DriverModule {
 		for (ParallelConstruct parCons : Misc.getExactEnclosee(Program.getRoot(), ParallelConstruct.class)) {
 			numPhases += parCons.getInfo().getConnectedPhases().size();
 		}
+		int numStaticPhases = 0;
+		for (ParallelConstruct parCons : Misc.getExactEnclosee(Program.getRoot(), ParallelConstruct.class)) {
+			numStaticPhases += YuanConcurrencyAnalysis.getStaticPhases(parCons).size();
+		}
 
 		// Count the number of explicit barriers.
 		int numExplicitBarriers = Misc.getExactEnclosee(Program.getRoot(), BarrierDirective.class).size();
@@ -350,17 +358,27 @@ public class DriverModule {
 				+ Program.mhpUpdateCategory + " "
 				+ ((Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.YCON) ? "SVE-sensitive"
 						: ((Program.sveSensitive == SVEDimension.SVE_SENSITIVE)
-								? ("SVE-sensitive (" + df2.format(SVEChecker.sveTimer * 1.0 / 1e9) + ")")
+								? ("SVE-sensitive_" + Program.cpaMode + " (" + df2.format(SVEChecker.sveTimer * 1.0 / 1e9) + ")")
 								: "SVE-insensitive (0)"))
 				+ " " + df2.format(totTime) + " " + df2.format(incMHPTime) + " " + df2.format(incIDFATime) + " "
 				+ incMHPTriggers + " " + incIDFATriggers + " " + finalIncNodes + " " + tarjanCount + " "
-				+ df2.format(sccTime) + " " + numPhases + " " + numExplicitBarriers);
+				+ df2.format(sccTime) + " " + numPhases + " " + numExplicitBarriers + " " + numStaticPhases);
 		System.out.println(resultString);
 		System.err.println(resultString);
+
+		// Query Count Checker Code Starts:
+		// DriverModule.queryCount();
+
 		// DumpSnapshot.printToFile(Program.stabilizationStackDump.toString(),
 		// "stabilization-dump" + Program.concurrencyAlgorithm +
 		// Program.mhpUpdateCategory + s + ".txt");
 		// System.err.println("Trigger count: " + triggerSizeCountList);
+		System.exit(0);
+	}
+
+	public static void queryCount() {
+		DependenceCounter.printBarrierDependents(Program.getRoot());
+		DependenceCounter.printCoExistenceCount(Program.getRoot());
 		System.exit(0);
 	}
 
@@ -382,15 +400,15 @@ public class DriverModule {
 
 		ProfileSS.insertCP();
 		if (dumpIntermediate) {
-			DumpSnapshot.dumpRoot("merged" + Program.updateCategory);
-			DumpSnapshot.dumpPointsTo("merged" + Program.updateCategory);
+			DumpSnapshot.dumpRoot("merged" + Program.idfaUpdateCategory);
+			DumpSnapshot.dumpPointsTo("merged" + Program.idfaUpdateCategory);
 			DumpSnapshot.dumpPhases("merged" + Program.mhpUpdateCategory);
 		}
 		RedundantSynchronizationRemoval.removeBarriers(Program.getRoot());
 		// RedundantSynchronizationRemoval.removeBarriersFromAllParConsWithin(Program.getRoot());
 		if (dumpIntermediate) {
-			DumpSnapshot.dumpRoot("merged-rem" + Program.updateCategory);
-			DumpSnapshot.dumpPointsTo("merged-rem" + Program.updateCategory);
+			DumpSnapshot.dumpRoot("merged-rem" + Program.idfaUpdateCategory);
+			DumpSnapshot.dumpPointsTo("merged-rem" + Program.idfaUpdateCategory);
 			DumpSnapshot.dumpPhases("merged-rem" + Program.mhpUpdateCategory);
 		}
 		double timerLocal = System.nanoTime();
@@ -403,7 +421,7 @@ public class DriverModule {
 
 		if (dumpIntermediate) {
 			DumpSnapshot.dumpRoot("merged-rem-inlined" + Program.mhpUpdateCategory);
-			DumpSnapshot.dumpPointsTo("merged-rem-inlined" + Program.updateCategory);
+			DumpSnapshot.dumpPointsTo("merged-rem-inlined" + Program.idfaUpdateCategory);
 			DumpSnapshot.dumpPhases("merged-rem-inlined" + Program.mhpUpdateCategory);
 		}
 
@@ -411,7 +429,7 @@ public class DriverModule {
 		ParallelConstructExpander.mergeParallelRegions(Program.getRoot());
 		if (dumpIntermediate) {
 			DumpSnapshot.dumpRoot("merged-rem-inlined-merged" + Program.mhpUpdateCategory);
-			DumpSnapshot.dumpPointsTo("merged-rem-inlined-merged" + Program.updateCategory);
+			DumpSnapshot.dumpPointsTo("merged-rem-inlined-merged" + Program.idfaUpdateCategory);
 			DumpSnapshot.dumpPhases("merged-rem-inlined-merged" + Program.mhpUpdateCategory);
 		}
 		// Program.getRoot().getInfo().removeExtraScopes();
@@ -520,7 +538,7 @@ public class DriverModule {
 		// "_z3_queries.txt");
 		// }
 		System.err.println("TOTAL TIME (including disk I/O time): " + totTime + "s.");
-		System.err.println("This execution ran in " + Program.updateCategory + " mode for IDFA update, and in "
+		System.err.println("This execution ran in " + Program.idfaUpdateCategory + " mode for IDFA update, and in "
 				+ Program.mhpUpdateCategory + " mode for MHP update.");
 		System.err.println("Optimized a total of " + AutomatedUpdater.hasBeenOtimized + " stale markings.");
 		System.err
@@ -528,7 +546,7 @@ public class DriverModule {
 		String s = (Program.sveSensitive == SVEDimension.SVE_SENSITIVE) ? "S" : "U";
 		DumpSnapshot.printToFile(Program.getRoot(), (Program.fileName + "imop_output_" + Program.concurrencyAlgorithm
 				+ "_" + Program.mhpUpdateCategory + s + ".i").trim());
-		DumpSnapshot.dumpPointsTo("final" + Program.updateCategory);
+		DumpSnapshot.dumpPointsTo("final" + Program.idfaUpdateCategory);
 		DumpSnapshot.dumpPhases("final" + Program.concurrencyAlgorithm + "_" + Program.mhpUpdateCategory + s);
 		DumpSnapshot.dumpPredicates("final" + Program.concurrencyAlgorithm + "_" + Program.mhpUpdateCategory + s);
 		DecimalFormat df2 = Program.df2;
@@ -662,7 +680,7 @@ public class DriverModule {
 		}
 		System.err.println(
 				"TOTAL TIME (including disk I/O time): " + (System.nanoTime() - Main.totalTime) / (1.0 * 1e9) + "s.");
-		System.err.println("This execution ran in " + Program.updateCategory + " mode for IDFA update, and in "
+		System.err.println("This execution ran in " + Program.idfaUpdateCategory + " mode for IDFA update, and in "
 				+ Program.mhpUpdateCategory + " mode for MHP update.");
 		DumpSnapshot.printToFile(Program.getRoot(), "imop_output.i");
 		DumpSnapshot.dumpNestedCFG(Program.getRoot(), "optimized");
@@ -1780,5 +1798,27 @@ public class DriverModule {
 			}
 		}
 		return false;
+	}
+
+	public static void profilePh() {
+		int numStaticPhases = 0;
+		// String staticPhStr = "";
+		int numPhases = 0;
+		// String aggPhStr = "";
+		for (ParallelConstruct parCons : Misc.getExactEnclosee(Program.getRoot(), ParallelConstruct.class)) {
+			Collection<YuanStaticPhase> stSet = YuanConcurrencyAnalysis.getStaticPhases(parCons);
+			Collection<? extends AbstractPhase<?, ?>> phSet = new HashSet<>(parCons.getInfo().getConnectedPhases());
+			numStaticPhases += stSet.size();
+			numPhases += phSet.size();
+			// staticPhStr += stSet.toString();
+			// aggPhStr += phSet.toString();
+		}
+		System.out.println("Num static phases: " + numStaticPhases);
+		System.out.println("Num aggregate phases: " + numPhases);
+		// System.out.println("Num static phases: " + numStaticPhases + "\n" +
+		// staticPhStr);
+		// System.out.println("Num aggregate phases: " + numPhases + "\n" + aggPhStr);
+		System.exit(0);
+
 	}
 }

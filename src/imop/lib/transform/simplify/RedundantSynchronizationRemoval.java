@@ -109,7 +109,7 @@ public class RedundantSynchronizationRemoval {
 			DumpSnapshot.dumpPointsTo("rem" + Program.mhpUpdateCategory + counter);
 			DumpSnapshot.dumpPredicates("rem" + Program.mhpUpdateCategory + counter);
 			DumpSnapshot.dumpVisibleSharedReadWrittenCells("rem" + Program.mhpUpdateCategory + counter);
-			DumpSnapshot.dumpRoot("root" + Program.updateCategory + counter++);
+			DumpSnapshot.dumpRoot("root" + Program.idfaUpdateCategory + counter++);
 		}
 		for (Node barrierNode : Misc.getInheritedEncloseeList(root, BarrierDirective.class)) {
 			BarrierDirective barrier = (BarrierDirective) barrierNode;

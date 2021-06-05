@@ -315,8 +315,8 @@ public class StatementInfo extends NodeInfo {
 				startNodes.add(endNode);
 			}
 		}
-		if (Program.updateCategory == UpdateCategory.EGINV || Program.updateCategory == UpdateCategory.LZINV
-				|| Program.updateCategory == UpdateCategory.CPINV) {
+		if (Program.idfaUpdateCategory == UpdateCategory.EGINV || Program.idfaUpdateCategory == UpdateCategory.LZINV
+				|| Program.idfaUpdateCategory == UpdateCategory.CPINV) {
 			AutomatedUpdater.updateFlowFactsForward(new HashSet<>());
 			AutomatedUpdater.updateFlowFactsBackward(new HashSet<>());
 		} else {
@@ -530,8 +530,8 @@ public class StatementInfo extends NodeInfo {
 				startNodes.add(endNode);
 			}
 		}
-		if (Program.updateCategory == UpdateCategory.EGINV || Program.updateCategory == UpdateCategory.LZINV
-				|| Program.updateCategory == UpdateCategory.CPINV) {
+		if (Program.idfaUpdateCategory == UpdateCategory.EGINV || Program.idfaUpdateCategory == UpdateCategory.LZINV
+				|| Program.idfaUpdateCategory == UpdateCategory.CPINV) {
 			AutomatedUpdater.updateFlowFactsForward(new HashSet<>());
 			AutomatedUpdater.updateFlowFactsBackward(new HashSet<>());
 		} else {
@@ -672,8 +672,8 @@ public class StatementInfo extends NodeInfo {
 				startNodes.add(endNode);
 			}
 		}
-		if (Program.updateCategory == UpdateCategory.EGINV || Program.updateCategory == UpdateCategory.LZINV
-				|| Program.updateCategory == UpdateCategory.CPINV) {
+		if (Program.idfaUpdateCategory == UpdateCategory.EGINV || Program.idfaUpdateCategory == UpdateCategory.LZINV
+				|| Program.idfaUpdateCategory == UpdateCategory.CPINV) {
 			AutomatedUpdater.updateFlowFactsForward(new HashSet<>());
 			AutomatedUpdater.updateFlowFactsBackward(new HashSet<>());
 		} else {
@@ -718,8 +718,8 @@ public class StatementInfo extends NodeInfo {
 				startNodes.add(endNode);
 			}
 		}
-		if (Program.updateCategory == UpdateCategory.EGINV || Program.updateCategory == UpdateCategory.LZINV
-				|| Program.updateCategory == UpdateCategory.CPINV) {
+		if (Program.idfaUpdateCategory == UpdateCategory.EGINV || Program.idfaUpdateCategory == UpdateCategory.LZINV
+				|| Program.idfaUpdateCategory == UpdateCategory.CPINV) {
 			AutomatedUpdater.updateFlowFactsForward(new HashSet<>());
 			AutomatedUpdater.updateFlowFactsBackward(new HashSet<>());
 		} else {
