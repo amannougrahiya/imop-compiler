@@ -6,40 +6,44 @@
  * The above notice shall be included in all copies or substantial
  * portions of this file.
  */
-package demo.demo2;
+package demo.demo3;
 
 import imop.ast.node.external.*;
+import imop.ast.node.internal.*;
 import imop.lib.util.Misc;
 import imop.parser.Program;
 
-public class Demo2 {
+public class Demo3 {
 
 	/**
-	 * Driver method for Demo #2.
+	 * Driver method for Demo #3.
 	 * TODO OPTIONS:
-	 * 1. System.out.println(whileStmt.getInfo().getCFGInfo().getBody());
-	 * 2. Misc.getInheritedEnclosee(Program.getRoot(), WhileStatement.class)
-	 * 3. System.out.println(ifStmt.getInfo().getCFGInfo().getSuccessors());
-	 * 4. !ifStmt.getInfo().getCFGInfo().hasElseBody()
-	 * 5. System.out.println(whileStmt.getInfo().getCFGInfo().getPredicate());
+	 * 1. System.out.println(callStmt.getInfo().getCalledDefinitions());
+	 * System.out.print(callStmt.getPreCallNode().getArgumentList());
+	 * 2. Misc.getInheritedEnclosee(func, CallStatement.class)
+	 * 3. System.out.println("Recursive?" + (func.getInfo().isRecursive() ? "Yes" :
+	 * "No"));
+	 * 4. System.out.println(func.getInfo().getCallersOfThis());
+	 * 5. Program.getRoot().getInfo().getAllFunctionDefinitions()
 	 */
 	public static void main(String[] args) {
 		args = new String[] { "-f", "runner/cgo-eg/example.c", "-nru" };
 		Program.parseNormalizeInput(args);
 
-		// for (WhileStatement whileStmt :
+		// for (FunctionDefinition func :
 		// TODO T1
 		// ) {
+		// for (CallStatement callStmt :
 		// TODO T2
-		// TODO T3
-		// }
-		// for (IfStatement ifStmt : Misc.getInheritedEnclosee(Program.getRoot(),
-		// IfStatement.class)) {
-		// if (
-		// TODO T4
 		// ) {
-		// TODO T5
+		// System.out.println(callStmt);
 		// }
+		// TODO T3
+		// for (CallStatement callStmt : Misc.getInheritedEnclosee(func,
+		// CallStatement.class)) {
+		// TODO T4
+		// }
+		// TODO T5
 		// }
 	}
 

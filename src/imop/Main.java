@@ -22,8 +22,12 @@ import imop.lib.analysis.flowanalysis.HeapCell;
 import imop.lib.analysis.flowanalysis.Symbol;
 import imop.lib.analysis.flowanalysis.generic.FlowAnalysis;
 import imop.lib.analysis.mhp.AbstractPhase;
+import imop.lib.analysis.mhp.DependenceCounter;
 import imop.lib.analysis.mhp.incMHP.BeginPhasePoint;
 import imop.lib.analysis.mhp.incMHP.Phase;
+import imop.lib.analysis.mhp.yuan.YPhase;
+import imop.lib.analysis.mhp.yuan.YuanConcurrencyAnalysis;
+import imop.lib.analysis.mhp.yuan.YuanConcurrencyAnalysis.YuanStaticPhase;
 import imop.lib.analysis.solver.ConstraintsGenerator;
 import imop.lib.analysis.solver.FieldSensitivity;
 import imop.lib.analysis.solver.SeedConstraint;
@@ -32,7 +36,17 @@ import imop.lib.analysis.solver.tokens.ExpressionTokenizer;
 import imop.lib.analysis.solver.tokens.IdOrConstToken;
 import imop.lib.analysis.solver.tokens.OperatorToken;
 import imop.lib.analysis.solver.tokens.Tokenizable;
+import imop.lib.analysis.typeSystem.ArrayType;
+import imop.lib.analysis.typeSystem.CharType;
+import imop.lib.analysis.typeSystem.SignedCharType;
 import imop.lib.analysis.typeSystem.SignedIntType;
+import imop.lib.analysis.typeSystem.SignedLongIntType;
+import imop.lib.analysis.typeSystem.SignedShortIntType;
+import imop.lib.analysis.typeSystem.Type;
+import imop.lib.analysis.typeSystem.UnsignedCharType;
+import imop.lib.analysis.typeSystem.UnsignedIntType;
+import imop.lib.analysis.typeSystem.UnsignedLongIntType;
+import imop.lib.analysis.typeSystem.UnsignedShortIntType;
 import imop.lib.cfg.info.CFGInfo;
 import imop.lib.cg.CallStack;
 import imop.lib.cg.NodeWithStack;
@@ -52,6 +66,7 @@ import imop.lib.transform.updater.*;
 import imop.lib.util.*;
 import imop.parser.FrontEnd;
 import imop.parser.Program;
+import imop.parser.Program.ConcurrencyAlgorithm;
 
 import java.io.FileNotFoundException;
 import java.util.*;
@@ -62,16 +77,12 @@ public class Main {
 	public static long totalTime;
 
 	public static void main(String[] args) throws FileNotFoundException, InterruptedException {
-<<<<<<< HEAD
 		// Thread.sleep(5000);
 		totalTime = System.nanoTime();
-=======
-		// Thread.sleep(7000);
-		// totalTime = System.nanoTime();
->>>>>>> f1a1d844b032a9c18ca35dd23bd852078be32569
 		Program.parseNormalizeInput(args);
-		System.out.println("Program parsed successfully.");
-		System.exit(0);
+		// countPhases();
+		// DriverModule.printRelevantFunctionNames();
+		// DependenceCounter.printBarrierDependents(Program.getRoot());
 
 		// demo1("L1");
 		// demo2();
@@ -116,6 +127,7 @@ public class Main {
 		// dumpAccessibleCells("");
 		// dumpLoopHeadersOnSTDOUT();
 		// ********* Those methods that never return.*********
+		// DriverModule.profilePh();
 		// DriverModule.askQueries();
 		// DriverModule.clientAutoUpdateHomeostasis();
 		DriverModule.clientAutoUpdateIncEPA();
@@ -729,6 +741,23 @@ public class Main {
 		// }
 
 		// System.err.println(root.getInfo().getPhaseInfo().phaseList.size());
+	}
+
+	public static void countPhases() {
+		assert (Program.concurrencyAlgorithm == ConcurrencyAlgorithm.YCON)
+				: "Run this method only with Yuan's analysis. Single-barrier paired static phases won't make sense otherwise.";
+		Set<YPhase> aggPhaseSet = new HashSet<>();
+		for (ParallelConstruct parCons : Misc.getExactEnclosee(Program.getRoot(), ParallelConstruct.class)) {
+			for (AbstractPhase<?, ?> ph : parCons.getInfo().getConnectedPhases()) {
+				aggPhaseSet.add((YPhase) ph);
+			}
+		}
+		int numStaticPhases = 0;
+		for (ParallelConstruct parCons : Misc.getExactEnclosee(Program.getRoot(), ParallelConstruct.class)) {
+			numStaticPhases += YuanConcurrencyAnalysis.getStaticPhases(parCons).size();
+		}
+		System.out.println(aggPhaseSet.size() + ": " + numStaticPhases);
+		System.exit(0);
 	}
 
 	public static void checkHighLevelCFGTransformations() {

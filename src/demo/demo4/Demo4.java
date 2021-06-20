@@ -6,51 +6,52 @@
  * The above notice shall be included in all copies or substantial
  * portions of this file.
  */
-package demo.demo4;
+package demo.demo7;
 
 import imop.ast.node.external.*;
-import imop.ast.node.internal.*;
+import imop.lib.analysis.flowanalysis.Cell;
 import imop.lib.analysis.flowanalysis.Symbol;
-import imop.lib.util.Misc;
+import imop.lib.transform.updater.InsertImmediatePredecessor;
+import imop.parser.FrontEnd;
 import imop.parser.Program;
 
-public class Demo4 {
+public class Demo7 {
 
 	/**
-	 * Driver method for Demo #4.
+	 * Driver method for Demo #7.
 	 * TODO OPTIONS:
-	 * 1. System.out.println(Misc.getSymbolEntry(spe.toString(),
-	 * callStmt).getDefiningScope());
-	 * 2. !spe.isAnIdentifier()
-	 * 3. System.out.println(sym.getName() + " has type " + sym.getType());
-	 * 4. callStmt.getPreCallNode().getArgumentList()
-	 * 5. func.getInfo().getSymbolTable().values()
+	 * 1. Statement newStmt = FrontEnd.parseAndNormalize(newStr, Statement.class);
+	 * 2. InsertImmediatePredecessor.insert(node, newStmt);
+	 * 3. func.getInfo().getCFGInfo().getLexicalCFGLeafContents()
 	 */
 	public static void main(String[] args) {
 		args = new String[] { "-f", "runner/cgo-eg/example.c", "-nru" };
 		Program.parseNormalizeInput(args);
-
-		// for (FunctionDefinition func : Misc.getInheritedEnclosee(Program.getRoot(),
-		// FunctionDefinition.class)) {
-		// for (Symbol sym :
+		/*
+		 * Write barrier: Write a pass that instruments a program such that
+		 * immediately before write to a scalar variable thisVar at runtime, a
+		 * notification is displayed.
+		 */
+		// for (FunctionDefinition func :
+		// Program.getRoot().getInfo().getAllFunctionDefinitions()) {
+		// for (Node node :
 		// TODO T1
 		// ) {
-		// TODO T2
-		// }
-		// }
-		// for (CallStatement callStmt : Misc.getInheritedEnclosee(Program.getRoot(),
-		// CallStatement.class)) {
-		// for (SimplePrimaryExpression spe :
-		// TODO T3
-		// ) {
-		// if (
-		// TODO T4
-		// ) {
+		// for (Cell c : node.getInfo().getWrites()) {
+		// if (!(c instanceof Symbol)) {
 		// continue;
 		// }
-		// TODO T5
+		// Symbol sym = (Symbol) c;
+		// if (!sym.getName().equals("thisVar")) {
+		// continue;
+		// }
+		// String newStr = "printf(\"About to write to thisVar.\");";
+		// TODO T2
+		// TODO T3
 		// }
 		// }
+		// }
+		System.out.println(Program.getRoot());
 	}
 
 }

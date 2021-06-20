@@ -6,94 +6,66 @@
  * The above notice shall be included in all copies or substantial
  * portions of this file.
  */
-package demo.demo5;
+package demo.demo8;
 
 import imop.ast.node.external.*;
-import imop.lib.analysis.flowanalysis.Cell;
-import imop.lib.analysis.flowanalysis.Symbol;
-import imop.lib.util.CellSet;
+import imop.lib.analysis.mhp.AbstractPhase;
+import imop.lib.analysis.mhp.incMHP.Phase;
 import imop.lib.util.Misc;
 import imop.parser.Program;
 
-public class Demo5 {
+import java.util.List;
+
+public class Demo8 {
 
 	/**
-	 * Driver method for Demo #5.
+	 * Driver method for Demo #8.
 	 * TODO OPTIONS:
-	 * 1. stmt.getInfo().getAccesses()
-	 * 2. sym.getName().equals("thisVar")
-	 * 3. node.getInfo().getWrites())
-	 * 4. Statement stmt = func.getInfo().getStatementWithLabel("thisStmt");
-	 * 5. System.out.println(((Symbol) c).getName());
+	 * 1. System.out.println(ph.getNodeSet());
+	 * 2. expStmt.getInfo().getNodePhaseInfo().getPhaseSet()
+	 * 3. max = ph.getNodeSet().size();
+	 * 4. List<Phase> phaseList = (List<Phase>)
+	 * parCons.getInfo().getConnectedPhases();
+	 * 5. ph.getNodeSet().size() > max
 	 */
 	public static void main(String[] args) {
 		args = new String[] { "-f", "runner/cgo-eg/example.c", "-nru" };
 		Program.parseNormalizeInput(args);
-		demo5ab();
+		int max = 0;
+		for (ParallelConstruct parCons : Misc.getExactEnclosee(Program.getRoot(), ParallelConstruct.class)) {
+			// /*
+			// * Print the number of static phases in every
+			// * parallel-construct.
+			// */
+			// TODO T1
+			// System.out.println(phaseList.size());
+			// /*
+			// * Print the highest number of statements in any static phase in the
+			// * system.
+			// */
+			// for (Phase ph : phaseList) {
+			// if (
+			// TODO T2
+			// ) {
+			// TODO T3
+			// }
+			// }
+		}
+		System.out.println("Highest number of statements within a phase has been: " + max);
+
+		/*
+		 * Print the set of all those statements that may run in parallel
+		 * with the given statement.
+		 */
+		for (ExpressionStatement expStmt : Misc.getInheritedEnclosee(Program.getRoot(), ExpressionStatement.class)) {
+			System.out.println("Statements that may run in parallel with the statement " + expStmt + ": ");
+			// for (AbstractPhase<?, ?> ph :
+			// TODO T4
+			// ) {
+			// TODO T5
+			// }
+		}
+		System.exit(0);
 	}
 
-	public static void demo5ab() {
-		// for (FunctionDefinition func :
-		// Program.getRoot().getInfo().getAllFunctionDefinitions()) {
-		// TODO T1
-		// if (stmt == null) {
-		// continue;
-		// }
-		// for (Cell c :
-		// TODO T2
-		// ) {
-		// if(!(c instanceof Symbol)) {
-		// continue;
-		// }
-		// TODO T3
-		// }
-		// }
-		// for (FunctionDefinition func :
-		// Program.getRoot().getInfo().getAllFunctionDefinitions()) {
-		// for (ExpressionStatement node : Misc.getInheritedEnclosee(func,
-		// ExpressionStatement.class)) {
-		// for (Cell c :
-		// TODO T4
-		// ) {
-		// if (!(c instanceof Symbol)) {
-		// continue;
-		// }
-		// Symbol sym = (Symbol) c;
-		// if (
-		// TODO T5
-		// ) {
-		// System.out.println(node);
-		// }
-		// }
-		// }
-		// }
-		// for (FunctionDefinition func :
-		// Program.getRoot().getInfo().getAllFunctionDefinitions()) {
-		// Statement stmt1 = func.getInfo().getStatementWithLabel("l1");
-		// Statement stmt2 = func.getInfo().getStatementWithLabel("l2");
-		// if (stmt1 != null && stmt2 != null) {
-		// Demo5.demo5c(stmt1, stmt2);
-		// }
-		// }
-		//
-	}
-
-	/**
-	 * TODO OPTIONS:
-	 * 1. reads2.overlapsWith(writes1) || writes1.overlapsWith(writes2)
-	 * 2. CellSet reads1 = new CellSet(stmt1.getInfo().getReads());
-	 */
-	public static boolean demo5c(Statement stmt1, Statement stmt2) {
-		// TODO T1
-		// CellSet reads2 = new CellSet(stmt2.getInfo().getReads());
-		// CellSet writes1 = new CellSet(stmt1.getInfo().getWrites());
-		// CellSet writes2 = new CellSet(stmt2.getInfo().getWrites());
-		// if (reads1.overlapsWith(writes2) ||
-		// TODO T2
-		// ) {
-		// System.out.println("Conflict detected between " + stmt1 + " and " + stmt2);
-		// return true;
-		// }
-		return false;
-	}
 }
