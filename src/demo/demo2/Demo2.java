@@ -6,28 +6,43 @@
  * The above notice shall be included in all copies or substantial
  * portions of this file.
  */
-package demo.demo3;
+package demo.demo2;
 
 import imop.ast.node.external.*;
 import imop.ast.node.internal.*;
+import imop.lib.util.DumpSnapshot;
 import imop.lib.util.Misc;
 import imop.parser.Program;
 
-public class Demo3 {
+public class Demo2 {
 
 	/**
-	 * Driver method for Demo #3.
-	 * TODO OPTIONS:
-	 * 1. System.out.println(callStmt.getInfo().getCalledDefinitions());
+	 * Driver method for Demo #2: Working with Call Graphs.
+	 *
+	 * (A) Print all call-sites present lexically within a given function.
+	 * (B) For a given call-statement, print its target function(s).
+	 * (C) Test whether a given method is recursive.
+	 *
+	 * *** TODO OPTIONS ***
+	 *
+	 * System.out.println(callStmt.getInfo().getCalledDefinitions());
 	 * System.out.print(callStmt.getPreCallNode().getArgumentList());
-	 * 2. Misc.getInheritedEnclosee(func, CallStatement.class)
-	 * 3. System.out.println("Recursive?" + (func.getInfo().isRecursive() ? "Yes" :
+	 *
+	 * Misc.getInheritedEnclosee(func, CallStatement.class)
+	 * System.out.println("Recursive?" + (func.getInfo().isRecursive() ? "Yes" : *
 	 * "No"));
-	 * 4. System.out.println(func.getInfo().getCallersOfThis());
-	 * 5. Program.getRoot().getInfo().getAllFunctionDefinitions()
+	 *
+	 * System.out.println(func.getInfo().getCallersOfThis());
+	 *
+	 * Program.getRoot().getInfo().getAllFunctionDefinitions()
 	 */
 	public static void main(String[] args) {
-		args = new String[] { "-f", "runner/cgo-eg/example.c", "-nru" };
+		args = new String[] { "-f", "runner/pldi-eg/example.i", "-nru" };
+		/*
+		 * Print all call-sites present lexically within a given function.
+		 * For a given call-statement, print its target function(s).
+		 * Test whether a given method is recursive.
+		 */
 		Program.parseNormalizeInput(args);
 
 		// for (FunctionDefinition func :
@@ -45,6 +60,7 @@ public class Demo3 {
 		// }
 		// TODO T5
 		// }
+		DumpSnapshot.dumpRoot("final-2");
 	}
 
 }

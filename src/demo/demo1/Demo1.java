@@ -8,40 +8,60 @@
  */
 package demo.demo1;
 
+import java.util.HashSet;
+
 import imop.ast.node.external.*;
+import imop.lib.util.DumpSnapshot;
 import imop.lib.util.Misc;
 import imop.parser.Program;
 
 public class Demo1 {
 
 	/**
-	 * Driver method for Demo #1.
-	 * TODO OPTIONS:
-	 * 1. Program.parseNormalizeInput(args); System.out.println(Program.getRoot());
-	 * 2. whileStmt.getInfo().unrollLoop(1);
-	 * 3. Program.getRoot().getInfo().getAllFunctionDefinitions()
-	 * 4. Statement stmt = func.getInfo().getStatementWithLabel("test");
+	 * Driver method for Demo #1: Working with the AST and Info Objects.
+	 * (A) Parse a sample program using IMOP.
+	 * (B) From the generated AST, print the program to a file/terminal.
+	 * (C) Invoke loop unrolling on the given while-statement, and print.
+	 *
+	 * *** TODO OPTIONS ***
+	 * (For all these demos, we need to use one of these options for each "TODO".)
+	 *
+	 * 1. whileStmt.getInfo().unrollLoop(1);
+	 *
+	 * 2. DumpSnapshot.dumpRoot("final-1"); System.out.println(Program.getRoot());
+	 *
+	 * 3. Program.parseNormalizeInput(args);
+	 *
+	 * 4. Misc.getExactEnclosee(Program.getRoot(), WhileStatement.class))
+	 *
 	 */
 	public static void main(String[] args) {
-		args = new String[] { "-f", "runner/cgo-eg/example.c", "-nru" };
-		// TODO T1
+		args = new String[] { "-f", "runner/pldi-eg/example.i", "-nru" };
+		/*
+		 * TODO T1: Parse a sample program using IMOP.
+		 * (One line code, to be selected from the given TODO options in the comment of
+		 * main.)
+		 */
 
-		// Get statement with label "test"
-		// for (FunctionDefinition func :
-		// TODO T2
-		// ) {
-		// TODO T3
-		// if (stmt == null) {
-		// System.out.println("Not found!");
-		// } else {
-		// System.out.println(stmt);
-		// }
-		// for (WhileStatement whileStmt : Misc.getInheritedEnclosee(func,
-		// WhileStatement.class)) {
-		// TODO T4
-		// System.out.println(whileStmt);
-		// }
-		// }
+		/*
+		 * TODO T2: From the generated AST, print the program to a file/terminal.
+		 * (Two lines, one for printing to a file, and another to print to the
+		 * terminal.)
+		 */
+
+		demo1();
+	}
+
+	public static void demo1() {
+		/*
+		 * TODO T3: Iterate over all while statements in the program.
+		 * (Replace the "new" expression below.)
+		 */
+		for (WhileStatement whileStmt : new HashSet<WhileStatement>()) {
+			// TODO T4: Invoke the loop unrolling code for while statement.
+
+			System.out.println(whileStmt);
+		}
 	}
 
 }

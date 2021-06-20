@@ -6,7 +6,7 @@
  * The above notice shall be included in all copies or substantial
  * portions of this file.
  */
-package demo.demo9;
+package demo.demo6;
 
 import imop.ast.node.external.*;
 import imop.lib.analysis.mhp.AbstractPhasePointable;
@@ -21,11 +21,21 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
-public class Demo9 {
+public class Demo6 {
 
 	/**
-	 * Driver method for Demo #9.
-	 * TODO OPTIONS:
+	 * Driver method for Demo #6: Removing Redundant Barriers.
+	 *
+	 * Check if a barrier-directive is required to preserve dependencies among
+	 * phases across it. If not, then delete the barrier. Steps involved are:
+	 * (a) For any given barrier, obtain the set of phases that it may end, and the
+	 * set of phases that may start after it.
+	 * (b) For each pair of phases from the sets in the last step, see if the pair
+	 * conflicts, i.e. see if there exists any conflicting accesses between two
+	 * phases of the pair.
+	 * (c) If no conflicts are found across a barrier, remove it from the program.
+	 *
+	 * *** TODO OPTIONS ***
 	 * 1. reads1.overlapsWith(writes2) || reads2.overlapsWith(writes1) ||
 	 * writes1.overlapsWith(writes2)
 	 * 2. ph.getBeginPoints()
@@ -33,26 +43,25 @@ public class Demo9 {
 	 * parConsNode.getInfo().getConnectedPhases());
 	 */
 	public static void main(String[] args) {
-		args = new String[] { "-f", "runner/cgo-eg/example.c", "-nru" };
+		args = new String[] { "-f", "runner/pldi-eg/example.c", "-nru" };
 		Program.parseNormalizeInput(args);
 		/*
-		 * Check if a barrier-directive is required to preserve
-		 * dependences among
-		 * phases across it. If not, then delete the barrier.
-		 * For any given barrier, get the set of phases that it may end, and the
-		 * set of phases that may start after it.
-		 * For each pair of phases from the sets in the last step, see if the
-		 * pair conflicts, i.e. see if there exists any conflicting accesses
-		 * between two phases of the pair.
-		 * If no conflicts are found across a barrier, remove it from the
-		 * program.
+		 * Check if a barrier-directive is required to preserve dependencies among
+		 * phases
+		 * across it. If not, then delete the barrier.
+		 * For any given barrier, get the set of phases that it may end, and the set of
+		 * phases that may start after it.
+		 * For each pair of phases from the sets in the last step, see if the pair
+		 * conflicts, i.e. see if there exists any conflicting accesses between two
+		 * phases of the pair.
+		 * If no conflicts are found across a barrier, remove it from the program.
 		 */
-		demo9();
-		DumpSnapshot.dumpRoot("final");
+		demo6();
+		DumpSnapshot.dumpRoot("final-6");
 		System.out.println(Program.getRoot());
 	}
 
-	public static void demo9() {
+	public static void demo6() {
 		// for (BarrierDirective barrier :
 		// Misc.getInheritedEncloseeList(Program.getRoot(), BarrierDirective.class)) {
 		// Set<Phase> allPhaseSet = new HashSet<>();

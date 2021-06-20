@@ -6,33 +6,44 @@
  * The above notice shall be included in all copies or substantial
  * portions of this file.
  */
-package demo.demo5;
+package demo.demo3;
 
 import imop.ast.node.external.*;
 import imop.lib.analysis.flowanalysis.Cell;
 import imop.lib.analysis.flowanalysis.Symbol;
 import imop.lib.util.CellSet;
+import imop.lib.util.DumpSnapshot;
 import imop.lib.util.Misc;
 import imop.parser.Program;
 
-public class Demo5 {
+public class Demo3 {
 
 	/**
-	 * Driver method for Demo #5.
-	 * TODO OPTIONS:
-	 * 1. stmt.getInfo().getAccesses()
-	 * 2. sym.getName().equals("thisVar")
-	 * 3. node.getInfo().getWrites())
-	 * 4. Statement stmt = func.getInfo().getStatementWithLabel("thisStmt");
-	 * 5. System.out.println(((Symbol) c).getName());
+	 * Driver method for Demo #3: Detecting Data-Dependencies
+	 *
+	 * Write a pass that prints the kind of data-dependencies (RAW, WAR, or WAW), if
+	 * any, that given two statements (with labels “l1” and “l2”) may have.
+	 *
+	 * *** TODO OPTIONS ***
+	 *
+	 * stmt.getInfo().getAccesses()
+	 *
+	 * sym.getName().equals("thisVar")
+	 *
+	 * node.getInfo().getWrites())
+	 *
+	 * Statement stmt = func.getInfo().getStatementWithLabel("thisStmt");
+	 *
+	 * System.out.println(((Symbol) c).getName());
 	 */
 	public static void main(String[] args) {
-		args = new String[] { "-f", "runner/cgo-eg/example.c", "-nru" };
+		args = new String[] { "-f", "runner/pldi-eg/example.i", "-nru" };
 		Program.parseNormalizeInput(args);
-		demo5ab();
+		demo3ab();
+		DumpSnapshot.dumpRoot("final-3");
 	}
 
-	public static void demo5ab() {
+	public static void demo3ab() {
 		// for (FunctionDefinition func :
 		// Program.getRoot().getInfo().getAllFunctionDefinitions()) {
 		// TODO T1
@@ -72,7 +83,7 @@ public class Demo5 {
 		// Statement stmt1 = func.getInfo().getStatementWithLabel("l1");
 		// Statement stmt2 = func.getInfo().getStatementWithLabel("l2");
 		// if (stmt1 != null && stmt2 != null) {
-		// Demo5.demo5c(stmt1, stmt2);
+		// Demo5.demo3b(stmt1, stmt2);
 		// }
 		// }
 		//
@@ -83,7 +94,7 @@ public class Demo5 {
 	 * 1. reads2.overlapsWith(writes1) || writes1.overlapsWith(writes2)
 	 * 2. CellSet reads1 = new CellSet(stmt1.getInfo().getReads());
 	 */
-	public static boolean demo5c(Statement stmt1, Statement stmt2) {
+	public static boolean demo3b(Statement stmt1, Statement stmt2) {
 		// TODO T1
 		// CellSet reads2 = new CellSet(stmt2.getInfo().getReads());
 		// CellSet writes1 = new CellSet(stmt1.getInfo().getWrites());

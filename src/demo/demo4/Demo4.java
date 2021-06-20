@@ -6,31 +6,52 @@
  * The above notice shall be included in all copies or substantial
  * portions of this file.
  */
-package demo.demo7;
+package demo.demo4;
 
 import imop.ast.node.external.*;
 import imop.lib.analysis.flowanalysis.Cell;
 import imop.lib.analysis.flowanalysis.Symbol;
 import imop.lib.transform.updater.InsertImmediatePredecessor;
+import imop.lib.util.DumpSnapshot;
 import imop.parser.FrontEnd;
 import imop.parser.Program;
 
-public class Demo7 {
+public class Demo4 {
 
 	/**
-	 * Driver method for Demo #7.
-	 * TODO OPTIONS:
+	 * Driver method for Demo #4: Using Higher-Level CFG Transformations.
+	 *
+	 * Write barrier: Write a pass that instruments a program such that immediately
+	 * before write to a scalar variable thisVar at runtime, a notification is
+	 * displayed. Steps involved would be:
+	 * (a) Detect all those leaf CFG nodes that may write to thisVar.
+	 * (b) Create a notification message as a printf() statement.
+	 * (c) Insert the newly created statement immediately before the detected nodes.
+	 *
+	 *
+	 * *** TODO OPTIONS ***
+	 *
 	 * 1. Statement newStmt = FrontEnd.parseAndNormalize(newStr, Statement.class);
 	 * 2. InsertImmediatePredecessor.insert(node, newStmt);
 	 * 3. func.getInfo().getCFGInfo().getLexicalCFGLeafContents()
 	 */
 	public static void main(String[] args) {
-		args = new String[] { "-f", "runner/cgo-eg/example.c", "-nru" };
+		args = new String[] { "-f", "runner/pldi-eg/example.i", "-nru" };
 		Program.parseNormalizeInput(args);
+		demo4();
+		DumpSnapshot.dumpRoot("final-4");
+		// System.out.println(Program.getRoot());
+	}
+
+	public static void demo4() {
 		/*
 		 * Write barrier: Write a pass that instruments a program such that
 		 * immediately before write to a scalar variable thisVar at runtime, a
 		 * notification is displayed.
+		 * - Detect all those leaf CFG nodes that may write to thisVar.
+		 * - Create a notification message as a printf() statement.
+		 * - Insert the newly created statement immediately before the detected nodes.
+		 *
 		 */
 		// for (FunctionDefinition func :
 		// Program.getRoot().getInfo().getAllFunctionDefinitions()) {
@@ -51,7 +72,6 @@ public class Demo7 {
 		// }
 		// }
 		// }
-		System.out.println(Program.getRoot());
 	}
 
 }

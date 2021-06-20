@@ -6,21 +6,28 @@
  * The above notice shall be included in all copies or substantial
  * portions of this file.
  */
-package demo.demo8;
+package demo.demo5;
 
 import imop.ast.node.external.*;
 import imop.lib.analysis.mhp.AbstractPhase;
 import imop.lib.analysis.mhp.incMHP.Phase;
+import imop.lib.util.DumpSnapshot;
 import imop.lib.util.Misc;
 import imop.parser.Program;
 
 import java.util.List;
 
-public class Demo8 {
+public class Demo5 {
 
 	/**
-	 * Driver method for Demo #8.
-	 * TODO OPTIONS:
+	 * Driver method for Demo #5: Analyzing Concurrency in OpenMP Programs.
+	 *
+	 * (A) Print the number of static phases in every parallel-construct.
+	 * (B) Print the highest number of statements in any static phase in the system.
+	 * (C) Print the set of all those CFG leaf nodes that may run in parallel with
+	 * the given expression statement.
+	 *
+	 * *** TODO OPTIONS ***
 	 * 1. System.out.println(ph.getNodeSet());
 	 * 2. expStmt.getInfo().getNodePhaseInfo().getPhaseSet()
 	 * 3. max = ph.getNodeSet().size();
@@ -29,10 +36,22 @@ public class Demo8 {
 	 * 5. ph.getNodeSet().size() > max
 	 */
 	public static void main(String[] args) {
-		args = new String[] { "-f", "runner/cgo-eg/example.c", "-nru" };
+		args = new String[] { "-f", "runner/pldi-eg/example.i", "-nru" };
 		Program.parseNormalizeInput(args);
+		demo5();
+		DumpSnapshot.dumpRoot("final-5");
+		// System.out.println(Program.getRoot());
+	}
+
+	public static void demo5() {
 		int max = 0;
 		for (ParallelConstruct parCons : Misc.getExactEnclosee(Program.getRoot(), ParallelConstruct.class)) {
+			/*
+			 * - Print the number of static phases in every parallel-construct.
+			 * - Print the highest number of statements in any static phase in the system.
+			 * - Print the set of all those CFG leaf nodes that may run in parallel with the
+			 * given expression statement.
+			 */
 			// /*
 			// * Print the number of static phases in every
 			// * parallel-construct.

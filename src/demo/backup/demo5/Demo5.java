@@ -18,7 +18,7 @@ import imop.parser.Program;
 public class Demo5 {
 
 	public static void main(String[] args) {
-		args = new String[] { "-f", "runner/cgo-eg/example.c", "-nru" };
+		args = new String[] { "-f", "runner/pldi-eg/example.c", "-nru" };
 		Program.parseNormalizeInput(args);
 		demo5ab();
 	}
