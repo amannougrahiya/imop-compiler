@@ -108,7 +108,10 @@ public class Program {
 	 */
 	public static boolean useHeuristicWithYuan = false;
 	public static boolean useHeuristicWithIcon = true;
-	public static boolean useInterProceduralPredicateAnalysis;
+	public static boolean useInterProceduralPredicateAnalysis = true;
+	public static boolean useTimerForIncEPARuns = true;
+	public static int secondsForIncEPARuns = 900;
+
 	/**
 	 * Set the default SVE sensitivity for the whole program.<br>
 	 * Note that IDFA's <i>may</i> have their fixed SVE
@@ -155,7 +158,7 @@ public class Program {
 	 */
 	public static int memoizeAccesses = 0;
 	private static boolean initialPhasesRemembered = false;
-	public static final long thresholdIDFAProcessingCount = (long) 1e4;
+	public static final long thresholdIDFAProcessingCount = (long) 1e8;
 	public static DecimalFormat df2 = new DecimalFormat("#.##");
 	public static boolean disableLineNumbers = false;
 	public static int numExpansionAllowed = 100; // Default, applicable for the command-line arguments. This is set
@@ -211,8 +214,8 @@ public class Program {
 		Program.idfaUpdateCategory = UpdateCategory.LZUPD; // Default is LZUPD.
 		Program.concurrencyAlgorithm = ConcurrencyAlgorithm.ICON;
 		Program.mhpUpdateCategory = UpdateCategory.LZUPD; // Default is LZUPD.
-		Program.sveSensitive = SVEDimension.SVE_SENSITIVE;
-		Program.cpaMode = CPredAMode.H1;
+		Program.sveSensitive = SVEDimension.SVE_INSENSITIVE;
+		Program.cpaMode = CPredAMode.H1H2H3;
 		Program.useInterProceduralPredicateAnalysis = false;
 		Program.useHeuristicWithIcon = true;
 		Program.sveSensitivityOfIDFAEdges = SVEDimension.SVE_INSENSITIVE;
@@ -391,6 +394,7 @@ public class Program {
 		// filePath = ("../tests/if-func.c");
 		// filePath = ("../tests/type-long.c");
 		// filePath = ("../tests/structDef.c");
+		// filePath = ("../tests/scanner.i");
 		// filePath = ("../tests/struct-issue.c");
 		// filePath = ("../tests/atomic-test.c");
 		// filePath = ("../tests/ocean/kinst-k2input.i");
@@ -404,7 +408,7 @@ public class Program {
 		// filePath = ("../tests/sgefa_openmp.i");
 		// filePath = ("../tests/fft_openmp.i");
 		// filePath = ("../tests/quake.i");
-		// filePath = ("../tests/sequoia/clomp.i");
+		filePath = ("../tests/sequoia/clomp.i");
 		// filePath = ("../tests/tt.i");
 		// filePath = ("../tests/fsu/md_openmp.i");
 		// filePath = ("../tests/alternate.i");
@@ -420,13 +424,24 @@ public class Program {
 		// filePath = ("../tests/c_jacobi01-postpass.i");
 		// filePath = ("../tests/barr-opt-tests/adi.i");
 		// filePath = ("../tests/barr-opt-tests/amgmk.i");
+		// filePath = ("../tests/icon-tests/smithwa.i");
 		// filePath = ("../tests/barr-opt-tests/kmeans.i");
 		// filePath = ("../tests/barr-opt-tests/clomp.i");
 		// filePath = ("../tests/barr-opt-tests/stream.i");
 		// filePath = ("../tests/barr-opt-tests/quake.i");
 		// filePath = ("../src/imop/lib/testcases/allKnown.c");
 		// filePath = ("../output-dump/imop_output.i");
-		// filePath = ("../tests/a.c");
+
+		/* New Benchmarks */
+		// filePath = ("../tests/icon-tests/smithwa.i"); // Full length benchmark code;
+		// usable.
+		filePath = ("../tests/icon-tests/nab.i"); // Full length benchmark code;
+		// filePath = ("../tests/icon-tests/ammp.i"); // Full length benchmark code
+		// filePath = ("../tests/ammp-useful.i"); // Full length benchmark code
+		// filePath = ("../tests/icon-tests/hop.i"); // Full length benchmark code
+		filePath = ("../tests/hop-useful.i");
+		// filePath = ("../tests/icon-tests/scalparc.i"); // Full length benchmark code
+		// filePath = ("/tmp/t2.c"); // Full length benchmark code
 		return filePath;
 	}
 
@@ -579,16 +594,19 @@ public class Program {
 		}
 
 		// Ensure that the output folder exists.
-		File folder = new File("../output-dump");
+		File folder = new File("output-dump");
 		if (!folder.exists()) {
-			System.err.println("Could not find the output directory imop-compiler/output-dump. Creating one..");
-			folder.mkdirs();
+			System.err.println("Could not find the output folder imop-compiler/output-dump. Creating one..");
+			if (!folder.mkdirs()) {
+				System.err.println("Could not create an empty folder imop-compiler/output-dump. \n"
+						+ "Please create it manually and retry.");
+				System.exit(0);
+			}
 		}
 
 		// Finally, call the parser and normalization pass for the input program.
 		System.err.println("===== Processing the file " + Program.fileName + " =====");
 		FrontEnd.parseAndNormalize(System.in);
-		DumpSnapshot.dumpRoot("postpass");
 		System.err.flush();
 	}
 
