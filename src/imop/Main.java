@@ -80,6 +80,8 @@ public class Main {
 		// Thread.sleep(5000);
 		totalTime = System.nanoTime();
 		Program.parseNormalizeInput(args);
+		System.exit(0);
+
 		// countPhases();
 		// DriverModule.printRelevantFunctionNames();
 		// DependenceCounter.printBarrierDependents(Program.getRoot());
