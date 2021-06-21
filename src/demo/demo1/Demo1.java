@@ -33,7 +33,7 @@ public class Demo1 {
 	 *
 	 * III. Program.parseNormalizeInput(args);
 	 *
-	 * IV. Misc.getExactEnclosee(Program.getRoot(), WhileStatement.class))
+	 * IV. Misc.getExactEnclosee(Program.getRoot(), WhileStatement.class)
 	 *
 	 */
 	public static void main(String[] args) {
