@@ -65,7 +65,6 @@ public class Demo5 {
 		System.out.println("Highest number of statements within a phase has been: " + max);
 
 		for (ExpressionStatement expStmt : Misc.getInheritedEnclosee(Program.getRoot(), ExpressionStatement.class)) {
-			System.out.println("Statements that may run in parallel with the statement " + expStmt + ": ");
 			Set<Node> inParallel = new HashSet<>();
 			for (AbstractPhase<?, ?> absPh : expStmt.getInfo().getNodePhaseInfo().getPhaseSet()) {
 				Phase ph = (Phase) absPh;
@@ -74,7 +73,10 @@ public class Demo5 {
 				 * with "expStmt" in phase "ph".
 				 */
 			}
-			System.out.println(inParallel);
+			if (!inParallel.isEmpty()) {
+				System.out.println("Statements that may run in parallel with the statement " + expStmt + ": ");
+				System.out.println(inParallel);
+			}
 		}
 		System.exit(0);
 	}
