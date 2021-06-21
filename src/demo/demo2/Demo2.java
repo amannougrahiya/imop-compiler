@@ -48,14 +48,14 @@ public class Demo2 {
 			 * call-statements in "func".
 			 */
 			for (CallStatement callStmt : new HashSet<CallStatement>()) {
-				System.out.println(callStmt);
+				System.out.println("Call: " + callStmt);
 
 				/*
 				 * TODO T2: Replace the "new" expression with code to obtain target functions of
 				 * "callStmt".
 				 */
 				for (FunctionDefinition targetFunc : new HashSet<FunctionDefinition>()) {
-					System.out.println(targetFunc);
+					System.out.println(targetFunc.getInfo().getFunctionName());
 				}
 
 			}
