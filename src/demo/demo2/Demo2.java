@@ -30,7 +30,7 @@ public class Demo2 {
 	 * I. callStmt.getInfo().getCalledDefinitions()
 	 *
 	 * II. System.out.println(func.getInfo().getFunctionName() + " is" +
-	 * (func.getInfo().isRecursive() ? "" :" not" + " recursive."));
+	 * ((func.getInfo().isRecursive() ? "" :" not") + " recursive."));
 	 *
 	 * III. Misc.getExactEnclosee(func, CallStatement.class)
 	 *
