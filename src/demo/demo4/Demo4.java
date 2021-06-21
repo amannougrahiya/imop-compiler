@@ -33,7 +33,7 @@ public class Demo4 {
 	 *
 	 * *** TODO OPTIONS ***
 	 *
-	 * I. Statement newStmt = FrontEnd.parseAndNormalize(newStr, Statement.class);
+	 * I. FrontEnd.parseAndNormalize(newStr, Statement.class)
 	 *
 	 * II. InsertImmediatePredecessor.insert(node, newStmt);
 	 *
