@@ -8,6 +8,8 @@
  */
 package demo.demo4;
 
+import java.util.HashSet;
+
 import imop.ast.node.external.*;
 import imop.lib.analysis.flowanalysis.Cell;
 import imop.lib.analysis.flowanalysis.Symbol;
@@ -31,47 +33,45 @@ public class Demo4 {
 	 *
 	 * *** TODO OPTIONS ***
 	 *
-	 * 1. Statement newStmt = FrontEnd.parseAndNormalize(newStr, Statement.class);
-	 * 2. InsertImmediatePredecessor.insert(node, newStmt);
-	 * 3. func.getInfo().getCFGInfo().getLexicalCFGLeafContents()
+	 * I. Statement newStmt = FrontEnd.parseAndNormalize(newStr, Statement.class);
+	 *
+	 * II. InsertImmediatePredecessor.insert(node, newStmt);
+	 *
+	 * III. func.getInfo().getCFGInfo().getLexicalCFGLeafContents()
+	 *
 	 */
 	public static void main(String[] args) {
 		args = new String[] { "-f", "runner/pldi-eg/example.i", "-nru" };
 		Program.parseNormalizeInput(args);
 		demo4();
 		DumpSnapshot.dumpRoot("final-4");
-		// System.out.println(Program.getRoot());
+		System.out.println(Program.getRoot());
 	}
 
 	public static void demo4() {
-		/*
-		 * Write barrier: Write a pass that instruments a program such that
-		 * immediately before write to a scalar variable thisVar at runtime, a
-		 * notification is displayed.
-		 * - Detect all those leaf CFG nodes that may write to thisVar.
-		 * - Create a notification message as a printf() statement.
-		 * - Insert the newly created statement immediately before the detected nodes.
-		 *
-		 */
-		// for (FunctionDefinition func :
-		// Program.getRoot().getInfo().getAllFunctionDefinitions()) {
-		// for (Node node :
-		// TODO T1
-		// ) {
-		// for (Cell c : node.getInfo().getWrites()) {
-		// if (!(c instanceof Symbol)) {
-		// continue;
-		// }
-		// Symbol sym = (Symbol) c;
-		// if (!sym.getName().equals("thisVar")) {
-		// continue;
-		// }
-		// String newStr = "printf(\"About to write to thisVar.\");";
-		// TODO T2
-		// TODO T3
-		// }
-		// }
-		// }
+		for (FunctionDefinition func : Program.getRoot().getInfo().getAllFunctionDefinitions()) {
+			/*
+			 * TODO T1: Replace the "new" expression with code to obtain all leaf CFG nodes
+			 * in "func".
+			 */
+			for (Node node : new HashSet<Node>()) {
+				for (Cell c : node.getInfo().getWrites()) {
+					if (!(c instanceof Symbol)) {
+						continue;
+					}
+					Symbol sym = (Symbol) c;
+					if (!sym.getName().equals("thisVar")) {
+						continue;
+					}
+					String newStr = "printf(\"About to write to thisVar.\");";
+					/*
+					 * TODO T2: Replace "null" with code that parses "newStr" as a statement.
+					 */
+					Statement newStmt = null;
+					// TODO T3: Add a line of code to insert "newStmt" immediately before "node".
+				}
+			}
+		}
 	}
 
 }

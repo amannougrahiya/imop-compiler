@@ -2,7 +2,7 @@
  * Copyright (c) 2019 Aman Nougrahiya, V Krishna Nandivada, IIT Madras.
  * This file is a part of the project IMOP, licensed under the MIT license.
  * See LICENSE.md for the full text of the license.
- * 
+ *
  * The above notice shall be included in all copies or substantial
  * portions of this file.
  */
@@ -27,7 +27,7 @@ import java.util.*;
 /**
  * This is the superclass for all the various
  * Types supported by IMOP.
- * 
+ *
  * @author aman
  *
  */
@@ -43,7 +43,7 @@ public abstract class Type {
 	/**
 	 * This method is overridden at appropriate subclasses
 	 * to return true.
-	 * 
+	 *
 	 * @return
 	 */
 	public boolean isComplete() {
@@ -53,7 +53,7 @@ public abstract class Type {
 	/**
 	 * This method is overridden at appropriate subclasses
 	 * to return true.
-	 * 
+	 *
 	 * @return
 	 */
 	public boolean isCharacterType() {
@@ -63,7 +63,7 @@ public abstract class Type {
 	/**
 	 * This method is overridden at appropriate subclasses
 	 * to return true.
-	 * 
+	 *
 	 * @return
 	 */
 	public boolean isBasicType() {
@@ -73,7 +73,7 @@ public abstract class Type {
 	/**
 	 * This method is overridden at appropriate subclasses
 	 * to return true.
-	 * 
+	 *
 	 * @return
 	 */
 	public boolean isRealType() {
@@ -91,7 +91,7 @@ public abstract class Type {
 
 	/**
 	 * Note that unions are not aggregate types.
-	 * 
+	 *
 	 * @return
 	 */
 	public boolean isAggregateType() {
@@ -140,7 +140,7 @@ public abstract class Type {
 	/**
 	 * Returns the type domain of the types.
 	 * Needs to be overridden by the complex types.
-	 * 
+	 *
 	 * @return
 	 */
 	public TypeDomain getTypeDomain() {
@@ -150,7 +150,7 @@ public abstract class Type {
 	/**
 	 * Returns the corresponding real type for the current object.
 	 * Should be overridden by complex types.
-	 * 
+	 *
 	 * @return
 	 */
 	public Type getRealType() {
@@ -161,7 +161,7 @@ public abstract class Type {
 	 * Returns the corresponding complex type for the current object.
 	 * Should be overridden by those real types which have a complex
 	 * counterpart.
-	 * 
+	 *
 	 * @return
 	 */
 	public Type getComplexType() {
@@ -190,7 +190,7 @@ public abstract class Type {
 	 * Returns a declaration for <code>tempName</code> with this type,
 	 * such that {@code tempName} can be used to hold a value of any object of
 	 * this type.
-	 * 
+	 *
 	 * @param tempName
 	 * @return
 	 */
@@ -206,7 +206,7 @@ public abstract class Type {
 	 * without any pointer conversions. Do not use this method if you are
 	 * creating temporaries that should be able to hold the value of any object
 	 * of this type.
-	 * 
+	 *
 	 * @param tempName
 	 * @return
 	 */
@@ -240,7 +240,7 @@ public abstract class Type {
 
 	/**
 	 * Returns a string of an abstract declaration of this type.
-	 * 
+	 *
 	 * @return
 	 */
 	@Override
@@ -645,7 +645,7 @@ public abstract class Type {
 
 	/**
 	 * Returns the type of the expression <code>exp</code>.
-	 * 
+	 *
 	 * @param exp
 	 * @return
 	 *         type of <code>exp</code>
@@ -658,7 +658,7 @@ public abstract class Type {
 
 	/**
 	 * Obtain the type of the given base syntax expression.
-	 * 
+	 *
 	 * @param baseSyntax
 	 * @return
 	 */
@@ -690,7 +690,7 @@ public abstract class Type {
 	 * Returns the Type entry which defines the type named "tag",
 	 * and is present in either an enclosing struct/union, or in an
 	 * enclosing CompoundStatement, FunctionDefinition or TranslationUnit.
-	 * 
+	 *
 	 * @param name
 	 * @param scope
 	 * @return
@@ -721,7 +721,7 @@ public abstract class Type {
 	 * Returns reference to the Type object that represents a struct,
 	 * union or an enum with the specified <code>tag</code> as visible in the
 	 * node <code>node</code>.
-	 * 
+	 *
 	 * @param tag
 	 * @param node
 	 * @return
@@ -759,7 +759,7 @@ public abstract class Type {
 	/**
 	 * Returns the type with specified tag, if present in the given scope,
 	 * or any of the nested scope.
-	 * 
+	 *
 	 * @param tag
 	 * @param scope
 	 * @return
@@ -777,7 +777,7 @@ public abstract class Type {
 	 * (We cannot ignore type casts <i>to</i> {@code (void *)} as well, since
 	 * these together can be then used to perform any desired incompatible type
 	 * cast without getting caught by this method.)
-	 * 
+	 *
 	 * @param castExp
 	 *                a {@link CastExpressionTyped} expression to be tested.
 	 * @return
@@ -813,7 +813,7 @@ public abstract class Type {
 	 * Enters the provided tag and type key-value pair into the
 	 * typeTable of the specified scope, if the type is not already
 	 * present in the complete state.
-	 * 
+	 *
 	 * @param scope
 	 * @param tag
 	 * @param newType
@@ -886,7 +886,7 @@ public abstract class Type {
 	 * Obtain a set of all those types which have been used somewhere within the
 	 * declaration of the receiver type.
 	 * This set would contain the receiver type as well.
-	 * 
+	 *
 	 * @return
 	 *         set of all those types which have been used somewhere within the
 	 *         declaration of the receiver type.

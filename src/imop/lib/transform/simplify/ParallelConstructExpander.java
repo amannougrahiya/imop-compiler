@@ -46,7 +46,16 @@ public class ParallelConstructExpander {
 			return;
 		}
 		ParallelConstructExpander.counter = 0;
+		long timeTaken = 0;
+		long initTime = System.nanoTime();
 		outer: do {
+			timeTaken += System.nanoTime() - initTime;
+			if (Program.useTimerForIncEPARuns && timeTaken/1e9 > Program.secondsForIncEPARuns) {
+				// If total time spent is more than 5 minutes, break from this processing.
+				break;
+			} else {
+				initTime = System.nanoTime();
+			}
 			List<ParallelConstruct> parConsList = Misc.getExactEncloseeList(node, ParallelConstruct.class);
 			boolean changed = false;
 			for (ParallelConstruct parCons : parConsList) {

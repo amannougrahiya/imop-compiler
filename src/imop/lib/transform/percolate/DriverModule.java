@@ -10,13 +10,17 @@ package imop.lib.transform.percolate;
 
 import imop.Main;
 import imop.ast.info.DataSharingAttribute;
+import imop.ast.info.NodeInfo;
 import imop.ast.node.external.*;
 import imop.ast.node.internal.*;
 import imop.lib.analysis.CoExistenceChecker;
 import imop.lib.analysis.SVEChecker;
+import imop.lib.analysis.flowanalysis.BranchEdge;
 import imop.lib.analysis.flowanalysis.Cell;
 import imop.lib.analysis.flowanalysis.SCC;
 import imop.lib.analysis.flowanalysis.Symbol;
+import imop.lib.analysis.flowanalysis.controlflow.PredicateAnalysis.PredicateFlowFact;
+import imop.lib.analysis.flowanalysis.controlflow.ReversePath;
 import imop.lib.analysis.flowanalysis.generic.AnalysisDimension.SVEDimension;
 import imop.lib.analysis.flowanalysis.generic.AnalysisName;
 import imop.lib.analysis.flowanalysis.generic.FlowAnalysis;
@@ -25,6 +29,7 @@ import imop.lib.analysis.mhp.DependenceCounter;
 import imop.lib.analysis.mhp.incMHP.BeginPhasePoint;
 import imop.lib.analysis.mhp.incMHP.EndPhasePoint;
 import imop.lib.analysis.mhp.incMHP.Phase;
+import imop.lib.analysis.mhp.yuan.YPhase;
 import imop.lib.analysis.mhp.yuan.YuanConcurrencyAnalysis;
 import imop.lib.analysis.mhp.yuan.YuanConcurrencyAnalysis.YuanStaticPhase;
 import imop.lib.analysis.solver.ConstraintsGenerator;
@@ -46,7 +51,9 @@ import imop.lib.transform.updater.InsertOnTheEdge;
 import imop.lib.util.*;
 import imop.parser.FrontEnd;
 import imop.parser.Program;
+import imop.parser.Program.ConcurrencyAlgorithm;
 
+import java.lang.instrument.Instrumentation;
 import java.text.DecimalFormat;
 import java.util.*;
 
@@ -332,7 +339,7 @@ public class DriverModule {
 		System.err
 				.println("Number of times PTA would have had to run in semi-eager mode: " + ProfileSS.flagSwitchCount);
 		String s = (Program.sveSensitive == SVEDimension.SVE_SENSITIVE) ? "S" : "U";
-		DumpSnapshot.printToFile(Program.getRoot(), (Program.fileName + "imop_output_" + Program.concurrencyAlgorithm
+		DumpSnapshot.forceDumpRoot((Program.fileName + "imop_output_" + Program.concurrencyAlgorithm
 				+ "_" + Program.mhpUpdateCategory + s + ".i").trim());
 		DumpSnapshot.dumpPointsTo("final" + Program.idfaUpdateCategory);
 		DumpSnapshot.dumpPhases("final" + Program.concurrencyAlgorithm + "_" + Program.mhpUpdateCategory + s);
@@ -342,13 +349,23 @@ public class DriverModule {
 		}
 		DecimalFormat df2 = Program.df2;
 		// Count the number of aggregate phases
-		int numPhases = 0;
-		for (ParallelConstruct parCons : Misc.getExactEnclosee(Program.getRoot(), ParallelConstruct.class)) {
-			numPhases += parCons.getInfo().getConnectedPhases().size();
-		}
-		int numStaticPhases = 0;
-		for (ParallelConstruct parCons : Misc.getExactEnclosee(Program.getRoot(), ParallelConstruct.class)) {
-			numStaticPhases += YuanConcurrencyAnalysis.getStaticPhases(parCons).size();
+		int numPhases;
+		if (Program.concurrencyAlgorithm == ConcurrencyAlgorithm.YCON) {
+			Set<YPhase> aggPhaseSet = new HashSet<>();
+			for (ParallelConstruct parCons : Misc.getExactEnclosee(Program.getRoot(), ParallelConstruct.class)) {
+				for (AbstractPhase<?, ?> ph : parCons.getInfo().getConnectedPhases()) {
+					aggPhaseSet.add((YPhase) ph);
+				}
+			}
+			numPhases = aggPhaseSet.size();
+		} else {
+			Set<Phase> aggPhaseSet = new HashSet<>();
+			for (ParallelConstruct parCons : Misc.getExactEnclosee(Program.getRoot(), ParallelConstruct.class)) {
+				for (AbstractPhase<?, ?> ph : parCons.getInfo().getConnectedPhases()) {
+					aggPhaseSet.add((Phase) ph);
+				}
+			}
+			numPhases = aggPhaseSet.size();
 		}
 
 		// Count the number of explicit barriers.
@@ -358,15 +375,22 @@ public class DriverModule {
 				+ Program.mhpUpdateCategory + " "
 				+ ((Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.YCON) ? "SVE-sensitive"
 						: ((Program.sveSensitive == SVEDimension.SVE_SENSITIVE)
-								? ("SVE-sensitive_" + Program.cpaMode + " (" + df2.format(SVEChecker.sveTimer * 1.0 / 1e9) + ")")
+								? ("SVE-sensitive_" + Program.cpaMode + " ("
+										+ df2.format(SVEChecker.sveTimer * 1.0 / 1e9) + ")")
 								: "SVE-insensitive (0)"))
-				+ " " + df2.format(totTime) + " " + df2.format(incMHPTime) + " " + df2.format(incIDFATime) + " "
+				+ " ["
+				+ ((Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.YCON) ? df2.format(incMHPTime)
+						: ((Program.sveSensitive == SVEDimension.SVE_SENSITIVE)
+								? (df2.format(SVEChecker.sveTimer * 1.0 / 1e9 + incMHPTime))
+								: df2.format(incMHPTime)))
+				+ "]" + " " + df2.format(totTime) + " " + df2.format(incMHPTime) + " " + df2.format(incIDFATime) + " "
 				+ incMHPTriggers + " " + incIDFATriggers + " " + finalIncNodes + " " + tarjanCount + " "
-				+ df2.format(sccTime) + " " + numPhases + " " + numExplicitBarriers + " " + numStaticPhases);
+				+ df2.format(sccTime) + " " + numPhases + " " + numExplicitBarriers + " ");
 		System.out.println(resultString);
 		System.err.println(resultString);
 
 		// Query Count Checker Code Starts:
+		DriverModule.countPhysicalSizeOfCPA();
 		// DriverModule.queryCount();
 
 		// DumpSnapshot.printToFile(Program.stabilizationStackDump.toString(),
@@ -376,10 +400,50 @@ public class DriverModule {
 		System.exit(0);
 	}
 
+	public static void printRelevantFunctionNames() {
+		for (FunctionDefinition foo : Program.getRoot().getInfo().getAllFunctionDefinitions()) {
+			if (foo.getInfo().getCFGInfo().getIntraTaskCFGLeafContents().stream()
+					.anyMatch(n -> n instanceof BarrierDirective)) {
+				System.out.println(foo.getInfo().getFunctionName());
+			}
+		}
+	}
+
+	public static void countPhysicalSizeOfCPA() {
+		if (Program.concurrencyAlgorithm == ConcurrencyAlgorithm.YCON
+				|| Program.sveSensitive == SVEDimension.SVE_INSENSITIVE) {
+			return;
+		}
+		Set<ImmutableSet<ReversePath>> setOfSetsOfPaths = new HashSet<>();
+		Set<ImmutableList<BranchEdge>> setOfListsOfEdges = new HashSet<>();
+		int totalLogicalSets = 0;
+		int totalLogicalLists = 0;
+		for (Node n : Program.getRoot().getInfo().getCFGInfo().getLexicalCFGLeafContents()) {
+			PredicateFlowFact nPaths = (PredicateFlowFact) n.getInfo()
+					.getCurrentIN(Program.useInterProceduralPredicateAnalysis ? AnalysisName.PREDICATE_ANALYSIS
+							: AnalysisName.INTRA_PREDICATE_ANALYSIS);
+			if (nPaths == null) {
+				continue;
+			}
+			setOfSetsOfPaths.add(nPaths.controlPredicatePaths);
+			totalLogicalSets++;
+			for (ReversePath path : nPaths.controlPredicatePaths) {
+				setOfListsOfEdges.add(path.edgesOnPath);
+				totalLogicalLists++;
+			}
+		}
+		System.err.println("Total sets: " + setOfSetsOfPaths.size() + "/" + totalLogicalSets);
+		System.err.println("Total lists: " + setOfListsOfEdges.size() + "/" + totalLogicalLists);
+		int sizeInBE = 0;
+		for (ImmutableList<BranchEdge> path : setOfListsOfEdges) {
+			sizeInBE += path.size();
+		}
+		System.err.println("Total branches (physical size estimate): " + sizeInBE);
+	}
+
 	public static void queryCount() {
 		DependenceCounter.printBarrierDependents(Program.getRoot());
 		DependenceCounter.printCoExistenceCount(Program.getRoot());
-		System.exit(0);
 	}
 
 	public static void resetStaticFields() {

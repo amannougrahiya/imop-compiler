@@ -22,7 +22,7 @@ import java.util.Set;
 
 /**
  * Marks the visited node with provided phase.
- * 
+ *
  * @author Aman Nougrahiya
  *
  */
@@ -43,7 +43,7 @@ public class ParallelPhaseMarker extends GJVoidDepthFirstCFG<CallStack> {
 	 * and {@code node} to {@code nodeSet} of {@code ph}.
 	 * It also adds the current callStack to the {@link #visitedMap} for the key
 	 * {@code node}.
-	 * 
+	 *
 	 * @param node
 	 * @return returns true if the {@code node} wasn't already visited with the
 	 *         same phase (and callStack).

@@ -56,14 +56,14 @@ public class FunctionInliner {
 	 */
 	public static void inline(Node root) {
 		long timer = System.nanoTime();
-		FunctionInliner.inlineRecursive(root);
+		long timeTaken = 0;
+		long initTime = System.nanoTime();
+		FunctionInliner.inlineRecursive(root, timeTaken, initTime);
 		ProfileSS.insertCP(); // RCP
 		AutomatedUpdater.stabilizePTAInCPModes();
 		timer = System.nanoTime() - timer;
 		inliningTimer += timer;
 	}
-
-	private static int localCounter = 0;
 
 	/**
 	 * Attempts to inline all those inlineable call-sites in the CFG (and CG) of
@@ -71,10 +71,22 @@ public class FunctionInliner {
 	 * parallel-construct or a barrier within them.
 	 *
 	 * @param root
-	 *             root node under which we will attempt to inline all call-sites
-	 *             that may help further barrier removal.
+	 *                  root node under which we will attempt to inline all
+	 *                  call-sites
+	 *                  that may help further barrier removal.
+	 * @param timeTaken
+	 * 		counter for total time spent in inlining so far (in nanoseconds).
+	 * @param initTime
+	 * 		counter for total time spent in inlining in the previous steps (in nanoseconds).
 	 */
-	private static void inlineRecursive(Node root) {
+	private static void inlineRecursive(Node root, long timeTaken, long initTime) {
+		timeTaken += System.nanoTime() - initTime;
+		if (Program.useTimerForIncEPARuns && (timeTaken / 1e9) > Program.secondsForIncEPARuns) {
+			// If total time spent is more than 5 minutes, break from this processing.
+			return;
+		} else {
+			initTime = System.nanoTime();
+		}
 		for (CallStatement callStmt : new HashSet<>(root.getInfo().getReachableCallStatementsInclusive())) {
 			if (!FunctionInliner.isInlineable(callStmt)) {
 				continue;
@@ -93,7 +105,7 @@ public class FunctionInliner {
 			 * affect the enclosing loop since no recursive functions are
 			 * inlined.
 			 */
-			FunctionInliner.inlineRecursive(funcDef);
+			FunctionInliner.inlineRecursive(funcDef, timeTaken, initTime);
 			ProfileSS.insertCP(); // RCP
 			AutomatedUpdater.stabilizePTAInCPModes();
 			/*
@@ -114,7 +126,7 @@ public class FunctionInliner {
 			 * now due to renaming. Hence, we should rerun the enclosing
 			 * loop.
 			 */
-			FunctionInliner.inlineRecursive(root);
+			FunctionInliner.inlineRecursive(root, timeTaken, initTime);
 			ProfileSS.insertCP();
 			return;
 		}

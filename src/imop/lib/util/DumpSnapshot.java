@@ -539,6 +539,23 @@ public class DumpSnapshot {
 		}
 	}
 
+	public static void forceDumpRoot(String identifier) {
+		Node root = Program.getRoot();
+		String fileName = Program.fileName + "-" + identifier + ".i";
+		List<Commentor> commetors = new ArrayList<>();
+		String fs = System.getProperty("file.separator");
+		String filePath = Program.class.getProtectionDomain().getCodeSource().getLocation().getFile();
+		fileName = filePath + ".." + fs + "output-dump" + fs + fileName;
+		BufferedWriter bw = Misc.getBufferedWriter(fileName);
+		try {
+			bw.write(root.getInfo().getString(commetors));
+			bw.append(System.getProperty("line.separator"));
+			bw.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
 	public static void dumpRoot(String identifier) {
 		if (Program.printNoFiles) {
 			return;

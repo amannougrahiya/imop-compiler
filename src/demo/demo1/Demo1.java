@@ -19,6 +19,7 @@ public class Demo1 {
 
 	/**
 	 * Driver method for Demo #1: Working with the AST and Info Objects.
+	 *
 	 * (A) Parse a sample program using IMOP.
 	 * (B) From the generated AST, print the program to a file/terminal.
 	 * (C) Invoke loop unrolling on the given while-statement, and print.
@@ -26,25 +27,25 @@ public class Demo1 {
 	 * *** TODO OPTIONS ***
 	 * (For all these demos, we need to use one of these options for each "TODO".)
 	 *
-	 * 1. whileStmt.getInfo().unrollLoop(1);
+	 * I. whileStmt.getInfo().unrollLoop(1);
 	 *
-	 * 2. DumpSnapshot.dumpRoot("final-1"); System.out.println(Program.getRoot());
+	 * II. DumpSnapshot.dumpRoot("final-1"); System.out.println(Program.getRoot());
 	 *
-	 * 3. Program.parseNormalizeInput(args);
+	 * III. Program.parseNormalizeInput(args);
 	 *
-	 * 4. Misc.getExactEnclosee(Program.getRoot(), WhileStatement.class))
+	 * IV. Misc.getExactEnclosee(Program.getRoot(), WhileStatement.class))
 	 *
 	 */
 	public static void main(String[] args) {
 		args = new String[] { "-f", "runner/pldi-eg/example.i", "-nru" };
 		/*
-		 * TODO T1: Parse a sample program using IMOP.
+		 * TODO T1: Parse the program.
 		 * (One line code, to be selected from the given TODO options in the comment of
 		 * main.)
 		 */
 
 		/*
-		 * TODO T2: From the generated AST, print the program to a file/terminal.
+		 * TODO T2: Print the program from its AST to a file/terminal.
 		 * (Two lines, one for printing to a file, and another to print to the
 		 * terminal.)
 		 */

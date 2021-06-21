@@ -15,7 +15,9 @@ import imop.lib.util.DumpSnapshot;
 import imop.lib.util.Misc;
 import imop.parser.Program;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class Demo5 {
 
@@ -28,61 +30,51 @@ public class Demo5 {
 	 * the given expression statement.
 	 *
 	 * *** TODO OPTIONS ***
-	 * 1. System.out.println(ph.getNodeSet());
-	 * 2. expStmt.getInfo().getNodePhaseInfo().getPhaseSet()
-	 * 3. max = ph.getNodeSet().size();
-	 * 4. List<Phase> phaseList = (List<Phase>)
-	 * parCons.getInfo().getConnectedPhases();
-	 * 5. ph.getNodeSet().size() > max
+	 * I. inParallel.addAll(ph.getNodeSet());
+	 *
+	 * II. ph.getNodeSet().size()
+	 *
+	 * III. new HashSet<>(parCons.getInfo().getConnectedPhases()).size()
 	 */
 	public static void main(String[] args) {
 		args = new String[] { "-f", "runner/pldi-eg/example.i", "-nru" };
 		Program.parseNormalizeInput(args);
 		demo5();
-		DumpSnapshot.dumpRoot("final-5");
-		// System.out.println(Program.getRoot());
 	}
 
 	public static void demo5() {
 		int max = 0;
 		for (ParallelConstruct parCons : Misc.getExactEnclosee(Program.getRoot(), ParallelConstruct.class)) {
 			/*
-			 * - Print the number of static phases in every parallel-construct.
-			 * - Print the highest number of statements in any static phase in the system.
-			 * - Print the set of all those CFG leaf nodes that may run in parallel with the
-			 * given expression statement.
+			 * TODO T1: Replace "0" with code to obtain the number of static phases in
+			 * "parCons".
 			 */
-			// /*
-			// * Print the number of static phases in every
-			// * parallel-construct.
-			// */
-			// TODO T1
-			// System.out.println(phaseList.size());
-			// /*
-			// * Print the highest number of statements in any static phase in the
-			// * system.
-			// */
-			// for (Phase ph : phaseList) {
-			// if (
-			// TODO T2
-			// ) {
-			// TODO T3
-			// }
-			// }
+			int count = 0;
+			System.out.println("Number of static phases: " + count);
+			for (AbstractPhase<?, ?> absPh : new HashSet<>(parCons.getInfo().getConnectedPhases())) {
+				Phase ph = (Phase) absPh;
+				/*
+				 * TODO T2: Replace "0" with code to obtain the number of statements in a phase.
+				 */
+				int stmtCount = 0;
+				if (max < stmtCount) {
+					max = stmtCount;
+				}
+			}
 		}
 		System.out.println("Highest number of statements within a phase has been: " + max);
 
-		/*
-		 * Print the set of all those statements that may run in parallel
-		 * with the given statement.
-		 */
 		for (ExpressionStatement expStmt : Misc.getInheritedEnclosee(Program.getRoot(), ExpressionStatement.class)) {
 			System.out.println("Statements that may run in parallel with the statement " + expStmt + ": ");
-			// for (AbstractPhase<?, ?> ph :
-			// TODO T4
-			// ) {
-			// TODO T5
-			// }
+			Set<Node> inParallel = new HashSet<>();
+			for (AbstractPhase<?, ?> absPh : expStmt.getInfo().getNodePhaseInfo().getPhaseSet()) {
+				Phase ph = (Phase) absPh;
+				/*
+				 * TODO T3: Add a line of code to collect all nodes that may run in parallel
+				 * with "expStmt" in phase "ph".
+				 */
+			}
+			System.out.println(inParallel);
 		}
 		System.exit(0);
 	}

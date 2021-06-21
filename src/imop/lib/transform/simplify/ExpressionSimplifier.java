@@ -1,8 +1,8 @@
 /*
-g * Copyright (c) 2019 Aman Nougrahiya, V Krishna Nandivada, IIT Madras.
+  * Copyright (c) 2019 Aman Nougrahiya, V Krishna Nandivada, IIT Madras.
  * This file is a part of the project IMOP, licensed under the MIT license.
  * See LICENSE.md for the full text of the license.
- * 
+ *
  * The above notice shall be included in all copies or substantial
  * portions of this file.
  */
@@ -62,7 +62,7 @@ import java.util.Set;
  * <li>Replace {@code foo(void)} with {@code foo()} in all FunctionDefinition
  * nodes.</li>
  * </ul>
- * 
+ *
  * @author aman
  */
 public class ExpressionSimplifier extends GJNoArguDepthFirstProcess<ExpressionSimplifier.SimplificationString> {
@@ -73,7 +73,7 @@ public class ExpressionSimplifier extends GJNoArguDepthFirstProcess<ExpressionSi
 	 * For creating objects that can be used to specify the simplification
 	 * string. These objects are generally sent to a parent from a child,
 	 * when the visit on the child returns.
-	 * 
+	 *
 	 * @author aman
 	 *
 	 */
@@ -169,7 +169,7 @@ public class ExpressionSimplifier extends GJNoArguDepthFirstProcess<ExpressionSi
 	 * <br>
 	 * Note that this method has not yet been used at all places within the
 	 * visitor where it should be used.
-	 * 
+	 *
 	 * @param ret
 	 *               a {@code SimplificationString} from which the call-site, if
 	 *               any, needs to be extracted out.
@@ -309,7 +309,7 @@ public class ExpressionSimplifier extends GJNoArguDepthFirstProcess<ExpressionSi
 	 * Return the string-builder for this Declarator, while taking care of the
 	 * special case "x(void)", which gets converted to "x()". This function
 	 * should be updated later to handle the generic cases.
-	 * 
+	 *
 	 * @param decl
 	 * @return
 	 */
@@ -2331,7 +2331,12 @@ public class ExpressionSimplifier extends GJNoArguDepthFirstProcess<ExpressionSi
 		}
 
 		ret.getReplacementString().append(stmtSS.getPrelude());
-		ret.getReplacementString().append(stmtSS.getReplacementString());
+
+		StringBuilder central = stmtSS.getReplacementString();
+		if (central.charAt(0) == '{') {
+			central = new StringBuilder(central.substring(1, central.length() - 1));
+		}
+		ret.getReplacementString().append(central);
 		ret.getReplacementString().append(expSS.getPrelude() + "}");
 		if (needsEncapsulation) {
 			ret.getReplacementString().append("}");
@@ -2470,8 +2475,9 @@ public class ExpressionSimplifier extends GJNoArguDepthFirstProcess<ExpressionSi
 				ret.getReplacementString().append("}");
 			}
 		} else {
-			assert (!stmtSS.getReplacementString().toString().contains("continue"))
-					: "Check this bug at ExpressionSimplifier:2408";
+			// TODO: Verify the reasoning behind the following assert.
+			// assert (!stmtSS.getReplacementString().toString().contains("continue"))
+			// : "Check this bug at ExpressionSimplifier.";
 			ret.getReplacementString().append(e1SS.getReplacementString() + ";");
 			ret.getReplacementString().append(e2SS.getPrelude());
 			ret.getReplacementString().append("for (;" + e2SS.getReplacementString() + ";)");
@@ -3699,7 +3705,7 @@ public class ExpressionSimplifier extends GJNoArguDepthFirstProcess<ExpressionSi
 	 * If the replacement string of ret is a function-call, this method
 	 * collapses
 	 * the call into a temporary of type t1.
-	 * 
+	 *
 	 * @param ret
 	 *            expression that needs to be collapsed if it is a function
 	 *            call.
@@ -3721,7 +3727,7 @@ public class ExpressionSimplifier extends GJNoArguDepthFirstProcess<ExpressionSi
 	 * Checks whether {@code s} needs to be encapsulated within a new set of
 	 * braces,
 	 * if it has been simplified down to more than one statements.
-	 * 
+	 *
 	 * @param s
 	 *          an object of proper super-type Statement.
 	 * @return

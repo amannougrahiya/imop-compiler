@@ -13,6 +13,7 @@ import imop.ast.node.external.*;
 import imop.ast.node.internal.*;
 import imop.lib.analysis.flowanalysis.*;
 import imop.lib.analysis.flowanalysis.dataflow.PointsToAnalysis;
+import imop.lib.analysis.flowanalysis.generic.AnalysisName;
 import imop.lib.analysis.mhp.incMHP.MHPAnalyzer;
 import imop.lib.analysis.typeSystem.Type;
 import imop.lib.builder.Builder;
@@ -30,6 +31,7 @@ import imop.lib.util.CellSet;
 import imop.lib.util.CollectorVisitor;
 import imop.lib.util.DumpSnapshot;
 import imop.lib.util.Misc;
+import imop.parser.Program.ConcurrencyAlgorithm;
 
 import java.io.ByteArrayInputStream;
 import java.io.FileInputStream;
@@ -477,7 +479,7 @@ public class FrontEnd {
 			}
 		}
 
-		System.err.println("\tStats: Number of leaf nodes: " +  leafCount + ".");
+		System.err.println("\tStats: Number of leaf nodes: " + leafCount + ".");
 
 		// Testing various traversals.
 		// FrontEnd.testTraversals(newNode);
@@ -513,7 +515,10 @@ public class FrontEnd {
 			// timeTaken = System.nanoTime() - timeStart;
 			// System.err.println("\tNodes processed " + pta.nodesProcessed + " times.");
 			// System.err.println("\tTime taken: " + timeTaken / 1000000000.0 + "s.");
-			NodeInfo.performPredicateAnalysis();
+			if (Program.concurrencyAlgorithm != ConcurrencyAlgorithm.YCON) {
+				NodeInfo.checkFirstRun(Program.useInterProceduralPredicateAnalysis ? AnalysisName.PREDICATE_ANALYSIS
+						: AnalysisName.INTRA_PREDICATE_ANALYSIS);
+			}
 
 			System.err.println("Pass: Performing optimized points-to analysis.");
 			timeStart = System.nanoTime();
@@ -968,6 +973,15 @@ public class FrontEnd {
 		System.err.println("\tTime taken: " + timeTaken / 1000000000.0 + "s.");
 		DumpSnapshot.printToFile(newNode, Program.fileName + "-explicitBarriers.i");
 
+		if (Program.removeUnused) {
+			System.err.println("Pass: Removing declarations for unused elements.");
+			timeStart = System.nanoTime();
+			newNode.getInfo().removeUnusedElements();
+			timeTaken = System.nanoTime() - timeStart;
+			System.err.println("\tTime taken: " + timeTaken * 1.0 / 1e9 + "s.");
+			DumpSnapshot.printToFile(newNode, Program.fileName + "-useful.i");
+		}
+
 		System.err.println("Pass: Removing extra scoping of compound statements.");
 		timeStart = System.nanoTime();
 		newNode.getInfo().removeExtraScopes();
@@ -982,17 +996,10 @@ public class FrontEnd {
 		// System.err.println("\tTime taken: " + timeTaken / 1000000000.0 + "s.");
 		// Misc.generateDotGraph(newNode, "base");
 		//
-		if (Program.removeUnused) {
-			System.err.println("Pass: Removing declarations for unused elements.");
-			timeStart = System.nanoTime();
-			newNode.getInfo().removeUnusedElements();
-			timeTaken = System.nanoTime() - timeStart;
-			System.err.println("\tTime taken: " + timeTaken * 1.0 / 1e9 + "s.");
-		}
 		timeTaken = System.nanoTime() - wholeTime;
-		DumpSnapshot.printToFile(newNode, Program.fileName + "-useful.i");
 		System.err.println("Done with the basic pre-pass.");
 		System.err.println("\tTotal time taken by the pre-pass: " + timeTaken * 1.0 / 1e9 + "s.\n");
+		DumpSnapshot.forceDumpRoot("postpass");
 		return newNode;
 	}
 

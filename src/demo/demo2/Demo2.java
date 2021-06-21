@@ -8,6 +8,8 @@
  */
 package demo.demo2;
 
+import java.util.HashSet;
+
 import imop.ast.node.external.*;
 import imop.ast.node.internal.*;
 import imop.lib.util.DumpSnapshot;
@@ -25,42 +27,42 @@ public class Demo2 {
 	 *
 	 * *** TODO OPTIONS ***
 	 *
-	 * System.out.println(callStmt.getInfo().getCalledDefinitions());
-	 * System.out.print(callStmt.getPreCallNode().getArgumentList());
+	 * I. callStmt.getInfo().getCalledDefinitions()
 	 *
-	 * Misc.getInheritedEnclosee(func, CallStatement.class)
-	 * System.out.println("Recursive?" + (func.getInfo().isRecursive() ? "Yes" : *
-	 * "No"));
+	 * II. System.out.println(func.getInfo().getFunctionName() + " is" +
+	 * (func.getInfo().isRecursive() ? "" :" not" + " recursive.");
 	 *
-	 * System.out.println(func.getInfo().getCallersOfThis());
+	 * III. Misc.getExactEnclosee(func, CallStatement.class)
 	 *
-	 * Program.getRoot().getInfo().getAllFunctionDefinitions()
 	 */
 	public static void main(String[] args) {
 		args = new String[] { "-f", "runner/pldi-eg/example.i", "-nru" };
-		/*
-		 * Print all call-sites present lexically within a given function.
-		 * For a given call-statement, print its target function(s).
-		 * Test whether a given method is recursive.
-		 */
 		Program.parseNormalizeInput(args);
+		demo2();
+	}
 
-		// for (FunctionDefinition func :
-		// TODO T1
-		// ) {
-		// for (CallStatement callStmt :
-		// TODO T2
-		// ) {
-		// System.out.println(callStmt);
-		// }
-		// TODO T3
-		// for (CallStatement callStmt : Misc.getInheritedEnclosee(func,
-		// CallStatement.class)) {
-		// TODO T4
-		// }
-		// TODO T5
-		// }
-		DumpSnapshot.dumpRoot("final-2");
+	public static void demo2() {
+		for (FunctionDefinition func : Program.getRoot().getInfo().getAllFunctionDefinitions()) {
+			/*
+			 * TODO T1: Replace the "new" expression with code to obtain all
+			 * call-statements in "func".
+			 */
+			for (CallStatement callStmt : new HashSet<CallStatement>()) {
+				System.out.println(callStmt);
+
+				/*
+				 * TODO T2: Replace the "new" expression with code to obtain target functions of
+				 * "callStmt".
+				 */
+				for (FunctionDefinition targetFunc : new HashSet<FunctionDefinition>()) {
+					System.out.println(targetFunc);
+				}
+
+			}
+			/*
+			 * TODO T3: Check if "func" is a recursive method.
+			 */
+		}
 	}
 
 }

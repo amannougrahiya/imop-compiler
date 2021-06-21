@@ -424,7 +424,7 @@ public class NodeInfo implements Cloneable {
 	 *                     an analysis name; check the method body to add more
 	 *                     analyses to the list of allowed analyses here.
 	 */
-	private static void checkFirstRun(AnalysisName analysisName) {
+	public static void checkFirstRun(AnalysisName analysisName) {
 		if (analysisName == AnalysisName.INTRA_PREDICATE_ANALYSIS || analysisName == AnalysisName.PREDICATE_ANALYSIS) {
 			if (!NodeInfo.paDone) {
 				NodeInfo.paDone = true;
@@ -459,7 +459,7 @@ public class NodeInfo implements Cloneable {
 		}
 	}
 
-	public static void performPredicateAnalysis() {
+	private static void performPredicateAnalysis() {
 		FunctionDefinition mainFunc = Program.getRoot().getInfo().getMainFunction();
 		if (mainFunc == null) {
 			return;
@@ -477,6 +477,7 @@ public class NodeInfo implements Cloneable {
 		long timeTaken = System.nanoTime() - timeStart;
 		System.err.println("\tNodes processed " + pa.nodesProcessed + " times.");
 		System.err.println("\tTime taken: " + timeTaken / 1.0e9 + "s.");
+		DumpSnapshot.dumpPredicates("");
 		SVEChecker.sveTimer += timeTaken;
 	}
 
@@ -2574,18 +2575,18 @@ public class NodeInfo implements Cloneable {
 
 	public String getDebugString() {
 		List<Commentor> commentors = new ArrayList<>();
-		// commentors.add((n) -> {
-		// String tempStr = "";
-		// FlowFact flow = n.getInfo().getCurrentIN(AnalysisName.PREDICATE_ANALYSIS);
-		// if (flow != null) {
-		// tempStr += "IN: " + flow.getString();
-		// }
-		// flow = n.getInfo().getCurrentOUT(AnalysisName.PREDICATE_ANALYSIS);
-		// if (flow != null) {
-		// tempStr += "OUT: " + flow.getString();
-		// }
-		// return tempStr;
-		// });
+		commentors.add((n) -> {
+			String tempStr = "";
+			// FlowFact flow = n.getInfo().getCurrentIN(AnalysisName.PREDICATE_ANALYSIS);
+			// if (flow != null) {
+			// tempStr += "IN: " + flow.getString();
+			// }
+			FlowFact flow = n.getInfo().getCurrentOUT(AnalysisName.PREDICATE_ANALYSIS);
+			if (flow != null) {
+				tempStr += "OUT: " + flow.getString();
+			}
+			return tempStr;
+		});
 		// commentors.add((n) -> {
 		// String tempStr = "";
 		// FlowFact flow;
@@ -2600,21 +2601,22 @@ public class NodeInfo implements Cloneable {
 		// }
 		// return tempStr;
 		// });
-		commentors.add((n) -> {
-			String tempStr = "[";
-			for (AbstractPhase<?, ?> ph : n.getInfo().getNodePhaseInfo().getStalePhaseSet()) {
-				tempStr += ph.getPhaseId() + "; ";
-			}
-			tempStr += "]";
-			if (Program.mhpUpdateCategory == UpdateCategory.LZINV) {
-				if (AbstractPhase.globalMHPStale) {
-					tempStr += "(Stale)";
-				}
-			} else if (!BeginPhasePoint.getStaleBeginPhasePoints().isEmpty()) {
-				tempStr += "(Stale)";
-			}
-			return tempStr;
-		});
+		// commentors.add((n) -> {
+		// String tempStr = "[";
+		// for (AbstractPhase<?, ?> ph :
+		// n.getInfo().getNodePhaseInfo().getStalePhaseSet()) {
+		// tempStr += ph.getPhaseId() + "; ";
+		// }
+		// tempStr += "]";
+		// if (Program.mhpUpdateCategory == UpdateCategory.LZINV) {
+		// if (AbstractPhase.globalMHPStale) {
+		// tempStr += "(Stale)";
+		// }
+		// } else if (!BeginPhasePoint.getStaleBeginPhasePoints().isEmpty()) {
+		// tempStr += "(Stale)";
+		// }
+		// return tempStr;
+		// });
 		Node node = this.getNode();
 		if (!Misc.isCFGNode(node)) {
 			return this.getString(commentors);

@@ -291,6 +291,15 @@ public abstract class InterProceduralControlFlowAnalysis<F extends FlowAnalysis.
 		}
 
 		boolean inChanged = false;
+		if (this.analysisName == AnalysisName.PREDICATE_ANALYSIS && node instanceof PostCallNode) {
+			// A small hack here.
+			PostCallNode postNode = (PostCallNode) node;
+			List<FunctionDefinition> funcDef = postNode.getParent().getInfo().getCalledDefinitions();
+			if (funcDef.isEmpty() || funcDef.stream().noneMatch(f -> this.functionWithBarrier.contains(f))) {
+				predecessors = new HashSet<>();
+				predecessors.add(postNode.getParent().getPreCallNode());
+			}
+		}
 		boolean anyPredMissed = false;
 		for (Node predNode : predecessors) {
 			/*
