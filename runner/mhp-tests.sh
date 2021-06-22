@@ -61,14 +61,14 @@ do
 	java -ea -Xms2048M -Xmx40960M -cp ${IMOPHOME}/third-party-tools/com.microsoft.z3.jar:. \
 		-Djava.library.path=${Z3HOME}/build imop.Main --prepass -ru -dln -f $TESTROOT/$FILE 2>> $ERRFILE
 
-	if [ ! -f "../output-dump/${FILENAME}-useful.i" ]
+	if [ ! -f "../output-dump/${FILENAME}-postpass.i" ]
 	then
 		echo "Could not generate the postpass file for ${FILENAME}. Skipping.."
 		continue
 	fi
 
 	PREFILE=/tmp/${FILENAME}.i
-	mv ../output-dump/${FILENAME}-useful.i $PREFILE
+	mv ../output-dump/${FILENAME}-postpass.i $PREFILE
 	echo -e "\n\t\t *** After pre-pass ***"
 	timeout 20m java -ea -Xms2048M -Xmx40960M -cp ${IMOPHOME}/third-party-tools/com.microsoft.z3.jar:.\
 		-Djava.library.path=${Z3HOME}/build imop.Main --noPrepass -ru -dln --yuan -cm LZINV -sve -f $PREFILE 2>> $ERRFILE

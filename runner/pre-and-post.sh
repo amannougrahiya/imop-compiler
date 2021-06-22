@@ -61,7 +61,7 @@ do
 	java -ea -Xms2048M -Xmx4096M -cp ${IMOPHOME}/third-party-tools/com.microsoft.z3.jar:. \
 		-Djava.library.path=${Z3HOME}/build imop.Main --prepass -ru -dln -f $TESTROOT/$FILE 2>> $ERRFILE
 
-	if [ ! -f "../output-dump/${FILENAME}-useful.i" ]
+	if [ ! -f "../output-dump/${FILENAME}-postpass.i" ]
 	then
 		echo "Could not generate the postpass file. Exiting.."
 		echo -e "DUMP: $(cat $ERRFILE)"
@@ -69,7 +69,7 @@ do
 	fi
 
 	PREFILE=/tmp/${FILENAME}.i
-	mv ../output-dump/${FILENAME}-useful.i $PREFILE
+	mv ../output-dump/${FILENAME}-postpass.i $PREFILE
 	echo -e "\n\t\t *** After pre-pass ***"
 	java -ea -Xms2048M -Xmx4096M -cp ${IMOPHOME}/third-party-tools/com.microsoft.z3.jar:.\
 		-Djava.library.path=${Z3HOME}/build imop.Main --noPrepass -dln -f $PREFILE 2>> $ERRFILE
