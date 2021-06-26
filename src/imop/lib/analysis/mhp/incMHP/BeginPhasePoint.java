@@ -33,7 +33,7 @@ public class BeginPhasePoint extends PhasePoint {
 	private Set<Phase> phaseSet = new HashSet<>(); // set of phases of which this object is a begin point.
 	public static boolean stabilizationInProgress = false;
 	private static Set<BeginPhasePoint> staleBeginPhasePoints = new HashSet<>(); // Used only during INC modes.
-	public static long stabilizationTime = 0;
+	public static long phaseAnalysisTime = 0;
 	// private boolean setsInvalid = true;
 
 	/**
@@ -125,7 +125,7 @@ public class BeginPhasePoint extends PhasePoint {
 		// BeginPhasePoint.staleBeginPhasePoints.removeAll(stabilizedBPPs);
 		BeginPhasePoint.staleBeginPhasePoints.clear();
 		BeginPhasePoint.stabilizationInProgress = false;
-		BeginPhasePoint.stabilizationTime += (System.nanoTime() - timer);
+		BeginPhasePoint.phaseAnalysisTime += (System.nanoTime() - timer);
 		// DumpSnapshot.dumpPhases("stable" + Program.mhpUpdateCategory +
 		// AutomatedUpdater.reinitMHPCounter);
 	}
@@ -387,7 +387,7 @@ public class BeginPhasePoint extends PhasePoint {
 		BeginPhasePoint.getStaleBeginPhasePoints().removeAll(toRemove);
 		if (changedBPPs.isEmpty()) {
 			long diff = System.nanoTime() - timer;
-			stabilizationTime += diff;
+			phaseAnalysisTime += diff;
 			return;
 		}
 		for (BeginPhasePoint bpp : changedBPPs) {
@@ -395,7 +395,7 @@ public class BeginPhasePoint extends PhasePoint {
 		}
 		BeginPhasePoint.getStaleBeginPhasePoints().clear();
 		long diff = System.nanoTime() - timer;
-		stabilizationTime += diff;
+		phaseAnalysisTime += diff;
 		// System.err.println("\tStabilization of BPPs completed in " + diff / (1.0 *
 		// 1e9) + "s.");
 	}

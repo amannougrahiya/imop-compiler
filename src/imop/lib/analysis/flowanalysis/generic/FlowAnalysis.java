@@ -8,6 +8,7 @@
  */
 package imop.lib.analysis.flowanalysis.generic;
 
+import imop.Main;
 import imop.ast.node.external.*;
 import imop.ast.node.internal.*;
 import imop.baseVisitor.GJDepthFirstProcess;
@@ -510,6 +511,7 @@ public abstract class FlowAnalysis<F extends FlowAnalysis.FlowFact> extends GJDe
 	 * @param node
 	 */
 	protected final void debugRecursion(Node node) {
+		// Main.globalString += node.toString() + "\n";
 		nodesProcessed++;
 		// localCount++;
 		Integer nodeProcessCount = tempMap.get(node);

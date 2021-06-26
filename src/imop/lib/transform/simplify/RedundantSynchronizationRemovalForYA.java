@@ -8,6 +8,7 @@
  */
 package imop.lib.transform.simplify;
 
+import imop.Main;
 import imop.ast.node.external.*;
 import imop.ast.node.internal.*;
 import imop.lib.analysis.mhp.AbstractPhase;
@@ -45,7 +46,8 @@ public class RedundantSynchronizationRemovalForYA {
 	 *             Root AST node under which redundant barriers have to be removed.
 	 */
 	public static void removeBarriers(Node root) {
-		for (Node barrierNode : Misc.getInheritedEncloseeList(root, BarrierDirective.class)) {
+		for (Node barrierNode : Misc.getExactPostOrderEnclosee(root, BarrierDirective.class)) {
+			// Main.globalString += Misc.getLineNum(barrierNode) + " now.\n";
 			BarrierDirective barrier = (BarrierDirective) barrierNode;
 			Set<YPhase> allPhaseSet = new HashSet<>();
 			for (ParallelConstruct parConsNode : Misc.getExactEnclosee(Program.getRoot(), ParallelConstruct.class)) {

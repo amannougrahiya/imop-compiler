@@ -742,7 +742,7 @@ public class AutomatedUpdater {
 			for (FlowAnalysis<?> analysis : FlowAnalysis.getAllAnalyses().values()) {
 				if (analysis
 						.getAnalysisName() == (Program.useInterProceduralPredicateAnalysis
-								? AnalysisName.PREDICATE_ANALYSIS
+								? AnalysisName.CROSSCALL_PREDICATE_ANALYSIS
 								: AnalysisName.INTRA_PREDICATE_ANALYSIS)
 						|| analysis instanceof InterThreadForwardCellularAnalysis
 						|| analysis instanceof InterThreadForwardNonCellularAnalysis) {
@@ -775,7 +775,7 @@ public class AutomatedUpdater {
 			for (FlowAnalysis<?> analysis : FlowAnalysis.getAllAnalyses().values()) {
 				if (analysis
 						.getAnalysisName() == (Program.useInterProceduralPredicateAnalysis
-								? AnalysisName.PREDICATE_ANALYSIS
+								? AnalysisName.CROSSCALL_PREDICATE_ANALYSIS
 								: AnalysisName.INTRA_PREDICATE_ANALYSIS)
 						|| analysis instanceof InterThreadForwardCellularAnalysis
 						|| analysis instanceof InterThreadForwardNonCellularAnalysis) {
@@ -1354,7 +1354,7 @@ public class AutomatedUpdater {
 		if (Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.YCON) {
 			if (Program.useHeuristicWithYuan) {
 				if (AutomatedUpdater.stabilizeMHPLocallyUponAddition(node)) {
-					BeginPhasePoint.stabilizationTime += (System.nanoTime() - timer);
+					BeginPhasePoint.phaseAnalysisTime += (System.nanoTime() - timer);
 					return;
 				}
 			}
@@ -1362,7 +1362,7 @@ public class AutomatedUpdater {
 			return;
 		}
 		if (Program.useHeuristicWithIcon && AutomatedUpdater.stabilizeMHPLocallyUponAddition(node)) {
-			BeginPhasePoint.stabilizationTime += (System.nanoTime() - timer);
+			BeginPhasePoint.phaseAnalysisTime += (System.nanoTime() - timer);
 			return;
 		}
 		if (Program.mhpUpdateCategory == UpdateCategory.LZINV) {
@@ -1395,7 +1395,7 @@ public class AutomatedUpdater {
 			affectedBPPs.addAll(BeginPhasePoint.getRelatedBPPs(node.getInfo().getCFGInfo().getNestedCFG().getEnd()));
 		}
 		BeginPhasePoint.addStaleBeginPhasePoints(affectedBPPs);
-		BeginPhasePoint.stabilizationTime += (System.nanoTime() - timer);
+		BeginPhasePoint.phaseAnalysisTime += (System.nanoTime() - timer);
 		if (Program.mhpUpdateCategory == UpdateCategory.EGUPD) {
 			BeginPhasePoint.stabilizeStaleBeginPhasePoints();
 		}
@@ -1431,7 +1431,7 @@ public class AutomatedUpdater {
 		if (Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.YCON) {
 			if (Program.useHeuristicWithYuan) {
 				if (AutomatedUpdater.stabilizeMHPLocallyUponRemoval(node)) {
-					BeginPhasePoint.stabilizationTime += (System.nanoTime() - timer);
+					BeginPhasePoint.phaseAnalysisTime += (System.nanoTime() - timer);
 					return new HashSet<>();
 				}
 			}
@@ -1439,7 +1439,7 @@ public class AutomatedUpdater {
 			return null;
 		}
 		if (Program.useHeuristicWithIcon && AutomatedUpdater.stabilizeMHPLocallyUponRemoval(node)) {
-			BeginPhasePoint.stabilizationTime += (System.nanoTime() - timer);
+			BeginPhasePoint.phaseAnalysisTime += (System.nanoTime() - timer);
 			return new HashSet<>();
 		}
 		if (Program.mhpUpdateCategory == UpdateCategory.LZINV) {
@@ -1470,7 +1470,7 @@ public class AutomatedUpdater {
 			}
 			affectedBPPs.addAll(BeginPhasePoint.getRelatedBPPs(node.getInfo().getCFGInfo().getNestedCFG().getEnd()));
 		}
-		BeginPhasePoint.stabilizationTime += (System.nanoTime() - timer);
+		BeginPhasePoint.phaseAnalysisTime += (System.nanoTime() - timer);
 		return affectedBPPs;
 	}
 
@@ -1501,12 +1501,12 @@ public class AutomatedUpdater {
 		} else if (Program.mhpUpdateCategory == UpdateCategory.EGUPD) {
 			long timer = System.nanoTime();
 			BeginPhasePoint.addStaleBeginPhasePoints(bppSet);
-			BeginPhasePoint.stabilizationTime += (System.nanoTime() - timer);
+			BeginPhasePoint.phaseAnalysisTime += (System.nanoTime() - timer);
 			BeginPhasePoint.stabilizeStaleBeginPhasePoints();
 		} else {
 			long timer = System.nanoTime();
 			BeginPhasePoint.addStaleBeginPhasePoints(bppSet);
-			BeginPhasePoint.stabilizationTime += (System.nanoTime() - timer);
+			BeginPhasePoint.phaseAnalysisTime += (System.nanoTime() - timer);
 		}
 	}
 
@@ -1534,7 +1534,7 @@ public class AutomatedUpdater {
 			affectedBPPs.addAll(BeginPhasePoint.getRelatedBPPs(n));
 		}
 		BeginPhasePoint.addStaleBeginPhasePoints(affectedBPPs);
-		BeginPhasePoint.stabilizationTime += (System.nanoTime() - timer);
+		BeginPhasePoint.phaseAnalysisTime += (System.nanoTime() - timer);
 
 		if (Program.mhpUpdateCategory == UpdateCategory.EGUPD) {
 			BeginPhasePoint.stabilizeStaleBeginPhasePoints();
@@ -1577,7 +1577,7 @@ public class AutomatedUpdater {
 		long timer = System.nanoTime();
 		MHPAnalyzer.flushALLMHPData();
 		MHPAnalyzer.performMHPAnalysis(Program.getRoot());
-		BeginPhasePoint.stabilizationTime += (System.nanoTime() - timer);
+		BeginPhasePoint.phaseAnalysisTime += (System.nanoTime() - timer);
 		// DumpSnapshot.dumpPhases("stable" + Program.mhpUpdateCategory +
 		// AutomatedUpdater.reinitMHPCounter);
 	}

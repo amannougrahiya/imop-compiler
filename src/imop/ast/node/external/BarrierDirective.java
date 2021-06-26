@@ -2,7 +2,7 @@
  * Copyright (c) 2019 Aman Nougrahiya, V Krishna Nandivada, IIT Madras.
  * This file is a part of the project IMOP, licensed under the MIT license.
  * See LICENSE.md for the full text of the license.
- * 
+ *
  * The above notice shall be included in all copies or substantial
  * portions of this file.
  */
@@ -13,6 +13,7 @@
 package imop.ast.node.external;
 
 import imop.ast.info.cfgNodeInfo.BarrierDirectiveInfo;
+import imop.lib.analysis.flowanalysis.controlflow.ReversePath.PathStartable;
 
 /**
  * Grammar production:
@@ -20,7 +21,7 @@ import imop.ast.info.cfgNodeInfo.BarrierDirectiveInfo;
  * f1 ::= <BARRIER>
  * f2 ::= OmpEol()
  */
-public class BarrierDirective extends OmpDirective {
+public class BarrierDirective extends OmpDirective implements PathStartable {
 	{
 		classId = 55641;
 	}
@@ -29,7 +30,7 @@ public class BarrierDirective extends OmpDirective {
 	}
 
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = 3984484088117365793L;
 	private OmpPragma f0;

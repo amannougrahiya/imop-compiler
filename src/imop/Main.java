@@ -75,12 +75,13 @@ import java.util.*;
 public class Main {
 
 	public static long totalTime;
+	// public static String globalString = "";
+	public static boolean timerOn = false;
 
 	public static void main(String[] args) throws FileNotFoundException, InterruptedException {
 		// Thread.sleep(5000);
 		totalTime = System.nanoTime();
 		Program.parseNormalizeInput(args);
-		System.exit(0);
 
 		// countPhases();
 		// DriverModule.printRelevantFunctionNames();
@@ -791,7 +792,7 @@ public class Main {
 			System.out.println(leaf + " is " + (isSVE ? "" : "not") + " a single-valued expression.");
 		}
 		System.out.println("Total number of predicates: " + count);
-		System.out.println("Time spent in SVE queries: " + SVEChecker.sveTimer / (1e9 * 1.0) + "s.");
+		System.out.println("Time spent in SVE queries: " + SVEChecker.cpredaTimer / (1e9 * 1.0) + "s.");
 		// System.out.println("Time spent in call-stmt queries: " +
 		// NodeInfo.callQueryTimer / (1e9 * 1.0) + "s.");
 		System.exit(0);
@@ -897,7 +898,7 @@ public class Main {
 
 	private static void removeBarriers() {
 		RedundantSynchronizationRemoval.removeBarriers(Program.getRoot());
-		System.err.println("Time spent in SVE queries: " + SVEChecker.sveTimer / (1e9 * 1.0) + "s.");
+		System.err.println("Time spent in SVE queries: " + SVEChecker.cpredaTimer / (1e9 * 1.0) + "s.");
 		System.err.println("Time spent in forward IDFA updates -- ");
 		for (FlowAnalysis<?> analysis : FlowAnalysis.getAllAnalyses().values()) {
 			System.err.println(
@@ -1068,7 +1069,7 @@ public class Main {
 		DumpSnapshot.dumpPhases("trial");
 		RedundantSynchronizationRemoval.removeBarriers(Program.getRoot());
 		DumpSnapshot.dumpRoot("optimized");
-		System.err.println("Time spent in SVE queries: " + SVEChecker.sveTimer / (1e9 * 1.0) + "s.");
+		System.err.println("Time spent in SVE queries: " + SVEChecker.cpredaTimer / (1e9 * 1.0) + "s.");
 		DumpSnapshot.dumpPhaseAndCopyInfo("final");
 		System.exit(0);
 	}
@@ -1303,7 +1304,7 @@ public class Main {
 			System.err.println(
 					"\t For " + analysis.getAnalysisName() + ": " + analysis.flowAnalysisUpdateTimer / (1e9) + "s.");
 		}
-		System.err.println("Time spent in SVE queries: " + SVEChecker.sveTimer / (1e9 * 1.0) + "s.");
+		System.err.println("Time spent in SVE queries: " + SVEChecker.cpredaTimer / (1e9 * 1.0) + "s.");
 		System.err.println("Time spent in having uni-task precision in IDFA edge creation: "
 				+ CFGInfo.uniPrecisionTimer / (1e9 * 1.0) + "s.");
 		System.err.println("Number of field-sensitive queries: " + FieldSensitivity.counter);
@@ -2416,9 +2417,9 @@ public class Main {
 			System.err.println(
 					"\t For " + analysis.getAnalysisName() + ": " + analysis.flowAnalysisUpdateTimer / (1e9) + "s.");
 		}
-		System.err.println("Time spent in SVE queries: " + SVEChecker.sveTimer / (1e9 * 1.0) + "s.");
+		System.err.println("Time spent in SVE queries: " + SVEChecker.cpredaTimer / (1e9 * 1.0) + "s.");
 		System.err.println("Time spent in phase update: "
-				+ (AbstractPhase.stabilizationTime + BeginPhasePoint.stabilizationTime) / (1e9 * 1.0) + "s.");
+				+ (AbstractPhase.stabilizationTime + BeginPhasePoint.phaseAnalysisTime) / (1e9 * 1.0) + "s.");
 		System.err.println("Time spent in inlining: " + FunctionInliner.inliningTimer / (1e9 * 1.0) + "s.");
 		System.err.println("Time spent in having uni-task precision in IDFA edge creation: "
 				+ CFGInfo.uniPrecisionTimer / (1e9 * 1.0) + "s.");

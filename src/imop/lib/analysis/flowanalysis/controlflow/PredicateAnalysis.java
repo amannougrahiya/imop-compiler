@@ -34,7 +34,7 @@ import java.util.*;
 public class PredicateAnalysis extends InterProceduralControlFlowAnalysis<PredicateAnalysis.PredicateFlowFact> {
 
 	public PredicateAnalysis() {
-		super(AnalysisName.PREDICATE_ANALYSIS, new AnalysisDimension(SVEDimension.SVE_INSENSITIVE));
+		super(AnalysisName.CROSSCALL_PREDICATE_ANALYSIS, new AnalysisDimension(SVEDimension.SVE_INSENSITIVE));
 	}
 
 	public static class PredicateFlowFact extends FlowAnalysis.FlowFact {
@@ -218,7 +218,7 @@ public class PredicateAnalysis extends InterProceduralControlFlowAnalysis<Predic
 				List<BranchEdge> newList = new LinkedList<>(path.edgesOnPath);
 				newList.remove(0);
 				ImmutableList<BranchEdge> newEdgePath = new ImmutableList<>(newList);
-				ReversePath newPath = new ReversePath(path.bPP, newEdgePath);
+				ReversePath newPath = new ReversePath(path.startPoint, newEdgePath);
 				returnSet.add(newPath);
 			}
 			return PredicateFlowFact.fusePredicateBranches(returnSet);
@@ -249,7 +249,7 @@ public class PredicateAnalysis extends InterProceduralControlFlowAnalysis<Predic
 					continue;
 				}
 				List<BranchEdge> newList = path.getNewList(be);
-				ReversePath newPath = new ReversePath(path.bPP, new ImmutableList<>(newList));
+				ReversePath newPath = new ReversePath(path.startPoint, new ImmutableList<>(newList));
 				newPathSet.add(newPath);
 			}
 			return new PredicateFlowFact(new ImmutableSet<>(newPathSet));
@@ -292,7 +292,7 @@ public class PredicateAnalysis extends InterProceduralControlFlowAnalysis<Predic
 		this.workList.recreate();
 		for (Node n : nodesToBeUpdated) {
 			if (n.getInfo().isConnectedToProgram()) {
-				boolean added = this.workList.add(n);
+				this.workList.add(n);
 			}
 		}
 		// OLD CODE: Now, if we ever find that a node is unconnected to the program, we
@@ -334,9 +334,7 @@ public class PredicateAnalysis extends InterProceduralControlFlowAnalysis<Predic
 	@Override
 	public PredicateFlowFact visit(BeginNode n, PredicateFlowFact flowFactOne) {
 		if (n.getParent() instanceof ParallelConstruct) {
-			ReversePath newPath = new ReversePath(
-					BeginPhasePoint.getBeginPhasePoint(new NodeWithStack(n, new CallStack())),
-					new ImmutableList<>(new LinkedList<>()));
+			ReversePath newPath = new ReversePath(n, new ImmutableList<>(new LinkedList<>()));
 			Set<ReversePath> newPathSet = new HashSet<>();
 			newPathSet.add(newPath);
 			this.workList.add(n.getParent().getInfo().getCFGInfo().getNestedCFG().getEnd()); // TODO: Verify.
@@ -348,8 +346,7 @@ public class PredicateAnalysis extends InterProceduralControlFlowAnalysis<Predic
 
 	@Override
 	public PredicateFlowFact visit(BarrierDirective n, PredicateFlowFact flowFactOne) {
-		ReversePath newPath = new ReversePath(BeginPhasePoint.getBeginPhasePoint(new NodeWithStack(n, new CallStack())),
-				new ImmutableList<>(new LinkedList<>()));
+		ReversePath newPath = new ReversePath(n, new ImmutableList<>(new LinkedList<>()));
 		Set<ReversePath> newPathSet = new HashSet<>();
 		newPathSet.add(newPath);
 		return new PredicateFlowFact(new ImmutableSet<>(newPathSet));
@@ -359,7 +356,7 @@ public class PredicateAnalysis extends InterProceduralControlFlowAnalysis<Predic
 	public PredicateFlowFact visit(EndNode n, PredicateFlowFact flowFactIN) {
 		if (n.getParent() instanceof ParallelConstruct) {
 			BeginNode begin = n.getParent().getInfo().getCFGInfo().getNestedCFG().getBegin();
-			PredicateFlowFact beginIN = (PredicateFlowFact) begin.getInfo().getIN(AnalysisName.PREDICATE_ANALYSIS);
+			PredicateFlowFact beginIN = (PredicateFlowFact) begin.getInfo().getIN(AnalysisName.CROSSCALL_PREDICATE_ANALYSIS);
 			if (beginIN == null) {
 				return new PredicateFlowFact(new ImmutableSet<>());
 			} else {

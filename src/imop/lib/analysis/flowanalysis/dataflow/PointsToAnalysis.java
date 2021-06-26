@@ -8,6 +8,7 @@
  */
 package imop.lib.analysis.flowanalysis.dataflow;
 
+import imop.Main;
 import imop.ast.info.PTAStabilizationHeuristic;
 import imop.ast.info.cfgNodeInfo.ParameterDeclarationInfo;
 import imop.ast.node.external.*;
@@ -67,14 +68,19 @@ public class PointsToAnalysis extends InterThreadForwardCellularAnalysis<PointsT
 			nodesToBeUpdated.clear();
 			return;
 		}
+		// String localStr = "";
+		// for (StackTraceElement ste : Thread.currentThread().getStackTrace()) {
+		// localStr += ste.getFileName() + ":" + ste.getLineNumber() + "\n";
+		// }
+		// Main.globalString += localStr + "\n\n\n";
 		this.autoUpdateTriggerCounter++;
-		if (Program.stabilizationStackDump != null) {
-			StringBuilder tempStr = new StringBuilder();
-			for (StackTraceElement ste : Thread.currentThread().getStackTrace()) {
-				Program.stabilizationStackDump.append(ste.toString() + "\n");
-			}
-			Program.stabilizationStackDump.append("#######\n\n");
-		}
+		// if (Program.stabilizationStackDump != null) {
+		// StringBuilder tempStr = new StringBuilder();
+		// for (StackTraceElement ste : Thread.currentThread().getStackTrace()) {
+		// Program.stabilizationStackDump.append(ste.toString() + "\n");
+		// }
+		// Program.stabilizationStackDump.append("#######\n\n");
+		// }
 		PointsToAnalysis.enableHeuristic(); // Mark start of next epoch.
 		long localTimer = System.nanoTime();
 

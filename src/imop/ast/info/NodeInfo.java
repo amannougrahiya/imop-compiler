@@ -54,6 +54,7 @@ import imop.lib.cg.CallStack;
 import imop.lib.cg.NodeWithStack;
 import imop.lib.getter.*;
 import imop.lib.getter.StringGetter.Commentor;
+import imop.lib.transform.percolate.DriverModule;
 import imop.lib.transform.simplify.CompoundStatementNormalizer;
 import imop.lib.util.*;
 import imop.parser.FrontEnd;
@@ -425,7 +426,7 @@ public class NodeInfo implements Cloneable {
 	 *                     analyses to the list of allowed analyses here.
 	 */
 	public static void checkFirstRun(AnalysisName analysisName) {
-		if (analysisName == AnalysisName.INTRA_PREDICATE_ANALYSIS || analysisName == AnalysisName.PREDICATE_ANALYSIS) {
+		if (analysisName == AnalysisName.INTRA_PREDICATE_ANALYSIS || analysisName == AnalysisName.CROSSCALL_PREDICATE_ANALYSIS) {
 			if (!NodeInfo.paDone) {
 				NodeInfo.paDone = true;
 				performPredicateAnalysis();
@@ -475,10 +476,10 @@ public class NodeInfo implements Cloneable {
 			pa.run(mainFunc);
 		}
 		long timeTaken = System.nanoTime() - timeStart;
+		SVEChecker.cpredaTimer += timeTaken;
 		System.err.println("\tNodes processed " + pa.nodesProcessed + " times.");
 		System.err.println("\tTime taken: " + timeTaken / 1.0e9 + "s.");
 		DumpSnapshot.dumpPredicates("");
-		SVEChecker.sveTimer += timeTaken;
 	}
 
 	private static void performLivenessAnalysis() {
@@ -1175,14 +1176,18 @@ public class NodeInfo implements Cloneable {
 	}
 
 	public boolean mayRelyOnPtsTo() {
+		long timer = System.nanoTime();
 		Node node = this.getNode();
 		if (Misc.isCFGLeafNode(node)) {
 			if (this.reliesOnPtsTo == TRISTATE.UNKNOWN) {
 				this.reliesOnPtsTo = CellAccessGetter.mayRelyOnPointsTo(node) ? TRISTATE.YES : TRISTATE.NO;
 			}
+			DriverModule.mayRelyPTATimer += System.nanoTime() - timer;
 			return this.reliesOnPtsTo == TRISTATE.YES;
 		} else {
-			return CellAccessGetter.mayRelyOnPointsTo(node);
+			boolean val = CellAccessGetter.mayRelyOnPointsTo(node);
+			DriverModule.mayRelyPTATimer += System.nanoTime() - timer;
+			return val;
 		}
 	}
 
@@ -2581,7 +2586,7 @@ public class NodeInfo implements Cloneable {
 			// if (flow != null) {
 			// tempStr += "IN: " + flow.getString();
 			// }
-			FlowFact flow = n.getInfo().getCurrentOUT(AnalysisName.PREDICATE_ANALYSIS);
+			FlowFact flow = n.getInfo().getCurrentOUT(AnalysisName.CROSSCALL_PREDICATE_ANALYSIS);
 			if (flow != null) {
 				tempStr += "OUT: " + flow.getString();
 			}

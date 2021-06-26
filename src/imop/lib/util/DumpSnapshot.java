@@ -361,7 +361,7 @@ public class DumpSnapshot {
 		commetors.add((n) -> {
 			String tempStr = "";
 			FlowFact flow = n.getInfo()
-					.getOUT(Program.useInterProceduralPredicateAnalysis ? AnalysisName.PREDICATE_ANALYSIS
+					.getOUT(Program.useInterProceduralPredicateAnalysis ? AnalysisName.CROSSCALL_PREDICATE_ANALYSIS
 							: AnalysisName.INTRA_PREDICATE_ANALYSIS);
 			if (flow != null) {
 				tempStr += "OUT: " + flow.getString();

@@ -2,7 +2,7 @@
  * Copyright (c) 2019 Aman Nougrahiya, V Krishna Nandivada, IIT Madras.
  * This file is a part of the project IMOP, licensed under the MIT license.
  * See LICENSE.md for the full text of the license.
- * 
+ *
  * The above notice shall be included in all copies or substantial
  * portions of this file.
  */
@@ -14,9 +14,10 @@ import imop.baseVisitor.GJNoArguVisitor;
 import imop.baseVisitor.GJVisitor;
 import imop.baseVisitor.GJVoidVisitor;
 import imop.baseVisitor.Visitor;
+import imop.lib.analysis.flowanalysis.controlflow.ReversePath.PathStartable;
 import imop.lib.cfg.NestedCFG;
 
-public class BeginNode extends Node {
+public class BeginNode extends Node implements PathStartable {
 	{
 		classId = 61;
 	}
@@ -26,7 +27,7 @@ public class BeginNode extends Node {
 	}
 
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = -1988775221161408178L;
 	private final NestedCFG ownerNestedCFG;

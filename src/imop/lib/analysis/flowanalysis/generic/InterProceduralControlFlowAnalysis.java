@@ -42,7 +42,7 @@ public abstract class InterProceduralControlFlowAnalysis<F extends FlowAnalysis.
 	 */
 	@Override
 	public final void run(FunctionDefinition funcDef) {
-		if (this.analysisName == AnalysisName.PREDICATE_ANALYSIS) {
+		if (this.analysisName == AnalysisName.CROSSCALL_PREDICATE_ANALYSIS) {
 			functionWithBarrier.clear();
 			for (FunctionDefinition foo : Misc.getExactEnclosee(Program.getRoot(), FunctionDefinition.class)) {
 				if (foo.getInfo().hasBarrierInCFG()) {
@@ -144,7 +144,7 @@ public abstract class InterProceduralControlFlowAnalysis<F extends FlowAnalysis.
 		}
 
 		boolean inChanged = false;
-		if (this.analysisName == AnalysisName.PREDICATE_ANALYSIS && node instanceof PostCallNode) {
+		if (this.analysisName == AnalysisName.CROSSCALL_PREDICATE_ANALYSIS && node instanceof PostCallNode) {
 			// A small hack here.
 			PostCallNode postNode = (PostCallNode) node;
 			List<FunctionDefinition> funcDef = postNode.getParent().getInfo().getCalledDefinitions();
@@ -206,7 +206,7 @@ public abstract class InterProceduralControlFlowAnalysis<F extends FlowAnalysis.
 	public void restartAnalysisFromStoredNodes() {
 		assert (!SCC.processingTarjan);
 		this.autoUpdateTriggerCounter++;
-		if (this.analysisName == AnalysisName.PREDICATE_ANALYSIS) {
+		if (this.analysisName == AnalysisName.CROSSCALL_PREDICATE_ANALYSIS) {
 			functionWithBarrier.clear();
 			for (FunctionDefinition foo : Misc.getExactEnclosee(Program.getRoot(), FunctionDefinition.class)) {
 				if (foo.getInfo().hasBarrierInCFG()) {
@@ -291,7 +291,7 @@ public abstract class InterProceduralControlFlowAnalysis<F extends FlowAnalysis.
 		}
 
 		boolean inChanged = false;
-		if (this.analysisName == AnalysisName.PREDICATE_ANALYSIS && node instanceof PostCallNode) {
+		if (this.analysisName == AnalysisName.CROSSCALL_PREDICATE_ANALYSIS && node instanceof PostCallNode) {
 			// A small hack here.
 			PostCallNode postNode = (PostCallNode) node;
 			List<FunctionDefinition> funcDef = postNode.getParent().getInfo().getCalledDefinitions();

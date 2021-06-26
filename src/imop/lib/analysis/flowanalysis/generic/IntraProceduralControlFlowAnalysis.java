@@ -139,11 +139,7 @@ public abstract class IntraProceduralControlFlowAnalysis<F extends FlowAnalysis.
 
 		// Step 2: Apply the flow-function on IN, to obtain the OUT.
 		F newOUT;
-		if (node instanceof PreCallNode) {
-			newOUT = modelCallEffect((CallStatement) node.getParent(), newIN);
-		} else {
-			newOUT = node.accept(this, newIN);
-		}
+		newOUT = node.accept(this, newIN);
 		nodeInfo.setOUT(analysisName, newOUT);
 
 		// Step 3: Process the successors, if needed.
@@ -152,19 +148,6 @@ public abstract class IntraProceduralControlFlowAnalysis<F extends FlowAnalysis.
 			workList.addAll(nodeInfo.getCFGInfo().getLeafSuccessors());
 		}
 		return;
-	}
-
-	/**
-	 * This method should model the effect of the given call statement on the given
-	 * flow fact, and return the result.
-	 *
-	 * @param callStmt
-	 * @param newIN
-	 *
-	 * @return
-	 */
-	protected F modelCallEffect(CallStatement callStmt, F newIN) {
-		return newIN;
 	}
 
 	/**
@@ -241,9 +224,7 @@ public abstract class IntraProceduralControlFlowAnalysis<F extends FlowAnalysis.
 		nodeInfo.setIN(analysisName, newIN);
 
 		// Step 2: Apply the flow-function on IN, to obtain the OUT.
-		F oldOUT = (F) nodeInfo.getOUT(analysisName);
-		F newOUT;
-		newOUT = node.accept(this, newIN);
+		F newOUT = node.accept(this, newIN);
 		nodeInfo.setOUT(analysisName, newOUT);
 		this.processedInThisUpdate.add(node); // Mark a node as processed only after its OUT has been "purified".
 

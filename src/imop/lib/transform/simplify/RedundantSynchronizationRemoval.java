@@ -8,6 +8,7 @@
  */
 package imop.lib.transform.simplify;
 
+import imop.Main;
 import imop.ast.node.external.*;
 import imop.ast.node.internal.*;
 import imop.lib.analysis.CoExistenceChecker;
@@ -111,7 +112,8 @@ public class RedundantSynchronizationRemoval {
 			DumpSnapshot.dumpVisibleSharedReadWrittenCells("rem" + Program.mhpUpdateCategory + counter);
 			DumpSnapshot.dumpRoot("root" + Program.idfaUpdateCategory + counter++);
 		}
-		for (Node barrierNode : Misc.getInheritedEncloseeList(root, BarrierDirective.class)) {
+		for (Node barrierNode : Misc.getExactPostOrderEnclosee(root, BarrierDirective.class)) {
+			// Main.globalString += Misc.getLineNum(barrierNode) + " now.\n";
 			BarrierDirective barrier = (BarrierDirective) barrierNode;
 			Set<Phase> allPhaseSet = new HashSet<>();
 			for (ParallelConstruct parConsNode : Misc.getExactEnclosee(Program.getRoot(), ParallelConstruct.class)) {
@@ -269,10 +271,12 @@ public class RedundantSynchronizationRemoval {
 		Set<Node> coExistBelow = new HashSet<>();
 		Set<BeginPhasePoint> belowBPP = phBelow.getBeginPoints();
 		for (Node nBelow : nodesBelow) {
-			CellSet readBelow = nBelow.getInfo().getSharedReads();
-			CellSet writtenBelow = nBelow.getInfo().getSharedWrites();
-			if (readBelow.isEmpty() && writtenBelow.isEmpty()) {
-				continue;
+			if (!nBelow.getInfo().mayRelyOnPtsTo()) {
+				CellSet readBelow = nBelow.getInfo().getSharedReads();
+				CellSet writtenBelow = nBelow.getInfo().getSharedWrites();
+				if (readBelow.isEmpty() && writtenBelow.isEmpty()) {
+					continue;
+				}
 			}
 			if (belowBPP.stream().filter(bpp -> bpp.getNode() == barrier)
 					.anyMatch(bpp -> bpp.getReachableNodes().contains(nBelow))) {
@@ -290,15 +294,69 @@ public class RedundantSynchronizationRemoval {
 				coExistBelow.add(nBelow);
 			}
 		}
+		Set<Node> ptNodes = new HashSet<>();
 		for (Node nAbove : nodesAbove) {
-			CellSet readAbove = nAbove.getInfo().getSharedReads();
-			CellSet writtenAbove = nAbove.getInfo().getSharedWrites();
-			CellSet nonFieldReadsInSource = null;
-			CellSet nonFieldWritesInSource = null;
+			if (nAbove.getInfo().mayRelyOnPtsTo()) {
+				ptNodes.add(nAbove);
+				continue;
+			}
+			CellSet readAbove;
+			CellSet writtenAbove;
+			CellSet nonFieldReadsInSource;
+			CellSet nonFieldWritesInSource;
+			readAbove = nAbove.getInfo().getSharedReads();
+			writtenAbove = nAbove.getInfo().getSharedWrites();
+			nonFieldReadsInSource = null;
+			nonFieldWritesInSource = null;
 			if (readAbove.isEmpty() && writtenAbove.isEmpty()) {
 				continue;
 			}
+			if (Program.fieldSensitive) {
+				nonFieldReadsInSource = nAbove.getInfo().getNonFieldSharedReads();
+				nonFieldWritesInSource = nAbove.getInfo().getNonFieldSharedWrites();
+			}
+
+			for (Node nBelow : coExistBelow) {
+				if (Program.fieldSensitive) {
+					CellSet nonFieldReadsInDestination = nBelow.getInfo().getNonFieldSharedReads();
+					CellSet nonFieldWritesInDestination = nBelow.getInfo().getNonFieldSharedWrites();
+					if (nonFieldWritesInSource.overlapsWith(nonFieldWritesInDestination)
+							|| nonFieldWritesInSource.overlapsWith(nonFieldReadsInDestination)
+							|| nonFieldReadsInSource.overlapsWith(nonFieldWritesInDestination)) {
+						return true;
+					} else {
+						if (FieldSensitivity.canConflictWithTwoThreads(nAbove, nBelow)) {
+							return true;
+						}
+					}
+				} else {
+					CellSet readBelow = nBelow.getInfo().getSharedReads(); // Note: These shared-reads would always be
+																			// from cached values.
+					CellSet writtenBelow = nBelow.getInfo().getSharedWrites(); // Note: These shared-writes would always
+																				// be from cached values.
+					if (Misc.doIntersect(readAbove, writtenBelow) || Misc.doIntersect(readBelow, writtenAbove)
+							|| Misc.doIntersect(writtenAbove, writtenBelow)) {
+						if (!CoExistenceChecker.canCoExistInPhase(nAbove, barrier, phAbove)) {
+							continue;
+						}
+						return true;
+					}
+				}
+			}
+		}
+		for (Node nAbove : ptNodes) {
 			if (!CoExistenceChecker.canCoExistInPhase(nAbove, barrier, phAbove)) {
+				continue;
+			}
+			CellSet readAbove;
+			CellSet writtenAbove;
+			CellSet nonFieldReadsInSource;
+			CellSet nonFieldWritesInSource;
+			readAbove = nAbove.getInfo().getSharedReads();
+			writtenAbove = nAbove.getInfo().getSharedWrites();
+			nonFieldReadsInSource = null;
+			nonFieldWritesInSource = null;
+			if (readAbove.isEmpty() && writtenAbove.isEmpty()) {
 				continue;
 			}
 			if (Program.fieldSensitive) {

@@ -28,6 +28,6 @@ public enum AnalysisName {
 					// freed).
 	, INTRA_PREDICATE_ANALYSIS // Intra-procedural IDFA to obtain a set of paths in the current phase(s) in
 								// terms of BranchEdges.
-	, PREDICATE_ANALYSIS // Inter-procedural IDFA to obtain a set of paths in the current phase(s) in
+	, CROSSCALL_PREDICATE_ANALYSIS // Inter-procedural IDFA to obtain a set of paths in the current phase(s) in
 							// terms of BranchEdges.
 }

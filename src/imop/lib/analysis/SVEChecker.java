@@ -47,10 +47,12 @@ public class SVEChecker {
 
 	private static boolean disable = true;
 
-	public static long sveTimer = 0;
+	public static long cpredaTimer = 0;
+	public static long sveQueryTimer = 0;
 
 	public static void resetStaticFields() {
-		SVEChecker.sveTimer = 0;
+		SVEChecker.cpredaTimer = 0;
+		SVEChecker.sveQueryTimer = 0;
 		SVEChecker.singleValuedExpressions.clear();
 		SVEChecker.multiValuedExpressions.clear();
 		CoExistenceChecker.resetStaticFields();
@@ -70,11 +72,11 @@ public class SVEChecker {
 		}
 		long timer = System.nanoTime();
 		if (!Misc.isAPredicate(exp)) {
-			SVEChecker.sveTimer += (System.nanoTime() - timer);
+			SVEChecker.sveQueryTimer += (System.nanoTime() - timer);
 			return false;
 		} else {
 			boolean retVal = SVEChecker.isSingleValuedPredicate(exp, new HashSet<>(), new HashSet<>());
-			SVEChecker.sveTimer += (System.nanoTime() - timer);
+			SVEChecker.sveQueryTimer += (System.nanoTime() - timer);
 			return retVal;
 		}
 	}

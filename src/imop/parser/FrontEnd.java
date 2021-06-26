@@ -8,11 +8,13 @@
  */
 package imop.parser;
 
+import imop.Main;
 import imop.ast.info.NodeInfo;
 import imop.ast.node.external.*;
 import imop.ast.node.internal.*;
 import imop.lib.analysis.flowanalysis.*;
 import imop.lib.analysis.flowanalysis.dataflow.PointsToAnalysis;
+import imop.lib.analysis.flowanalysis.generic.AnalysisDimension.SVEDimension;
 import imop.lib.analysis.flowanalysis.generic.AnalysisName;
 import imop.lib.analysis.mhp.incMHP.MHPAnalyzer;
 import imop.lib.analysis.typeSystem.Type;
@@ -515,8 +517,9 @@ public class FrontEnd {
 			// timeTaken = System.nanoTime() - timeStart;
 			// System.err.println("\tNodes processed " + pta.nodesProcessed + " times.");
 			// System.err.println("\tTime taken: " + timeTaken / 1000000000.0 + "s.");
-			if (Program.concurrencyAlgorithm != ConcurrencyAlgorithm.YCON) {
-				NodeInfo.checkFirstRun(Program.useInterProceduralPredicateAnalysis ? AnalysisName.PREDICATE_ANALYSIS
+			if (Program.concurrencyAlgorithm != ConcurrencyAlgorithm.YCON
+					&& Program.sveSensitive == SVEDimension.SVE_SENSITIVE) {
+				NodeInfo.checkFirstRun(Program.useInterProceduralPredicateAnalysis ? AnalysisName.CROSSCALL_PREDICATE_ANALYSIS
 						: AnalysisName.INTRA_PREDICATE_ANALYSIS);
 			}
 
@@ -530,7 +533,7 @@ public class FrontEnd {
 			timeTaken = System.nanoTime() - timeStart;
 			System.err.println("\tNodes processed " + pta.nodesProcessed + " times.");
 			System.err.println("\tTime taken: " + timeTaken / 1000000000.0 + "s.");
-			DumpSnapshot.dumpPointsTo("");
+			DumpSnapshot.dumpPointsTo("first-" + Program.sveSensitive);
 			// FrontEnd.dumpStatsOfIDFA(pta.tempMap);
 
 			// Old code: This is executed in getIN() now, on demand.
@@ -932,6 +935,7 @@ public class FrontEnd {
 		}
 
 		DumpSnapshot.printToFile(newNode, Program.fileName + "-simplified.i");
+		Main.totalTime = System.nanoTime();
 		/*
 		 * : OLD.
 		 */

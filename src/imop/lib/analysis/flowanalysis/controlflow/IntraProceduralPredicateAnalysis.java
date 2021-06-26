@@ -44,10 +44,7 @@ public class IntraProceduralPredicateAnalysis extends IntraProceduralControlFlow
 
 	@Override
 	public PredicateFlowFact getEntryFact() {
-		Set<ReversePath> newPathSet = new HashSet<>();
-		List<BranchEdge> newList = new LinkedList<>();
-		newPathSet.add(new ReversePath(null, new ImmutableList<>(newList)));
-		return new PredicateFlowFact(new ImmutableSet<>(newPathSet));
+		return new PredicateFlowFact(new ImmutableSet<>(new HashSet<>()));
 	}
 
 	@Override
@@ -61,7 +58,7 @@ public class IntraProceduralPredicateAnalysis extends IntraProceduralControlFlow
 					continue;
 				}
 				List<BranchEdge> newList = path.getNewList(be);
-				ReversePath newPath = new ReversePath(path.bPP, new ImmutableList<>(newList));
+				ReversePath newPath = new ReversePath(path.startPoint, new ImmutableList<>(newList));
 				newPathSet.add(newPath);
 			}
 			return new PredicateFlowFact(new ImmutableSet<>(newPathSet));
@@ -99,7 +96,7 @@ public class IntraProceduralPredicateAnalysis extends IntraProceduralControlFlow
 		this.workList.recreate();
 		for (Node n : nodesToBeUpdated) {
 			if (n.getInfo().isConnectedToProgram()) {
-				boolean added = this.workList.add(n);
+				this.workList.add(n);
 			}
 		}
 		// OLD CODE: Now, if we ever find that a node is unconnected to the program, we
@@ -140,12 +137,15 @@ public class IntraProceduralPredicateAnalysis extends IntraProceduralControlFlow
 	@Override
 	public PredicateFlowFact visit(BeginNode n, PredicateFlowFact flowFactOne) {
 		if (n.getParent() instanceof ParallelConstruct) {
-			ReversePath newPath = new ReversePath(
-					BeginPhasePoint.getBeginPhasePoint(new NodeWithStack(n, new CallStack())),
-					new ImmutableList<>(new LinkedList<>()));
+			ReversePath newPath = new ReversePath(n, new ImmutableList<>(new LinkedList<>()));
 			Set<ReversePath> newPathSet = new HashSet<>();
 			newPathSet.add(newPath);
 			this.workList.add(n.getParent().getInfo().getCFGInfo().getNestedCFG().getEnd()); // TODO: Verify.
+			return new PredicateFlowFact(new ImmutableSet<>(newPathSet));
+		} else if (n.getParent() instanceof FunctionDefinition) {
+			ReversePath newPath = new ReversePath(n, new ImmutableList<>(new LinkedList<>()));
+			Set<ReversePath> newPathSet = new HashSet<>();
+			newPathSet.add(newPath);
 			return new PredicateFlowFact(new ImmutableSet<>(newPathSet));
 		} else {
 			return flowFactOne;
@@ -154,8 +154,20 @@ public class IntraProceduralPredicateAnalysis extends IntraProceduralControlFlow
 
 	@Override
 	public PredicateFlowFact visit(BarrierDirective n, PredicateFlowFact flowFactOne) {
-		ReversePath newPath = new ReversePath(BeginPhasePoint.getBeginPhasePoint(new NodeWithStack(n, new CallStack())),
-				new ImmutableList<>(new LinkedList<>()));
+		ReversePath newPath = new ReversePath(n, new ImmutableList<>(new LinkedList<>()));
+		Set<ReversePath> newPathSet = new HashSet<>();
+		newPathSet.add(newPath);
+		return new PredicateFlowFact(new ImmutableSet<>(newPathSet));
+	}
+
+	@Override
+	public PredicateFlowFact visit(PostCallNode n, PredicateFlowFact flowFactOne) {
+		CallStatement cs = n.getParent();
+		// if (!cs.getInfo().getReachableCallGraphNodes().stream().anyMatch(f ->
+		// f.getInfo().hasBarrierInAST())) {
+		// return flowFactOne;
+		// }
+		ReversePath newPath = new ReversePath(n, new ImmutableList<>(new LinkedList<>()));
 		Set<ReversePath> newPathSet = new HashSet<>();
 		newPathSet.add(newPath);
 		return new PredicateFlowFact(new ImmutableSet<>(newPathSet));

@@ -108,8 +108,9 @@ public class Program {
 	 */
 	public static boolean useHeuristicWithYuan = false;
 	public static boolean useHeuristicWithIcon = true;
-	public static boolean useInterProceduralPredicateAnalysis = true;
-	public static boolean useTimerForIncEPARuns = true;
+	public static boolean useInterProceduralPredicateAnalysis = false; // false; the queries have been modified
+																		// accordingly.
+	public static boolean useTimerForIncEPARuns = false;
 	public static int secondsForIncEPARuns = 900;
 
 	/**
@@ -213,10 +214,11 @@ public class Program {
 		Program.preciseDFDEdges = false;
 		Program.idfaUpdateCategory = UpdateCategory.LZUPD; // Default is LZUPD.
 		Program.concurrencyAlgorithm = ConcurrencyAlgorithm.ICON;
-		Program.mhpUpdateCategory = UpdateCategory.LZUPD; // Default is LZUPD.
-		Program.sveSensitive = SVEDimension.SVE_INSENSITIVE;
+		Program.mhpUpdateCategory = UpdateCategory.LZINV; // Default is LZUPD.
+		Program.sveSensitive = SVEDimension.SVE_SENSITIVE;
 		Program.cpaMode = CPredAMode.H1H2H3;
 		Program.useInterProceduralPredicateAnalysis = false;
+		Program.useTimerForIncEPARuns = false;
 		Program.useHeuristicWithIcon = true;
 		Program.sveSensitivityOfIDFAEdges = SVEDimension.SVE_INSENSITIVE;
 		Program.sveNoCheck = true;
@@ -244,7 +246,7 @@ public class Program {
 		//
 		// filePath = ("../output-dump/ft-bimop_output_LZINC.i"); // SVE-all: 29s.
 		filePath = ("../tests/npb-post/bt3-0.i"); // SVE-all: 29s.
-		filePath = ("../tests/npb-post/cg3-0.i"); // SVE-all: 2.50s.
+		// filePath = ("../tests/npb-post/cg3-0.i"); // SVE-all: 2.50s.
 		// filePath = ("../tests/npb-post/ep3-0.i"); // SVE-all: 0.55s
 		// filePath = ("../tests/npb-post/ft3-0.i"); // SVE-all: 3.73s.
 		// filePath = ("../tests/npb-post/is3-0.i"); // SVE-all: 0.69
@@ -408,7 +410,7 @@ public class Program {
 		// filePath = ("../tests/sgefa_openmp.i");
 		// filePath = ("../tests/fft_openmp.i");
 		// filePath = ("../tests/quake.i");
-		filePath = ("../tests/sequoia/clomp.i");
+		// filePath = ("../tests/sequoia/clomp.i");
 		// filePath = ("../tests/tt.i");
 		// filePath = ("../tests/fsu/md_openmp.i");
 		// filePath = ("../tests/alternate.i");
@@ -435,13 +437,12 @@ public class Program {
 		/* New Benchmarks */
 		// filePath = ("../tests/icon-tests/smithwa.i"); // Full length benchmark code;
 		// usable.
-		filePath = ("../tests/icon-tests/nab.i"); // Full length benchmark code;
+		// filePath = ("../tests/icon-tests/nab.i"); // Full length benchmark code;
 		// filePath = ("../tests/icon-tests/ammp.i"); // Full length benchmark code
 		// filePath = ("../tests/ammp-useful.i"); // Full length benchmark code
 		// filePath = ("../tests/icon-tests/hop.i"); // Full length benchmark code
-		filePath = ("../tests/hop-useful.i");
+		// filePath = ("../tests/hop-useful.i");
 		// filePath = ("../tests/icon-tests/scalparc.i"); // Full length benchmark code
-		// filePath = ("/tmp/t2.c"); // Full length benchmark code
 		return filePath;
 	}
 

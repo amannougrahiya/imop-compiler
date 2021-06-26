@@ -51,6 +51,7 @@ import imop.lib.transform.updater.InsertOnTheEdge;
 import imop.lib.util.*;
 import imop.parser.FrontEnd;
 import imop.parser.Program;
+import imop.parser.Program.CPredAMode;
 import imop.parser.Program.ConcurrencyAlgorithm;
 
 import java.lang.instrument.Instrumentation;
@@ -59,6 +60,8 @@ import java.util.*;
 
 public class DriverModule {
 	public static int counter = 0;
+
+	public static long mayRelyPTATimer = 0;
 
 	public static void clientAutoUpdateHomeostasis() {
 		// DumpSnapshot.dumpVisibleSharedReadWrittenCells("first" +
@@ -148,8 +151,8 @@ public class DriverModule {
 		}
 		// System.err.println("Time spent in SVE queries: " + SVEChecker.sveTimer / (1e9
 		// * 1.0) + "s.");
-		System.err.println("Time spent in phase update: " + BeginPhasePoint.stabilizationTime / (1e9 * 1.0) + "s.");
-		incMHPTime = BeginPhasePoint.stabilizationTime / (1e9 * 1.0);
+		System.err.println("Time spent in phase update: " + BeginPhasePoint.phaseAnalysisTime / (1e9 * 1.0) + "s.");
+		incMHPTime = BeginPhasePoint.phaseAnalysisTime / (1e9 * 1.0);
 		System.err.println("Number of stabilizations of phase analysis: " + AutomatedUpdater.reinitMHPCounter);
 		incMHPTriggers = AutomatedUpdater.reinitMHPCounter;
 		System.err.println("Time spent generating SCCs: " + SCC.SCCTimer / (1e9 * 1.0) + "s.");
@@ -271,7 +274,7 @@ public class DriverModule {
 		}
 		// TODO: Uncomment till here.
 		double totTime = (System.nanoTime() - Main.totalTime) / (1.0 * 1e9);
-		double incMHPTime = 0.0;
+		double totalMHPTime = 0.0;
 		double incIDFATime = 0.0;
 		long incMHPTriggers = 0;
 		long incIDFATriggers = 0;
@@ -300,12 +303,15 @@ public class DriverModule {
 					"\t For " + analysis.getAnalysisName() + ": " + analysis.flowAnalysisUpdateTimer / (1e9) + "s.");
 			if (analysis.getAnalysisName() == AnalysisName.POINTSTO) {
 				incIDFATime = analysis.flowAnalysisUpdateTimer / (1e9 * 1.0);
+			} else if (analysis.getAnalysisName() == AnalysisName.INTRA_PREDICATE_ANALYSIS) {
+				totalMHPTime += analysis.flowAnalysisUpdateTimer / (1e9 * 1.0);
+				totalMHPTime += SVEChecker.cpredaTimer / (1e9 * 1.0);
 			}
 		}
 		// System.err.println("Time spent in SVE queries: " + SVEChecker.sveTimer / (1e9
 		// * 1.0) + "s.");
-		System.err.println("Time spent in phase update: " + BeginPhasePoint.stabilizationTime / (1e9 * 1.0) + "s.");
-		incMHPTime = BeginPhasePoint.stabilizationTime / (1e9 * 1.0);
+		System.err.println("Time spent in phase update: " + BeginPhasePoint.phaseAnalysisTime / (1e9 * 1.0) + "s.");
+		totalMHPTime += BeginPhasePoint.phaseAnalysisTime / (1e9 * 1.0);
 		System.err.println("Number of stabilizations of phase analysis: " + AutomatedUpdater.reinitMHPCounter);
 		incMHPTriggers = AutomatedUpdater.reinitMHPCounter;
 		System.err.println("Time spent generating SCCs: " + SCC.SCCTimer / (1e9 * 1.0) + "s.");
@@ -339,9 +345,9 @@ public class DriverModule {
 		System.err
 				.println("Number of times PTA would have had to run in semi-eager mode: " + ProfileSS.flagSwitchCount);
 		String s = (Program.sveSensitive == SVEDimension.SVE_SENSITIVE) ? "S" : "U";
-		DumpSnapshot.forceDumpRoot((Program.fileName + "imop_output_" + Program.concurrencyAlgorithm
-				+ "_" + Program.mhpUpdateCategory + s + ".i").trim());
-		DumpSnapshot.dumpPointsTo("final" + Program.idfaUpdateCategory);
+		DumpSnapshot.forceDumpRoot((Program.fileName + "imop_output_" + Program.concurrencyAlgorithm + "_"
+				+ Program.mhpUpdateCategory + s + ".i").trim());
+		DumpSnapshot.dumpPointsTo("final" + Program.idfaUpdateCategory + Program.cpaMode);
 		DumpSnapshot.dumpPhases("final" + Program.concurrencyAlgorithm + "_" + Program.mhpUpdateCategory + s);
 		DumpSnapshot.dumpPredicates("final" + Program.concurrencyAlgorithm + "_" + Program.mhpUpdateCategory + s);
 		if (dumpIntermediate) {
@@ -373,24 +379,35 @@ public class DriverModule {
 		StringBuilder resultString = new StringBuilder(Program.fileName + " "
 				+ ((Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.YCON) ? "YUAN" : "ICON") + " "
 				+ Program.mhpUpdateCategory + " "
-				+ ((Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.YCON) ? "SVE-sensitive"
+				+ ((Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.YCON) ? "SVE-sensitive (0)"
 						: ((Program.sveSensitive == SVEDimension.SVE_SENSITIVE)
 								? ("SVE-sensitive_" + Program.cpaMode + " ("
-										+ df2.format(SVEChecker.sveTimer * 1.0 / 1e9) + ")")
+										+ df2.format(SVEChecker.cpredaTimer * 1.0 / 1e9) + ")")
 								: "SVE-insensitive (0)"))
-				+ " ["
-				+ ((Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.YCON) ? df2.format(incMHPTime)
-						: ((Program.sveSensitive == SVEDimension.SVE_SENSITIVE)
-								? (df2.format(SVEChecker.sveTimer * 1.0 / 1e9 + incMHPTime))
-								: df2.format(incMHPTime)))
-				+ "]" + " " + df2.format(totTime) + " " + df2.format(incMHPTime) + " " + df2.format(incIDFATime) + " "
+				+ " [" + df2.format(totalMHPTime)
+				// + ((Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.YCON) ?
+				// df2.format(incMHPTime)
+				// : ((Program.sveSensitive == SVEDimension.SVE_SENSITIVE)
+				// ? (df2.format(SVEChecker.sveTimer * 1.0 / 1e9 + incMHPTime))
+				// : df2.format(incMHPTime)))
+				+ "]" + " " + df2.format(totTime) + " " + df2.format(totalMHPTime) + " " + df2.format(incIDFATime) + " "
 				+ incMHPTriggers + " " + incIDFATriggers + " " + finalIncNodes + " " + tarjanCount + " "
-				+ df2.format(sccTime) + " " + numPhases + " " + numExplicitBarriers + " ");
+				+ df2.format(sccTime)
+				+ (Program.concurrencyAlgorithm == ConcurrencyAlgorithm.ICON
+						&& Program.sveSensitive == SVEDimension.SVE_SENSITIVE
+								? " " + df2.format(SVEChecker.sveQueryTimer / (1e9 * 1.0))
+								: " 0")
+				+ " " + numPhases + " " + numExplicitBarriers + " " + df2.format(DriverModule.mayRelyPTATimer/(1e9*1.0)) + " " + CoExistenceChecker.queryCounter);
 		System.out.println(resultString);
 		System.err.println(resultString);
 
+		// DumpSnapshot.printToFile(Main.globalString,
+		// "stack-" + Program.concurrencyAlgorithm + Program.sveSensitive +
+		// Program.cpaMode + ".txt");
+		// System.err.println(Main.globalString);
+
 		// Query Count Checker Code Starts:
-		DriverModule.countPhysicalSizeOfCPA();
+		// DriverModule.countPhysicalSizeOfCPA();
 		// DriverModule.queryCount();
 
 		// DumpSnapshot.printToFile(Program.stabilizationStackDump.toString(),
@@ -419,8 +436,8 @@ public class DriverModule {
 		int totalLogicalSets = 0;
 		int totalLogicalLists = 0;
 		for (Node n : Program.getRoot().getInfo().getCFGInfo().getLexicalCFGLeafContents()) {
-			PredicateFlowFact nPaths = (PredicateFlowFact) n.getInfo()
-					.getCurrentIN(Program.useInterProceduralPredicateAnalysis ? AnalysisName.PREDICATE_ANALYSIS
+			PredicateFlowFact nPaths = (PredicateFlowFact) n.getInfo().getCurrentIN(
+					Program.useInterProceduralPredicateAnalysis ? AnalysisName.CROSSCALL_PREDICATE_ANALYSIS
 							: AnalysisName.INTRA_PREDICATE_ANALYSIS);
 			if (nPaths == null) {
 				continue;
@@ -573,8 +590,8 @@ public class DriverModule {
 		}
 		// System.err.println("Time spent in SVE queries: " + SVEChecker.sveTimer / (1e9
 		// * 1.0) + "s.");
-		System.err.println("Time spent in phase update: " + BeginPhasePoint.stabilizationTime / (1e9 * 1.0) + "s.");
-		incMHPTime = BeginPhasePoint.stabilizationTime / (1e9 * 1.0);
+		System.err.println("Time spent in phase update: " + BeginPhasePoint.phaseAnalysisTime / (1e9 * 1.0) + "s.");
+		incMHPTime = BeginPhasePoint.phaseAnalysisTime / (1e9 * 1.0);
 		System.err.println("Number of stabilizations of phase analysis: " + AutomatedUpdater.reinitMHPCounter);
 		incMHPTriggers = AutomatedUpdater.reinitMHPCounter;
 		System.err.println("Time spent generating SCCs: " + SCC.SCCTimer / (1e9 * 1.0) + "s.");
@@ -627,7 +644,7 @@ public class DriverModule {
 				+ Program.mhpUpdateCategory + " "
 				+ ((Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.YCON) ? "SVE-sensitive"
 						: ((Program.sveSensitive == SVEDimension.SVE_SENSITIVE)
-								? ("SVE-sensitive (" + df2.format(SVEChecker.sveTimer * 1.0 / 1e9) + ")")
+								? ("SVE-sensitive (" + df2.format(SVEChecker.cpredaTimer * 1.0 / 1e9) + ")")
 								: "SVE-insensitive (0)"))
 				+ " " + df2.format(totTime) + " " + df2.format(incMHPTime) + " " + df2.format(incIDFATime) + " "
 				+ incMHPTriggers + " " + incIDFATriggers + " " + finalIncNodes + " " + tarjanCount + " "
@@ -682,9 +699,9 @@ public class DriverModule {
 			System.err.println(
 					"\t For " + analysis.getAnalysisName() + ": " + analysis.flowAnalysisUpdateTimer / (1e9) + "s.");
 		}
-		System.err.println("Time spent in SVE queries: " + SVEChecker.sveTimer / (1e9 * 1.0) + "s.");
+		System.err.println("Time spent in SVE queries: " + SVEChecker.cpredaTimer / (1e9 * 1.0) + "s.");
 		System.err.println("Time spent in phase update: "
-				+ (AbstractPhase.stabilizationTime + BeginPhasePoint.stabilizationTime) / (1e9 * 1.0) + "s.");
+				+ (AbstractPhase.stabilizationTime + BeginPhasePoint.phaseAnalysisTime) / (1e9 * 1.0) + "s.");
 		System.err.println("Time spent in inlining: " + FunctionInliner.inliningTimer / (1e9 * 1.0) + "s.");
 		System.err.println("Time spent in having uni-task precision in IDFA edge creation: "
 				+ CFGInfo.uniPrecisionTimer / (1e9 * 1.0) + "s.");
@@ -729,9 +746,8 @@ public class DriverModule {
 			System.err.println(
 					"\t For " + analysis.getAnalysisName() + ": " + analysis.flowAnalysisUpdateTimer / (1e9) + "s.");
 		}
-		System.err.println("Time spent in SVE queries: " + SVEChecker.sveTimer / (1e9 * 1.0) + "s.");
 		System.err.println("Time spent in phase update: "
-				+ (AbstractPhase.stabilizationTime + BeginPhasePoint.stabilizationTime) / (1e9 * 1.0) + "s.");
+				+ (AbstractPhase.stabilizationTime + BeginPhasePoint.phaseAnalysisTime) / (1e9 * 1.0) + "s.");
 		System.err.println("Time spent in inlining: " + FunctionInliner.inliningTimer / (1e9 * 1.0) + "s.");
 		System.err.println("Time spent in having uni-task precision in IDFA edge creation: "
 				+ CFGInfo.uniPrecisionTimer / (1e9 * 1.0) + "s.");

@@ -77,10 +77,12 @@ public class MHPAnalyzer {
 	 *             root node of the AST of the input program.
 	 */
 	public static void performMHPAnalysis(TranslationUnit root) {
+		long timer = System.nanoTime();
 		for (ParallelConstruct parCons : Misc.getExactEnclosee(root, ParallelConstruct.class)) { // for all parCons
 			MHPAnalyzer mhp = new MHPAnalyzer(parCons);
 			mhp.initMHP(); // perform MHP Analysis
 		}
+		BeginPhasePoint.phaseAnalysisTime += System.nanoTime() - timer;
 		for (FunctionDefinition funcDef : root.getInfo().getAllFunctionDefinitions()) {
 			for (Node cfgNode : funcDef.getInfo().getCFGInfo().getLexicalCFGLeafContents()) {
 				cfgNode.getInfo().getNodePhaseInfo().rememberCurrentPhases();

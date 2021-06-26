@@ -2,7 +2,7 @@
  * Copyright (c) 2019 Aman Nougrahiya, V Krishna Nandivada, IIT Madras.
  * This file is a part of the project IMOP, licensed under the MIT license.
  * See LICENSE.md for the full text of the license.
- * 
+ *
  * The above notice shall be included in all copies or substantial
  * portions of this file.
  */
@@ -13,10 +13,11 @@ import imop.baseVisitor.GJNoArguVisitor;
 import imop.baseVisitor.GJVisitor;
 import imop.baseVisitor.GJVoidVisitor;
 import imop.baseVisitor.Visitor;
+import imop.lib.analysis.flowanalysis.controlflow.ReversePath.PathStartable;
 
 import java.util.List;
 
-public class PreCallNode extends Node {
+public class PreCallNode extends Node implements PathStartable {
 	{
 		classId = 163;
 	}

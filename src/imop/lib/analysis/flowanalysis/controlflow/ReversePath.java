@@ -8,8 +8,10 @@
  */
 package imop.lib.analysis.flowanalysis.controlflow;
 
+import imop.ast.node.external.BarrierDirective;
+import imop.ast.node.external.Node;
+import imop.ast.node.internal.PostCallNode;
 import imop.lib.analysis.flowanalysis.BranchEdge;
-import imop.lib.analysis.mhp.incMHP.BeginPhasePoint;
 import imop.lib.util.ImmutableList;
 
 import java.util.ArrayList;
@@ -17,12 +19,23 @@ import java.util.List;
 import java.util.ListIterator;
 
 public class ReversePath {
-	public final BeginPhasePoint bPP;
+	/**
+	 * Represents a point where any intra-phase intra-procedural path starts.
+	 * This can either be a BarrierDirective, a PostCallNode, BeginNode of a
+	 * ParallelConstruct, or BeginNode of a FunctionDefinition.
+	 */
+	public static interface PathStartable {
+		public default Node getNode() {
+			return (Node) this;
+		}
+	}
+
+	public final PathStartable startPoint;
 	public final ImmutableList<BranchEdge> edgesOnPath;
 	private static int maxSizeOfPath = 0;
 
-	public ReversePath(BeginPhasePoint startingBPP, ImmutableList<BranchEdge> edgesOnPath) {
-		this.bPP = startingBPP;
+	public ReversePath(PathStartable startPoint, ImmutableList<BranchEdge> edgesOnPath) {
+		this.startPoint = startPoint;
 		this.edgesOnPath = edgesOnPath;
 		if (edgesOnPath.size() > maxSizeOfPath) {
 			maxSizeOfPath = edgesOnPath.size();
@@ -62,17 +75,17 @@ public class ReversePath {
 	 * @return
 	 */
 	public boolean isStrictlySubsumedAsSuffixOf(ReversePath other) {
-		if (this.bPP == null) {
-			if (other.bPP == null) {
+		if (this.startPoint == null) {
+			if (other.startPoint == null) {
 				// Do nothing.
 			} else {
 				return false;
 			}
 		} else {
-			if (other.bPP == null) {
+			if (other.startPoint == null) {
 				return false;
 			} else {
-				if (!this.bPP.equals(other.bPP)) {
+				if (this.startPoint != other.startPoint) {
 					return false;
 				}
 			}
@@ -106,11 +119,11 @@ public class ReversePath {
 			return false;
 		}
 		ReversePath other = (ReversePath) obj;
-		if (bPP == null) {
-			if (other.bPP != null) {
+		if (startPoint == null) {
+			if (other.startPoint != null) {
 				return false;
 			}
-		} else if (!bPP.equals(other.bPP)) {
+		} else if (startPoint != other.startPoint) {
 			return false;
 		}
 		if (edgesOnPath == null) {
@@ -139,8 +152,8 @@ public class ReversePath {
 	@Override
 	public String toString() {
 		String str = "\nReverse<";
-		if (bPP != null) {
-			str += bPP.getNode().getNodeId() + ",";
+		if (startPoint != null) {
+			str += startPoint.getNode().getNodeId() + ",";
 		} else {
 			str += "--,";
 		}
