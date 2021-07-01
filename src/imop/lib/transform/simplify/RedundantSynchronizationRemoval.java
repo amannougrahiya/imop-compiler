@@ -15,6 +15,7 @@ import imop.lib.analysis.CoExistenceChecker;
 import imop.lib.analysis.mhp.AbstractPhase;
 import imop.lib.analysis.mhp.incMHP.BeginPhasePoint;
 import imop.lib.analysis.mhp.incMHP.EndPhasePoint;
+import imop.lib.analysis.mhp.incMHP.MemoizedPhaseInformation;
 import imop.lib.analysis.mhp.incMHP.Phase;
 import imop.lib.analysis.solver.FieldSensitivity;
 import imop.lib.cfg.info.CompoundStatementCFGInfo;
@@ -105,20 +106,13 @@ public class RedundantSynchronizationRemoval {
 	 *             Root AST node under which redundant barriers have to be removed.
 	 */
 	public static void removeBarriers(Node root) {
-		if (1 == 2) {
-			DumpSnapshot.dumpPhases("rem" + Program.mhpUpdateCategory + counter);
-			DumpSnapshot.dumpPointsTo("rem" + Program.mhpUpdateCategory + counter);
-			DumpSnapshot.dumpPredicates("rem" + Program.mhpUpdateCategory + counter);
-			DumpSnapshot.dumpVisibleSharedReadWrittenCells("rem" + Program.mhpUpdateCategory + counter);
-			DumpSnapshot.dumpRoot("root" + Program.idfaUpdateCategory + counter++);
-		}
 		for (Node barrierNode : Misc.getExactPostOrderEnclosee(root, BarrierDirective.class)) {
 			// Main.globalString += Misc.getLineNum(barrierNode) + " now.\n";
-			BarrierDirective barrier = (BarrierDirective) barrierNode;
 			Set<Phase> allPhaseSet = new HashSet<>();
 			for (ParallelConstruct parConsNode : Misc.getExactEnclosee(Program.getRoot(), ParallelConstruct.class)) {
 				allPhaseSet.addAll((Collection<? extends Phase>) parConsNode.getInfo().getConnectedPhases());
 			}
+			BarrierDirective barrier = (BarrierDirective) barrierNode;
 			Set<Phase> phasesAbove = (Set<Phase>) barrier.getInfo().getNodePhaseInfo().getPhaseSet();
 			if (Program.phaseEmptySetChecker && phasesAbove.isEmpty()) {
 				if (!Misc.getEnclosingFunction(barrier).getInfo().getCallersOfThis().isEmpty()) {
@@ -145,6 +139,9 @@ public class RedundantSynchronizationRemoval {
 					if (phAbove == phBelow) {
 						continue;
 					}
+					if (phAbove.getSuccPhase() != phBelow) {
+						continue;
+					}
 					// TODO: Try adding a check where which stops processing of two phases unless
 					// one is the predecessor of another.
 					if (RedundantSynchronizationRemoval.phasesConflictForBarrier(phAbove, phBelow, barrier)) {
@@ -156,6 +153,8 @@ public class RedundantSynchronizationRemoval {
 			if (removable) {
 				// Update: Not replacing the barrier with a flush now.
 				System.err.println("** Removing the barrier at line #" + Misc.getLineNum(barrier));
+				// Main.globalString += "** Removing the barrier at line #" +
+				// Misc.getLineNum(barrier) + "\n";
 				// System.err.println("** Replacing the barrier at line #" +
 				// Misc.getLineNum(barrier) + " with a flush.");
 				CompoundStatement enclosingCS = (CompoundStatement) Misc.getEnclosingBlock(barrier);
@@ -176,9 +175,19 @@ public class RedundantSynchronizationRemoval {
 		}
 	}
 
-	public static boolean phasesConflictForBarrier(Phase ph1, Phase ph2, BarrierDirective barrier) {
-		Set<Node> nodesInP1 = new HashSet<>(ph1.getNodeSet());
-		Set<Node> nodesInP2 = new HashSet<>(ph2.getNodeSet());
+	public static boolean phasesConflictForBarrier(Phase phAbove, Phase phBelow, BarrierDirective barrier) {
+		return phasesConflictForBarrierV1(phAbove, phBelow, barrier);
+	}
+
+	public static boolean setsConflictForBarrier(Phase phAbove, Set<Node> nodesAbove, BarrierDirective barrier,
+			Phase phBelow, Set<Node> nodesBelow) {
+		return setsConflictForBarrierV1b(phAbove, nodesAbove, barrier, phBelow, nodesBelow);
+
+	}
+
+	private static boolean phasesConflictForBarrierV1(Phase phAbove, Phase phBelow, BarrierDirective barrier) {
+		Set<Node> nodesInP1 = new HashSet<>(phAbove.getNodeSet());
+		Set<Node> nodesInP2 = new HashSet<>(phBelow.getNodeSet());
 
 		Set<MasterConstruct> allMasterConstructs = new HashSet<>();
 		for (Node n1 : nodesInP1) {
@@ -189,7 +198,7 @@ public class RedundantSynchronizationRemoval {
 					// Conservatively check that this master construct applies to the
 					// parallel-construct of ph1.
 					ParallelConstruct parentPar = Misc.getEnclosingNode(master, ParallelConstruct.class);
-					if (parentPar == null || !parentPar.getInfo().getConnectedPhases().contains(ph1)) {
+					if (parentPar == null || !parentPar.getInfo().getConnectedPhases().contains(phAbove)) {
 						continue;
 					}
 					allMasterConstructs.add(master);
@@ -211,7 +220,7 @@ public class RedundantSynchronizationRemoval {
 					// Conservatively check that this master construct applies to the
 					// parallel-construct of ph2.
 					ParallelConstruct parentPar = Misc.getEnclosingNode(master, ParallelConstruct.class);
-					if (parentPar == null || !parentPar.getInfo().getAllPhaseList().contains(ph2)) {
+					if (parentPar == null || !parentPar.getInfo().getAllPhaseList().contains(phBelow)) {
 						continue;
 					}
 					allMasterConstructs.add(master);
@@ -231,23 +240,25 @@ public class RedundantSynchronizationRemoval {
 		 * - nodesInP1 with nodesInP2
 		 */
 		if (!masterNodesInP1.isEmpty()) {
-			if (RedundantSynchronizationRemoval.setsConflictForBarrier(ph1, masterNodesInP1, barrier, ph2, nodesInP2)) {
+			if (RedundantSynchronizationRemoval.setsConflictForBarrier(phAbove, masterNodesInP1, barrier, phBelow,
+					nodesInP2)) {
 				return true;
 			}
 		}
 		if (!masterNodesInP2.isEmpty()) {
-			if (RedundantSynchronizationRemoval.setsConflictForBarrier(ph1, nodesInP1, barrier, ph2, masterNodesInP2)) {
+			if (RedundantSynchronizationRemoval.setsConflictForBarrier(phAbove, nodesInP1, barrier, phBelow,
+					masterNodesInP2)) {
 				return true;
 			}
 		}
-		if (RedundantSynchronizationRemoval.setsConflictForBarrier(ph1, nodesInP1, barrier, ph2, nodesInP2)) {
+		if (RedundantSynchronizationRemoval.setsConflictForBarrier(phAbove, nodesInP1, barrier, phBelow, nodesInP2)) {
 			return true;
 		}
 
 		return false;
 	}
 
-	public static boolean setsConflictForBarrier(Phase phAbove, Set<Node> nodesAbove, BarrierDirective barrier,
+	private static boolean setsConflictForBarrierV1a(Phase phAbove, Set<Node> nodesAbove, BarrierDirective barrier,
 			Phase phBelow, Set<Node> nodesBelow) {
 		// /*
 		// * Debug code starts.
@@ -270,13 +281,16 @@ public class RedundantSynchronizationRemoval {
 		 */
 		Set<Node> coExistBelow = new HashSet<>();
 		Set<BeginPhasePoint> belowBPP = phBelow.getBeginPoints();
+		Set<Node> ptNodes = new HashSet<>();
 		for (Node nBelow : nodesBelow) {
-			if (!nBelow.getInfo().mayRelyOnPtsTo()) {
-				CellSet readBelow = nBelow.getInfo().getSharedReads();
-				CellSet writtenBelow = nBelow.getInfo().getSharedWrites();
-				if (readBelow.isEmpty() && writtenBelow.isEmpty()) {
-					continue;
-				}
+			if (nBelow.getInfo().mayRelyOnPtsTo()) {
+				ptNodes.add(nBelow);
+				continue;
+			}
+			CellSet readBelow = nBelow.getInfo().getSharedReads();
+			CellSet writtenBelow = nBelow.getInfo().getSharedWrites();
+			if (readBelow.isEmpty() && writtenBelow.isEmpty()) {
+				continue;
 			}
 			if (belowBPP.stream().filter(bpp -> bpp.getNode() == barrier)
 					.anyMatch(bpp -> bpp.getReachableNodes().contains(nBelow))) {
@@ -294,7 +308,24 @@ public class RedundantSynchronizationRemoval {
 				coExistBelow.add(nBelow);
 			}
 		}
-		Set<Node> ptNodes = new HashSet<>();
+		for (Node nBelow : ptNodes) {
+			if (belowBPP.stream().filter(bpp -> bpp.getNode() == barrier)
+					.anyMatch(bpp -> bpp.getReachableNodes().contains(nBelow))) {
+				// Refer to rule #3 in "Synchronization elimination --> Modeling
+				// SVE-sensitivity."
+				coExistBelow.add(nBelow);
+				continue;
+			}
+			if (belowBPP.stream()
+					.filter(bpp -> bpp.getReachableNodes().contains(nBelow)
+							&& bpp.getNode().getInfo().getNodePhaseInfo().getPhaseSet().contains(phAbove))
+					.anyMatch(bpp -> CoExistenceChecker.canCoExistInPhase(bpp.getNode(), barrier, phAbove))) {
+				// Refer to rule #3 in "Synchronization elimination --> Modeling
+				// SVE-sensitivity."
+				coExistBelow.add(nBelow);
+			}
+		}
+		ptNodes = new HashSet<>();
 		for (Node nAbove : nodesAbove) {
 			if (nAbove.getInfo().mayRelyOnPtsTo()) {
 				ptNodes.add(nAbove);
@@ -309,6 +340,9 @@ public class RedundantSynchronizationRemoval {
 			nonFieldReadsInSource = null;
 			nonFieldWritesInSource = null;
 			if (readAbove.isEmpty() && writtenAbove.isEmpty()) {
+				continue;
+			}
+			if (!CoExistenceChecker.canCoExistInPhase(nAbove, barrier, phAbove)) {
 				continue;
 			}
 			if (Program.fieldSensitive) {
@@ -330,17 +364,20 @@ public class RedundantSynchronizationRemoval {
 						}
 					}
 				} else {
-					CellSet readBelow = nBelow.getInfo().getSharedReads(); // Note: These shared-reads would always be
-																			// from cached values.
-					CellSet writtenBelow = nBelow.getInfo().getSharedWrites(); // Note: These shared-writes would always
-																				// be from cached values.
-					if (Misc.doIntersect(readAbove, writtenBelow) || Misc.doIntersect(readBelow, writtenAbove)
-							|| Misc.doIntersect(writtenAbove, writtenBelow)) {
-						if (!CoExistenceChecker.canCoExistInPhase(nAbove, barrier, phAbove)) {
-							continue;
-						}
+					if (nBelow.getInfo().mayInterfereWith(readAbove, writtenAbove)) {
 						return true;
 					}
+					// CellSet readBelow = nBelow.getInfo().getSharedReads(); // Note: These
+					// // shared-reads would always be
+					// // from cached values.
+					// CellSet writtenBelow = nBelow.getInfo().getSharedWrites(); // Note: These
+					// // shared-writes would always
+					// // be from cached values.
+					// if (Misc.doIntersect(readAbove, writtenBelow) || Misc.doIntersect(readBelow,
+					// writtenAbove)
+					// || Misc.doIntersect(writtenAbove, writtenBelow)) {
+					// return true;
+					// }
 				}
 			}
 		}
@@ -378,10 +415,618 @@ public class RedundantSynchronizationRemoval {
 						}
 					}
 				} else {
-					CellSet readBelow = nBelow.getInfo().getSharedReads(); // Note: These shared-reads would always be
-																			// from cached values.
-					CellSet writtenBelow = nBelow.getInfo().getSharedWrites(); // Note: These shared-writes would always
-																				// be from cached values.
+					CellSet readBelow = nBelow.getInfo().getSharedReads(); // Note: These
+					// shared-reads would always be
+					// from cached values.
+					CellSet writtenBelow = nBelow.getInfo().getSharedWrites(); // Note: These
+					// shared-writes would always
+					// be from cached values.
+					if (Misc.doIntersect(readAbove, writtenBelow) || Misc.doIntersect(readBelow, writtenAbove)
+							|| Misc.doIntersect(writtenAbove, writtenBelow)) {
+						return true;
+					}
+				}
+			}
+		}
+		return false;
+	}
+
+	private static boolean setsConflictForBarrierV1b(Phase phAbove, Set<Node> nodesAbove, BarrierDirective barrier,
+			Phase phBelow, Set<Node> nodesBelow) {
+		// /*
+		// * Debug code starts.
+		// */
+		// boolean DF = false;
+		// if (nodesAbove.stream().anyMatch(n ->
+		// n.toString().contains("diff_imopVarPre77 += mydiff;"))
+		// && nodesBelow.stream().anyMatch(n -> n.toString().contains("(float)
+		// diff_imopVarPre77"))) {
+		// DF = true;
+		// System.out.println("Yes");
+		// }
+		//
+		// /*
+		// * Debug code ends.
+		// */
+		Set<Node> commonAccessingAbove = new HashSet<>();
+		// CellSet sharedCellsAbove = new CellSet();
+		for (Node nAbove : nodesAbove) {
+			if (nAbove.getInfo().hasSharedAccesses()) {
+				commonAccessingAbove.add(nAbove);
+			}
+			// CellSet sharedCells = nAbove.getInfo().getSharedAccesses();
+			// if (!sharedCells.isEmpty()) {
+			// commonAccessingAbove.add(nAbove);
+			// sharedCellsAbove.addAll(sharedCells);
+			// }
+		}
+		Set<Node> commonAccessingBelow = new HashSet<>();
+		// CellSet sharedCellsBelow = new CellSet();
+		// if (!sharedCellsAbove.isEmpty()) {
+		for (Node nBelow : nodesBelow) {
+			if (nBelow.getInfo().hasSharedAccesses()) {
+				commonAccessingBelow.add(nBelow);
+			}
+			// CellSet sharedCells = nBelow.getInfo().getSharedAccesses();
+			// if (!sharedCells.isEmpty()) {
+			// commonAccessingBelow.add(nBelow);
+			// sharedCellsBelow.addAll(sharedCells);
+			// }
+			// }
+		}
+		// CellSet commonCellsAcross = Misc.setIntersection(sharedCellsAbove,
+		// sharedCellsBelow);
+		// Set<Node> removeFromAbove = new HashSet<>();
+		// for (Node nAbove : commonAccessingAbove) {
+		// if (!Misc.doIntersect(nAbove.getInfo().getSharedAccesses(),
+		// commonCellsAcross)) {
+		// removeFromAbove.add(nAbove);
+		// }
+		// }
+		// commonAccessingAbove.removeAll(removeFromAbove);
+
+		Set<Node> coExistBelow = new HashSet<>();
+		Set<BeginPhasePoint> belowBPP = phBelow.getBeginPoints();
+		for (Node nBelow : commonAccessingBelow) {
+			if (belowBPP.stream().filter(bpp -> bpp.getNode() == barrier)
+					.anyMatch(bpp -> bpp.getReachableNodes().contains(nBelow))) {
+				// Refer to rule #3 in "Synchronization elimination --> Modeling
+				// SVE-sensitivity."
+				coExistBelow.add(nBelow);
+				continue;
+			}
+			if (belowBPP.stream()
+					.filter(bpp -> bpp.getReachableNodes().contains(nBelow)
+							&& bpp.getNode().getInfo().getNodePhaseInfo().getPhaseSet().contains(phAbove))
+					.anyMatch(bpp -> CoExistenceChecker.canCoExistInPhase(bpp.getNode(), barrier, phAbove))) {
+				// Refer to rule #3 in "Synchronization elimination --> Modeling
+				// SVE-sensitivity."
+				coExistBelow.add(nBelow);
+			}
+		}
+		for (Node nAbove : commonAccessingAbove) {
+			if (!CoExistenceChecker.canCoExistInPhase(nAbove, barrier, phAbove)) {
+				continue;
+			}
+			CellSet readAbove;
+			CellSet writtenAbove;
+			readAbove = nAbove.getInfo().getSharedReads();
+			writtenAbove = nAbove.getInfo().getSharedWrites();
+
+			for (Node nBelow : coExistBelow) {
+				if (nBelow.getInfo().mayInterfereWith(readAbove, writtenAbove)) {
+					return true;
+				}
+				// CellSet readBelow = nBelow.getInfo().getSharedReads(); // Note: These
+				// shared-reads would always be //
+				// // from cached values.
+				// CellSet writtenBelow = nBelow.getInfo().getSharedWrites(); // Note: These
+				// shared-writes would always //
+				// // be from cached values.
+				// if (Misc.doIntersect(readAbove, writtenBelow) || Misc.doIntersect(readBelow,
+				// writtenAbove)
+				// || Misc.doIntersect(writtenAbove, writtenBelow)) {
+				// return true;
+				// }
+			}
+		}
+		return false;
+
+		// OLD CODE BELOW:
+		/*
+		 * Extract only those nodes from nodesBelow that may co-exist with the
+		 * barrier in phBelow.
+		 */
+		// for (Node nBelow : nodesBelow) {
+		// if (!nBelow.getInfo().mayRelyOnPtsTo()) {
+		// CellSet readBelow = nBelow.getInfo().getSharedReads();
+		// CellSet writtenBelow = nBelow.getInfo().getSharedWrites();
+		// if (readBelow.isEmpty() && writtenBelow.isEmpty()) {
+		// continue;
+		// }
+		// }
+		// if (belowBPP.stream().filter(bpp -> bpp.getNode() == barrier)
+		// .anyMatch(bpp -> bpp.getReachableNodes().contains(nBelow))) {
+		// // Refer to rule #3 in "Synchronization elimination --> Modeling
+		// // SVE-sensitivity."
+		// coExistBelow.add(nBelow);
+		// continue;
+		// }
+		// if (belowBPP.stream()
+		// .filter(bpp -> bpp.getReachableNodes().contains(nBelow)
+		// &&
+		// bpp.getNode().getInfo().getNodePhaseInfo().getPhaseSet().contains(phAbove))
+		// .anyMatch(bpp -> CoExistenceChecker.canCoExistInPhase(bpp.getNode(), barrier,
+		// phAbove))) {
+		// // Refer to rule #3 in "Synchronization elimination --> Modeling
+		// // SVE-sensitivity."
+		// coExistBelow.add(nBelow);
+		// }
+		// }
+		// Set<Node> ptNodes = new HashSet<>();
+		// for (Node nAbove : nodesAbove) {
+		// if (nAbove.getInfo().mayRelyOnPtsTo()) {
+		// ptNodes.add(nAbove);
+		// continue;
+		// }
+		// CellSet readAbove;
+		// CellSet writtenAbove;
+		// CellSet nonFieldReadsInSource;
+		// CellSet nonFieldWritesInSource;
+		// readAbove = nAbove.getInfo().getSharedReads();
+		// writtenAbove = nAbove.getInfo().getSharedWrites();
+		// nonFieldReadsInSource = null;
+		// nonFieldWritesInSource = null;
+		// if (readAbove.isEmpty() && writtenAbove.isEmpty()) {
+		// continue;
+		// }
+		// if (Program.fieldSensitive) {
+		// nonFieldReadsInSource = nAbove.getInfo().getNonFieldSharedReads();
+		// nonFieldWritesInSource = nAbove.getInfo().getNonFieldSharedWrites();
+		// }
+		//
+		// for (Node nBelow : coExistBelow) {
+		// if (Program.fieldSensitive) {
+		// CellSet nonFieldReadsInDestination =
+		// nBelow.getInfo().getNonFieldSharedReads();
+		// CellSet nonFieldWritesInDestination =
+		// nBelow.getInfo().getNonFieldSharedWrites();
+		// if (nonFieldWritesInSource.overlapsWith(nonFieldWritesInDestination)
+		// || nonFieldWritesInSource.overlapsWith(nonFieldReadsInDestination)
+		// || nonFieldReadsInSource.overlapsWith(nonFieldWritesInDestination)) {
+		// return true;
+		// } else {
+		// if (FieldSensitivity.canConflictWithTwoThreads(nAbove, nBelow)) {
+		// return true;
+		// }
+		// }
+		// } else {
+		// CellSet readBelow = nBelow.getInfo().getSharedReads(); // Note: These
+		// shared-reads would always be
+		// // from cached values.
+		// CellSet writtenBelow = nBelow.getInfo().getSharedWrites(); // Note: These
+		// shared-writes would always
+		// // be from cached values.
+		// if (Misc.doIntersect(readAbove, writtenBelow) || Misc.doIntersect(readBelow,
+		// writtenAbove)
+		// || Misc.doIntersect(writtenAbove, writtenBelow)) {
+		// if (!CoExistenceChecker.canCoExistInPhase(nAbove, barrier, phAbove)) {
+		// continue;
+		// }
+		// return true;
+		// }
+		// }
+		// }
+		// }
+		// for (Node nAbove : ptNodes) {
+		// if (!CoExistenceChecker.canCoExistInPhase(nAbove, barrier, phAbove)) {
+		// continue;
+		// }
+		// CellSet readAbove;
+		// CellSet writtenAbove;
+		// CellSet nonFieldReadsInSource;
+		// CellSet nonFieldWritesInSource;
+		// readAbove = nAbove.getInfo().getSharedReads();
+		// writtenAbove = nAbove.getInfo().getSharedWrites();
+		// nonFieldReadsInSource = null;
+		// nonFieldWritesInSource = null;
+		// if (readAbove.isEmpty() && writtenAbove.isEmpty()) {
+		// continue;
+		// }
+		// if (Program.fieldSensitive) {
+		// nonFieldReadsInSource = nAbove.getInfo().getNonFieldSharedReads();
+		// nonFieldWritesInSource = nAbove.getInfo().getNonFieldSharedWrites();
+		// }
+		//
+		// for (Node nBelow : coExistBelow) {
+		// if (Program.fieldSensitive) {
+		// CellSet nonFieldReadsInDestination =
+		// nBelow.getInfo().getNonFieldSharedReads();
+		// CellSet nonFieldWritesInDestination =
+		// nBelow.getInfo().getNonFieldSharedWrites();
+		// if (nonFieldWritesInSource.overlapsWith(nonFieldWritesInDestination)
+		// || nonFieldWritesInSource.overlapsWith(nonFieldReadsInDestination)
+		// || nonFieldReadsInSource.overlapsWith(nonFieldWritesInDestination)) {
+		// return true;
+		// } else {
+		// if (FieldSensitivity.canConflictWithTwoThreads(nAbove, nBelow)) {
+		// return true;
+		// }
+		// }
+		// } else {
+		// CellSet readBelow = nBelow.getInfo().getSharedReads(); // Note: These
+		// shared-reads would always be
+		// // from cached values.
+		// CellSet writtenBelow = nBelow.getInfo().getSharedWrites(); // Note: These
+		// shared-writes would always
+		// // be from cached values.
+		// if (Misc.doIntersect(readAbove, writtenBelow) || Misc.doIntersect(readBelow,
+		// writtenAbove)
+		// || Misc.doIntersect(writtenAbove, writtenBelow)) {
+		// return true;
+		// }
+		// }
+		// }
+		// }
+		// return false;
+	}
+
+	/**
+	 * Derived from "b".
+	 */
+	private static boolean setsConflictForBarrierV1c(Phase phAbove, Set<Node> nodesAbove, BarrierDirective barrier,
+			Phase phBelow, Set<Node> nodesBelow) {
+		// /*
+		// * Debug code starts.
+		// */
+		// boolean DF = false;
+		// if (nodesAbove.stream().anyMatch(n ->
+		// n.toString().contains("diff_imopVarPre77 += mydiff;"))
+		// && nodesBelow.stream().anyMatch(n -> n.toString().contains("(float)
+		// diff_imopVarPre77"))) {
+		// DF = true;
+		// System.out.println("Yes");
+		// }
+		//
+		// /*
+		// * Debug code ends.
+		// */
+		Set<Node> commonAccessingAbove = new HashSet<>();
+		// CellSet sharedCellsAbove = new CellSet();
+		for (Node nAbove : nodesAbove) {
+			if (nAbove.getInfo().hasSharedAccesses()) {
+				commonAccessingAbove.add(nAbove);
+			}
+			// CellSet sharedCells = nAbove.getInfo().getSharedAccesses();
+			// if (!sharedCells.isEmpty()) {
+			// commonAccessingAbove.add(nAbove);
+			// sharedCellsAbove.addAll(sharedCells);
+			// }
+		}
+		Set<Node> commonAccessingBelow = new HashSet<>();
+		// CellSet sharedCellsBelow = new CellSet();
+		// if (!sharedCellsAbove.isEmpty()) {
+		for (Node nBelow : nodesBelow) {
+			if (nBelow.getInfo().hasSharedAccesses()) {
+				commonAccessingBelow.add(nBelow);
+			}
+			// CellSet sharedCells = nBelow.getInfo().getSharedAccesses();
+			// if (!sharedCells.isEmpty()) {
+			// commonAccessingBelow.add(nBelow);
+			// sharedCellsBelow.addAll(sharedCells);
+			// }
+			// }
+		}
+		// CellSet commonCellsAcross = Misc.setIntersection(sharedCellsAbove,
+		// sharedCellsBelow);
+		// Set<Node> removeFromAbove = new HashSet<>();
+		// for (Node nAbove : commonAccessingAbove) {
+		// if (!Misc.doIntersect(nAbove.getInfo().getSharedAccesses(),
+		// commonCellsAcross)) {
+		// removeFromAbove.add(nAbove);
+		// }
+		// }
+		// commonAccessingAbove.removeAll(removeFromAbove);
+		Set<Node> coExistBelow = new HashSet<>();
+		for (Node nBelow : commonAccessingBelow) {
+			if (MemoizedPhaseInformation.canNodeCoexistBelow(barrier, phBelow, nBelow)) {
+				coExistBelow.add(nBelow);
+			}
+		}
+		for (Node nAbove : commonAccessingAbove) {
+			if (!MemoizedPhaseInformation.canNodeCoExistAbove(barrier, phAbove, nAbove)) {
+				continue;
+			}
+			CellSet readAbove;
+			CellSet writtenAbove;
+			readAbove = nAbove.getInfo().getSharedReads();
+			writtenAbove = nAbove.getInfo().getSharedWrites();
+
+			for (Node nBelow : coExistBelow) {
+				CellSet readBelow = nBelow.getInfo().getSharedReads(); // Note: These shared-reads would always be
+																		// from cached values.
+				CellSet writtenBelow = nBelow.getInfo().getSharedWrites(); // Note: These shared-writes would always
+																			// be from cached values.
+				if (Misc.doIntersect(readAbove, writtenBelow) || Misc.doIntersect(readBelow, writtenAbove)
+						|| Misc.doIntersect(writtenAbove, writtenBelow)) {
+					return true;
+				}
+			}
+		}
+		return false;
+
+		// OLD CODE BELOW:
+		/*
+		 * Extract only those nodes from nodesBelow that may co-exist with the
+		 * barrier in phBelow.
+		 */
+		// for (Node nBelow : nodesBelow) {
+		// if (!nBelow.getInfo().mayRelyOnPtsTo()) {
+		// CellSet readBelow = nBelow.getInfo().getSharedReads();
+		// CellSet writtenBelow = nBelow.getInfo().getSharedWrites();
+		// if (readBelow.isEmpty() && writtenBelow.isEmpty()) {
+		// continue;
+		// }
+		// }
+		// if (belowBPP.stream().filter(bpp -> bpp.getNode() == barrier)
+		// .anyMatch(bpp -> bpp.getReachableNodes().contains(nBelow))) {
+		// // Refer to rule #3 in "Synchronization elimination --> Modeling
+		// // SVE-sensitivity."
+		// coExistBelow.add(nBelow);
+		// continue;
+		// }
+		// if (belowBPP.stream()
+		// .filter(bpp -> bpp.getReachableNodes().contains(nBelow)
+		// &&
+		// bpp.getNode().getInfo().getNodePhaseInfo().getPhaseSet().contains(phAbove))
+		// .anyMatch(bpp -> CoExistenceChecker.canCoExistInPhase(bpp.getNode(), barrier,
+		// phAbove))) {
+		// // Refer to rule #3 in "Synchronization elimination --> Modeling
+		// // SVE-sensitivity."
+		// coExistBelow.add(nBelow);
+		// }
+		// }
+		// Set<Node> ptNodes = new HashSet<>();
+		// for (Node nAbove : nodesAbove) {
+		// if (nAbove.getInfo().mayRelyOnPtsTo()) {
+		// ptNodes.add(nAbove);
+		// continue;
+		// }
+		// CellSet readAbove;
+		// CellSet writtenAbove;
+		// CellSet nonFieldReadsInSource;
+		// CellSet nonFieldWritesInSource;
+		// readAbove = nAbove.getInfo().getSharedReads();
+		// writtenAbove = nAbove.getInfo().getSharedWrites();
+		// nonFieldReadsInSource = null;
+		// nonFieldWritesInSource = null;
+		// if (readAbove.isEmpty() && writtenAbove.isEmpty()) {
+		// continue;
+		// }
+		// if (Program.fieldSensitive) {
+		// nonFieldReadsInSource = nAbove.getInfo().getNonFieldSharedReads();
+		// nonFieldWritesInSource = nAbove.getInfo().getNonFieldSharedWrites();
+		// }
+		//
+		// for (Node nBelow : coExistBelow) {
+		// if (Program.fieldSensitive) {
+		// CellSet nonFieldReadsInDestination =
+		// nBelow.getInfo().getNonFieldSharedReads();
+		// CellSet nonFieldWritesInDestination =
+		// nBelow.getInfo().getNonFieldSharedWrites();
+		// if (nonFieldWritesInSource.overlapsWith(nonFieldWritesInDestination)
+		// || nonFieldWritesInSource.overlapsWith(nonFieldReadsInDestination)
+		// || nonFieldReadsInSource.overlapsWith(nonFieldWritesInDestination)) {
+		// return true;
+		// } else {
+		// if (FieldSensitivity.canConflictWithTwoThreads(nAbove, nBelow)) {
+		// return true;
+		// }
+		// }
+		// } else {
+		// CellSet readBelow = nBelow.getInfo().getSharedReads(); // Note: These
+		// shared-reads would always be
+		// // from cached values.
+		// CellSet writtenBelow = nBelow.getInfo().getSharedWrites(); // Note: These
+		// shared-writes would always
+		// // be from cached values.
+		// if (Misc.doIntersect(readAbove, writtenBelow) || Misc.doIntersect(readBelow,
+		// writtenAbove)
+		// || Misc.doIntersect(writtenAbove, writtenBelow)) {
+		// if (!CoExistenceChecker.canCoExistInPhase(nAbove, barrier, phAbove)) {
+		// continue;
+		// }
+		// return true;
+		// }
+		// }
+		// }
+		// }
+		// for (Node nAbove : ptNodes) {
+		// if (!CoExistenceChecker.canCoExistInPhase(nAbove, barrier, phAbove)) {
+		// continue;
+		// }
+		// CellSet readAbove;
+		// CellSet writtenAbove;
+		// CellSet nonFieldReadsInSource;
+		// CellSet nonFieldWritesInSource;
+		// readAbove = nAbove.getInfo().getSharedReads();
+		// writtenAbove = nAbove.getInfo().getSharedWrites();
+		// nonFieldReadsInSource = null;
+		// nonFieldWritesInSource = null;
+		// if (readAbove.isEmpty() && writtenAbove.isEmpty()) {
+		// continue;
+		// }
+		// if (Program.fieldSensitive) {
+		// nonFieldReadsInSource = nAbove.getInfo().getNonFieldSharedReads();
+		// nonFieldWritesInSource = nAbove.getInfo().getNonFieldSharedWrites();
+		// }
+		//
+		// for (Node nBelow : coExistBelow) {
+		// if (Program.fieldSensitive) {
+		// CellSet nonFieldReadsInDestination =
+		// nBelow.getInfo().getNonFieldSharedReads();
+		// CellSet nonFieldWritesInDestination =
+		// nBelow.getInfo().getNonFieldSharedWrites();
+		// if (nonFieldWritesInSource.overlapsWith(nonFieldWritesInDestination)
+		// || nonFieldWritesInSource.overlapsWith(nonFieldReadsInDestination)
+		// || nonFieldReadsInSource.overlapsWith(nonFieldWritesInDestination)) {
+		// return true;
+		// } else {
+		// if (FieldSensitivity.canConflictWithTwoThreads(nAbove, nBelow)) {
+		// return true;
+		// }
+		// }
+		// } else {
+		// CellSet readBelow = nBelow.getInfo().getSharedReads(); // Note: These
+		// shared-reads would always be
+		// // from cached values.
+		// CellSet writtenBelow = nBelow.getInfo().getSharedWrites(); // Note: These
+		// shared-writes would always
+		// // be from cached values.
+		// if (Misc.doIntersect(readAbove, writtenBelow) || Misc.doIntersect(readBelow,
+		// writtenAbove)
+		// || Misc.doIntersect(writtenAbove, writtenBelow)) {
+		// return true;
+		// }
+		// }
+		// }
+		// }
+		// return false;
+	}
+
+	/**
+	 * Derived from "a".
+	 */
+	private static boolean setsConflictForBarrierV1d(Phase phAbove, Set<Node> nodesAbove, BarrierDirective barrier,
+			Phase phBelow, Set<Node> nodesBelow) {
+		// /*
+		// * Debug code starts.
+		// */
+		// boolean DF = false;
+		// if (nodesAbove.stream().anyMatch(n ->
+		// n.toString().contains("diff_imopVarPre77 += mydiff;"))
+		// && nodesBelow.stream().anyMatch(n -> n.toString().contains("(float)
+		// diff_imopVarPre77"))) {
+		// DF = true;
+		// System.out.println("Yes");
+		// }
+		//
+		// /*
+		// * Debug code ends.
+		// */
+		Set<Node> coExistBelow = new HashSet<>();
+		Set<Node> ptNodes = new HashSet<>();
+		for (Node nBelow : nodesBelow) {
+			if (nBelow.getInfo().mayRelyOnPtsTo()) {
+				ptNodes.add(nBelow);
+				continue;
+			}
+			CellSet readBelow = nBelow.getInfo().getSharedReads();
+			CellSet writtenBelow = nBelow.getInfo().getSharedWrites();
+			if (readBelow.isEmpty() && writtenBelow.isEmpty()) {
+				continue;
+			}
+			if (MemoizedPhaseInformation.canNodeCoexistBelow(barrier, phBelow, nBelow)) {
+				coExistBelow.add(nBelow);
+			}
+		}
+		for (Node nBelow : ptNodes) {
+			if (MemoizedPhaseInformation.canNodeCoexistBelow(barrier, phBelow, nBelow)) {
+				coExistBelow.add(nBelow);
+			}
+		}
+		ptNodes = new HashSet<>();
+		for (Node nAbove : nodesAbove) {
+			if (nAbove.getInfo().mayRelyOnPtsTo()) {
+				ptNodes.add(nAbove);
+				continue;
+			}
+			CellSet readAbove;
+			CellSet writtenAbove;
+			CellSet nonFieldReadsInSource;
+			CellSet nonFieldWritesInSource;
+			readAbove = nAbove.getInfo().getSharedReads();
+			writtenAbove = nAbove.getInfo().getSharedWrites();
+			nonFieldReadsInSource = null;
+			nonFieldWritesInSource = null;
+			if (readAbove.isEmpty() && writtenAbove.isEmpty()) {
+				continue;
+			}
+			if (!MemoizedPhaseInformation.canNodeCoExistAbove(barrier, phAbove, nAbove)) {
+				continue;
+			}
+			if (Program.fieldSensitive) {
+				nonFieldReadsInSource = nAbove.getInfo().getNonFieldSharedReads();
+				nonFieldWritesInSource = nAbove.getInfo().getNonFieldSharedWrites();
+			}
+
+			for (Node nBelow : coExistBelow) {
+				if (Program.fieldSensitive) {
+					CellSet nonFieldReadsInDestination = nBelow.getInfo().getNonFieldSharedReads();
+					CellSet nonFieldWritesInDestination = nBelow.getInfo().getNonFieldSharedWrites();
+					if (nonFieldWritesInSource.overlapsWith(nonFieldWritesInDestination)
+							|| nonFieldWritesInSource.overlapsWith(nonFieldReadsInDestination)
+							|| nonFieldReadsInSource.overlapsWith(nonFieldWritesInDestination)) {
+						return true;
+					} else {
+						if (FieldSensitivity.canConflictWithTwoThreads(nAbove, nBelow)) {
+							return true;
+						}
+					}
+				} else {
+					CellSet readBelow = nBelow.getInfo().getSharedReads(); // Note: These
+					// shared-reads would always be
+					// from cached values.
+					CellSet writtenBelow = nBelow.getInfo().getSharedWrites(); // Note: These
+					// shared-writes would always
+					// be from cached values.
+					if (Misc.doIntersect(readAbove, writtenBelow) || Misc.doIntersect(readBelow, writtenAbove)
+							|| Misc.doIntersect(writtenAbove, writtenBelow)) {
+						return true;
+					}
+				}
+			}
+		}
+		for (Node nAbove : ptNodes) {
+			if (!MemoizedPhaseInformation.canNodeCoExistAbove(barrier, phAbove, nAbove)) {
+				continue;
+			}
+			CellSet readAbove;
+			CellSet writtenAbove;
+			CellSet nonFieldReadsInSource;
+			CellSet nonFieldWritesInSource;
+			readAbove = nAbove.getInfo().getSharedReads();
+			writtenAbove = nAbove.getInfo().getSharedWrites();
+			nonFieldReadsInSource = null;
+			nonFieldWritesInSource = null;
+			if (readAbove.isEmpty() && writtenAbove.isEmpty()) {
+				continue;
+			}
+			if (Program.fieldSensitive) {
+				nonFieldReadsInSource = nAbove.getInfo().getNonFieldSharedReads();
+				nonFieldWritesInSource = nAbove.getInfo().getNonFieldSharedWrites();
+			}
+
+			for (Node nBelow : coExistBelow) {
+				if (Program.fieldSensitive) {
+					CellSet nonFieldReadsInDestination = nBelow.getInfo().getNonFieldSharedReads();
+					CellSet nonFieldWritesInDestination = nBelow.getInfo().getNonFieldSharedWrites();
+					if (nonFieldWritesInSource.overlapsWith(nonFieldWritesInDestination)
+							|| nonFieldWritesInSource.overlapsWith(nonFieldReadsInDestination)
+							|| nonFieldReadsInSource.overlapsWith(nonFieldWritesInDestination)) {
+						return true;
+					} else {
+						if (FieldSensitivity.canConflictWithTwoThreads(nAbove, nBelow)) {
+							return true;
+						}
+					}
+				} else {
+					CellSet readBelow = nBelow.getInfo().getSharedReads(); // Note: These
+					// shared-reads would always be
+					// from cached values.
+					CellSet writtenBelow = nBelow.getInfo().getSharedWrites(); // Note: These
+					// shared-writes would always
+					// be from cached values.
 					if (Misc.doIntersect(readAbove, writtenBelow) || Misc.doIntersect(readBelow, writtenAbove)
 							|| Misc.doIntersect(writtenAbove, writtenBelow)) {
 						return true;
@@ -502,6 +1147,55 @@ public class RedundantSynchronizationRemoval {
 				CellSet writtenBelow = nBelow.getInfo().getSharedWrites();
 				if (Misc.doIntersect(readAbove, writtenBelow) || Misc.doIntersect(readBelow, writtenAbove)
 						|| Misc.doIntersect(writtenAbove, writtenBelow)) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * Derived from latest "V1b" (more recent than V1c).
+	 *
+	 * @param phAbove
+	 * @param nodesAbove
+	 * @param barrier
+	 * @param phBelow
+	 * @param nodesBelow
+	 * @return
+	 */
+	private static boolean setsConflictForBarrierV1e(Phase phAbove, Set<Node> nodesAbove, BarrierDirective barrier,
+			Phase phBelow, Set<Node> nodesBelow) {
+		// CellSet commonCellsAcross = Misc.setIntersection(sharedCellsAbove,
+		// sharedCellsBelow);
+		// Set<Node> removeFromAbove = new HashSet<>();
+		// for (Node nAbove : commonAccessingAbove) {
+		// if (!Misc.doIntersect(nAbove.getInfo().getSharedAccesses(),
+		// commonCellsAcross)) {
+		// removeFromAbove.add(nAbove);
+		// }
+		// }
+		// commonAccessingAbove.removeAll(removeFromAbove);
+
+		Node barrSuccessor = barrier.getInfo().getCFGInfo().getLeafSuccessors().get(0);
+		Set<BeginPhasePoint> belowBPP = phBelow.getBeginPoints();
+		for (Node nAbove : nodesAbove) {
+			if (!CoExistenceChecker.canCoExistInPhase(nAbove, barrier, phAbove)) {
+				continue;
+			}
+			CellSet readAbove;
+			CellSet writtenAbove;
+			readAbove = nAbove.getInfo().getSharedReads();
+			writtenAbove = nAbove.getInfo().getSharedWrites();
+			for (Node nBelow : nodesBelow) {
+				if (!belowBPP.stream().filter(bpp -> bpp.getNode() == barrier)
+						.anyMatch(bpp -> bpp.getReachableNodes().contains(nBelow))) {
+					continue;
+				}
+				if (!CoExistenceChecker.canCoExistInPhase(nBelow, barrSuccessor, phBelow)) {
+					continue;
+				}
+				if (nBelow.getInfo().mayInterfereWith(readAbove, writtenAbove)) {
 					return true;
 				}
 			}

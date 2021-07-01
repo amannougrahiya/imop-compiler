@@ -75,13 +75,14 @@ import java.util.*;
 public class Main {
 
 	public static long totalTime;
-	// public static String globalString = "";
+	public static String globalString = "";
 	public static boolean timerOn = false;
 
 	public static void main(String[] args) throws FileNotFoundException, InterruptedException {
 		// Thread.sleep(5000);
 		totalTime = System.nanoTime();
 		Program.parseNormalizeInput(args);
+		DriverModule.askCoExistenceQueries();
 
 		// countPhases();
 		// DriverModule.printRelevantFunctionNames();

@@ -132,6 +132,7 @@ public class Phase extends AbstractPhase<BeginPhasePoint, EndPhasePoint> {
 			assert (false) : "Unexpected path.";
 			return false;
 		}
+		// TODO: Inspect and use code for barrier removal checks using IncEPA.
 		CellSet readsInSource = n.getInfo().getSharedReads();
 		CellSet writesInSource = n.getInfo().getSharedWrites();
 		CellSet nonFieldReadsInSource = null;

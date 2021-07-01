@@ -520,7 +520,7 @@ public class FrontEnd {
 			if (Program.concurrencyAlgorithm != ConcurrencyAlgorithm.YCON
 					&& Program.sveSensitive == SVEDimension.SVE_SENSITIVE) {
 				NodeInfo.checkFirstRun(Program.useInterProceduralPredicateAnalysis ? AnalysisName.CROSSCALL_PREDICATE_ANALYSIS
-						: AnalysisName.INTRA_PREDICATE_ANALYSIS);
+						: AnalysisName.PSEUDO_INTER_PREDICATE_ANALYSIS);
 			}
 
 			System.err.println("Pass: Performing optimized points-to analysis.");

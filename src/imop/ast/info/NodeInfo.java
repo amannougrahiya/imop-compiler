@@ -24,8 +24,8 @@ import imop.lib.analysis.SVEChecker;
 import imop.lib.analysis.flowanalysis.*;
 import imop.lib.analysis.flowanalysis.controlflow.DominanceAnalysis;
 import imop.lib.analysis.flowanalysis.controlflow.DominanceAnalysis.DominatorFlowFact;
-import imop.lib.analysis.flowanalysis.controlflow.IntraProceduralPredicateAnalysis;
 import imop.lib.analysis.flowanalysis.controlflow.PredicateAnalysis;
+import imop.lib.analysis.flowanalysis.controlflow.CrossCallPredicateAnalysis;
 import imop.lib.analysis.flowanalysis.dataflow.*;
 import imop.lib.analysis.flowanalysis.dataflow.CopyPropagationAnalysis.CopyPropagationFlowMap;
 import imop.lib.analysis.flowanalysis.dataflow.DataDependenceForward.DataDependenceForwardFF;
@@ -426,7 +426,8 @@ public class NodeInfo implements Cloneable {
 	 *                     analyses to the list of allowed analyses here.
 	 */
 	public static void checkFirstRun(AnalysisName analysisName) {
-		if (analysisName == AnalysisName.INTRA_PREDICATE_ANALYSIS || analysisName == AnalysisName.CROSSCALL_PREDICATE_ANALYSIS) {
+		if (analysisName == AnalysisName.PSEUDO_INTER_PREDICATE_ANALYSIS
+				|| analysisName == AnalysisName.CROSSCALL_PREDICATE_ANALYSIS) {
 			if (!NodeInfo.paDone) {
 				NodeInfo.paDone = true;
 				performPredicateAnalysis();
@@ -469,10 +470,10 @@ public class NodeInfo implements Cloneable {
 		long timeStart = System.nanoTime();
 		ControlFlowAnalysis<?> pa;
 		if (Program.useInterProceduralPredicateAnalysis) {
-			pa = new PredicateAnalysis();
+			pa = new CrossCallPredicateAnalysis();
 			pa.run(mainFunc);
 		} else {
-			pa = new IntraProceduralPredicateAnalysis();
+			pa = new PredicateAnalysis();
 			pa.run(mainFunc);
 		}
 		long timeTaken = System.nanoTime() - timeStart;
@@ -1905,6 +1906,33 @@ public class NodeInfo implements Cloneable {
 					this.getNode());
 			return;
 		}
+	}
+
+	private TRISTATE hasShared = TRISTATE.UNKNOWN;
+
+	public boolean hasSharedAccesses() {
+		if (this.hasShared == TRISTATE.UNKNOWN) {
+			boolean val = !this.getSharedReads().isEmpty() || !this.getSharedWrites().isEmpty();
+			this.hasShared = val ? TRISTATE.YES : TRISTATE.NO;
+		}
+		return this.hasShared == TRISTATE.YES;
+	}
+
+	public boolean mayInterfereWith(CellCollection reads, CellCollection writes) {
+		for (Cell c : this.getSharedReads()) {
+			if (writes.contains(c)) {
+				return true;
+			}
+		}
+		for (Cell c : this.getSharedWrites()) {
+			if (reads.contains(c)) {
+				return true;
+			}
+			if (writes.contains(c)) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	public CellSet getSharedAccesses() {

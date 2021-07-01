@@ -20,6 +20,7 @@ import imop.lib.analysis.mhp.AbstractPhasePointable;
 import imop.lib.analysis.mhp.incMHP.BeginPhasePoint;
 import imop.lib.analysis.mhp.incMHP.EndPhasePoint;
 import imop.lib.analysis.mhp.incMHP.MHPAnalyzer;
+import imop.lib.analysis.mhp.incMHP.MemoizedPhaseInformation;
 import imop.lib.analysis.mhp.incMHP.NodePhaseInfo;
 import imop.lib.analysis.solver.ConstraintsGenerator;
 import imop.lib.cfg.info.CFGInfo;
@@ -64,6 +65,7 @@ public class AutomatedUpdater {
 	 * (and inefficient) solution to maintain consistency, for any given caching.
 	 */
 	public static void flushCaches() {
+		MemoizedPhaseInformation.flushMemoizedInformation();
 		Program.rememberInitialPhasesIfRequired();
 		CoExistenceChecker.flushCoExistenceCaches();
 		Program.invalidateReversePostorder();
@@ -743,7 +745,7 @@ public class AutomatedUpdater {
 				if (analysis
 						.getAnalysisName() == (Program.useInterProceduralPredicateAnalysis
 								? AnalysisName.CROSSCALL_PREDICATE_ANALYSIS
-								: AnalysisName.INTRA_PREDICATE_ANALYSIS)
+								: AnalysisName.PSEUDO_INTER_PREDICATE_ANALYSIS)
 						|| analysis instanceof InterThreadForwardCellularAnalysis
 						|| analysis instanceof InterThreadForwardNonCellularAnalysis) {
 					analysis.storeNodesToBeUpdated(new HashSet<>()); // This will just mark the IDFA as invalid.
@@ -776,7 +778,7 @@ public class AutomatedUpdater {
 				if (analysis
 						.getAnalysisName() == (Program.useInterProceduralPredicateAnalysis
 								? AnalysisName.CROSSCALL_PREDICATE_ANALYSIS
-								: AnalysisName.INTRA_PREDICATE_ANALYSIS)
+								: AnalysisName.PSEUDO_INTER_PREDICATE_ANALYSIS)
 						|| analysis instanceof InterThreadForwardCellularAnalysis
 						|| analysis instanceof InterThreadForwardNonCellularAnalysis) {
 					analysis.storeNodesToBeUpdated(nodeSet);

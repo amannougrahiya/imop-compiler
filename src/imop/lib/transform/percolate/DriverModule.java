@@ -19,6 +19,7 @@ import imop.lib.analysis.flowanalysis.BranchEdge;
 import imop.lib.analysis.flowanalysis.Cell;
 import imop.lib.analysis.flowanalysis.SCC;
 import imop.lib.analysis.flowanalysis.Symbol;
+import imop.lib.analysis.flowanalysis.controlflow.PredicateAnalysis;
 import imop.lib.analysis.flowanalysis.controlflow.PredicateAnalysis.PredicateFlowFact;
 import imop.lib.analysis.flowanalysis.controlflow.ReversePath;
 import imop.lib.analysis.flowanalysis.generic.AnalysisDimension.SVEDimension;
@@ -297,13 +298,16 @@ public class DriverModule {
 				finalIncNodes = analysis.nodesProcessed;
 			}
 		}
+		int cpredaUpdTimer = 0;
 		System.err.println("Time spent in forward IDFA updates -- ");
 		for (FlowAnalysis<?> analysis : FlowAnalysis.getAllAnalyses().values()) {
 			System.err.println(
 					"\t For " + analysis.getAnalysisName() + ": " + analysis.flowAnalysisUpdateTimer / (1e9) + "s.");
 			if (analysis.getAnalysisName() == AnalysisName.POINTSTO) {
 				incIDFATime = analysis.flowAnalysisUpdateTimer / (1e9 * 1.0);
-			} else if (analysis.getAnalysisName() == AnalysisName.INTRA_PREDICATE_ANALYSIS) {
+			} else if (analysis.getAnalysisName() == AnalysisName.PSEUDO_INTER_PREDICATE_ANALYSIS) {
+				cpredaUpdTimer += analysis.flowAnalysisUpdateTimer;
+				cpredaUpdTimer += SVEChecker.cpredaTimer;
 				totalMHPTime += analysis.flowAnalysisUpdateTimer / (1e9 * 1.0);
 				totalMHPTime += SVEChecker.cpredaTimer / (1e9 * 1.0);
 			}
@@ -344,7 +348,7 @@ public class DriverModule {
 		System.err.println("Optimized a total of " + AutomatedUpdater.hasBeenOtimized + " stale markings.");
 		System.err
 				.println("Number of times PTA would have had to run in semi-eager mode: " + ProfileSS.flagSwitchCount);
-		String s = (Program.sveSensitive == SVEDimension.SVE_SENSITIVE) ? "S" : "U";
+		String s = (Program.sveSensitive == SVEDimension.SVE_SENSITIVE) ? "S" : "I";
 		DumpSnapshot.forceDumpRoot((Program.fileName + "imop_output_" + Program.concurrencyAlgorithm + "_"
 				+ Program.mhpUpdateCategory + s + ".i").trim());
 		DumpSnapshot.dumpPointsTo("final" + Program.idfaUpdateCategory + Program.cpaMode);
@@ -381,8 +385,8 @@ public class DriverModule {
 				+ Program.mhpUpdateCategory + " "
 				+ ((Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.YCON) ? "SVE-sensitive (0)"
 						: ((Program.sveSensitive == SVEDimension.SVE_SENSITIVE)
-								? ("SVE-sensitive_" + Program.cpaMode + " ("
-										+ df2.format(SVEChecker.cpredaTimer * 1.0 / 1e9) + ")")
+								? ("SVE-sensitive_" + Program.cpaMode + " (" + df2.format(cpredaUpdTimer * 1.0 / 1e9)
+										+ ")")
 								: "SVE-insensitive (0)"))
 				+ " [" + df2.format(totalMHPTime)
 				// + ((Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.YCON) ?
@@ -397,7 +401,8 @@ public class DriverModule {
 						&& Program.sveSensitive == SVEDimension.SVE_SENSITIVE
 								? " " + df2.format(SVEChecker.sveQueryTimer / (1e9 * 1.0))
 								: " 0")
-				+ " " + numPhases + " " + numExplicitBarriers + " " + df2.format(DriverModule.mayRelyPTATimer/(1e9*1.0)) + " " + CoExistenceChecker.queryCounter);
+				+ " " + numPhases + " " + numExplicitBarriers + " "
+				+ df2.format(DriverModule.mayRelyPTATimer / (1e9 * 1.0)) + " " + CoExistenceChecker.queryCounter);
 		System.out.println(resultString);
 		System.err.println(resultString);
 
@@ -407,7 +412,7 @@ public class DriverModule {
 		// System.err.println(Main.globalString);
 
 		// Query Count Checker Code Starts:
-		// DriverModule.countPhysicalSizeOfCPA();
+		DriverModule.countPhysicalSizeOfCPA();
 		// DriverModule.queryCount();
 
 		// DumpSnapshot.printToFile(Program.stabilizationStackDump.toString(),
@@ -431,14 +436,14 @@ public class DriverModule {
 				|| Program.sveSensitive == SVEDimension.SVE_INSENSITIVE) {
 			return;
 		}
-		Set<ImmutableSet<ReversePath>> setOfSetsOfPaths = new HashSet<>();
+		Set<Set<ReversePath>> setOfSetsOfPaths = new HashSet<>();
 		Set<ImmutableList<BranchEdge>> setOfListsOfEdges = new HashSet<>();
 		int totalLogicalSets = 0;
 		int totalLogicalLists = 0;
 		for (Node n : Program.getRoot().getInfo().getCFGInfo().getLexicalCFGLeafContents()) {
-			PredicateFlowFact nPaths = (PredicateFlowFact) n.getInfo().getCurrentIN(
+			PredicateAnalysis.PredicateFlowFact nPaths = (PredicateAnalysis.PredicateFlowFact) n.getInfo().getCurrentIN(
 					Program.useInterProceduralPredicateAnalysis ? AnalysisName.CROSSCALL_PREDICATE_ANALYSIS
-							: AnalysisName.INTRA_PREDICATE_ANALYSIS);
+							: AnalysisName.PSEUDO_INTER_PREDICATE_ANALYSIS);
 			if (nPaths == null) {
 				continue;
 			}
@@ -450,12 +455,18 @@ public class DriverModule {
 			}
 		}
 		System.err.println("Total sets: " + setOfSetsOfPaths.size() + "/" + totalLogicalSets);
+		System.out.println("Total sets: " + setOfSetsOfPaths.size() + "/" + totalLogicalSets);
 		System.err.println("Total lists: " + setOfListsOfEdges.size() + "/" + totalLogicalLists);
-		int sizeInBE = 0;
+		System.out.println("Total lists: " + setOfListsOfEdges.size() + "/" + totalLogicalLists);
+		int sizeInBytes = 0;
 		for (ImmutableList<BranchEdge> path : setOfListsOfEdges) {
-			sizeInBE += path.size();
+			sizeInBytes += (path.size() * 16) + 8;
 		}
-		System.err.println("Total branches (physical size estimate): " + sizeInBE);
+		for (Set<ReversePath> srp : setOfSetsOfPaths) {
+			sizeInBytes += (srp.size() * 8) + 8;
+		}
+		System.err.println("Estimate of total physical size estimate (bytes): " + sizeInBytes);
+		System.out.println("Estimate of total physical size estimate (bytes): " + sizeInBytes);
 	}
 
 	public static void queryCount() {
@@ -535,6 +546,139 @@ public class DriverModule {
 		}
 		// change();
 		DriverModule.optimizeBarriers(); // This method does not return;
+		System.exit(0);
+	}
+
+	@SuppressWarnings("unchecked")
+	public static void askCoExistenceQueries() {
+		if (Program.printNoFiles) {
+			Program.printNoFiles = false;
+		}
+		Comparator<Node> comp = new Comparator<Node>() {
+			@Override
+			public int compare(Node o1, Node o2) {
+				if (o1.getNodeId() == o2.getNodeId()) {
+					return 0;
+				} else if (o1.getNodeId() < o2.getNodeId()) {
+					return -1;
+				} else {
+					return 1;
+				}
+			}
+		};
+		Set<Node> sharedNodes = new TreeSet<>(comp);
+		for (ParallelConstruct parCons : Misc.getExactEnclosee(Program.getRoot(), ParallelConstruct.class)) {
+			for (Node n : parCons.getInfo().getCFGInfo().getIntraTaskCFGLeafContents()) {
+				if (!n.getInfo().hasSharedAccesses()) {
+					continue;
+				} else {
+					sharedNodes.add(n);
+				}
+			}
+		}
+
+		int counter = 0;
+		int negCounter = 0;
+		Comparator<SortedNodePair> comp2 = new Comparator<SortedNodePair>() {
+			@Override
+			public int compare(SortedNodePair o1, SortedNodePair o2) {
+				if (o1.one.getNodeId() == o2.one.getNodeId()) {
+					if (o1.two.getNodeId() == o2.two.getNodeId()) {
+						return 0;
+					} else if (o1.two.getNodeId() < o2.two.getNodeId()) {
+						return -1;
+					} else {
+						return 1;
+					}
+				} else if (o1.one.getNodeId() < o2.one.getNodeId()) {
+					return -1;
+				} else {
+					return 1;
+				}
+			}
+		};
+		Set<SortedNodePair> coexistingNodes = new TreeSet<>(comp2);
+		long timer = System.nanoTime();
+		for (Node n1 : sharedNodes) {
+			for (Node n2 : sharedNodes) {
+				if (n1 == n2) {
+					continue;
+				}
+				if (Program.concurrencyAlgorithm == ConcurrencyAlgorithm.YCON) {
+					if (Misc.doIntersect((Collection<YPhase>) n1.getInfo().getNodePhaseInfo().getPhaseSet(),
+							(Collection<YPhase>) n2.getInfo().getNodePhaseInfo().getPhaseSet())) {
+						coexistingNodes.add(new SortedNodePair(n1, n2));
+						counter++;
+					} else {
+						negCounter++;
+					}
+				} else if (Program.sveSensitive == SVEDimension.SVE_SENSITIVE) {
+					if (Misc.doIntersect((Collection<Phase>) n1.getInfo().getNodePhaseInfo().getPhaseSet(),
+							(Collection<Phase>) n2.getInfo().getNodePhaseInfo().getPhaseSet())) {
+						if (CoExistenceChecker.canCoExistInAnyPhase(n1, n2)) {
+							coexistingNodes.add(new SortedNodePair(n1, n2));
+							counter++;
+						} else {
+							negCounter++;
+						}
+					} else {
+						negCounter++;
+					}
+				} else {
+					if (Misc.doIntersect((Collection<Phase>) n1.getInfo().getNodePhaseInfo().getPhaseSet(),
+							(Collection<Phase>) n2.getInfo().getNodePhaseInfo().getPhaseSet())) {
+						coexistingNodes.add(new SortedNodePair(n1, n2));
+						counter++;
+					} else {
+						negCounter++;
+					}
+				}
+			}
+		}
+		int countActual = 0;
+		for (SortedNodePair snp : coexistingNodes) {
+			CellSet sh1Set = snp.one.getInfo().getSharedAccesses();
+			for (Cell sh2 : snp.two.getInfo().getSharedAccesses()) {
+				if (sh1Set.contains(sh2)) {
+					if (sh2 instanceof Symbol) {
+						Symbol sym = (Symbol) sh2;
+						if (sym.isAFunction()) {
+							continue;
+						} else {
+							countActual++;
+							break;
+						}
+					} else {
+						countActual++;
+						break;
+					}
+				}
+			}
+		}
+		timer = System.nanoTime() - timer;
+		System.out.println("Count: " + counter + "~~" + coexistingNodes.size() + "~~" + countActual + "; Neg Count: "
+				+ negCounter / 2 + "; Timer: " + timer / (1e9 * 1.0) + "s.");
+		// for (SortedNodePair nP : coexistingNodes) {
+		// System.out.println(
+		// nP.one + "(" + Misc.getLineNum(nP.one) + ") : " + nP.two + "(" +
+		// Misc.getLineNum(nP.two) + ")");
+		// }
+		// String str = "";
+		// int i = 0;
+		// for (SortedNodePair nP : coexistingNodes) {
+		// if (i < 10000) {
+		// i++;
+		// continue;
+		// }
+		// str += nP.one + ":" + nP.two + "\n";
+		// i++;
+		// if (i > 30000) {
+		// break;
+		// }
+		// }
+		// DumpSnapshot.printToFile(str,
+		// Program.fileName + "-" + Program.concurrencyAlgorithm + "-" +
+		// Program.sveSensitive + "-coexisting.i");
 		System.exit(0);
 	}
 
@@ -624,7 +768,7 @@ public class DriverModule {
 		System.err.println("Optimized a total of " + AutomatedUpdater.hasBeenOtimized + " stale markings.");
 		System.err
 				.println("Number of times PTA would have had to run in semi-eager mode: " + ProfileSS.flagSwitchCount);
-		String s = (Program.sveSensitive == SVEDimension.SVE_SENSITIVE) ? "S" : "U";
+		String s = (Program.sveSensitive == SVEDimension.SVE_SENSITIVE) ? "S" : "I";
 		DumpSnapshot.printToFile(Program.getRoot(), (Program.fileName + "imop_output_" + Program.concurrencyAlgorithm
 				+ "_" + Program.mhpUpdateCategory + s + ".i").trim());
 		DumpSnapshot.dumpPointsTo("final" + Program.idfaUpdateCategory);

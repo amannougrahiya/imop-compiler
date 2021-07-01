@@ -511,7 +511,6 @@ public abstract class FlowAnalysis<F extends FlowAnalysis.FlowFact> extends GJDe
 	 * @param node
 	 */
 	protected final void debugRecursion(Node node) {
-		// Main.globalString += node.toString() + "\n";
 		nodesProcessed++;
 		// localCount++;
 		Integer nodeProcessCount = tempMap.get(node);

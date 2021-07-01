@@ -2,7 +2,7 @@
  * Copyright (c) 2019 Aman Nougrahiya, V Krishna Nandivada, IIT Madras.
  * This file is a part of the project IMOP, licensed under the MIT license.
  * See LICENSE.md for the full text of the license.
- * 
+ *
  * The above notice shall be included in all copies or substantial
  * portions of this file.
  */
@@ -233,7 +233,7 @@ public class RootInfo extends NodeInfo {
 					Symbol sym = Misc.getSymbolEntry(varList.getF0().getTokenImage(), n);
 					if (sym == null) {
 						System.out.println("Found no declaration for " + varList.getF0().getTokenImage());
-						assert false;
+						// assert false;
 					}
 					getThreadPrivateList().put(varList.getF0().getTokenImage(), sym);
 					for (Node nodeChoice : varList.getF1().getNodes()) {
@@ -241,7 +241,7 @@ public class RootInfo extends NodeInfo {
 						sym = Misc.getSymbolEntry(varName, n);
 						if (sym == null) {
 							System.out.println("Found no declaration for " + varName);
-							assert false;
+							// assert false;
 						}
 						getThreadPrivateList().put(varName, sym);
 					}
@@ -522,7 +522,7 @@ public class RootInfo extends NodeInfo {
 	/**
 	 * Removes the function definition and declaration for all those functions
 	 * (except {@code main}) that have not been called anywhere in the program.
-	 * 
+	 *
 	 * @param baseNode
 	 *                 a {@link TranslationUnit} from within which all unused
 	 *                 function definitions and declarations have to be removed.
@@ -642,7 +642,7 @@ public class RootInfo extends NodeInfo {
 	/**
 	 * Returns a set of all those CFG leaf nodes in the program that are
 	 * accessible from {@code main}, if any.
-	 * 
+	 *
 	 * @return:
 	 *          a set of all the CFG leaf nodes in the program, that are
 	 *          accessible from {@code main}, if any. If program contains no
@@ -662,7 +662,7 @@ public class RootInfo extends NodeInfo {
 
 	/**
 	 * Adds newFunc to the cached list of functions.
-	 * 
+	 *
 	 * @param newFunc
 	 *                a newly added function.
 	 */
@@ -672,7 +672,7 @@ public class RootInfo extends NodeInfo {
 
 	/**
 	 * Removes a function from the cached list of functions.
-	 * 
+	 *
 	 * @param oldFunc
 	 *                an old function to be removed.
 	 */

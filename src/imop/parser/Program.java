@@ -85,7 +85,7 @@ public class Program {
 	 * Decides whether intermediate states of the program should be dumped.
 	 */
 	public static boolean dumpIntermediateStates = false;
-	public static boolean printNoFiles = false;
+	public static boolean printNoFiles = true;
 	public static boolean printNoPredicates = true;
 	/*
 	 * When set, certain checks are performed regarding phase-set of a barrier while
@@ -208,13 +208,13 @@ public class Program {
 		Program.maxThreads = 13;
 		Program.z3TimeoutInMilliSecs = "5000"; // 5s timeout for each z3 query.
 		Program.oneEntryPerFDInCallStack = true;
-		Program.disableLineNumbers = true; // Unless we need line numbers, keep this as true.
+		Program.disableLineNumbers = false; // Unless we need line numbers, keep this as true.
 		Program.basePointsTo = true;
 		Program.memoizeAccesses = 0;
 		Program.preciseDFDEdges = false;
 		Program.idfaUpdateCategory = UpdateCategory.LZUPD; // Default is LZUPD.
 		Program.concurrencyAlgorithm = ConcurrencyAlgorithm.ICON;
-		Program.mhpUpdateCategory = UpdateCategory.LZINV; // Default is LZUPD.
+		Program.mhpUpdateCategory = UpdateCategory.LZUPD; // Default is LZUPD.
 		Program.sveSensitive = SVEDimension.SVE_SENSITIVE;
 		Program.cpaMode = CPredAMode.H1H2H3;
 		Program.useInterProceduralPredicateAnalysis = false;
@@ -235,24 +235,27 @@ public class Program {
 		}
 
 		String filePath = "";
-		filePath = ("../tests/classB-preproc/bt-b.i"); // SVE-all: 29s.
-		// filePath = ("../tests/classB-preproc/cg-b.i"); // SVE-all: 2.50s.
-		// filePath = ("../tests/classB-preproc/ep-b.i"); // SVE-all: 0.55s
-		// filePath = ("../tests/classB-preproc/ft-b.i"); // SVE-all: 3.73s.
-		// filePath = ("../tests/classB-preproc/is-b.i"); // SVE-all: 0.69
-		// filePath = ("../tests/classB-preproc/lu-b.i"); // SVE-all: 16.26s.
-		// filePath = ("../tests/large-preproc/mg-c.i"); // SVE-all: 9.88s;
-		// filePath = ("../tests/classB-preproc/sp-b.i"); // SVE-all: 23s.
+		filePath = ("../tests/classB-preproc/bt-b.i");
+		// filePath = ("../tests/classB-preproc/cg-b.i");
+		// filePath = ("../tests/classB-preproc/ep-b.i");
+		// filePath = ("../tests/classB-preproc/ft-b.i");
+		// filePath = ("../tests/classB-preproc/is-b.i");
+		// filePath = ("../tests/classB-preproc/lu-b.i");
+		// filePath = ("../tests/large-preproc/mg-c.i");
+		// filePath = ("../tests/classB-preproc/sp-b.i");
 		//
-		// filePath = ("../output-dump/ft-bimop_output_LZINC.i"); // SVE-all: 29s.
-		filePath = ("../tests/npb-post/bt3-0.i"); // SVE-all: 29s.
-		// filePath = ("../tests/npb-post/cg3-0.i"); // SVE-all: 2.50s.
-		// filePath = ("../tests/npb-post/ep3-0.i"); // SVE-all: 0.55s
-		// filePath = ("../tests/npb-post/ft3-0.i"); // SVE-all: 3.73s.
-		// filePath = ("../tests/npb-post/is3-0.i"); // SVE-all: 0.69
-		// filePath = ("../tests/npb-post/lu3-0.i"); // SVE-all: 16.26s.
-		// filePath = ("../tests/npb-post/mg3-0.i"); // SVE-all: 9.88s;
-		// filePath = ("../tests/npb-post/sp3-0.i"); // SVE-all: 23s.
+		// filePath = ("../output-dump/ft-bimop_output_LZINC.i");
+		filePath = ("../tests/npb-post/bt3-0.i");
+		// filePath = ("../tests/bt-contextsensitivity.i");
+		// filePath = ("../tests/bt-recursivequery.i");
+		// filePath = ("../tests/btsmall.i");
+		// filePath = ("../tests/npb-post/cg3-0.i");
+		// filePath = ("../tests/npb-post/ep3-0.i");
+		// filePath = ("../tests/npb-post/ft3-0.i");
+		// filePath = ("../tests/npb-post/is3-0.i");
+		// filePath = ("../tests/npb-post/lu3-0.i");
+		// filePath = ("../tests/npb-post/mg3-0.i");
+		// filePath = ("../tests/npb-post/sp3-0.i");
 		//
 		// filePath = "../output-dump/imop_useful.i";
 		// filePath = ("../src/imop/lib/testcases/cfgTests/singleLooping.c");

@@ -362,7 +362,7 @@ public class DumpSnapshot {
 			String tempStr = "";
 			FlowFact flow = n.getInfo()
 					.getOUT(Program.useInterProceduralPredicateAnalysis ? AnalysisName.CROSSCALL_PREDICATE_ANALYSIS
-							: AnalysisName.INTRA_PREDICATE_ANALYSIS);
+							: AnalysisName.PSEUDO_INTER_PREDICATE_ANALYSIS);
 			if (flow != null) {
 				tempStr += "OUT: " + flow.getString();
 			}

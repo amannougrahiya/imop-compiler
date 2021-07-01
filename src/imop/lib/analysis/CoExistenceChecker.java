@@ -13,6 +13,7 @@ import imop.ast.node.external.*;
 import imop.ast.node.internal.*;
 import imop.lib.analysis.flowanalysis.BranchEdge;
 import imop.lib.analysis.flowanalysis.Symbol;
+import imop.lib.analysis.flowanalysis.controlflow.PredicateAnalysis;
 import imop.lib.analysis.flowanalysis.controlflow.PredicateAnalysis.PredicateFlowFact;
 import imop.lib.analysis.flowanalysis.controlflow.ReversePath;
 import imop.lib.analysis.flowanalysis.generic.AnalysisDimension.SVEDimension;
@@ -142,6 +143,9 @@ public class CoExistenceChecker {
 		if (Program.sveSensitive == SVEDimension.SVE_INSENSITIVE) {
 			return true;
 		}
+		if (n1 == n2) {
+			return true;
+		}
 		// TODO: Check the following heuristic.
 		if (Program.sveNoCheck && n1 instanceof BarrierDirective && n2 instanceof BarrierDirective) {
 			return false;
@@ -188,21 +192,26 @@ public class CoExistenceChecker {
 		}
 		// TODO: This is newly added if statement to take care of queries during phase
 		// updates.
-		if (!n1.getInfo().getNodePhaseInfo().getPhaseSet().contains(ph)) {
-			Misc.warnDueToLackOfFeature(
-					"Could not find a node in the given phase, while invoking CoExistenceChecker.canCoExistInPhase()",
-					null);
-			return true;
-		} else if (!n2.getInfo().getNodePhaseInfo().getPhaseSet().contains(ph)) {
-			Misc.warnDueToLackOfFeature(
-					"Could not find a node in the given phase, while invoking CoExistenceChecker.canCoExistInPhase()",
-					null);
-			return true;
-		}
-		assert (n1.getInfo().getNodePhaseInfo().getPhaseSet().contains(ph)) : n1 + " does not belong to phase #"
-				+ ph.getPhaseId() + ". It\'s phases are " + n1.getInfo().getNodePhaseInfo().getPhaseString()
-				+ " as compared to " + n2 + " whose phases are " + n2.getInfo().getNodePhaseInfo().getPhaseString();
-		assert (n2.getInfo().getNodePhaseInfo().getPhaseSet().contains(ph));
+		// if (!n1.getInfo().getNodePhaseInfo().getPhaseSet().contains(ph)) {
+		// Misc.warnDueToLackOfFeature(
+		// "Could not find a node in the given phase, while invoking
+		// CoExistenceChecker.canCoExistInPhase()",
+		// null);
+		// return true;
+		// } else if (!n2.getInfo().getNodePhaseInfo().getPhaseSet().contains(ph)) {
+		// Misc.warnDueToLackOfFeature(
+		// "Could not find a node in the given phase, while invoking
+		// CoExistenceChecker.canCoExistInPhase()",
+		// null);
+		// return true;
+		// }
+		// assert (n1.getInfo().getNodePhaseInfo().getPhaseSet().contains(ph)) : n1 + "
+		// does not belong to phase #"
+		// + ph.getPhaseId() + ". It\'s phases are " +
+		// n1.getInfo().getNodePhaseInfo().getPhaseString()
+		// + " as compared to " + n2 + " whose phases are " +
+		// n2.getInfo().getNodePhaseInfo().getPhaseString();
+		// assert (n2.getInfo().getNodePhaseInfo().getPhaseSet().contains(ph));
 
 		NodePhasePair nodePhasePair = new NodePhasePair(n1, n2, ph);
 		NodePair nodePair = new NodePair(n1, n2);
@@ -214,22 +223,25 @@ public class CoExistenceChecker {
 		}
 
 		if (nodePairs.contains(nodePair)) {
+			return false;
 			/*
 			 * Conservatively, we return true.
 			 * NOTE: Since this is a recursive call, DO NOT assume this pair to
 			 * co-exist just yet.
 			 */
-			return true;
+			// TODO: tests/btsmall won't give precise answer if we return true, as compared
+			// to YCON.
+			// return true;
 		} else {
 			nodePairs.add(nodePair);
 		}
 
-		PredicateFlowFact n1Paths = (PredicateFlowFact) n1.getInfo()
+		PredicateAnalysis.PredicateFlowFact n1Paths = (PredicateAnalysis.PredicateFlowFact) n1.getInfo()
 				.getIN(Program.useInterProceduralPredicateAnalysis ? AnalysisName.CROSSCALL_PREDICATE_ANALYSIS
-						: AnalysisName.INTRA_PREDICATE_ANALYSIS);
-		PredicateFlowFact n2Paths = (PredicateFlowFact) n2.getInfo()
+						: AnalysisName.PSEUDO_INTER_PREDICATE_ANALYSIS);
+		PredicateAnalysis.PredicateFlowFact n2Paths = (PredicateAnalysis.PredicateFlowFact) n2.getInfo()
 				.getIN(Program.useInterProceduralPredicateAnalysis ? AnalysisName.CROSSCALL_PREDICATE_ANALYSIS
-						: AnalysisName.INTRA_PREDICATE_ANALYSIS);
+						: AnalysisName.PSEUDO_INTER_PREDICATE_ANALYSIS);
 
 		if (n1Paths == null || n2Paths == null) {
 			// TODO: Uncomment the following code, after re-inspecting the logic here.

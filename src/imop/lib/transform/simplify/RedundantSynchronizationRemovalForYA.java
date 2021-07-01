@@ -78,6 +78,8 @@ public class RedundantSynchronizationRemovalForYA {
 			if (removable) {
 				// Update: Not replacing the barrier with a flush now.
 				System.err.println("** Removing the barrier at line #" + Misc.getLineNum(barrier));
+				// Main.globalString += "** Removing the barrier at line #" +
+				// Misc.getLineNum(barrier) + "\n";
 				// System.err.println("** Replacing the barrier at line #" +
 				// Misc.getLineNum(barrier) + " with a flush.");
 				CompoundStatement enclosingCS = (CompoundStatement) Misc.getEnclosingBlock(barrier);
@@ -214,12 +216,16 @@ public class RedundantSynchronizationRemovalForYA {
 				if (!coExistBelow.contains(nBelow)) {
 					continue;
 				}
-				CellSet readBelow = nBelow.getInfo().getSharedReads();
-				CellSet writtenBelow = nBelow.getInfo().getSharedWrites();
-				if (Misc.doIntersect(readAbove, writtenBelow) || Misc.doIntersect(readBelow, writtenAbove)
-						|| Misc.doIntersect(writtenAbove, writtenBelow)) {
+				if (nBelow.getInfo().mayInterfereWith(readAbove, writtenAbove)) {
 					return true;
 				}
+				// CellSet readBelow = nBelow.getInfo().getSharedReads();
+				// CellSet writtenBelow = nBelow.getInfo().getSharedWrites();
+				// if (Misc.doIntersect(readAbove, writtenBelow) || Misc.doIntersect(readBelow,
+				// writtenAbove)
+				// || Misc.doIntersect(writtenAbove, writtenBelow)) {
+				// return true;
+				// }
 			}
 		}
 		return false;

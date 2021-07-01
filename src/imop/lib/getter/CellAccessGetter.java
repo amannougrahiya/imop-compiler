@@ -2,7 +2,7 @@
  * Copyright (c) 2019 Aman Nougrahiya, V Krishna Nandivada, IIT Madras.
  * This file is a part of the project IMOP, licensed under the MIT license.
  * See LICENSE.md for the full text of the license.
- * 
+ *
  * The above notice shall be included in all copies or substantial
  * portions of this file.
  */
@@ -15,11 +15,13 @@ import imop.ast.node.external.*;
 import imop.ast.node.internal.*;
 import imop.baseVisitor.DepthFirstProcess;
 import imop.baseVisitor.GJNoArguDepthFirstProcess;
+import imop.deprecated.Deprecated_SharedLvalueAccessGetter;
 import imop.lib.analysis.flowanalysis.*;
 import imop.lib.analysis.typeSystem.ArithmeticType;
 import imop.lib.analysis.typeSystem.ArrayType;
 import imop.lib.analysis.typeSystem.PointerType;
 import imop.lib.analysis.typeSystem.Type;
+import imop.lib.getter.CellAccessGetter.SharedAccessException;
 import imop.lib.util.CellList;
 import imop.lib.util.CellSet;
 import imop.lib.util.Misc;
@@ -39,16 +41,20 @@ import java.util.List;
  * read/write/both.
  * If no proper placement is present, we add the l-values to reads/writes for
  * {@link #getReads(Node)}/{@link #getWrites(Node)}, respectively.
- * 
+ *
  * @author Aman Nougrahiya
  *
  */
 public class CellAccessGetter {
+	public static class SharedAccessException extends RuntimeException {
+		private static final long serialVersionUID = -7693587755216812181L;
+	}
+
 	/**
 	 * Returns a set of all the cells that may be read in the execution of this
 	 * node (and the called methods, if any), excluding the nodes that are
 	 * encountered after the control leaves this node from any exit-point.
-	 * 
+	 *
 	 * @return
 	 *         set of all those cells that may be read between the entry to and
 	 *         exit from this node.
@@ -79,6 +85,33 @@ public class CellAccessGetter {
 			}
 		}
 		return readList;
+	}
+
+	public static boolean mayAccessSharedCells(Node node) {
+		if (node instanceof Expression) {
+			node = Misc.getCFGNodeFor(node);
+			MayAccessSharedGetter accessGetter = new MayAccessSharedGetter(node);
+			try {
+				node.accept(accessGetter);
+			} catch (SharedAccessException sae) {
+				return true;
+			}
+			return false;
+		} else {
+			node = Misc.getCFGNodeFor(node);
+			if (node == null) {
+				return false;
+			}
+			for (Node leafContent : node.getInfo().getCFGInfo().getIntraTaskCFGLeafContents()) {
+				MayAccessSharedGetter accessGetter = new MayAccessSharedGetter(leafContent);
+				try {
+					leafContent.accept(accessGetter);
+				} catch (SharedAccessException sae) {
+					return true;
+				}
+			}
+			return false;
+		}
 	}
 
 	public static CellList getSymbolReads(Node node) {
@@ -113,7 +146,7 @@ public class CellAccessGetter {
 	 * Returns a set of all the cells that may be written in the execution of
 	 * this node (and the called methods, if any), excluding the nodes that
 	 * are encountered after the control leaves this node from any exit-point.
-	 * 
+	 *
 	 * @return
 	 *         set of all those cells that may be written between the entry to
 	 *         and exit from this node.
@@ -191,7 +224,7 @@ public class CellAccessGetter {
 	 * Returns a set of all the shared cells that may be read in the execution
 	 * of this node (and the called methods, if any), excluding the nodes that
 	 * are encountered after the control leaves this node from any exit-point.
-	 * 
+	 *
 	 * @return
 	 *         set of all those shared cells that may be read between the entry
 	 *         to and exit from this node.
@@ -230,7 +263,7 @@ public class CellAccessGetter {
 	 * execution of this node (and the called methods, if any), excluding the
 	 * nodes that are encountered after the control leaves this node from any
 	 * exit-point.
-	 * 
+	 *
 	 * @return
 	 *         set of all those shared cells that may be written between the
 	 *         entry to and exit from this node.
@@ -262,7 +295,7 @@ public class CellAccessGetter {
 	 * This method is useful for obtaining memory locations referred by a
 	 * sub-expression. Note that this method will return an empty list when
 	 * {@code exp} is an expression that does not refer to one or more cells.
-	 * 
+	 *
 	 * @param exp
 	 *            expression whose represented cells have to be determined.
 	 * @return
@@ -288,7 +321,7 @@ public class CellAccessGetter {
 	 * points-to information or not. If not, then we shouldn't be too eager to
 	 * dump the memoization of this node just because points-to analysis might
 	 * be stale.
-	 * 
+	 *
 	 * @param node
 	 * @return
 	 */
@@ -343,7 +376,7 @@ public class CellAccessGetter {
 	 * a cell of pointer-type.<br>
 	 * Note that this method inspects all lexically enclosed components of this
 	 * node, and all reachable function definitions.
-	 * 
+	 *
 	 * @return
 	 *         true, if this node (or its corresponding CFG node) may write to a
 	 *         cell of pointer-type.
@@ -873,13 +906,528 @@ public class CellAccessGetter {
 
 	}
 
+	private static class MayWriteChecker extends DepthFirstProcess {
+		public boolean mayWrite = false;
+
+		/**
+		 * f0 ::= Declarator()
+		 * f1 ::= ( "=" Initializer() )?
+		 */
+		@Override
+		public void visit(InitDeclarator n) {
+			if (n.getF1().present()) {
+				mayWrite = true;
+			}
+		}
+
+		/**
+		 * f0 ::= DeclarationSpecifiers()
+		 * f1 ::= ParameterAbstraction()
+		 */
+		@Override
+		public void visit(ParameterDeclaration n) {
+			NodeToken parameterToken = ParameterDeclarationInfo.getRootParamNodeToken(n);
+			if (parameterToken != null) {
+				mayWrite = true;
+			}
+		}
+
+		/**
+		 * f0 ::= <IDENTIFIER>
+		 * f1 ::= "="
+		 * f2 ::= Expression()
+		 */
+		@Override
+		public void visit(OmpForInitExpression n) {
+			mayWrite = true;
+		}
+
+		/**
+		 * f0 ::= <IDENTIFIER>
+		 * f1 ::= "++"
+		 */
+		@Override
+		public void visit(PostIncrementId n) {
+			mayWrite = true;
+		}
+
+		/**
+		 * f0 ::= <IDENTIFIER>
+		 * f1 ::= "--"
+		 */
+		@Override
+		public void visit(PostDecrementId n) {
+			mayWrite = true;
+		}
+
+		/**
+		 * f0 ::= "++"
+		 * f1 ::= <IDENTIFIER>
+		 */
+		@Override
+		public void visit(PreIncrementId n) {
+			mayWrite = true;
+		}
+
+		/**
+		 * f0 ::= "--"
+		 * f1 ::= <IDENTIFIER>
+		 */
+		@Override
+		public void visit(PreDecrementId n) {
+			mayWrite = true;
+		}
+
+		/**
+		 * f0 ::= <IDENTIFIER>
+		 * f1 ::= "+="
+		 * f2 ::= Expression()
+		 */
+		@Override
+		public void visit(ShortAssignPlus n) {
+			mayWrite = true;
+		}
+
+		/**
+		 * f0 ::= <IDENTIFIER>
+		 * f1 ::= "-="
+		 * f2 ::= Expression()
+		 */
+		@Override
+		public void visit(ShortAssignMinus n) {
+			mayWrite = true;
+		}
+
+		/**
+		 * f0 ::= <IDENTIFIER>
+		 * f1 ::= "="
+		 * f2 ::= <IDENTIFIER>
+		 * f3 ::= "+"
+		 * f4 ::= AdditiveExpression()
+		 */
+		@Override
+		public void visit(OmpForAdditive n) {
+			mayWrite = true;
+		}
+
+		/**
+		 * f0 ::= <IDENTIFIER>
+		 * f1 ::= "="
+		 * f2 ::= <IDENTIFIER>
+		 * f3 ::= "-"
+		 * f4 ::= AdditiveExpression()
+		 */
+		@Override
+		public void visit(OmpForSubtractive n) {
+			mayWrite = true;
+		}
+
+		/**
+		 * f0 ::= <IDENTIFIER>
+		 * f1 ::= "="
+		 * f2 ::= MultiplicativeExpression()
+		 * f3 ::= "+"
+		 * f4 ::= <IDENTIFIER>
+		 */
+		@Override
+		public void visit(OmpForMultiplicative n) {
+			mayWrite = true;
+		}
+
+		/**
+		 * f0 ::= UnaryExpression()
+		 * f1 ::= AssignmentOperator()
+		 * f2 ::= AssignmentExpression()
+		 */
+		@Override
+		public void visit(NonConditionalExpression n) {
+			mayWrite = true;
+		}
+
+		/**
+		 * f0 ::= "++"
+		 * f1 ::= UnaryExpression()
+		 */
+		@Override
+		public void visit(UnaryExpressionPreIncrement n) {
+			mayWrite = true;
+		}
+
+		/**
+		 * f0 ::= "--"
+		 * f1 ::= UnaryExpression()
+		 */
+		@Override
+		public void visit(UnaryExpressionPreDecrement n) {
+			mayWrite = true;
+		}
+
+		/**
+		 * f0 ::= SizeofTypeName()
+		 * | SizeofUnaryExpression()
+		 */
+		@Override
+		public void visit(UnarySizeofExpression n) {
+			// Expression is not evaluated when present as the argument to sizeof expression
+			return;
+		}
+
+		/**
+		 * f0 ::= <SIZEOF>
+		 * f1 ::= UnaryExpression()
+		 */
+		@Override
+		public void visit(SizeofUnaryExpression n) {
+			// Expression is not evaluated when present as the argument to sizeof expression
+			return;
+		}
+
+		/**
+		 * f0 ::= <SIZEOF>
+		 * f1 ::= "("
+		 * f2 ::= TypeName()
+		 * f3 ::= ")"
+		 */
+		@Override
+		public void visit(SizeofTypeName n) {
+			return;
+		}
+
+		/**
+		 * f0 ::= PrimaryExpression()
+		 * f1 ::= PostfixOperationsList()
+		 */
+		@Override
+		public void visit(PostfixExpression n) {
+			NodeListOptional nodeList = n.getF1().getF0();
+			if (nodeList.getNodes().isEmpty()) {
+				return;
+			} else {
+				int size = nodeList.getNodes().size();
+				int i = 0;
+				while (i < size) {
+					Node opNode = ((APostfixOperation) nodeList.getNodes().get(i)).getF0().getChoice();
+
+					if (opNode instanceof BracketExpression) {
+					} else if (opNode instanceof ArgumentList) {
+						return;
+					} else if (opNode instanceof DotId) {
+					} else if (opNode instanceof ArrowId) {
+					} else if (opNode instanceof PlusPlus) {
+						mayWrite = true;
+						return;
+					} else if (opNode instanceof MinusMinus) {
+						mayWrite = true;
+						return;
+					} else {
+						assert (false);
+					}
+					i++;
+				}
+				return;
+			}
+		}
+
+		/**
+		 * f0 ::= AssignmentExpression()
+		 * f1 ::= ( "," AssignmentExpression() )*
+		 */
+		@Override
+		public void visit(ExpressionList n) {
+			assert (false);
+		}
+
+		@Override
+		public void visit(PreCallNode n) {
+			CallStatement callStmt = n.getParent();
+			if (callStmt.getInfo().getCalledDefinitions().isEmpty()) {
+				mayWrite = true;
+			}
+		}
+
+		@Override
+		public void visit(PostCallNode n) {
+			if (n.hasReturnReceiver()) {
+				mayWrite = true;
+			}
+		}
+	}
+
+	private static class MayUpdatePointsToGetter extends DepthFirstProcess {
+		public boolean mayUpdatePointsTo = false;
+
+		/**
+		 * f0 ::= Declarator()
+		 * f1 ::= ( "=" Initializer() )?
+		 */
+		@Override
+		public void visit(InitDeclarator n) {
+			if (n.getF1().present()) {
+				String symName = DeclarationInfo.getRootIdName(n.getF0());
+				Symbol sym = Misc.getSymbolEntry(symName, n);
+				if (sym == null) {
+					Misc.warnDueToLackOfFeature("Could not find symbol for " + symName, n);
+				} else if (sym.getType() instanceof PointerType) {
+					mayUpdatePointsTo = true;
+					return;
+				}
+			}
+			n.getF1().accept(this);
+		}
+
+		/**
+		 * f0 ::= DeclarationSpecifiers()
+		 * f1 ::= ParameterAbstraction()
+		 */
+		@Override
+		public void visit(ParameterDeclaration n) {
+			NodeToken parameterToken = ParameterDeclarationInfo.getRootParamNodeToken(n);
+			if (parameterToken != null) {
+				Symbol param = Misc.getSymbolEntry(parameterToken.getTokenImage(), n);
+				if (param == null) {
+					Misc.warnDueToLackOfFeature("Could not find symbol for " + parameterToken, n);
+				} else if (param.getType() instanceof PointerType) {
+					mayUpdatePointsTo = true;
+				}
+			}
+		}
+
+		/**
+		 * f0 ::= <IDENTIFIER>
+		 * f1 ::= "="
+		 * f2 ::= Expression()
+		 */
+		@Override
+		public void visit(OmpForInitExpression n) {
+			Symbol sym = Misc.getSymbolEntry(n.getF0().getTokenImage(), n);
+			if (sym == null) {
+				Misc.warnDueToLackOfFeature("Could not find a symbol for " + n.getF0().getTokenImage(), n);
+			} else if (sym.getType() instanceof PointerType) {
+				mayUpdatePointsTo = true;
+				return;
+			}
+			n.getF2().accept(this);
+		}
+
+		/**
+		 * f0 ::= <IDENTIFIER>
+		 * f1 ::= "++"
+		 */
+		@Override
+		public void visit(PostIncrementId n) {
+			/*
+			 * Note that our points-to analysis does not get affected by pointer
+			 * arithmetic.
+			 */
+		}
+
+		/**
+		 * f0 ::= <IDENTIFIER>
+		 * f1 ::= "--"
+		 */
+		@Override
+		public void visit(PostDecrementId n) {
+		}
+
+		/**
+		 * f0 ::= "++"
+		 * f1 ::= <IDENTIFIER>
+		 */
+		@Override
+		public void visit(PreIncrementId n) {
+		}
+
+		/**
+		 * f0 ::= "--"
+		 * f1 ::= <IDENTIFIER>
+		 */
+		@Override
+		public void visit(PreDecrementId n) {
+		}
+
+		/**
+		 * f0 ::= <IDENTIFIER>
+		 * f1 ::= "+="
+		 * f2 ::= Expression()
+		 */
+		@Override
+		public void visit(ShortAssignPlus n) {
+			n.getF2().accept(this);
+		}
+
+		/**
+		 * f0 ::= <IDENTIFIER>
+		 * f1 ::= "-="
+		 * f2 ::= Expression()
+		 */
+		@Override
+		public void visit(ShortAssignMinus n) {
+			n.getF2().accept(this);
+		}
+
+		/**
+		 * f0 ::= <IDENTIFIER>
+		 * f1 ::= "="
+		 * f2 ::= <IDENTIFIER>
+		 * f3 ::= "+"
+		 * f4 ::= AdditiveExpression()
+		 */
+		@Override
+		public void visit(OmpForAdditive n) {
+			n.getF4().accept(this);
+		}
+
+		/**
+		 * f0 ::= <IDENTIFIER>
+		 * f1 ::= "="
+		 * f2 ::= <IDENTIFIER>
+		 * f3 ::= "-"
+		 * f4 ::= AdditiveExpression()
+		 */
+		@Override
+		public void visit(OmpForSubtractive n) {
+			n.getF4().accept(this);
+		}
+
+		/**
+		 * f0 ::= <IDENTIFIER>
+		 * f1 ::= "="
+		 * f2 ::= MultiplicativeExpression()
+		 * f3 ::= "+"
+		 * f4 ::= <IDENTIFIER>
+		 */
+		@Override
+		public void visit(OmpForMultiplicative n) {
+			n.getF2().accept(this);
+		}
+
+		/**
+		 * f0 ::= UnaryExpression()
+		 * f1 ::= AssignmentOperator()
+		 * f2 ::= AssignmentExpression()
+		 */
+		@Override
+		public void visit(NonConditionalExpression n) {
+			String operator = ((NodeToken) n.getF1().getF0().getChoice()).getTokenImage();
+			if (operator.equals("=")) {
+				Type lhsType = Type.getType(n.getF0());
+				if (lhsType instanceof PointerType) {
+					if (((PointerType) lhsType).isFromPointer()) {
+						mayUpdatePointsTo = true;
+						return;
+					}
+				}
+			}
+			n.getF0().accept(this);
+			n.getF2().accept(this);
+		}
+
+		/**
+		 * f0 ::= "++"
+		 * f1 ::= UnaryExpression()
+		 */
+		@Override
+		public void visit(UnaryExpressionPreIncrement n) {
+			n.getF1().accept(this);
+		}
+
+		/**
+		 * f0 ::= "--"
+		 * f1 ::= UnaryExpression()
+		 */
+		@Override
+		public void visit(UnaryExpressionPreDecrement n) {
+			n.getF1().accept(this);
+		}
+
+		/**
+		 * f0 ::= SizeofTypeName()
+		 * | SizeofUnaryExpression()
+		 */
+		@Override
+		public void visit(UnarySizeofExpression n) {
+			// Expression is not evaluated when present as the argument to sizeof expression
+			return;
+		}
+
+		/**
+		 * f0 ::= <SIZEOF>
+		 * f1 ::= UnaryExpression()
+		 */
+		@Override
+		public void visit(SizeofUnaryExpression n) {
+			return;
+		}
+
+		/**
+		 * f0 ::= <SIZEOF>
+		 * f1 ::= "("
+		 * f2 ::= TypeName()
+		 * f3 ::= ")"
+		 */
+		@Override
+		public void visit(SizeofTypeName n) {
+			return;
+		}
+
+		/**
+		 * f0 ::= AssignmentExpression()
+		 * f1 ::= ( "," AssignmentExpression() )*
+		 */
+		@Override
+		public void visit(ExpressionList n) {
+			assert (false);
+		}
+
+		@Override
+		public void visit(PreCallNode n) {
+			CallStatement callStmt = n.getParent();
+			if (callStmt.getInfo().getCalledDefinitions().isEmpty()) {
+				mayUpdatePointsTo = true;
+			}
+		}
+
+		@Override
+		public void visit(PostCallNode n) {
+			if (n.hasReturnReceiver()) {
+				String symName = n.getReturnReceiver().getIdentifier().getTokenImage();
+				Symbol sym = Misc.getSymbolEntry(symName, n);
+				if (sym == null) {
+					Misc.warnDueToLackOfFeature("Could not find symbol for " + sym, n);
+				} else if (sym.getType() instanceof PointerType) {
+					mayUpdatePointsTo = true;
+				}
+			}
+		}
+	}
+
+	public static class MayAccessSharedGetter extends AccessGetter {
+		public MayAccessSharedGetter(Node leaf) {
+			super(true, leaf);
+		}
+
+		@Override
+		public void addRead(Node n, Cell c) {
+			if (n.getInfo().getSharingAttribute(c) == DataSharingAttribute.SHARED) {
+				throw new SharedAccessException();
+			}
+		}
+
+		@Override
+		public void addWrite(Node n, Cell c) {
+			if (n.getInfo().getSharingAttribute(c) == DataSharingAttribute.SHARED) {
+				throw new SharedAccessException();
+			}
+		}
+	}
+
 	/**
 	 * This visitor is used to obtain the list of symbols or free variables that
 	 * are read/written in the visited expression. Each visit may add to the
 	 * list of nodes that are read/written in the expression being visited, and
 	 * return the list of symbols/free-variables that the visited expression
 	 * itself represents.
-	 * 
+	 *
 	 * @author Aman Nougrahiya
 	 *
 	 */
@@ -904,7 +1452,7 @@ public class CellAccessGetter {
 		 *                 list of symbols and free variables that need to be added
 		 *                 to the list of cells that may have been read in the
 		 *                 visits.
-		 * 
+		 *
 		 */
 		public void addReads(Node n, CellList cellList) {
 			n = this.cfgLeaf;
@@ -956,14 +1504,14 @@ public class CellAccessGetter {
 		/**
 		 * Adds non-null symbols and free variables from {@code cellList} to
 		 * {@code cellWriteList}.
-		 * 
+		 *
 		 * @param n
 		 *                 node at which the access has been made.
 		 * @param cellList
 		 *                 list of symbols and free variables that need to be added
 		 *                 to the list of cells that may have been written in the
 		 *                 visits.
-		 * 
+		 *
 		 */
 		public void addWrites(Node n, CellList cellList) {
 			n = this.cfgLeaf;
@@ -2372,501 +2920,6 @@ public class CellAccessGetter {
 					symList.add(sym);
 				}
 				return symList;
-			}
-		}
-	}
-
-	private static class MayWriteChecker extends DepthFirstProcess {
-		public boolean mayWrite = false;
-
-		/**
-		 * f0 ::= Declarator()
-		 * f1 ::= ( "=" Initializer() )?
-		 */
-		@Override
-		public void visit(InitDeclarator n) {
-			if (n.getF1().present()) {
-				mayWrite = true;
-			}
-		}
-
-		/**
-		 * f0 ::= DeclarationSpecifiers()
-		 * f1 ::= ParameterAbstraction()
-		 */
-		@Override
-		public void visit(ParameterDeclaration n) {
-			NodeToken parameterToken = ParameterDeclarationInfo.getRootParamNodeToken(n);
-			if (parameterToken != null) {
-				mayWrite = true;
-			}
-		}
-
-		/**
-		 * f0 ::= <IDENTIFIER>
-		 * f1 ::= "="
-		 * f2 ::= Expression()
-		 */
-		@Override
-		public void visit(OmpForInitExpression n) {
-			mayWrite = true;
-		}
-
-		/**
-		 * f0 ::= <IDENTIFIER>
-		 * f1 ::= "++"
-		 */
-		@Override
-		public void visit(PostIncrementId n) {
-			mayWrite = true;
-		}
-
-		/**
-		 * f0 ::= <IDENTIFIER>
-		 * f1 ::= "--"
-		 */
-		@Override
-		public void visit(PostDecrementId n) {
-			mayWrite = true;
-		}
-
-		/**
-		 * f0 ::= "++"
-		 * f1 ::= <IDENTIFIER>
-		 */
-		@Override
-		public void visit(PreIncrementId n) {
-			mayWrite = true;
-		}
-
-		/**
-		 * f0 ::= "--"
-		 * f1 ::= <IDENTIFIER>
-		 */
-		@Override
-		public void visit(PreDecrementId n) {
-			mayWrite = true;
-		}
-
-		/**
-		 * f0 ::= <IDENTIFIER>
-		 * f1 ::= "+="
-		 * f2 ::= Expression()
-		 */
-		@Override
-		public void visit(ShortAssignPlus n) {
-			mayWrite = true;
-		}
-
-		/**
-		 * f0 ::= <IDENTIFIER>
-		 * f1 ::= "-="
-		 * f2 ::= Expression()
-		 */
-		@Override
-		public void visit(ShortAssignMinus n) {
-			mayWrite = true;
-		}
-
-		/**
-		 * f0 ::= <IDENTIFIER>
-		 * f1 ::= "="
-		 * f2 ::= <IDENTIFIER>
-		 * f3 ::= "+"
-		 * f4 ::= AdditiveExpression()
-		 */
-		@Override
-		public void visit(OmpForAdditive n) {
-			mayWrite = true;
-		}
-
-		/**
-		 * f0 ::= <IDENTIFIER>
-		 * f1 ::= "="
-		 * f2 ::= <IDENTIFIER>
-		 * f3 ::= "-"
-		 * f4 ::= AdditiveExpression()
-		 */
-		@Override
-		public void visit(OmpForSubtractive n) {
-			mayWrite = true;
-		}
-
-		/**
-		 * f0 ::= <IDENTIFIER>
-		 * f1 ::= "="
-		 * f2 ::= MultiplicativeExpression()
-		 * f3 ::= "+"
-		 * f4 ::= <IDENTIFIER>
-		 */
-		@Override
-		public void visit(OmpForMultiplicative n) {
-			mayWrite = true;
-		}
-
-		/**
-		 * f0 ::= UnaryExpression()
-		 * f1 ::= AssignmentOperator()
-		 * f2 ::= AssignmentExpression()
-		 */
-		@Override
-		public void visit(NonConditionalExpression n) {
-			mayWrite = true;
-		}
-
-		/**
-		 * f0 ::= "++"
-		 * f1 ::= UnaryExpression()
-		 */
-		@Override
-		public void visit(UnaryExpressionPreIncrement n) {
-			mayWrite = true;
-		}
-
-		/**
-		 * f0 ::= "--"
-		 * f1 ::= UnaryExpression()
-		 */
-		@Override
-		public void visit(UnaryExpressionPreDecrement n) {
-			mayWrite = true;
-		}
-
-		/**
-		 * f0 ::= SizeofTypeName()
-		 * | SizeofUnaryExpression()
-		 */
-		@Override
-		public void visit(UnarySizeofExpression n) {
-			// Expression is not evaluated when present as the argument to sizeof expression
-			return;
-		}
-
-		/**
-		 * f0 ::= <SIZEOF>
-		 * f1 ::= UnaryExpression()
-		 */
-		@Override
-		public void visit(SizeofUnaryExpression n) {
-			// Expression is not evaluated when present as the argument to sizeof expression
-			return;
-		}
-
-		/**
-		 * f0 ::= <SIZEOF>
-		 * f1 ::= "("
-		 * f2 ::= TypeName()
-		 * f3 ::= ")"
-		 */
-		@Override
-		public void visit(SizeofTypeName n) {
-			return;
-		}
-
-		/**
-		 * f0 ::= PrimaryExpression()
-		 * f1 ::= PostfixOperationsList()
-		 */
-		@Override
-		public void visit(PostfixExpression n) {
-			NodeListOptional nodeList = n.getF1().getF0();
-			if (nodeList.getNodes().isEmpty()) {
-				return;
-			} else {
-				int size = nodeList.getNodes().size();
-				int i = 0;
-				while (i < size) {
-					Node opNode = ((APostfixOperation) nodeList.getNodes().get(i)).getF0().getChoice();
-
-					if (opNode instanceof BracketExpression) {
-					} else if (opNode instanceof ArgumentList) {
-						return;
-					} else if (opNode instanceof DotId) {
-					} else if (opNode instanceof ArrowId) {
-					} else if (opNode instanceof PlusPlus) {
-						mayWrite = true;
-						return;
-					} else if (opNode instanceof MinusMinus) {
-						mayWrite = true;
-						return;
-					} else {
-						assert (false);
-					}
-					i++;
-				}
-				return;
-			}
-		}
-
-		/**
-		 * f0 ::= AssignmentExpression()
-		 * f1 ::= ( "," AssignmentExpression() )*
-		 */
-		@Override
-		public void visit(ExpressionList n) {
-			assert (false);
-		}
-
-		@Override
-		public void visit(PreCallNode n) {
-			CallStatement callStmt = n.getParent();
-			if (callStmt.getInfo().getCalledDefinitions().isEmpty()) {
-				mayWrite = true;
-			}
-		}
-
-		@Override
-		public void visit(PostCallNode n) {
-			if (n.hasReturnReceiver()) {
-				mayWrite = true;
-			}
-		}
-	}
-
-	private static class MayUpdatePointsToGetter extends DepthFirstProcess {
-		public boolean mayUpdatePointsTo = false;
-
-		/**
-		 * f0 ::= Declarator()
-		 * f1 ::= ( "=" Initializer() )?
-		 */
-		@Override
-		public void visit(InitDeclarator n) {
-			if (n.getF1().present()) {
-				String symName = DeclarationInfo.getRootIdName(n.getF0());
-				Symbol sym = Misc.getSymbolEntry(symName, n);
-				if (sym == null) {
-					Misc.warnDueToLackOfFeature("Could not find symbol for " + symName, n);
-				} else if (sym.getType() instanceof PointerType) {
-					mayUpdatePointsTo = true;
-					return;
-				}
-			}
-			n.getF1().accept(this);
-		}
-
-		/**
-		 * f0 ::= DeclarationSpecifiers()
-		 * f1 ::= ParameterAbstraction()
-		 */
-		@Override
-		public void visit(ParameterDeclaration n) {
-			NodeToken parameterToken = ParameterDeclarationInfo.getRootParamNodeToken(n);
-			if (parameterToken != null) {
-				Symbol param = Misc.getSymbolEntry(parameterToken.getTokenImage(), n);
-				if (param == null) {
-					Misc.warnDueToLackOfFeature("Could not find symbol for " + parameterToken, n);
-				} else if (param.getType() instanceof PointerType) {
-					mayUpdatePointsTo = true;
-				}
-			}
-		}
-
-		/**
-		 * f0 ::= <IDENTIFIER>
-		 * f1 ::= "="
-		 * f2 ::= Expression()
-		 */
-		@Override
-		public void visit(OmpForInitExpression n) {
-			Symbol sym = Misc.getSymbolEntry(n.getF0().getTokenImage(), n);
-			if (sym == null) {
-				Misc.warnDueToLackOfFeature("Could not find a symbol for " + n.getF0().getTokenImage(), n);
-			} else if (sym.getType() instanceof PointerType) {
-				mayUpdatePointsTo = true;
-				return;
-			}
-			n.getF2().accept(this);
-		}
-
-		/**
-		 * f0 ::= <IDENTIFIER>
-		 * f1 ::= "++"
-		 */
-		@Override
-		public void visit(PostIncrementId n) {
-			/*
-			 * Note that our points-to analysis does not get affected by pointer
-			 * arithmetic.
-			 */
-		}
-
-		/**
-		 * f0 ::= <IDENTIFIER>
-		 * f1 ::= "--"
-		 */
-		@Override
-		public void visit(PostDecrementId n) {
-		}
-
-		/**
-		 * f0 ::= "++"
-		 * f1 ::= <IDENTIFIER>
-		 */
-		@Override
-		public void visit(PreIncrementId n) {
-		}
-
-		/**
-		 * f0 ::= "--"
-		 * f1 ::= <IDENTIFIER>
-		 */
-		@Override
-		public void visit(PreDecrementId n) {
-		}
-
-		/**
-		 * f0 ::= <IDENTIFIER>
-		 * f1 ::= "+="
-		 * f2 ::= Expression()
-		 */
-		@Override
-		public void visit(ShortAssignPlus n) {
-			n.getF2().accept(this);
-		}
-
-		/**
-		 * f0 ::= <IDENTIFIER>
-		 * f1 ::= "-="
-		 * f2 ::= Expression()
-		 */
-		@Override
-		public void visit(ShortAssignMinus n) {
-			n.getF2().accept(this);
-		}
-
-		/**
-		 * f0 ::= <IDENTIFIER>
-		 * f1 ::= "="
-		 * f2 ::= <IDENTIFIER>
-		 * f3 ::= "+"
-		 * f4 ::= AdditiveExpression()
-		 */
-		@Override
-		public void visit(OmpForAdditive n) {
-			n.getF4().accept(this);
-		}
-
-		/**
-		 * f0 ::= <IDENTIFIER>
-		 * f1 ::= "="
-		 * f2 ::= <IDENTIFIER>
-		 * f3 ::= "-"
-		 * f4 ::= AdditiveExpression()
-		 */
-		@Override
-		public void visit(OmpForSubtractive n) {
-			n.getF4().accept(this);
-		}
-
-		/**
-		 * f0 ::= <IDENTIFIER>
-		 * f1 ::= "="
-		 * f2 ::= MultiplicativeExpression()
-		 * f3 ::= "+"
-		 * f4 ::= <IDENTIFIER>
-		 */
-		@Override
-		public void visit(OmpForMultiplicative n) {
-			n.getF2().accept(this);
-		}
-
-		/**
-		 * f0 ::= UnaryExpression()
-		 * f1 ::= AssignmentOperator()
-		 * f2 ::= AssignmentExpression()
-		 */
-		@Override
-		public void visit(NonConditionalExpression n) {
-			String operator = ((NodeToken) n.getF1().getF0().getChoice()).getTokenImage();
-			if (operator.equals("=")) {
-				Type lhsType = Type.getType(n.getF0());
-				if (lhsType instanceof PointerType) {
-					if (((PointerType) lhsType).isFromPointer()) {
-						mayUpdatePointsTo = true;
-						return;
-					}
-				}
-			}
-			n.getF0().accept(this);
-			n.getF2().accept(this);
-		}
-
-		/**
-		 * f0 ::= "++"
-		 * f1 ::= UnaryExpression()
-		 */
-		@Override
-		public void visit(UnaryExpressionPreIncrement n) {
-			n.getF1().accept(this);
-		}
-
-		/**
-		 * f0 ::= "--"
-		 * f1 ::= UnaryExpression()
-		 */
-		@Override
-		public void visit(UnaryExpressionPreDecrement n) {
-			n.getF1().accept(this);
-		}
-
-		/**
-		 * f0 ::= SizeofTypeName()
-		 * | SizeofUnaryExpression()
-		 */
-		@Override
-		public void visit(UnarySizeofExpression n) {
-			// Expression is not evaluated when present as the argument to sizeof expression
-			return;
-		}
-
-		/**
-		 * f0 ::= <SIZEOF>
-		 * f1 ::= UnaryExpression()
-		 */
-		@Override
-		public void visit(SizeofUnaryExpression n) {
-			return;
-		}
-
-		/**
-		 * f0 ::= <SIZEOF>
-		 * f1 ::= "("
-		 * f2 ::= TypeName()
-		 * f3 ::= ")"
-		 */
-		@Override
-		public void visit(SizeofTypeName n) {
-			return;
-		}
-
-		/**
-		 * f0 ::= AssignmentExpression()
-		 * f1 ::= ( "," AssignmentExpression() )*
-		 */
-		@Override
-		public void visit(ExpressionList n) {
-			assert (false);
-		}
-
-		@Override
-		public void visit(PreCallNode n) {
-			CallStatement callStmt = n.getParent();
-			if (callStmt.getInfo().getCalledDefinitions().isEmpty()) {
-				mayUpdatePointsTo = true;
-			}
-		}
-
-		@Override
-		public void visit(PostCallNode n) {
-			if (n.hasReturnReceiver()) {
-				String symName = n.getReturnReceiver().getIdentifier().getTokenImage();
-				Symbol sym = Misc.getSymbolEntry(symName, n);
-				if (sym == null) {
-					Misc.warnDueToLackOfFeature("Could not find symbol for " + sym, n);
-				} else if (sym.getType() instanceof PointerType) {
-					mayUpdatePointsTo = true;
-				}
 			}
 		}
 	}

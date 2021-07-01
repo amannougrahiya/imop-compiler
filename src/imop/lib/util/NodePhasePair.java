@@ -2,7 +2,7 @@
  * Copyright (c) 2019 Aman Nougrahiya, V Krishna Nandivada, IIT Madras.
  * This file is a part of the project IMOP, licensed under the MIT license.
  * See LICENSE.md for the full text of the license.
- * 
+ *
  * The above notice shall be included in all copies or substantial
  * portions of this file.
  */
@@ -30,11 +30,8 @@ public class NodePhasePair {
 		if (obj == null) {
 			return false;
 		}
-		if (getClass() != obj.getClass()) {
-			return false;
-		}
 		NodePhasePair that = (NodePhasePair) obj;
-		if (this.ph != that.ph) {
+		if (this.ph.getPhaseId() != that.ph.getPhaseId()) {
 			return false;
 		}
 		if ((this.one == that.one && this.two == that.two) || (this.one == that.two && this.two == that.one)) {
