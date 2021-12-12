@@ -82,7 +82,7 @@ public class Main {
 		// Thread.sleep(5000);
 		totalTime = System.nanoTime();
 		Program.parseNormalizeInput(args);
-		DriverModule.askCoExistenceQueries();
+		// DriverModule.askCoExistenceQueries();
 
 		// countPhases();
 		// DriverModule.printRelevantFunctionNames();
@@ -134,7 +134,8 @@ public class Main {
 		// DriverModule.profilePh();
 		// DriverModule.askQueries();
 		// DriverModule.clientAutoUpdateHomeostasis();
-		DriverModule.clientAutoUpdateIncEPA();
+		DriverModule.clientAutoUpdateIDFA();
+		// DriverModule.clientAutoUpdateIncEPA();
 		// DriverModule.mergeParRegs();
 		// DriverModule.optimizeBarriers();
 		// Main.testNodeShifting();

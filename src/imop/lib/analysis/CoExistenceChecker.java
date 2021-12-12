@@ -51,6 +51,7 @@ public class CoExistenceChecker {
 		CoExistenceChecker.knownNonCoExistingNodesInPhase.clear();
 		CoExistenceChecker.knownCoExistingNodes.clear();
 		CoExistenceChecker.knownNonCoExistingNodes.clear();
+		ContextSensitiveCoExistenceChecker.resetStaticFields();
 	}
 
 	public static void flushCoExistenceCaches() {
@@ -60,6 +61,7 @@ public class CoExistenceChecker {
 		knownNonCoExistingNodesInPhase.clear();
 		existForAll.clear();
 		doesNotExistForAll.clear();
+		ContextSensitiveCoExistenceChecker.flushCoExistenceCaches();
 		// clearCache();
 	}
 
@@ -70,6 +72,7 @@ public class CoExistenceChecker {
 		 */
 		CoExistenceChecker.knownCoExistingNodesInPhase.clear();
 		CoExistenceChecker.knownNonCoExistingNodesInPhase.clear();
+		ContextSensitiveCoExistenceChecker.clearCache();
 	}
 
 	/**
@@ -112,6 +115,9 @@ public class CoExistenceChecker {
 		if (Program.sveSensitive == SVEDimension.SVE_INSENSITIVE) {
 			return true;
 		}
+		if (Program.useContextSensitiveQueryResolver) {
+			return ContextSensitiveCoExistenceChecker.canCoExistInAnyPhase(n1, n2);
+		}
 		assert Program.concurrencyAlgorithm != Program.ConcurrencyAlgorithm.YCON : "Unexpected path";
 		NodePair nP = new NodePair(n1, n2);
 		if (knownCoExistingNodes.contains(nP)) {
@@ -142,6 +148,9 @@ public class CoExistenceChecker {
 		assert Program.concurrencyAlgorithm != Program.ConcurrencyAlgorithm.YCON : "Unexpected path";
 		if (Program.sveSensitive == SVEDimension.SVE_INSENSITIVE) {
 			return true;
+		}
+		if (Program.useContextSensitiveQueryResolver) {
+			return ContextSensitiveCoExistenceChecker.canCoExistInPhase(n1, n2, ph, new CallStack(), new CallStack());
 		}
 		if (n1 == n2) {
 			return true;

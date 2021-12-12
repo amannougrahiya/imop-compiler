@@ -43,9 +43,18 @@ public class SCC implements DFable {
 
 	private static Stack<Node> internalStack;
 	private static int tarjanI;
+	private static int currentNonCircularSCCCount = -1;
 
 	private static Set<SCC> allSCCs = new HashSet<>();
 	private static Set<Node> allSCCNodes = new HashSet<>();
+
+	public static void setCurrentNonCircularSCCCount(int count) {
+		SCC.currentNonCircularSCCCount = count;
+	}
+
+	public static int getCurrentNonCircularSCCCount() {
+		return currentNonCircularSCCCount;
+	}
 
 	public SCC(Set<Node> nodes) {
 		// We allow generation of only those SCCs that have at least two nodes within
@@ -59,6 +68,10 @@ public class SCC implements DFable {
 		allSCCs.add(this);
 		// tempSum += this.nodes.size();
 		// System.out.println("Creating an SCC of size " + this.nodes.size());
+	}
+
+	public static int getAllSCCSize() {
+		return SCC.allSCCs.size();
 	}
 
 	@Override
@@ -77,6 +90,10 @@ public class SCC implements DFable {
 
 	public Set<Node> getNodes() {
 		return this.nodes;
+	}
+
+	public int getNodeCount() {
+		return this.nodes.size();
 	}
 
 	public Set<Node> getEntryNodes() {
@@ -216,12 +233,16 @@ public class SCC implements DFable {
 		// }
 		// Now, invoke the Tarjan's algorithm.
 		BeginNode begin = main.getInfo().getCFGInfo().getNestedCFG().getBegin();
+		// if (!Program.useNoSCCs) {
 		Set<Node> visitedSet = new HashSet<>();
 		SCC.processingTarjan = true;
 		tarjan(begin, visitedSet);
 		SCC.processingTarjan = false;
-		SCCTimer += System.nanoTime() - timer;
 		SCC.tarjanCount++;
+		// } else {
+		// new SCC(Program.getRoot().getInfo().getAllLeafNodesInTheProgram());
+		// }
+		SCCTimer += System.nanoTime() - timer;
 		assert (SCC.internalStack.isEmpty())
 				: "The stack of nodes is not empty at the end of Tarjan's algorithm! Its contents are:\n"
 						+ SCC.internalStack;
@@ -340,4 +361,5 @@ public class SCC implements DFable {
 		}
 		return returnSet;
 	}
+
 }

@@ -25,7 +25,9 @@ import imop.lib.util.Immutable;
 import imop.lib.util.Misc;
 import imop.parser.Program;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -279,6 +281,9 @@ public abstract class InterThreadForwardCellularAnalysis<F extends CellularDataF
 		}
 	}
 
+	public List<Long> firstPhaseCount = new ArrayList<>();
+	public List<Long> secondPhaseCount = new ArrayList<>();
+
 	/**
 	 * This method starts with the given node, and stabilizes the SCC corresponding
 	 * to it before returning back.
@@ -296,10 +301,17 @@ public abstract class InterThreadForwardCellularAnalysis<F extends CellularDataF
 		// System.err.println("*** PROCESSING SCC #" + thisSCCNum);
 
 		assert (thisSCC != null);
+		long localCounterPerPhase = this.nodesProcessedDuringUpdate;
 		do {
-			this.nodesProcessedDuringUpdate++;
-			this.debugRecursion(node);
-			this.processWhenUpdated(node);
+			/*
+			 * This conditional check is used to minimize the extra work that we perform
+			 * during the first phase.
+			 */
+			if (!this.processedInThisUpdate.contains(node)) {
+				this.nodesProcessedDuringUpdate++;
+				this.debugRecursion(node);
+				this.processWhenUpdated(node);
+			}
 			node = this.workList.peekFirstElementOfSameSCC(thisSCCNum);
 			if (node == null) {
 				break;
@@ -313,6 +325,19 @@ public abstract class InterThreadForwardCellularAnalysis<F extends CellularDataF
 				node = this.workList.removeFirstElementOfSameSCC(thisSCCNum);
 			}
 		} while (true);
+		firstPhaseCount.add(this.nodesProcessedDuringUpdate - localCounterPerPhase);
+		/*
+		 * NEW CODE: To check the percent of nodes processed in an SCC in the first phase.
+		 */
+		int SCCSize = thisSCC.getNodeCount();
+		double percentInFirst = this.processedInThisUpdate.size() / (SCCSize * 1.0) * 100;
+		if (SCCSize != 1) {
+			System.out.println("Total " + Program.df2.format(percentInFirst) + "% of nodes processed out of " + SCCSize + " in this SCC.");
+		}
+		/*
+		 * <-- NEW CODE Ends.
+		 */
+
 		// Now, the set processedInThisUpdate is not required anymore. Clear it.
 		this.processedInThisUpdate.clear();
 		/*
@@ -321,6 +346,7 @@ public abstract class InterThreadForwardCellularAnalysis<F extends CellularDataF
 		 */
 		this.workList.addAll(this.yetToBeFinalized);
 		this.yetToBeFinalized.clear();
+		localCounterPerPhase = this.nodesProcessedDuringUpdate;
 		do {
 			node = this.workList.peekFirstElementOfSameSCC(thisSCCNum);
 			if (node == null) {
@@ -338,6 +364,7 @@ public abstract class InterThreadForwardCellularAnalysis<F extends CellularDataF
 			this.debugRecursion(node);
 			this.processWhenNotUpdated(node); // Note that this is a call to normal processing.
 		} while (true);
+		secondPhaseCount.add(this.nodesProcessedDuringUpdate - localCounterPerPhase);
 
 		// if (node != null) {
 		// int nextSCCNum = node.getInfo().getCFGInfo().getSCCRPOIndex();
@@ -539,6 +566,9 @@ public abstract class InterThreadForwardCellularAnalysis<F extends CellularDataF
 		return flowFactOUT;
 	}
 
+	// protected Set<Node> copyOfSeedNodesForFirstPhase = new HashSet<>();
+	// protected Set<Node> safeNodesForFirstPhase = new HashSet<>();
+
 	@Override
 	public void restartAnalysisFromStoredNodes() {
 		assert (!SCC.processingTarjan);
@@ -555,6 +585,9 @@ public abstract class InterThreadForwardCellularAnalysis<F extends CellularDataF
 		// localList.add(localCount);
 		// }
 		// localCount = 0;
+		// this.safeNodesForFirstPhase.clear();
+		// this.copyOfSeedNodesForFirstPhase.clear();
+		// this.copyOfSeedNodesForFirstPhase.addAll(this.nodesToBeUpdated);
 		long localTimer = System.nanoTime();
 
 		/*
@@ -760,7 +793,70 @@ public abstract class InterThreadForwardCellularAnalysis<F extends CellularDataF
 					this.workList.add(paramDecl);
 				}
 			}
+		} else if (Program.testSafeMarkingHeuristic) {
+			/*
+			 * Mon Nov 1 20:35:26 IST 2021
+			 * TODO: TEST THIS CODE; ADDED AS A HEURISTIC FOR EARLY TERMINATION OF FIRST
+			 * PASS.
+			 * This code was thought about while writing the paper on HIDFAp (or IncIDFA).
+			 * If the current node has "stabilized" without requiring any changes on its
+			 * initial state and if we aren't planning on processing its successors, we
+			 * should perform the following when, the worklist contains at least one other
+			 * element to be processed in the same SCC:
+			 * Mark all those nodes as "processed" for which this node is a dominator.
+			 *
+			 */
+			// if
+			// (this.workList.peekFirstElementOfSameSCC(node.getInfo().getCFGInfo().getSCCRPOIndex())
+			// != null) {
+			// SCC thisSCC = node.getInfo().getCFGInfo().getSCC();
+			// Set<Node> graySet = new HashSet<>();
+			// for (IDFAEdge idfaEdge : node.getInfo().getCFGInfo()
+			// .getInterTaskLeafSuccessorEdges(this.analysisDimension.getSVEDimension())) {
+			// Node child = idfaEdge.getNode();
+			// if (!this.processedInThisUpdate.contains(child) &&
+			// !this.safeNodesForFirstPhase.contains(child)) {
+			// graySet.add(child);
+			// }
+			// }
+			// while (!graySet.isEmpty()) {
+			// Node currNode = Misc.getAnyElement(graySet);
+			// graySet.remove(currNode);
+			// SCC childSCC = currNode.getInfo().getCFGInfo().getSCC();
+			// if (childSCC == null || childSCC != thisSCC) {
+			// continue;
+			// }
+			// if (this.isNodeSafe(currNode)) {
+			// /*
+			// * Add currNode to the processed set, and put its children that aren't already
+			// * processed in the workset, and which belong to this set.
+			// */
+			// this.safeNodesForFirstPhase.add(currNode);
+			// for (IDFAEdge idfaEdge : currNode.getInfo().getCFGInfo()
+			// .getInterTaskLeafSuccessorEdges(this.analysisDimension.getSVEDimension())) {
+			// Node child = idfaEdge.getNode();
+			// if (!this.processedInThisUpdate.contains(child)
+			// && !this.safeNodesForFirstPhase.contains(child)) {
+			// graySet.add(child);
+			// }
+			// }
+			// } else {
+			// // Stop traversal here, for this path. Do nothing.
+			// }
+			// } // End of the marking loop.
+			// }
 		}
+	}
+
+	private boolean isNodeSafe(Node node) {
+		if (this.workList.contains(node)) {
+			return false;
+		}
+		if (node.getInfo().getCFGInfo().getInterTaskLeafPredecessorEdges(this.analysisDimension.getSVEDimension())
+				.stream().anyMatch(e -> !this.processedInThisUpdate.contains(e.getNode()))) {
+			return false;
+		}
+		return true;
 	}
 
 	@SuppressWarnings("unchecked")

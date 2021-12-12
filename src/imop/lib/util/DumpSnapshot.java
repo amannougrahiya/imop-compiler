@@ -327,6 +327,20 @@ public class DumpSnapshot {
 		DumpSnapshot.printToFile(Program.getRoot(), Program.fileName + string + "-phases.i", commetors);
 	}
 
+	public static void forceDumpPointsTo(String string) {
+		List<Commentor> commetors = new ArrayList<>();
+		commetors.add((n) -> {
+			String tempStr = "";
+			FlowFact flow;
+			flow = n.getInfo().getOUT(AnalysisName.POINTSTO);
+			if (flow != null) {
+				tempStr += "OUT: " + flow.getString();
+			}
+			return tempStr;
+		});
+		DumpSnapshot.forcePrintToFile(Program.getRoot(), Program.fileName + string + "-pointsTo.i", commetors);
+
+	}
 	public static void dumpPointsTo(String string) {
 		if (Program.printNoFiles) {
 			return;
@@ -621,6 +635,20 @@ public class DumpSnapshot {
 			return bw;
 		} catch (Exception e) {
 			return null;
+		}
+	}
+
+	public static void forcePrintToFile(Node root, String fileName, List<Commentor> commetors) {
+		String fs = System.getProperty("file.separator");
+		String filePath = Program.class.getProtectionDomain().getCodeSource().getLocation().getFile();
+		fileName = filePath + ".." + fs + "output-dump" + fs + fileName;
+		BufferedWriter bw = Misc.getBufferedWriter(fileName);
+		try {
+			bw.write(root.getInfo().getString(commetors));
+			bw.append(System.getProperty("line.separator"));
+			bw.close();
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 	}
 

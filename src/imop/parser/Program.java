@@ -71,6 +71,8 @@ public class Program {
 	public static boolean removeUnused = true;
 	public static String fileName;
 	public static boolean enableUnmodifiability;
+	public final static boolean countSeededSCCs = true;
+	public static boolean useNoSCCs = false;
 	/**
 	 * Checks whether at least one symbol is required for communication.
 	 */
@@ -112,6 +114,8 @@ public class Program {
 																		// accordingly.
 	public static boolean useTimerForIncEPARuns = false;
 	public static int secondsForIncEPARuns = 900;
+
+	public static boolean useContextSensitiveQueryResolver = true;
 
 	/**
 	 * Set the default SVE sensitivity for the whole program.<br>
@@ -198,12 +202,21 @@ public class Program {
 	 * @return a string representing the path of the input file.
 	 */
 	private static String defaultCommandLineArguments() {
+		/*
+		 * For IncIDFA -->
+		 *
+		 */
+		Program.isPrePassPhase = false;
+		Program.removeUnused = true;
+		Program.idfaUpdateCategory = UpdateCategory.LZINV; // Default is LZUPD.
+		// Program.useNoSCCs = true; // Doesn't work.
+		/*
+		 * <-- for IncIDFA.
+		 */
 		Program.invalidLineNum = false;
 		Program.invalidColumnNum = false;
 		Program.enableUnmodifiability = false;
-		Program.isPrePassPhase = true;
 		Program.proceedBeyond = true;
-		Program.removeUnused = true;
 		Program.fieldSensitive = false;
 		Program.maxThreads = 13;
 		Program.z3TimeoutInMilliSecs = "5000"; // 5s timeout for each z3 query.
@@ -212,10 +225,11 @@ public class Program {
 		Program.basePointsTo = true;
 		Program.memoizeAccesses = 0;
 		Program.preciseDFDEdges = false;
-		Program.idfaUpdateCategory = UpdateCategory.LZUPD; // Default is LZUPD.
-		Program.concurrencyAlgorithm = ConcurrencyAlgorithm.ICON;
+		Program.testSafeMarkingHeuristic = false;
+		Program.concurrencyAlgorithm = ConcurrencyAlgorithm.YCON;
 		Program.mhpUpdateCategory = UpdateCategory.LZUPD; // Default is LZUPD.
 		Program.sveSensitive = SVEDimension.SVE_SENSITIVE;
+		Program.useContextSensitiveQueryResolver = false;
 		Program.cpaMode = CPredAMode.H1H2H3;
 		Program.useInterProceduralPredicateAnalysis = false;
 		Program.useTimerForIncEPARuns = false;
@@ -231,7 +245,7 @@ public class Program {
 		if (Program.concurrencyAlgorithm == ConcurrencyAlgorithm.YCON) {
 			Program.mhpUpdateCategory = UpdateCategory.LZINV;
 			Program.sveNoCheck = true;
-			Program.idfaUpdateCategory = UpdateCategory.LZUPD;
+			// Program.idfaUpdateCategory = UpdateCategory.LZUPD;
 		}
 
 		String filePath = "";
@@ -249,7 +263,7 @@ public class Program {
 		// filePath = ("../tests/bt-contextsensitivity.i");
 		// filePath = ("../tests/bt-recursivequery.i");
 		// filePath = ("../tests/btsmall.i");
-		// filePath = ("../tests/npb-post/cg3-0.i");
+		filePath = ("../tests/npb-post/cg3-0.i");
 		// filePath = ("../tests/npb-post/ep3-0.i");
 		// filePath = ("../tests/npb-post/ft3-0.i");
 		// filePath = ("../tests/npb-post/is3-0.i");
@@ -302,7 +316,7 @@ public class Program {
 		// filePath = ("../src/imop/lib/testcases/dataTest/postCallFlowIssue.c");
 		// filePath = ("../src/imop/lib/testcases/dataTest/voidParamTest.c");
 		// filePath = ("../src/imop/lib/testcases/dataTest/ampersandCopy.c");
-		// filePath = ("../src/imop/lib/testcases/dataTest/idfaUpdate.c");
+		filePath = ("../src/imop/lib/testcases/dataTest/idfaUpdate.c");
 		// filePath = ("../src/imop/lib/testcases/dataTest/swapCheck.c");
 		// filePath = ("../src/imop/lib/testcases/dataTest/swapCheck2.c");
 		// filePath = ("../src/imop/lib/testcases/dataTest/singleFlowConflict.c");
@@ -404,7 +418,7 @@ public class Program {
 		// filePath = ("../tests/atomic-test.c");
 		// filePath = ("../tests/ocean/kinst-k2input.i");
 		// filePath = ("../tests/dijkstra_openmp.i");
-		// filePath = ("../tests/barr-opt-tests/jacobi-1d-imper.i");
+		filePath = ("../tests/barr-opt-tests/jacobi-1d-imper.i");
 		// filePath = ("../tests/jacobi-1d-imper-postpass.i");
 		// filePath = ("../tests/dijkstra_while_openmp.i");
 		// filePath = ("../tests/jacobi-while.i");
@@ -429,6 +443,7 @@ public class Program {
 		// filePath = ("../tests/c_jacobi01-postpass.i");
 		// filePath = ("../tests/barr-opt-tests/adi.i");
 		// filePath = ("../tests/barr-opt-tests/amgmk.i");
+		// filePath = ("../tests/amgmk-postpass.i");
 		// filePath = ("../tests/icon-tests/smithwa.i");
 		// filePath = ("../tests/barr-opt-tests/kmeans.i");
 		// filePath = ("../tests/barr-opt-tests/clomp.i");
@@ -826,6 +841,12 @@ public class Program {
 	}
 
 	private static boolean disableCellPointees = true;
+	/**
+	 * Enables the heuristic that helps in early termination of first phase of
+	 * HIDFAp, by marking those nodes as safe that are reachable on a straight path
+	 * from a safe node (without any other incoming paths to the path).
+	 */
+	public static boolean testSafeMarkingHeuristic = false;
 
 	/**
 	 * Obtain a set of all those cells that may point to a symbol.

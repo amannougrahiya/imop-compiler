@@ -2,7 +2,7 @@
  * Copyright (c) 2019 Aman Nougrahiya, V Krishna Nandivada, IIT Madras.
  * This file is a part of the project IMOP, licensed under the MIT license.
  * See LICENSE.md for the full text of the license.
- * 
+ *
  * The above notice shall be included in all copies or substantial
  * portions of this file.
  */
@@ -284,6 +284,14 @@ public class ReversePostOrderWorkList {
 				return null;
 			}
 		}
+	}
+
+	public List<Node> getIteratorForNonBarrierNodes() {
+		return Collections.unmodifiableList(this.nonBarrierList);
+	}
+
+	public boolean contains(Node node) {
+		return this.nonBarrierList.contains(node) || this.barrierSet.contains(node);
 	}
 
 	public Node removeFirstElementOfSameSCC(int sccId) {

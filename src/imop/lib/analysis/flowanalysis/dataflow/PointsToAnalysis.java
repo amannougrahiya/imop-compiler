@@ -24,6 +24,7 @@ import imop.lib.cfg.info.CFGInfo;
 import imop.lib.util.*;
 import imop.parser.Program;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -61,6 +62,8 @@ public class PointsToAnalysis extends InterThreadForwardCellularAnalysis<PointsT
 		affectedCellsInThisEpoch.clear();
 	}
 
+	public List<Long> counterList = new ArrayList<>();
+
 	public void restartAnalysisFromStoredNodes() {
 		assert (!SCC.processingTarjan);
 		if (this.analysisName == AnalysisName.POINTSTO
@@ -73,6 +76,7 @@ public class PointsToAnalysis extends InterThreadForwardCellularAnalysis<PointsT
 		// localStr += ste.getFileName() + ":" + ste.getLineNumber() + "\n";
 		// }
 		// Main.globalString += localStr + "\n\n\n";
+		long thisUpdateNodeCounter = this.nodesProcessedDuringUpdate;
 		this.autoUpdateTriggerCounter++;
 		// if (Program.stabilizationStackDump != null) {
 		// StringBuilder tempStr = new StringBuilder();
@@ -82,12 +86,17 @@ public class PointsToAnalysis extends InterThreadForwardCellularAnalysis<PointsT
 		// Program.stabilizationStackDump.append("#######\n\n");
 		// }
 		PointsToAnalysis.enableHeuristic(); // Mark start of next epoch.
+		/*
+		 * Maintain a copy of nodes-to-be-updated for certain heuristic later.
+		 */
+		// this.copyOfSeedNodesForFirstPhase.clear();
+		// this.copyOfSeedNodesForFirstPhase.addAll(this.nodesToBeUpdated);
 		long localTimer = System.nanoTime();
 
 		/*
 		 * From the set of nodes to be updated, we obtain the workList to be
 		 * processed.
-		 * We add all the entry points of the SCC of each node.
+		 * OLD: We add all the entry points of the SCC of each node.
 		 */
 		this.workList.recreate();
 		Set<Node> remSet = new HashSet<>();
@@ -105,13 +114,33 @@ public class PointsToAnalysis extends InterThreadForwardCellularAnalysis<PointsT
 			// this.workList.addAll(nSCC.getEntryNodes());
 			// }
 		}
+		System.out.println("Find this in PTA: " + remSet.size());
 		// OLD CODE: Now, if we ever find that a node is unconnected to the program, we
 		// remove it from processing.
 		this.nodesToBeUpdated.removeAll(remSet);
 		// this.nodesToBeUpdated.clear();
 
+		/*
+		 * A new piece of code starts: Count the number of SCCs (with cycles) that have seed nodes.
+		 */
+		if (Program.countSeededSCCs) {
+			Set<SCC> seededSCCs = new HashSet<>();
+			for (Node n : workList.getIteratorForNonBarrierNodes()) {
+				SCC thisSCC = n.getInfo().getCFGInfo().getSCC();
+				if (thisSCC != null) {
+					seededSCCs.add(thisSCC);
+				}
+			}
+			System.out.println("Seeded SCC: " + seededSCCs.size());
+		}
+
+		/*
+		 * .. New code for counter ends.
+		 */
+
 		this.processedInThisUpdate = new HashSet<>();
 		this.yetToBeFinalized = new HashSet<>();
+		int processedSCCCount = 0;
 		while (!workList.isEmpty()) {
 			Node nodeToBeAnalyzed = workList.removeFirstElement();
 			CFGInfo nInfo = nodeToBeAnalyzed.getInfo().getCFGInfo();
@@ -128,10 +157,13 @@ public class PointsToAnalysis extends InterThreadForwardCellularAnalysis<PointsT
 				 * second phase, and only then shall we move on to the next SCC.
 				 */
 				stabilizeSCCOf(nodeToBeAnalyzed);
+				processedSCCCount++;
 			}
 		}
+		System.out.println("Total SCCs processed: " + processedSCCCount + " out of " + SCC.getAllSCCSize());
 
 		localTimer = System.nanoTime() - localTimer;
+		counterList.add(this.nodesProcessedDuringUpdate - thisUpdateNodeCounter);
 		this.flowAnalysisUpdateTimer += localTimer;
 		if (this.analysisName == AnalysisName.POINTSTO
 				&& PointsToAnalysis.stateOfPointsTo == PointsToGlobalState.STALE) {

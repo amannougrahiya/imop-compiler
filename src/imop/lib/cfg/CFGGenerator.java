@@ -2,7 +2,7 @@
  * Copyright (c) 2019 Aman Nougrahiya, V Krishna Nandivada, IIT Madras.
  * This file is a part of the project IMOP, licensed under the MIT license.
  * See LICENSE.md for the full text of the license.
- * 
+ *
  * The above notice shall be included in all copies or substantial
  * portions of this file.
  */
@@ -80,7 +80,7 @@ public class CFGGenerator {
 	 * <br>
 	 * NOTE: This call also removes the stale edge from constant switch
 	 * predicate, whenever required.
-	 * 
+	 *
 	 * @param src
 	 *             a predecessor node.
 	 * @param dest
@@ -206,7 +206,7 @@ public class CFGGenerator {
 		 * of
 		 * nodes.
 		 * <br>
-		 * 
+		 *
 		 * @param pred
 		 *             the predecessor node.
 		 * @param succ
@@ -214,7 +214,7 @@ public class CFGGenerator {
 		 */
 		public static void connect(Node pred, Node succ) {
 			assert (pred != null && succ != null);
-			assert (Misc.isCFGNode(pred) && Misc.isCFGNode(succ));
+			assert (Misc.isCFGNode(pred) && Misc.isCFGNode(succ)): pred.getClass().getSimpleName() + " " + succ.getClass().getSimpleName();
 
 			if (!CFGGenerator.verifyEdgePrecision(pred, succ)) {
 				return;
@@ -936,7 +936,7 @@ public class CFGGenerator {
 		 * f0 ::= <GOTO>
 		 * f1 ::= <IDENTIFIER>
 		 * f2 ::= ";"
-		 * 
+		 *
 		 * CFG Type: LEAF
 		 */
 		@Override
@@ -979,7 +979,7 @@ public class CFGGenerator {
 		/**
 		 * f0 ::= <CONTINUE>
 		 * f1 ::= ";"
-		 * 
+		 *
 		 * CFG Type: LEAF
 		 */
 		@Override
@@ -1028,7 +1028,7 @@ public class CFGGenerator {
 		/**
 		 * f0 ::= <BREAK>
 		 * f1 ::= ";"
-		 * 
+		 *
 		 * CFG Type: LEAF
 		 */
 		@Override
