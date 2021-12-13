@@ -281,9 +281,10 @@ public class DriverModule {
 
 		ParallelConstructExpander.mergeParallelRegions(Program.getRoot());
 		RedundantSynchronizationRemovalForYA.removeBarriers(Program.getRoot());
-		FunctionDefinition mainFunc = Program.getRoot().getInfo().getMainFunction();
-		FunctionInliner.inline(mainFunc);
-		RedundantSynchronizationRemovalForYA.removeBarriers(Program.getRoot());
+		// Uncomment these:
+		// FunctionDefinition mainFunc = Program.getRoot().getInfo().getMainFunction();
+		// FunctionInliner.inline(mainFunc);
+		// RedundantSynchronizationRemovalForYA.removeBarriers(Program.getRoot());
 
 		double totTime = (System.nanoTime() - Main.totalTime) / (1.0 * 1e9);
 		double incIDFATime = 0.0;

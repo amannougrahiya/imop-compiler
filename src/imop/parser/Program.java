@@ -263,7 +263,7 @@ public class Program {
 		// filePath = ("../tests/bt-contextsensitivity.i");
 		// filePath = ("../tests/bt-recursivequery.i");
 		// filePath = ("../tests/btsmall.i");
-		filePath = ("../tests/npb-post/cg3-0.i");
+		// filePath = ("../tests/npb-post/cg3-0.i");
 		// filePath = ("../tests/npb-post/ep3-0.i");
 		// filePath = ("../tests/npb-post/ft3-0.i");
 		// filePath = ("../tests/npb-post/is3-0.i");
@@ -316,7 +316,7 @@ public class Program {
 		// filePath = ("../src/imop/lib/testcases/dataTest/postCallFlowIssue.c");
 		// filePath = ("../src/imop/lib/testcases/dataTest/voidParamTest.c");
 		// filePath = ("../src/imop/lib/testcases/dataTest/ampersandCopy.c");
-		filePath = ("../src/imop/lib/testcases/dataTest/idfaUpdate.c");
+		// filePath = ("../src/imop/lib/testcases/dataTest/idfaUpdate.c");
 		// filePath = ("../src/imop/lib/testcases/dataTest/swapCheck.c");
 		// filePath = ("../src/imop/lib/testcases/dataTest/swapCheck2.c");
 		// filePath = ("../src/imop/lib/testcases/dataTest/singleFlowConflict.c");
@@ -418,7 +418,7 @@ public class Program {
 		// filePath = ("../tests/atomic-test.c");
 		// filePath = ("../tests/ocean/kinst-k2input.i");
 		// filePath = ("../tests/dijkstra_openmp.i");
-		filePath = ("../tests/barr-opt-tests/jacobi-1d-imper.i");
+		// filePath = ("../tests/barr-opt-tests/jacobi-1d-imper.i");
 		// filePath = ("../tests/jacobi-1d-imper-postpass.i");
 		// filePath = ("../tests/dijkstra_while_openmp.i");
 		// filePath = ("../tests/jacobi-while.i");
@@ -443,11 +443,12 @@ public class Program {
 		// filePath = ("../tests/c_jacobi01-postpass.i");
 		// filePath = ("../tests/barr-opt-tests/adi.i");
 		// filePath = ("../tests/barr-opt-tests/amgmk.i");
-		// filePath = ("../tests/amgmk-postpass.i");
+		filePath = ("../tests/amgmk-postpass.i");
 		// filePath = ("../tests/icon-tests/smithwa.i");
 		// filePath = ("../tests/barr-opt-tests/kmeans.i");
 		// filePath = ("../tests/barr-opt-tests/clomp.i");
 		// filePath = ("../tests/barr-opt-tests/stream.i");
+		// filePath = ("../tests/stream-postpass.i");
 		// filePath = ("../tests/barr-opt-tests/quake.i");
 		// filePath = ("../src/imop/lib/testcases/allKnown.c");
 		// filePath = ("../output-dump/imop_output.i");
