@@ -334,7 +334,7 @@ public class DriverModule {
 		System.err.println("TOTAL TIME (including disk I/O time): " + totTime + "s.");
 		System.err.println("This execution ran in " + Program.idfaUpdateCategory + " mode for IDFA update");
 		DumpSnapshot.forceDumpRoot("imop_output_" + Program.idfaUpdateCategory);
-		DumpSnapshot.forceDumpPointsTo("final" + Program.idfaUpdateCategory);
+		DumpSnapshot.forceDumpPointsTo("final" + Program.idfaUpdateCategory + Program.stabilizationIDFAMode);
 
 		StringBuilder resultString = new StringBuilder(Program.fileName + " " + Program.idfaUpdateCategory + " "
 				+ Program.df2.format(incIDFATime) + " " + Program.df2.format(totTime) + " " + incIDFATriggers + " "

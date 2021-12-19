@@ -2,7 +2,7 @@
  * Copyright (c) 2019 Aman Nougrahiya, V Krishna Nandivada, IIT Madras.
  * This file is a part of the project IMOP, licensed under the MIT license.
  * See LICENSE.md for the full text of the license.
- * 
+ *
  * The above notice shall be included in all copies or substantial
  * portions of this file.
  */
@@ -35,13 +35,13 @@ public class CollectorVisitor {
 	 * A generic method that is used to traverse a graph until certain
 	 * conditions are met, and collect the list of nodes that lie on the
 	 * traversed path, as well as nodes where the paths terminate.
-	 * 
+	 *
 	 * <p>
 	 * Note that if a <i>list</i> of nodes is not required, then we should use
 	 * the method
 	 * {@link CollectorVisitor#collectNodeSetInGenericGraph(Object, Set, Predicate, NeighbourSetGetter)
 	 * collectNodeSetInCustorGraph} instead.
-	 * 
+	 *
 	 * @param startPoint
 	 *                         a node of type {@code T}, starting whose successors
 	 *                         the
@@ -86,13 +86,13 @@ public class CollectorVisitor {
 	 * A generic method that is used to traverse a graph until certain
 	 * conditions are met, and collect the list of nodes that lie on the
 	 * traversed path, as well as nodes where the paths terminate.
-	 * 
+	 *
 	 * <p>
 	 * Note that if a <i>list</i> of nodes is not required, then we should use
 	 * the method
 	 * {@link CollectorVisitor#collectNodeSetInGenericGraph(Set, Set, Predicate, NeighbourSetGetter)
 	 * collectNodeSetInCustorGraph} instead.
-	 * 
+	 *
 	 * @param startPoints
 	 *                         list of nodes of type {@code T}, starting whose
 	 *                         successors the
@@ -155,7 +155,7 @@ public class CollectorVisitor {
 	 * A generic method that is used to traverse a graph until certain
 	 * conditions are met, and collect the set of nodes that lie on the
 	 * traversed path, as well as nodes where the paths terminate.
-	 * 
+	 *
 	 * @param startPoint
 	 *                         a node of type {@code T}, starting whose successors
 	 *                         the
@@ -201,7 +201,7 @@ public class CollectorVisitor {
 	 * A generic method that is used to traverse a graph until certain
 	 * conditions are met, and collect the set of nodes that lie on the
 	 * traversed path, as well as nodes where the paths terminate.
-	 * 
+	 *
 	 * @param startPoints
 	 *                         set of nodes of type {@code T}, starting whose
 	 *                         successors the
@@ -268,7 +268,7 @@ public class CollectorVisitor {
 	 * Note that when a traversal root is a non-leaf CFG node, the traversal
 	 * would start with the successors of that non-leaf node, rather than those
 	 * of its {@link BeginNode}.
-	 * 
+	 *
 	 * @param startPoint
 	 *                         node from which traversal has to start.
 	 * @param endPoints
@@ -290,6 +290,13 @@ public class CollectorVisitor {
 		return collectNodesIntraTaskForward(startPoints, endPoints, terminationCheck);
 	}
 
+	public static Set<Node> collectNodesInterTaskForward(Node startPoint, Set<Node> endPoints,
+			Predicate<Node> terminationCheck) {
+		Set<Node> startPoints = new HashSet<>();
+		startPoints.add(startPoint);
+		return collectNodesIntraTaskForward(startPoints, endPoints, terminationCheck);
+	}
+
 	/**
 	 * This visitor traverses forwards on all the intra-task inter-procedural
 	 * context-insensitive paths that start at any element in the
@@ -299,7 +306,7 @@ public class CollectorVisitor {
 	 * Note that when a traversal root is a non-leaf CFG node, the traversal
 	 * would start with the successors of that non-leaf node, rather than those
 	 * of its {@link BeginNode}.
-	 * 
+	 *
 	 * @param startPoints
 	 *                         set of nodes from which traversal has to start.
 	 * @param endPoints
@@ -358,6 +365,29 @@ public class CollectorVisitor {
 		// return collectedNodeSet;
 	}
 
+	public static Set<Node> collectNodesInterTaskForward(Set<Node> startPoints, Set<Node> endPoints,
+			Predicate<Node> terminationCheck) {
+		Set<NodeWithStack> stackedStartingPoints = new HashSet<>();
+		Set<NodeWithStack> stackedEndingPoints = new HashSet<>();
+		Predicate<NodeWithStack> stackedTerminationCheck = (n) -> terminationCheck.test(n.getNode());
+		for (Node startPoint : startPoints) {
+			stackedStartingPoints.add(new NodeWithStack(startPoint, new CallStack()));
+		}
+		Set<NodeWithStack> stackedCollectedNodes = collectNodeSetInGenericGraph(stackedStartingPoints,
+				stackedEndingPoints, stackedTerminationCheck,
+				(n) -> n.getNode().getInfo().getCFGInfo().getInterTaskLeafSuccessorNodes(n.getCallStack()));
+
+		for (NodeWithStack nodeWithStack : stackedEndingPoints) {
+			endPoints.add(nodeWithStack.getNode());
+		}
+
+		Set<Node> collectedNodes = new HashSet<>();
+		for (NodeWithStack nodeWithStack : stackedCollectedNodes) {
+			collectedNodes.add(nodeWithStack.getNode());
+		}
+		return collectedNodes;
+	}
+
 	/**
 	 * This visitor traverses backward on all the intra-task inter-procedural
 	 * context-insensitive paths that start at {@code startPoint} and end at
@@ -366,7 +396,7 @@ public class CollectorVisitor {
 	 * Note that when a traversal root is a non-leaf CFG node, the traversal
 	 * would start with the predecessors of that non-leaf node, rather than
 	 * those of its {@link EndNode}.
-	 * 
+	 *
 	 * @param startPoint
 	 *                         node from which traversal has to start.
 	 * @param endPoints
@@ -397,7 +427,7 @@ public class CollectorVisitor {
 	 * Note that when a traversal root is a non-leaf CFG node, the traversal
 	 * would start with the predecessors of that non-leaf node, rather than
 	 * those of its {@link EndNode}.
-	 * 
+	 *
 	 * @param startPoints
 	 *                         set of nodes from which traversal has to start.
 	 * @param endPoints
@@ -462,7 +492,7 @@ public class CollectorVisitor {
 	 * Note that when a traversal root is a non-leaf CFG node, the traversal
 	 * would start with the successors of that non-leaf node, rather than those
 	 * of its {@link BeginNode}.
-	 * 
+	 *
 	 * @param startPoint
 	 *                         node from which traversal has to start.
 	 * @param endPoints
@@ -485,6 +515,7 @@ public class CollectorVisitor {
 				(n) -> n.getNode().getInfo().getCFGInfo().getInterProceduralLeafSuccessors(n.getCallStack()));
 	}
 
+
 	/**
 	 * This visitor traverses forwards on all the intra-task inter-procedural
 	 * context-sensitive paths that start at any element in the
@@ -494,7 +525,7 @@ public class CollectorVisitor {
 	 * Note that when a traversal root is a non-leaf CFG node, the traversal
 	 * would start with the successors of that non-leaf node, rather than those
 	 * of its {@link BeginNode}.
-	 * 
+	 *
 	 * @param startPoints
 	 *                         set of nodes from which traversal has to start.
 	 * @param endPoints
@@ -523,7 +554,7 @@ public class CollectorVisitor {
 	 * Note that when a traversal root is a non-leaf CFG node, the traversal
 	 * would start with the successors of that non-leaf node, rather than those
 	 * of its {@link BeginNode}.
-	 * 
+	 *
 	 * @param startPoint
 	 *                         node from which traversal has to start.
 	 * @param endPoints
@@ -555,7 +586,7 @@ public class CollectorVisitor {
 	 * Note that when a traversal root is a non-leaf CFG node, the traversal
 	 * would start with the successors of that non-leaf node, rather than those
 	 * of its {@link BeginNode}.
-	 * 
+	 *
 	 * @param startPoints
 	 *                         set of nodes from which traversal has to start.
 	 * @param endPoints
@@ -628,7 +659,7 @@ public class CollectorVisitor {
 
 	/**
 	 * TODO: Needs testing.
-	 * 
+	 *
 	 * @param startPoint
 	 * @param endPoints
 	 * @param terminationCheck

@@ -284,6 +284,36 @@ public abstract class InterThreadForwardCellularAnalysis<F extends CellularDataF
 	public List<Long> firstPhaseCount = new ArrayList<>();
 	public List<Long> secondPhaseCount = new ArrayList<>();
 
+	protected final void stabilizeSCCOfInOnePass(Node node) {
+		SCC thisSCC = node.getInfo().getCFGInfo().getSCC();
+		int thisSCCNum = node.getInfo().getCFGInfo().getSCCRPOIndex();
+		assert (thisSCC != null);
+		long localCounterPerPhase = this.nodesProcessedDuringUpdate;
+		do {
+			this.nodesProcessedDuringUpdate++;
+			this.debugRecursion(node);
+			this.processWhenNotUpdated(node); // Note that this is a call to normal processing.
+			node = this.workList.peekFirstElementOfSameSCC(thisSCCNum);
+			if (node == null) {
+				break;
+			}
+			SCC nextSCC = node.getInfo().getCFGInfo().getSCC();
+			if (nextSCC == null || nextSCC != thisSCC) {
+				// The next node belongs to a different SCC. Break from the second phase.
+				break;
+			} else {
+				// Extract the next node and process it in the second phase.
+				node = this.workList.removeFirstElementOfSameSCC(thisSCCNum);
+			}
+		} while (true);
+		secondPhaseCount.add(this.nodesProcessedDuringUpdate - localCounterPerPhase);
+
+		// if (node != null) {
+		// int nextSCCNum = node.getInfo().getCFGInfo().getSCCRPOIndex();
+		// System.err.println("*** ENCOUNTERED NEXT SCC with ID #" + nextSCCNum);
+		// }
+	}
+
 	/**
 	 * This method starts with the given node, and stabilizes the SCC corresponding
 	 * to it before returning back.
@@ -327,12 +357,14 @@ public abstract class InterThreadForwardCellularAnalysis<F extends CellularDataF
 		} while (true);
 		firstPhaseCount.add(this.nodesProcessedDuringUpdate - localCounterPerPhase);
 		/*
-		 * NEW CODE: To check the percent of nodes processed in an SCC in the first phase.
+		 * NEW CODE: To check the percent of nodes processed in an SCC in the first
+		 * phase.
 		 */
 		int SCCSize = thisSCC.getNodeCount();
 		double percentInFirst = this.processedInThisUpdate.size() / (SCCSize * 1.0) * 100;
 		if (SCCSize != 1) {
-			System.out.println("Total " + Program.df2.format(percentInFirst) + "% of nodes processed out of " + SCCSize + " in this SCC.");
+			System.out.println("Total " + Program.df2.format(percentInFirst) + "% of nodes processed out of " + SCCSize
+					+ " in this SCC.");
 		}
 		/*
 		 * <-- NEW CODE Ends.
@@ -656,11 +688,11 @@ public abstract class InterThreadForwardCellularAnalysis<F extends CellularDataF
 		Set<IDFAEdge> predecessors = nodeInfo.getCFGInfo()
 				.getInterTaskLeafPredecessorEdges(this.analysisDimension.getSVEDimension());
 		F oldIN = (F) nodeInfo.getIN(analysisName);
-		boolean propagateFurther = false;
+		boolean inOrOUTChanged = false;
 		F newIN;
 		if (oldIN == null) {
 			// First processing ever of this node!
-			propagateFurther = true;
+			inOrOUTChanged = true;
 			newIN = (predecessors.isEmpty()) ? newIN = this.getEntryFact() : this.getTop();
 		} else if (first) {
 			// First processing in the first round of update.
@@ -769,13 +801,13 @@ public abstract class InterThreadForwardCellularAnalysis<F extends CellularDataF
 		this.processedInThisUpdate.add(node); // Mark a node as processed only after its OUT has been "purified".
 
 		// Step 3: Process the successors, if needed.
-		propagateFurther |= inChanged;
+		inOrOUTChanged |= inChanged;
 		if (node instanceof BarrierDirective) {
 			if (oldOUT == null || !newOUT.isEqualTo(oldOUT)) {
-				propagateFurther = true;
+				inOrOUTChanged = true;
 			}
 		}
-		if (propagateFurther) {
+		if (inOrOUTChanged) {
 			for (IDFAEdge idfaEdge : nodeInfo.getCFGInfo()
 					.getInterTaskLeafSuccessorEdges(this.analysisDimension.getSVEDimension())) {
 				Node n = idfaEdge.getNode();

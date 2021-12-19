@@ -34,8 +34,16 @@ public class ReversePostOrderWorkList {
 	}
 
 	public void recreate() {
-		this.barrierSet = new HashSet<>();
-		this.nonBarrierList = new LinkedList<>();
+		if (this.barrierSet == null) {
+			this.barrierSet = new HashSet<>();
+		} else {
+			this.barrierSet.clear();
+		}
+		if (this.nonBarrierList == null) {
+			this.nonBarrierList = new LinkedList<>();
+		} else {
+			this.nonBarrierList.clear();
+		}
 	}
 
 	public void setStageToBarrier() {
@@ -284,6 +292,11 @@ public class ReversePostOrderWorkList {
 				return null;
 			}
 		}
+	}
+
+
+	public Set<Node> getIteratorForBarrierNodes() {
+		return Collections.unmodifiableSet(this.barrierSet);
 	}
 
 	public List<Node> getIteratorForNonBarrierNodes() {

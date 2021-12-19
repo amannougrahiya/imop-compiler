@@ -739,7 +739,8 @@ public class AutomatedUpdater {
 					AutomatedUpdater.reinitIDFA(analysis);
 				}
 			}
-		} else if (Program.idfaUpdateCategory == UpdateCategory.LZINV || Program.idfaUpdateCategory == UpdateCategory.CPINV) {
+		} else if (Program.idfaUpdateCategory == UpdateCategory.LZINV
+				|| Program.idfaUpdateCategory == UpdateCategory.CPINV) {
 			assert (nodeSet == null || nodeSet.isEmpty());
 			for (FlowAnalysis<?> analysis : FlowAnalysis.getAllAnalyses().values()) {
 				if (analysis
@@ -773,7 +774,8 @@ public class AutomatedUpdater {
 					}
 				}
 			}
-		} else if (Program.idfaUpdateCategory == UpdateCategory.LZUPD || Program.idfaUpdateCategory == UpdateCategory.CPUPD) {
+		} else if (Program.idfaUpdateCategory == UpdateCategory.LZUPD
+				|| Program.idfaUpdateCategory == UpdateCategory.CPUPD) {
 			for (FlowAnalysis<?> analysis : FlowAnalysis.getAllAnalyses().values()) {
 				if (analysis
 						.getAnalysisName() == (Program.useInterProceduralPredicateAnalysis
@@ -827,7 +829,8 @@ public class AutomatedUpdater {
 					AutomatedUpdater.reinitIDFA(analysis);
 				}
 			}
-		} else if (Program.idfaUpdateCategory == UpdateCategory.LZINV || Program.idfaUpdateCategory == UpdateCategory.CPINV) {
+		} else if (Program.idfaUpdateCategory == UpdateCategory.LZINV
+				|| Program.idfaUpdateCategory == UpdateCategory.CPINV) {
 			assert (nodeSet == null || nodeSet.isEmpty());
 			for (FlowAnalysis<?> analysis : FlowAnalysis.getAllAnalyses().values()) {
 				if (analysis instanceof InterThreadBackwardCellularAnalysis
@@ -851,7 +854,8 @@ public class AutomatedUpdater {
 				}
 			}
 		} else {
-			assert (Program.idfaUpdateCategory == UpdateCategory.LZUPD || Program.idfaUpdateCategory == UpdateCategory.CPUPD);
+			assert (Program.idfaUpdateCategory == UpdateCategory.LZUPD
+					|| Program.idfaUpdateCategory == UpdateCategory.CPUPD);
 			for (FlowAnalysis<?> analysis : FlowAnalysis.getAllAnalyses().values()) {
 				if (analysis instanceof InterThreadBackwardCellularAnalysis
 						|| analysis instanceof InterThreadBackwardNonCellularAnalysis) {

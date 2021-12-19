@@ -46,9 +46,14 @@ public class Program {
 		CPUPD, // CP-based update
 		LZINV, // lazy invalidation, involving rerun of the analysis, whenever first read is
 				// performed after transformation.
-		LZUPD // lazy update, with incremental update to the analysis data, whenever first
+		LZUPD, // lazy update, with incremental update to the analysis data, whenever first
 				// read is performed after transformation.
+	}
 
+	public enum StabilizationIDFAMode {
+		INCIDFA, // our proposed approach
+		RETST, // restarting iterations, SCC-wide; imprecise and fast
+		INIT_RETST // restarting iterations, SCC-wide; precise and relatively slower than RETST
 	}
 
 	public enum CPredAMode {
@@ -73,6 +78,7 @@ public class Program {
 	public static boolean enableUnmodifiability;
 	public final static boolean countSeededSCCs = true;
 	public static boolean useNoSCCs = false;
+	public static StabilizationIDFAMode stabilizationIDFAMode = StabilizationIDFAMode.INCIDFA;
 	/**
 	 * Checks whether at least one symbol is required for communication.
 	 */
@@ -208,7 +214,8 @@ public class Program {
 		 */
 		Program.isPrePassPhase = false;
 		Program.removeUnused = true;
-		Program.idfaUpdateCategory = UpdateCategory.LZINV; // Default is LZUPD.
+		Program.idfaUpdateCategory = UpdateCategory.LZUPD; // Default is LZUPD.
+		Program.stabilizationIDFAMode = StabilizationIDFAMode.INCIDFA;
 		// Program.useNoSCCs = true; // Doesn't work.
 		/*
 		 * <-- for IncIDFA.
@@ -263,13 +270,19 @@ public class Program {
 		// filePath = ("../tests/bt-contextsensitivity.i");
 		// filePath = ("../tests/bt-recursivequery.i");
 		// filePath = ("../tests/btsmall.i");
-		// filePath = ("../tests/npb-post/cg3-0.i");
-		// filePath = ("../tests/npb-post/ep3-0.i");
-		// filePath = ("../tests/npb-post/ft3-0.i");
+		filePath = ("../tests/npb-post/cg3-0.i");
+		filePath = ("../tests/npb-post/ep3-0.i");
+		filePath = ("../tests/npb-post/ft3-0.i");
 		// filePath = ("../tests/npb-post/is3-0.i");
 		// filePath = ("../tests/npb-post/lu3-0.i");
 		// filePath = ("../tests/npb-post/mg3-0.i");
 		// filePath = ("../tests/npb-post/sp3-0.i");
+		//
+		// filePath = ("../tests/quake-postpass.i");
+		// filePath = ("../tests/scanner-postpass.i");
+		filePath = ("../tests/amgmk-postpass.i");
+		// filePath = ("../tests/clomp-postpass.i");
+		// filePath = ("../tests/stream-postpass.i");
 		//
 		// filePath = "../output-dump/imop_useful.i";
 		// filePath = ("../src/imop/lib/testcases/cfgTests/singleLooping.c");
@@ -394,7 +407,7 @@ public class Program {
 		// filePath = ("../tests/mdljcell.i");
 		// filePath = ("../tests/barr-opt-tests/heated_plate_openmp.i");
 		// filePath = ("../tests/heated_plate_pointer.i");
-		// filePath = ("../tests/heated_plate_pointer-merged-swapped.i");
+		filePath = ("../tests/heated_plate_pointer-merged-swapped.i");
 		// filePath = ("../tests/temp.i");
 		// filePath = ("../tests/temp2.i");
 		// filePath = ("../tests/temp3.i");
@@ -443,7 +456,6 @@ public class Program {
 		// filePath = ("../tests/c_jacobi01-postpass.i");
 		// filePath = ("../tests/barr-opt-tests/adi.i");
 		// filePath = ("../tests/barr-opt-tests/amgmk.i");
-		filePath = ("../tests/amgmk-postpass.i");
 		// filePath = ("../tests/icon-tests/smithwa.i");
 		// filePath = ("../tests/barr-opt-tests/kmeans.i");
 		// filePath = ("../tests/barr-opt-tests/clomp.i");
@@ -531,50 +543,32 @@ public class Program {
 			} else if (str.equals("-h1")) {
 				Program.cpaMode = CPredAMode.H1;
 			}
+			if (str.equals("--idfaMode") || str.equals("-im")) {
+				String next = args[index + 1];
+				Program.stabilizationIDFAMode = StabilizationIDFAMode.valueOf(next);
+				if (Program.stabilizationIDFAMode == null) {
+					System.out.println("Please use a valid identifier for IDFA stabilization mode: "
+							+ StabilizationIDFAMode.values());
+					System.out.println("Read the documentation for more details. Exiting..");
+					System.exit(0);
+				}
+			}
 			if (str.equals("--category") || str.equals("-c")) {
 				String next = args[index + 1];
-				switch (next) {
-				case "EGINV":
-					Program.idfaUpdateCategory = UpdateCategory.EGINV;
-					break;
-				case "CPINV":
-					Program.idfaUpdateCategory = UpdateCategory.CPINV;
-					break;
-				case "LZINV":
-					Program.idfaUpdateCategory = UpdateCategory.LZINV;
-					break;
-				case "EGUPD":
-					Program.idfaUpdateCategory = UpdateCategory.EGUPD;
-					break;
-				case "CPUPD":
-					Program.idfaUpdateCategory = UpdateCategory.CPUPD;
-					break;
-				case "LZUPD":
-					Program.idfaUpdateCategory = UpdateCategory.LZUPD;
-					break;
-				default:
-					System.out.println(
-							"Please use a valid identifier for IDFA update category: EGINV, CPINV, LZINV, EGUPD, CPUPD, or LZUPD.");
+				try {
+					Program.idfaUpdateCategory = UpdateCategory.valueOf(next);
+				} catch (Exception e) {
+					System.out.println("Please use a valid identifier for IDFA update category: "
+							+ Arrays.asList(UpdateCategory.values()));
 					System.out.println("Read the documentation for more details. Exiting..");
 					System.exit(0);
 				}
 			}
 			if (str.equals("--categoryMHP") || str.equals("-cm")) {
 				String next = args[index + 1];
-				switch (next) {
-				case "EGINV":
-					Program.mhpUpdateCategory = UpdateCategory.EGINV;
-					break;
-				case "LZINV":
-					Program.mhpUpdateCategory = UpdateCategory.LZINV;
-					break;
-				case "EGUPD":
-					Program.mhpUpdateCategory = UpdateCategory.EGUPD;
-					break;
-				case "LZUPD":
-					Program.mhpUpdateCategory = UpdateCategory.LZUPD;
-					break;
-				default:
+				try {
+					Program.mhpUpdateCategory = UpdateCategory.valueOf(next);
+				} catch (Exception e) {
 					System.out.println(
 							"Please use a valid identifier for MHP update category: EGINV, LZINV, EGUPD, or LZUPD.");
 					System.out.println("Read the documentation for more details. Exiting..");

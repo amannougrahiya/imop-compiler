@@ -21,6 +21,7 @@ import imop.lib.analysis.flowanalysis.generic.CellularDataFlowAnalysis;
 import imop.lib.analysis.flowanalysis.generic.InterThreadForwardCellularAnalysis;
 import imop.lib.analysis.typeSystem.*;
 import imop.lib.cfg.info.CFGInfo;
+import imop.lib.cg.NodeWithStack;
 import imop.lib.util.*;
 import imop.parser.Program;
 
@@ -133,11 +134,86 @@ public class PointsToAnalysis extends InterThreadForwardCellularAnalysis<PointsT
 			}
 			System.out.println("Seeded SCC: " + seededSCCs.size());
 		}
-
 		/*
 		 * .. New code for counter ends.
 		 */
 
+		switch (Program.stabilizationIDFAMode) {
+		case INIT_RETST:
+			markFlowFactsOfReachableNodesAsNull();
+			restartingIterations();
+			break;
+		case RETST:
+			restartingIterations();
+			break;
+		case INCIDFA:
+			twoPassPerSCC();
+			break;
+		}
+
+		localTimer = System.nanoTime() - localTimer;
+		counterList.add(this.nodesProcessedDuringUpdate - thisUpdateNodeCounter);
+		this.flowAnalysisUpdateTimer += localTimer;
+		if (this.analysisName == AnalysisName.POINTSTO
+				&& PointsToAnalysis.stateOfPointsTo == PointsToGlobalState.STALE) {
+			PointsToAnalysis.stateOfPointsTo = PointsToGlobalState.CORRECT;
+			// DumpSnapshot.dumpPointsTo("stable" + Program.updateCategory +
+			// this.autoUpdateTriggerCounter);
+		}
+	}
+
+	private void markFlowFactsOfReachableNodesAsNull() {
+		Set<Node> reachableNodes = new HashSet<>();
+		for (Node n : workList.getIteratorForNonBarrierNodes()) {
+			Set<Node> endNodeSet = new HashSet<>();
+			reachableNodes.add(n);
+			reachableNodes.addAll(CollectorVisitor.collectNodesInterTaskForward(n,
+					endNodeSet, e -> false));
+			reachableNodes.addAll(endNodeSet);
+		}
+		for (Node n : workList.getIteratorForBarrierNodes()) {
+			Set<Node> endNodeSet = new HashSet<>();
+			reachableNodes.add(n);
+			reachableNodes.addAll(CollectorVisitor.collectNodesInterTaskForward(n,
+					endNodeSet, e -> false));
+			reachableNodes.addAll(endNodeSet);
+		}
+		for (Node n : reachableNodes) {
+			if (n.getInfo().getStaleOUT(this.analysisName) != null) {
+				n.getInfo().setIN(this.analysisName, null);
+				n.getInfo().setOUT(this.analysisName, null);
+			}
+		}
+		workList.addAll(reachableNodes);
+	}
+
+	private void restartingIterations() {
+		this.processedInThisUpdate = new HashSet<>();
+		this.yetToBeFinalized = new HashSet<>();
+		int processedSCCCount = 0;
+		while (!workList.isEmpty()) {
+			Node nodeToBeAnalyzed = workList.removeFirstElement();
+			CFGInfo nInfo = nodeToBeAnalyzed.getInfo().getCFGInfo();
+			if (nInfo.getSCC() == null) {
+				// Here, node itself is an SCC. We do not require two rounds.
+				this.nodesProcessedDuringUpdate++;
+				this.debugRecursion(nodeToBeAnalyzed);
+				this.processWhenNotUpdated(nodeToBeAnalyzed); // Directly invoke the second round processing.
+				continue;
+			} else {
+				/*
+				 * This node belongs to an SCC. We should process the whole of
+				 * SCC in the first phase, followed by its processing in the
+				 * second phase, and only then shall we move on to the next SCC.
+				 */
+				stabilizeSCCOfInOnePass(nodeToBeAnalyzed);
+				processedSCCCount++;
+			}
+		}
+		System.out.println("Total SCCs processed: " + processedSCCCount + " out of " + SCC.getAllSCCSize());
+	}
+
+	private void twoPassPerSCC() {
 		this.processedInThisUpdate = new HashSet<>();
 		this.yetToBeFinalized = new HashSet<>();
 		int processedSCCCount = 0;
@@ -161,16 +237,6 @@ public class PointsToAnalysis extends InterThreadForwardCellularAnalysis<PointsT
 			}
 		}
 		System.out.println("Total SCCs processed: " + processedSCCCount + " out of " + SCC.getAllSCCSize());
-
-		localTimer = System.nanoTime() - localTimer;
-		counterList.add(this.nodesProcessedDuringUpdate - thisUpdateNodeCounter);
-		this.flowAnalysisUpdateTimer += localTimer;
-		if (this.analysisName == AnalysisName.POINTSTO
-				&& PointsToAnalysis.stateOfPointsTo == PointsToGlobalState.STALE) {
-			PointsToAnalysis.stateOfPointsTo = PointsToGlobalState.CORRECT;
-			// DumpSnapshot.dumpPointsTo("stable" + Program.updateCategory +
-			// this.autoUpdateTriggerCounter);
-		}
 	}
 
 	public PointsToAnalysis() {
