@@ -204,7 +204,7 @@ public class SCC implements DFable {
 
 	public static void initializeSCC() {
 		// TODO: Check whether the next line should be here (risking incorrect recursive
-		// radings until the end of this method),
+		// readings until the end of this method),
 		// or whether it should be at the end (risking infinite recursive calls of this
 		// method from appropriate getters)?
 		CFGInfo.isSCCStale = false;

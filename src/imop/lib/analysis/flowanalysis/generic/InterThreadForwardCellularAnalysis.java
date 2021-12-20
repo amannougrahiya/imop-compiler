@@ -70,45 +70,45 @@ public abstract class InterThreadForwardCellularAnalysis<F extends CellularDataF
 		do {
 			Node nodeToBeAnalysed = this.workList.removeFirstElement();
 			/*
-			 * New code below.
+			 * Old code below: This code is internally taken care of in
+			 * ReversePostOrderWorklist.
 			 */
-			if (nodeToBeAnalysed instanceof BarrierDirective || (nodeToBeAnalysed instanceof EndNode
-					&& nodeToBeAnalysed.getParent() instanceof ParallelConstruct)) {
-				// Process all barriers from the work-list.
-				Set<Node> barrList = new HashSet<>();
-				barrList.add(nodeToBeAnalysed);
-				while (true) {
-					Node nextNode = this.workList.peekFirstElement();
-					if (nextNode instanceof BarrierDirective
-							|| (nextNode instanceof EndNode && nextNode.getParent() instanceof ParallelConstruct)) {
-						nextNode = this.workList.removeFirstElement();
-						barrList.add(nextNode);
-					} else {
-						break;
-					}
-				}
-				for (Node barr : barrList) {
-					// typeList += barr.getClass().getSimpleName() + foo(barr) + ";\n ";
-					this.debugRecursion(barr);
-					this.processBarrierINWhenNotUpdated(barr);
-				}
-				for (Node barr : barrList) {
-					this.processBarrierOUTWhenNotUpdated(barr);
-				}
-			} else {
-				/*
-				 * New code above.
-				 */
-				// typeList += nodeToBeAnalysed.getClass().getSimpleName() +
-				// foo(nodeToBeAnalysed) + ";\n ";
-				this.debugRecursion(nodeToBeAnalysed);
-				this.processWhenNotUpdated(nodeToBeAnalysed);
-			}
+			// if (nodeToBeAnalysed instanceof BarrierDirective || (nodeToBeAnalysed
+			// instanceof EndNode
+			// && nodeToBeAnalysed.getParent() instanceof ParallelConstruct)) {
+			// // Process all barriers from the work-list.
+			// Set<Node> barrList = new HashSet<>();
+			// barrList.add(nodeToBeAnalysed);
+			// while (true) {
+			// Node nextNode = this.workList.peekFirstElement();
+			// if (nextNode instanceof BarrierDirective
+			// || (nextNode instanceof EndNode && nextNode.getParent() instanceof
+			// ParallelConstruct)) {
+			// nextNode = this.workList.removeFirstElement();
+			// barrList.add(nextNode);
+			// } else {
+			// break;
+			// }
+			// }
+			// for (Node barr : barrList) {
+			// // typeList += barr.getClass().getSimpleName() + foo(barr) + ";\n ";
+			// this.debugRecursion(barr);
+			// this.processBarrierINWhenNotUpdated(barr);
+			// }
+			// for (Node barr : barrList) {
+			// this.processBarrierOUTWhenNotUpdated(barr);
+			// }
+			// } else {
+			/*
+			 * Old code above.
+			 */
+			this.debugRecursion(nodeToBeAnalysed);
+			this.processWhenNotUpdated(nodeToBeAnalysed);
+			// } // Part of the old code.
 		} while (!workList.isEmpty());
 		if (this.analysisName == AnalysisName.POINTSTO) {
 			PointsToAnalysis.stateOfPointsTo = PointsToGlobalState.CORRECT;
 		}
-		// DumpSnapshot.printToFile(typeList, "b.b");
 	}
 
 	/**
@@ -120,6 +120,7 @@ public abstract class InterThreadForwardCellularAnalysis<F extends CellularDataF
 	 * @param stateINChanged
 	 */
 	@SuppressWarnings("unchecked")
+	@Deprecated
 	protected final void processBarrierINWhenNotUpdated(Node barr) {
 		boolean propagateFurther = false;
 		NodeInfo nodeInfo = barr.getInfo();
@@ -169,6 +170,7 @@ public abstract class InterThreadForwardCellularAnalysis<F extends CellularDataF
 	}
 
 	@SuppressWarnings("unchecked")
+	@Deprecated
 	protected final void processBarrierOUTWhenNotUpdated(Node barr) {
 		NodeInfo nodeInfo = barr.getInfo();
 		F newIN = (F) nodeInfo.getIN(analysisName);

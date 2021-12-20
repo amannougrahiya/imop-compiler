@@ -149,6 +149,12 @@ public class PointsToAnalysis extends InterThreadForwardCellularAnalysis<PointsT
 		case INCIDFA:
 			twoPassPerSCC();
 			break;
+		case ALL_NOSCC:
+			break;
+		case ALL_SCC:
+			break;
+		default:
+			break;
 		}
 
 		localTimer = System.nanoTime() - localTimer;

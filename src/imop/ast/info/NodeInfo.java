@@ -623,6 +623,7 @@ public class NodeInfo implements Cloneable {
 						}
 						analysisHandle.markStateToBeValid();
 						if (analysisName == AnalysisName.POINTSTO) {
+							Program.basePointsTo = false;
 							Program.memoizeAccesses++;
 							// System.out.println("Triggering PTA stabilization in response to a query of
 							// points-to on " + Symbol.tempNow.getName());
@@ -648,6 +649,7 @@ public class NodeInfo implements Cloneable {
 						}
 						analysisHandle.markStateToBeValid();
 						if (analysisName == AnalysisName.POINTSTO) {
+							Program.basePointsTo = false;
 							Program.memoizeAccesses++;
 							// System.out.println("Triggering PTA stabilization in response to a query of
 							// points-to on " + Symbol.tempNow.getName());
@@ -797,6 +799,7 @@ public class NodeInfo implements Cloneable {
 					}
 					analysisHandle.markStateToBeValid();
 					if (analysisName == AnalysisName.POINTSTO) {
+						Program.basePointsTo = false;
 						Program.memoizeAccesses++;
 						analysisHandle.restartAnalysisFromStoredNodes();
 						Program.memoizeAccesses--;

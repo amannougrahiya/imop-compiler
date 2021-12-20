@@ -50,10 +50,23 @@ public class Program {
 				// read is performed after transformation.
 	}
 
+	/**
+	 * Various fine-grained stabilization-modes for IDFA stabilization. Note that
+	 * all these modes employ lazy triggers; one should ensure that by using "LZUPD"
+	 * mode of stabilization.
+	 * (Further note that the {@link UpdateCategory#LZUPD} mode of stabilization
+	 * with ALL_* is similar to the earlier LZINV mode.
+	 *
+	 * @author aman
+	 *
+	 */
 	public enum StabilizationIDFAMode {
+		RETST, // restarting iterations, SCC-wise; imprecise and fast
+		INIT_RETST, // restarting iterations preceded with initialization, SCC-wise; precise and
+					// relatively slower than RETST
 		INCIDFA, // our proposed approach
-		RETST, // restarting iterations, SCC-wide; imprecise and fast
-		INIT_RETST // restarting iterations, SCC-wide; precise and relatively slower than RETST
+		ALL_SCC, // reinitializes and recomputes all, SCC-wise
+		ALL_NOSCC, // reinitializes and recomputes all, without taking SCCs into consideration
 	}
 
 	public enum CPredAMode {
@@ -275,12 +288,12 @@ public class Program {
 		filePath = ("../tests/npb-post/ft3-0.i");
 		// filePath = ("../tests/npb-post/is3-0.i");
 		// filePath = ("../tests/npb-post/lu3-0.i");
-		// filePath = ("../tests/npb-post/mg3-0.i");
+		filePath = ("../tests/npb-post/mg3-0.i");
 		// filePath = ("../tests/npb-post/sp3-0.i");
 		//
 		// filePath = ("../tests/quake-postpass.i");
 		// filePath = ("../tests/scanner-postpass.i");
-		filePath = ("../tests/amgmk-postpass.i");
+		// filePath = ("../tests/amgmk-postpass.i");
 		// filePath = ("../tests/clomp-postpass.i");
 		// filePath = ("../tests/stream-postpass.i");
 		//
@@ -407,7 +420,7 @@ public class Program {
 		// filePath = ("../tests/mdljcell.i");
 		// filePath = ("../tests/barr-opt-tests/heated_plate_openmp.i");
 		// filePath = ("../tests/heated_plate_pointer.i");
-		filePath = ("../tests/heated_plate_pointer-merged-swapped.i");
+		// filePath = ("../tests/heated_plate_pointer-merged-swapped.i");
 		// filePath = ("../tests/temp.i");
 		// filePath = ("../tests/temp2.i");
 		// filePath = ("../tests/temp3.i");

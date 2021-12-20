@@ -100,14 +100,14 @@ int main(int argc, char *argv[]) {
 			{
 #pragma omp section
 		{
-			testThisNonLeaf:
+			testThisNonLeaf:;
 #pragma omp critical
 			{
 				x = x + 6;
 			}
 		}
 	}
-	im51:
+	im51:;
 #pragma omp parallel for
 	for (iter = 0; iter < 8; iter++) {
 		int x1;
@@ -122,13 +122,13 @@ int main(int argc, char *argv[]) {
 		static int y;
 		g3 = g3 + 1;
 		i++;
-		im52:
+		im52:;
 #pragma omp for
 		for (iter = 0; iter < 8; iter++) {
-			im6:
+			im6:;
 #pragma omp atomic update
 			z = z + 5;
-			im7:
+			im7:;
 #pragma omp ordered
 			{
 				{
@@ -144,11 +144,11 @@ int main(int argc, char *argv[]) {
 				}
 			}
 		}
-		im82:
+		im82:;
 #pragma omp sections
 		{
 #pragma omp section
-			im9:
+			im9:;
 #pragma omp critical
 			{
 				x = x + 6;
@@ -157,7 +157,7 @@ int main(int argc, char *argv[]) {
 			{
 testThis:
 				while (0) {
-					im10:
+					im10:;
 #pragma omp task
 					{
 						y = y + 7;
@@ -168,12 +168,12 @@ testThis:
 				foo(1, 1, 3);
 			}
 		}
-		im11:
+		im11:;
 #pragma omp single
 		{
 			x = x + 2;
 		}
-		im12:
+		im12:;
 #pragma omp master
 		{
 			x = x + 1;
@@ -181,7 +181,7 @@ testThis:
 		foo(x, y, 3);
 		y = 1;
 		x = 10;
-		im13:
+		im13:;
 #pragma omp flush
 		y = y;
 	}
