@@ -232,8 +232,8 @@ public abstract class InterProceduralControlFlowAnalysis<F extends FlowAnalysis.
 		this.nodesToBeUpdated.clear();
 		// this.nodesToBeUpdated.clear();
 
-		this.processedInThisUpdate = new HashSet<>();
-		this.yetToBeFinalized = new HashSet<>();
+		this.safeCurrentSCCNodes = new HashSet<>();
+		this.underApproximated = new HashSet<>();
 		while (!workList.isEmpty()) {
 			Node nodeToBeAnalyzed = workList.removeFirstElement();
 			CFGInfo nInfo = nodeToBeAnalyzed.getInfo().getCFGInfo();
@@ -269,7 +269,7 @@ public abstract class InterProceduralControlFlowAnalysis<F extends FlowAnalysis.
 	@SuppressWarnings("unchecked")
 	protected final void processWhenUpdated(Node node) {
 		boolean first = false;
-		if (!this.processedInThisUpdate.contains(node)) {
+		if (!this.safeCurrentSCCNodes.contains(node)) {
 			first = true;
 			// Don't add the node to this set unless its OUT has been populated.
 		}
@@ -312,7 +312,7 @@ public abstract class InterProceduralControlFlowAnalysis<F extends FlowAnalysis.
 				// If null, then pred clearly belongs to some other SCC.
 				if (node.getInfo().getCFGInfo().getSCC() == predSCC) {
 					// Predecessor lies within the SCC.
-					if (!this.processedInThisUpdate.contains(predNode)) {
+					if (!this.safeCurrentSCCNodes.contains(predNode)) {
 						anyPredMissed = true;
 						continue;
 					}
@@ -340,7 +340,7 @@ public abstract class InterProceduralControlFlowAnalysis<F extends FlowAnalysis.
 				// If null, then pred clearly belongs to some other SCC.
 				if (node.getInfo().getCFGInfo().getSCC() == preSCC) {
 					// Predecessor lies within the SCC.
-					if (!this.processedInThisUpdate.contains(preNode)) {
+					if (!this.safeCurrentSCCNodes.contains(preNode)) {
 						anyPredMissed = true;
 						doNotProcess = true;
 					}
@@ -352,9 +352,9 @@ public abstract class InterProceduralControlFlowAnalysis<F extends FlowAnalysis.
 
 		}
 		if (anyPredMissed) {
-			this.yetToBeFinalized.add(node);
+			this.underApproximated.add(node);
 		} else {
-			this.yetToBeFinalized.remove(node);
+			this.underApproximated.remove(node);
 		}
 		nodeInfo.setIN(analysisName, newIN);
 
@@ -362,7 +362,7 @@ public abstract class InterProceduralControlFlowAnalysis<F extends FlowAnalysis.
 		F newOUT;
 		newOUT = node.accept(this, newIN);
 		nodeInfo.setOUT(analysisName, newOUT);
-		this.processedInThisUpdate.add(node); // Mark a node as processed only after its OUT has been "purified".
+		this.safeCurrentSCCNodes.add(node); // Mark a node as processed only after its OUT has been "purified".
 
 		// Step 3: Process the successors.
 		propagateFurther |= inChanged;

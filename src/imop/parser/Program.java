@@ -89,7 +89,7 @@ public class Program {
 	public static boolean removeUnused = true;
 	public static String fileName;
 	public static boolean enableUnmodifiability;
-	public final static boolean countSeededSCCs = true;
+	public static boolean countSeededSCCs = true;
 	public static boolean useNoSCCs = false;
 	public static StabilizationIDFAMode stabilizationIDFAMode = StabilizationIDFAMode.INCIDFA;
 	/**
@@ -229,6 +229,7 @@ public class Program {
 		Program.removeUnused = true;
 		Program.idfaUpdateCategory = UpdateCategory.LZUPD; // Default is LZUPD.
 		Program.stabilizationIDFAMode = StabilizationIDFAMode.INCIDFA;
+		Program.countSeededSCCs = false;
 		// Program.useNoSCCs = true; // Doesn't work.
 		/*
 		 * <-- for IncIDFA.
@@ -286,8 +287,8 @@ public class Program {
 		filePath = ("../tests/npb-post/cg3-0.i");
 		filePath = ("../tests/npb-post/ep3-0.i");
 		filePath = ("../tests/npb-post/ft3-0.i");
-		// filePath = ("../tests/npb-post/is3-0.i");
-		// filePath = ("../tests/npb-post/lu3-0.i");
+		filePath = ("../tests/npb-post/is3-0.i");
+		filePath = ("../tests/npb-post/lu3-0.i");
 		filePath = ("../tests/npb-post/mg3-0.i");
 		// filePath = ("../tests/npb-post/sp3-0.i");
 		//

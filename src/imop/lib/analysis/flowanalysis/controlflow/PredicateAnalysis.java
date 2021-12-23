@@ -297,8 +297,8 @@ public class PredicateAnalysis extends IntraProceduralControlFlowAnalysis<Predic
 		this.nodesToBeUpdated.clear();
 		// this.nodesToBeUpdated.clear();
 
-		this.processedInThisUpdate = new HashSet<>();
-		this.yetToBeFinalized = new HashSet<>();
+		this.safeCurrentSCCNodes = new HashSet<>();
+		this.underApproximated = new HashSet<>();
 		while (!workList.isEmpty()) {
 			Node nodeToBeAnalyzed = workList.removeFirstElement();
 			CFGInfo nInfo = nodeToBeAnalyzed.getInfo().getCFGInfo();

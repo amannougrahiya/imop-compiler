@@ -192,8 +192,8 @@ public abstract class InterThreadForwardNonCellularAnalysis<F extends FlowAnalys
 	@SuppressWarnings("unchecked")
 	protected final void processWhenUpdated(Node node) {
 		boolean first = false;
-		if (!this.processedInThisUpdate.contains(node)) {
-			this.processedInThisUpdate.add(node);
+		if (!this.safeCurrentSCCNodes.contains(node)) {
+			this.safeCurrentSCCNodes.add(node);
 			first = true;
 		}
 		NodeInfo nodeInfo = node.getInfo();
@@ -204,15 +204,15 @@ public abstract class InterThreadForwardNonCellularAnalysis<F extends FlowAnalys
 
 		boolean anyOUTignored = false;
 		for (IDFAEdge idfaEdge : predecessors) {
-			if (!processedInThisUpdate.contains(idfaEdge.getNode())) {
+			if (!safeCurrentSCCNodes.contains(idfaEdge.getNode())) {
 				if (reachablePredecessorsOfSeeds.containsKey(node)) {
 					if (reachablePredecessorsOfSeeds.get(node).contains(idfaEdge.getNode())) {
-						yetToBeFinalized.add(node);
+						underApproximated.add(node);
 						anyOUTignored = true;
 						continue;
 					}
 				} else {
-					yetToBeFinalized.add(node);
+					underApproximated.add(node);
 					anyOUTignored = true;
 					continue;
 				}
@@ -237,7 +237,7 @@ public abstract class InterThreadForwardNonCellularAnalysis<F extends FlowAnalys
 			newIN.merge(edgeOUT, idfaEdge.getCells());
 		}
 		if (!anyOUTignored) {
-			this.yetToBeFinalized.remove(node);
+			this.underApproximated.remove(node);
 		}
 		F oldOUT = (F) nodeInfo.getOUT(analysisName);
 		if (newIN.isEqualTo(oldIN) && oldOUT != null && !(node instanceof BarrierDirective) && !first) {
@@ -352,15 +352,15 @@ public abstract class InterThreadForwardNonCellularAnalysis<F extends FlowAnalys
 				// yetToBeFinalized.add(n);
 				// continue;
 				// }
-				if (!processedInThisUpdate.contains(siblingBarrier)) {
+				if (!safeCurrentSCCNodes.contains(siblingBarrier)) {
 					if (reachablePredecessorsOfSeeds.containsKey(n)) {
 						if (reachablePredecessorsOfSeeds.get(n).contains(siblingBarrier)) {
-							yetToBeFinalized.add(n);
+							underApproximated.add(n);
 							anyOUTignored = true;
 							continue;
 						}
 					} else {
-						yetToBeFinalized.add(n);
+						underApproximated.add(n);
 						anyOUTignored = true;
 						continue;
 					}
@@ -383,7 +383,7 @@ public abstract class InterThreadForwardNonCellularAnalysis<F extends FlowAnalys
 			}
 		}
 		if (!anyOUTignored) {
-			this.yetToBeFinalized.remove(n);
+			this.underApproximated.remove(n);
 		}
 		if (changed && first) {
 			CellSet myShared = n.getInfo().getSharedCellsAtNode();

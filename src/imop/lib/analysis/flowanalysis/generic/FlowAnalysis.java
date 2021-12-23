@@ -143,8 +143,8 @@ public abstract class FlowAnalysis<F extends FlowAnalysis.FlowFact> extends GJDe
 		}
 		// this.workList.addAll(nodesToBeUpdated);
 		this.nodesToBeUpdated.clear();
-		this.processedInThisUpdate = new HashSet<>();
-		this.yetToBeFinalized = new HashSet<>();
+		this.safeCurrentSCCNodes = new HashSet<>();
+		this.underApproximated = new HashSet<>();
 		while (!workList.isEmpty()) {
 			this.nodesProcessedDuringUpdate++;
 			Node nodeToBeAnalysed = this.workList.removeFirstElement();
@@ -157,7 +157,7 @@ public abstract class FlowAnalysis<F extends FlowAnalysis.FlowFact> extends GJDe
 		 * Step 2: Reprocess those nodes whose IDFA is not yet finalized, in
 		 * "normal" mode.
 		 */
-		this.workList.addAll(yetToBeFinalized);
+		this.workList.addAll(underApproximated);
 		while (!workList.isEmpty()) {
 			this.nodesProcessedDuringUpdate++;
 			Node nodeToBeAnalysed = this.workList.removeFirstElement();
@@ -177,8 +177,8 @@ public abstract class FlowAnalysis<F extends FlowAnalysis.FlowFact> extends GJDe
 	 *             already been removed from the workList.
 	 */
 	protected void stabilizeSCCOf(Node node) {
-		this.processedInThisUpdate.clear();
-		this.yetToBeFinalized.clear();
+		this.safeCurrentSCCNodes.clear();
+		this.underApproximated.clear();
 
 		SCC thisSCC = node.getInfo().getCFGInfo().getSCC();
 		int thisSCCNum = node.getInfo().getCFGInfo().getSCCRPOIndex();
@@ -203,13 +203,13 @@ public abstract class FlowAnalysis<F extends FlowAnalysis.FlowFact> extends GJDe
 			}
 		} while (true);
 		// Now, the set processedInThisUpdate is not required anymore. Clear it.
-		this.processedInThisUpdate.clear();
+		this.safeCurrentSCCNodes.clear();
 		/*
 		 * Next, let's start with the second phase, with all elements of
 		 * yetToBeFinalized in the workList, where we proceed as usual.
 		 */
-		this.workList.addAll(this.yetToBeFinalized);
-		this.yetToBeFinalized.clear();
+		this.workList.addAll(this.underApproximated);
+		this.underApproximated.clear();
 		do {
 			node = this.workList.peekFirstElementOfSameSCC(thisSCCNum);
 			if (node == null) {
@@ -375,8 +375,8 @@ public abstract class FlowAnalysis<F extends FlowAnalysis.FlowFact> extends GJDe
 	public int autoUpdateTriggerCounter = 0;
 	public long flowAnalysisUpdateTimer = 0;
 	public Set<Node> nodesToBeUpdated = new HashSet<>();
-	protected Set<Node> processedInThisUpdate = new HashSet<>();
-	protected Set<Node> yetToBeFinalized = new HashSet<>();
+	protected Set<Node> safeCurrentSCCNodes = new HashSet<>();
+	protected Set<Node> underApproximated = new HashSet<>();
 	protected HashMap<Node, Set<Node>> reachablePredecessorsOfSeeds = new HashMap<>();
 
 	/**

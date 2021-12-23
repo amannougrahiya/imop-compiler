@@ -82,6 +82,8 @@ public class Main {
 		// Thread.sleep(5000);
 		totalTime = System.nanoTime();
 		Program.parseNormalizeInput(args);
+		DumpSnapshot.forceDumpPointsTo("init");
+		// System.exit(0);
 		// DriverModule.askCoExistenceQueries();
 
 		// countPhases();

@@ -15,6 +15,7 @@ import imop.ast.node.external.*;
 import imop.ast.node.internal.*;
 import imop.baseVisitor.DepthFirstProcess;
 import imop.lib.analysis.flowanalysis.*;
+import imop.lib.analysis.flowanalysis.dataflow.PointsToAnalysis.PointsToGlobalState;
 import imop.lib.analysis.flowanalysis.generic.AnalysisDimension;
 import imop.lib.analysis.flowanalysis.generic.AnalysisName;
 import imop.lib.analysis.flowanalysis.generic.CellularDataFlowAnalysis;
@@ -67,17 +68,16 @@ public class PointsToAnalysis extends InterThreadForwardCellularAnalysis<PointsT
 
 	public void restartAnalysisFromStoredNodes() {
 		assert (!SCC.processingTarjan);
-		if (this.analysisName == AnalysisName.POINTSTO
-				&& PointsToAnalysis.stateOfPointsTo != PointsToGlobalState.STALE) {
-			nodesToBeUpdated.clear();
-			return;
-		}
+		// if (this.analysisName == AnalysisName.POINTSTO
+		// && PointsToAnalysis.stateOfPointsTo != PointsToGlobalState.STALE) {
+		// nodesToBeUpdated.clear();
+		// return;
+		// }
 		// String localStr = "";
 		// for (StackTraceElement ste : Thread.currentThread().getStackTrace()) {
 		// localStr += ste.getFileName() + ":" + ste.getLineNumber() + "\n";
 		// }
 		// Main.globalString += localStr + "\n\n\n";
-		long thisUpdateNodeCounter = this.nodesProcessedDuringUpdate;
 		this.autoUpdateTriggerCounter++;
 		// if (Program.stabilizationStackDump != null) {
 		// StringBuilder tempStr = new StringBuilder();
@@ -99,6 +99,7 @@ public class PointsToAnalysis extends InterThreadForwardCellularAnalysis<PointsT
 		 * processed.
 		 * OLD: We add all the entry points of the SCC of each node.
 		 */
+		long thisUpdateNodeCounter = this.nodesProcessedDuringUpdate;
 		this.workList.recreate();
 		Set<Node> remSet = new HashSet<>();
 		// TODO: Check why on Earth are we getting a ConcurrentModificationException
@@ -108,6 +109,19 @@ public class PointsToAnalysis extends InterThreadForwardCellularAnalysis<PointsT
 			boolean added = this.workList.add(n);
 			if (added) {
 				remSet.add(n);
+				/*
+				 * New code: If n is a Declaration, add the EndNode of its scope to the
+				 * worklist.
+				 */
+				if (n instanceof Declaration) {
+					Scopeable definingScope = Misc.getEnclosingBlock(n);
+					if (definingScope instanceof CompoundStatement) {
+						this.workList.add(
+								((CompoundStatement) definingScope).getInfo().getCFGInfo().getNestedCFG().getBegin());
+						this.workList.add(
+								((CompoundStatement) definingScope).getInfo().getCFGInfo().getNestedCFG().getEnd());
+					}
+				}
 			}
 			// OLD CODE: Now we do not add the entry points of SCCs to be processed.
 			// SCC nSCC = n.getInfo().getCFGInfo().getSCC();
@@ -122,7 +136,8 @@ public class PointsToAnalysis extends InterThreadForwardCellularAnalysis<PointsT
 		// this.nodesToBeUpdated.clear();
 
 		/*
-		 * A new piece of code starts: Count the number of SCCs (with cycles) that have seed nodes.
+		 * A new piece of code starts: Count the number of SCCs (with cycles) that have
+		 * seed nodes.
 		 */
 		if (Program.countSeededSCCs) {
 			Set<SCC> seededSCCs = new HashSet<>();
@@ -139,19 +154,21 @@ public class PointsToAnalysis extends InterThreadForwardCellularAnalysis<PointsT
 		 */
 
 		switch (Program.stabilizationIDFAMode) {
-		case INIT_RETST:
-			markFlowFactsOfReachableNodesAsNull();
-			restartingIterations();
+		case ALL_NOSCC:
+			this.reinitAllAndRunNonSCC();
+			break;
+		case ALL_SCC:
+			this.reinitAllAndRunSCC();
 			break;
 		case RETST:
 			restartingIterations();
 			break;
+		case INIT_RETST:
+			markFlowFactsOfReachableNodesAsNull();
+			restartingIterations();
+			break;
 		case INCIDFA:
 			twoPassPerSCC();
-			break;
-		case ALL_NOSCC:
-			break;
-		case ALL_SCC:
 			break;
 		default:
 			break;
@@ -163,39 +180,19 @@ public class PointsToAnalysis extends InterThreadForwardCellularAnalysis<PointsT
 		if (this.analysisName == AnalysisName.POINTSTO
 				&& PointsToAnalysis.stateOfPointsTo == PointsToGlobalState.STALE) {
 			PointsToAnalysis.stateOfPointsTo = PointsToGlobalState.CORRECT;
-			// DumpSnapshot.dumpPointsTo("stable" + Program.updateCategory +
-			// this.autoUpdateTriggerCounter);
 		}
 	}
 
-	private void markFlowFactsOfReachableNodesAsNull() {
-		Set<Node> reachableNodes = new HashSet<>();
-		for (Node n : workList.getIteratorForNonBarrierNodes()) {
-			Set<Node> endNodeSet = new HashSet<>();
-			reachableNodes.add(n);
-			reachableNodes.addAll(CollectorVisitor.collectNodesInterTaskForward(n,
-					endNodeSet, e -> false));
-			reachableNodes.addAll(endNodeSet);
+	private void reinitAllAndRunSCC() {
+		for (Node node : Program.getRoot().getInfo().getCFGInfo().getLexicalCFGLeafContents()) {
+			node.getInfo().removeAnalysisInformation(this.getAnalysisName());
 		}
-		for (Node n : workList.getIteratorForBarrierNodes()) {
-			Set<Node> endNodeSet = new HashSet<>();
-			reachableNodes.add(n);
-			reachableNodes.addAll(CollectorVisitor.collectNodesInterTaskForward(n,
-					endNodeSet, e -> false));
-			reachableNodes.addAll(endNodeSet);
-		}
-		for (Node n : reachableNodes) {
-			if (n.getInfo().getStaleOUT(this.analysisName) != null) {
-				n.getInfo().setIN(this.analysisName, null);
-				n.getInfo().setOUT(this.analysisName, null);
-			}
-		}
-		workList.addAll(reachableNodes);
-	}
-
-	private void restartingIterations() {
-		this.processedInThisUpdate = new HashSet<>();
-		this.yetToBeFinalized = new HashSet<>();
+		FunctionDefinition mainFunc = Program.getRoot().getInfo().getMainFunction();
+		Program.basePointsTo = false; // Unneeded for second and further runs.
+		Program.memoizeAccesses++;
+		BeginNode beginNode = mainFunc.getInfo().getCFGInfo().getNestedCFG().getBegin();
+		this.workList.recreate();
+		this.workList.add(beginNode);
 		int processedSCCCount = 0;
 		while (!workList.isEmpty()) {
 			Node nodeToBeAnalyzed = workList.removeFirstElement();
@@ -207,22 +204,82 @@ public class PointsToAnalysis extends InterThreadForwardCellularAnalysis<PointsT
 				this.processWhenNotUpdated(nodeToBeAnalyzed); // Directly invoke the second round processing.
 				continue;
 			} else {
-				/*
-				 * This node belongs to an SCC. We should process the whole of
-				 * SCC in the first phase, followed by its processing in the
-				 * second phase, and only then shall we move on to the next SCC.
-				 */
 				stabilizeSCCOfInOnePass(nodeToBeAnalyzed);
 				processedSCCCount++;
 			}
 		}
 		System.out.println("Total SCCs processed: " + processedSCCCount + " out of " + SCC.getAllSCCSize());
+		Program.memoizeAccesses--;
+	}
+
+	private void reinitAllAndRunNonSCC() {
+		for (Node node : Program.getRoot().getInfo().getCFGInfo().getLexicalCFGLeafContents()) {
+			node.getInfo().removeAnalysisInformation(this.getAnalysisName());
+		}
+		FunctionDefinition mainFunc = Program.getRoot().getInfo().getMainFunction();
+		Program.basePointsTo = false; // Unneeded for second and further runs.
+		Program.memoizeAccesses++;
+		// String typeList = "";
+		BeginNode beginNode = mainFunc.getInfo().getCFGInfo().getNestedCFG().getBegin();
+		this.workList.recreate();
+		this.workList.add(beginNode);
+		do {
+			Node nodeToBeAnalysed = this.workList.removeFirstElement();
+			this.debugRecursion(nodeToBeAnalysed);
+			this.processWhenNotUpdated(nodeToBeAnalysed);
+		} while (!this.workList.isEmpty());
+		Program.memoizeAccesses--;
+	}
+
+	private void markFlowFactsOfReachableNodesAsNull() {
+		Set<Node> reachableNodes = new HashSet<>();
+		for (Node n : workList.getIteratorForNonBarrierNodes()) {
+			reachableNodes.add(n);
+			reachableNodes.addAll(CollectorVisitor.collectNodesInterTaskForward(n, new HashSet<>(), e -> false));
+		}
+		for (Node n : workList.getIteratorForBarrierNodes()) {
+			reachableNodes.add(n);
+			reachableNodes.addAll(CollectorVisitor.collectNodesInterTaskForward(n, new HashSet<>(), e -> false));
+		}
+		for (Node n : reachableNodes) {
+			n.getInfo().removeAnalysisInformation(this.getAnalysisName());
+		}
+		// workList.addAll(reachableNodes);
+	}
+
+	private void restartingIterations() {
+		int processedSCCCount = 0;
+		Program.basePointsTo = false; // Unneeded for second and further runs.
+		Program.memoizeAccesses++;
+		Set<Node> visited = new HashSet<>();
+		while (!workList.isEmpty()) {
+			Node nodeToBeAnalyzed = workList.removeFirstElement();
+			if (!visited.contains(nodeToBeAnalyzed)) {
+				nodeToBeAnalyzed.getInfo().removeAnalysisInformation(AnalysisName.POINTSTO);
+				visited.add(nodeToBeAnalyzed);
+			}
+			CFGInfo nInfo = nodeToBeAnalyzed.getInfo().getCFGInfo();
+			if (nInfo.getSCC() == null) {
+				// Here, node itself is an SCC. We do not require two rounds.
+				this.nodesProcessedDuringUpdate++;
+				this.debugRecursion(nodeToBeAnalyzed);
+				this.processWhenNotUpdated(nodeToBeAnalyzed); // Directly invoke the second round processing.
+				continue;
+			} else {
+				stabilizeSCCOfInOnePass(nodeToBeAnalyzed);
+				processedSCCCount++;
+			}
+		}
+		System.out.println("Total SCCs processed: " + processedSCCCount + " out of " + SCC.getAllSCCSize());
+		Program.memoizeAccesses--;
 	}
 
 	private void twoPassPerSCC() {
-		this.processedInThisUpdate = new HashSet<>();
-		this.yetToBeFinalized = new HashSet<>();
 		int processedSCCCount = 0;
+		Program.basePointsTo = false; // Unneeded for second and further runs.
+		Program.memoizeAccesses++;
+		this.safeCurrentSCCNodes = new HashSet<>();
+		this.underApproximated = new HashSet<>();
 		while (!workList.isEmpty()) {
 			Node nodeToBeAnalyzed = workList.removeFirstElement();
 			CFGInfo nInfo = nodeToBeAnalyzed.getInfo().getCFGInfo();
@@ -243,6 +300,7 @@ public class PointsToAnalysis extends InterThreadForwardCellularAnalysis<PointsT
 			}
 		}
 		System.out.println("Total SCCs processed: " + processedSCCCount + " out of " + SCC.getAllSCCSize());
+		Program.memoizeAccesses--;
 	}
 
 	public PointsToAnalysis() {

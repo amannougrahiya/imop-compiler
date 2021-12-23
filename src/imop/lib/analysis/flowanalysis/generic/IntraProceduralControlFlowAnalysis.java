@@ -162,7 +162,7 @@ public abstract class IntraProceduralControlFlowAnalysis<F extends FlowAnalysis.
 	@SuppressWarnings("unchecked")
 	protected void processWhenUpdated(Node node) {
 		boolean first = false;
-		if (!this.processedInThisUpdate.contains(node)) {
+		if (!this.safeCurrentSCCNodes.contains(node)) {
 			first = true;
 			// Don't add the node to this set unless its OUT has been populated.
 		}
@@ -196,7 +196,7 @@ public abstract class IntraProceduralControlFlowAnalysis<F extends FlowAnalysis.
 				// If null, then pred clearly belongs to some other SCC.
 				if (node.getInfo().getCFGInfo().getSCC() == predSCC) {
 					// Predecessor lies within the SCC.
-					if (!this.processedInThisUpdate.contains(predNode)) {
+					if (!this.safeCurrentSCCNodes.contains(predNode)) {
 						anyPredMissed = true;
 						continue;
 					}
@@ -217,16 +217,16 @@ public abstract class IntraProceduralControlFlowAnalysis<F extends FlowAnalysis.
 		}
 
 		if (anyPredMissed) {
-			this.yetToBeFinalized.add(node);
+			this.underApproximated.add(node);
 		} else {
-			this.yetToBeFinalized.remove(node);
+			this.underApproximated.remove(node);
 		}
 		nodeInfo.setIN(analysisName, newIN);
 
 		// Step 2: Apply the flow-function on IN, to obtain the OUT.
 		F newOUT = node.accept(this, newIN);
 		nodeInfo.setOUT(analysisName, newOUT);
-		this.processedInThisUpdate.add(node); // Mark a node as processed only after its OUT has been "purified".
+		this.safeCurrentSCCNodes.add(node); // Mark a node as processed only after its OUT has been "purified".
 
 		// Step 3: Process the successors.
 		propagateFurther |= inChanged;
