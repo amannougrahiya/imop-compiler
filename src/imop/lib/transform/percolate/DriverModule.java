@@ -337,6 +337,7 @@ public class DriverModule {
 		DumpSnapshot.forceDumpPointsTo("final" + Program.idfaUpdateCategory + Program.stabilizationIDFAMode);
 
 		StringBuilder resultString = new StringBuilder(Program.fileName + " " + Program.idfaUpdateCategory + " " + Program.stabilizationIDFAMode + " "
+				+ Program.df2.format(Program.timerForMarking/(1e9*1.0)) + " "
 				+ Program.df2.format(incIDFATime) + " " + Program.df2.format(totTime) + " " + incIDFATriggers + " "
 				+ finalIncNodes + " " + tarjanCount + " " + Program.df2.format(sccTime));
 		System.out.println(resultString);

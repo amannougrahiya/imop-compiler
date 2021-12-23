@@ -796,7 +796,7 @@ public abstract class InterThreadForwardCellularAnalysis<F extends CellularDataF
 	public List<Long> firstPhaseCount = new ArrayList<>();
 	public List<Long> secondPhaseCount = new ArrayList<>();
 
-	protected final void stabilizeSCCOfInOnePass(Node node) {
+	protected final void stabilizeSCCOfInOnePassAfterInit(Node node) {
 		SCC thisSCC = node.getInfo().getCFGInfo().getSCC();
 		int thisSCCNum = node.getInfo().getCFGInfo().getSCCRPOIndex();
 		assert (thisSCC != null);
@@ -816,6 +816,35 @@ public abstract class InterThreadForwardCellularAnalysis<F extends CellularDataF
 			} else {
 				// Extract the next node and process it in the second phase.
 				node = this.workList.removeFirstElementOfSameSCC(thisSCCNum);
+			}
+		} while (true);
+		secondPhaseCount.add(this.nodesProcessedDuringUpdate - localCounterPerPhase);
+	}
+
+	protected final void stabilizeSCCOfInOnePassWithoutInit(Node node, Set<Node> visited) {
+		SCC thisSCC = node.getInfo().getCFGInfo().getSCC();
+		int thisSCCNum = node.getInfo().getCFGInfo().getSCCRPOIndex();
+		assert (thisSCC != null);
+		long localCounterPerPhase = this.nodesProcessedDuringUpdate;
+		do {
+			this.nodesProcessedDuringUpdate++;
+			this.debugRecursion(node);
+			this.processWhenNotUpdated(node); // Note that this is a call to normal processing.
+			node = this.workList.peekFirstElementOfSameSCC(thisSCCNum);
+			if (node == null) {
+				break;
+			}
+			SCC nextSCC = node.getInfo().getCFGInfo().getSCC();
+			if (nextSCC == null || nextSCC != thisSCC) {
+				// The next node belongs to a different SCC. Break from the second phase.
+				break;
+			} else {
+				// Extract the next node and process it in the second phase.
+				node = this.workList.removeFirstElementOfSameSCC(thisSCCNum);
+			}
+			if (!visited.contains(node)) {
+				node.getInfo().removeAnalysisInformation(AnalysisName.POINTSTO);
+				visited.add(node);
 			}
 		} while (true);
 		secondPhaseCount.add(this.nodesProcessedDuringUpdate - localCounterPerPhase);

@@ -130,7 +130,7 @@ public class PointsToAnalysis extends InterThreadForwardCellularAnalysis<PointsT
 			// }
 		}
 		if (Program.profileSCC) {
-			System.out.println("Find this in PTA: " + remSet.size());
+			System.out.println("Size of the seed set for trigger #" + autoUpdateTriggerCounter + ": " + remSet.size());
 		}
 		// OLD CODE: Now, if we ever find that a node is unconnected to the program, we
 		// remove it from processing.
@@ -163,11 +163,13 @@ public class PointsToAnalysis extends InterThreadForwardCellularAnalysis<PointsT
 			this.reinitAllAndRunSCC();
 			break;
 		case RETST:
-			restartingIterations();
+			restartingIterationsAfterInit();
 			break;
 		case INIT_RETST:
 			markFlowFactsOfReachableNodesAsNull();
-			restartingIterations();
+			Program.timerForMarking += System.nanoTime() - localTimer;
+			localTimer = System.nanoTime();
+			restartingIterationsAfterInit();
 			break;
 		case INCIDFA:
 			twoPassPerSCC();
@@ -206,7 +208,7 @@ public class PointsToAnalysis extends InterThreadForwardCellularAnalysis<PointsT
 				this.processWhenNotUpdated(nodeToBeAnalyzed); // Directly invoke the second round processing.
 				continue;
 			} else {
-				stabilizeSCCOfInOnePass(nodeToBeAnalyzed);
+				stabilizeSCCOfInOnePassAfterInit(nodeToBeAnalyzed);
 				processedSCCCount++;
 			}
 		}
@@ -251,7 +253,31 @@ public class PointsToAnalysis extends InterThreadForwardCellularAnalysis<PointsT
 		// workList.addAll(reachableNodes);
 	}
 
-	private void restartingIterations() {
+	private void restartingIterationsAfterInit() {
+		int processedSCCCount = 0;
+		Program.basePointsTo = false; // Unneeded for second and further runs.
+		Program.memoizeAccesses++;
+		while (!workList.isEmpty()) {
+			Node nodeToBeAnalyzed = workList.removeFirstElement();
+			CFGInfo nInfo = nodeToBeAnalyzed.getInfo().getCFGInfo();
+			if (nInfo.getSCC() == null) {
+				// Here, node itself is an SCC. We do not require two rounds.
+				this.nodesProcessedDuringUpdate++;
+				this.debugRecursion(nodeToBeAnalyzed);
+				this.processWhenNotUpdated(nodeToBeAnalyzed); // Directly invoke the second round processing.
+				continue;
+			} else {
+				stabilizeSCCOfInOnePassAfterInit(nodeToBeAnalyzed);
+				processedSCCCount++;
+			}
+		}
+		if (Program.profileSCC) {
+			System.out.println("Total SCCs processed: " + processedSCCCount + " out of " + SCC.getAllSCCSize());
+		}
+		Program.memoizeAccesses--;
+	}
+
+	private void restartingIterationsWithoutInit() {
 		int processedSCCCount = 0;
 		Program.basePointsTo = false; // Unneeded for second and further runs.
 		Program.memoizeAccesses++;
@@ -270,7 +296,7 @@ public class PointsToAnalysis extends InterThreadForwardCellularAnalysis<PointsT
 				this.processWhenNotUpdated(nodeToBeAnalyzed); // Directly invoke the second round processing.
 				continue;
 			} else {
-				stabilizeSCCOfInOnePass(nodeToBeAnalyzed);
+				stabilizeSCCOfInOnePassWithoutInit(nodeToBeAnalyzed, visited);
 				processedSCCCount++;
 			}
 		}

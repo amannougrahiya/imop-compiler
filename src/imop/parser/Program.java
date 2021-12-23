@@ -89,9 +89,20 @@ public class Program {
 	public static boolean removeUnused = true;
 	public static String fileName;
 	public static boolean enableUnmodifiability;
-	public static boolean countSeededSCCs = true;
+	public static boolean countSeededSCCs = false;
+	/**
+	 * Enables the heuristic that helps in early termination of first phase of
+	 * HIDFAp, by marking those nodes as safe that are reachable on a straight path
+	 * from a safe node (without any other incoming paths to the path).
+	 */
+	public static boolean testSafeMarkingHeuristic = false;
+	/**
+	 * When enabled, SCC-specific parameters will be printed.
+	 */
+	public static boolean profileSCC = false;
 	public static boolean useNoSCCs = false;
-	public static StabilizationIDFAMode stabilizationIDFAMode = StabilizationIDFAMode.INCIDFA;
+	public static StabilizationIDFAMode stabilizationIDFAMode = StabilizationIDFAMode.INIT_RETST;
+	public static long timerForMarking = 0;
 	/**
 	 * Checks whether at least one symbol is required for communication.
 	 */
@@ -228,7 +239,7 @@ public class Program {
 		Program.isPrePassPhase = false;
 		Program.removeUnused = true;
 		Program.idfaUpdateCategory = UpdateCategory.LZUPD; // Default is LZUPD.
-		Program.stabilizationIDFAMode = StabilizationIDFAMode.INCIDFA;
+		Program.stabilizationIDFAMode = StabilizationIDFAMode.INIT_RETST;
 		Program.countSeededSCCs = false;
 		// Program.useNoSCCs = true; // Doesn't work.
 		/*
@@ -284,18 +295,18 @@ public class Program {
 		// filePath = ("../tests/bt-contextsensitivity.i");
 		// filePath = ("../tests/bt-recursivequery.i");
 		// filePath = ("../tests/btsmall.i");
-		filePath = ("../tests/npb-post/cg3-0.i");
-		filePath = ("../tests/npb-post/ep3-0.i");
-		filePath = ("../tests/npb-post/ft3-0.i");
-		filePath = ("../tests/npb-post/is3-0.i");
-		filePath = ("../tests/npb-post/lu3-0.i");
-		filePath = ("../tests/npb-post/mg3-0.i");
+		// filePath = ("../tests/npb-post/cg3-0.i");
+		// filePath = ("../tests/npb-post/ep3-0.i");
+		// filePath = ("../tests/npb-post/ft3-0.i");
+		// filePath = ("../tests/npb-post/is3-0.i");
+		// filePath = ("../tests/npb-post/lu3-0.i");
+		// filePath = ("../tests/npb-post/mg3-0.i");
 		// filePath = ("../tests/npb-post/sp3-0.i");
 		//
 		// filePath = ("../tests/quake-postpass.i");
 		// filePath = ("../tests/scanner-postpass.i");
 		// filePath = ("../tests/amgmk-postpass.i");
-		// filePath = ("../tests/clomp-postpass.i");
+		filePath = ("../tests/clomp-postpass.i");
 		// filePath = ("../tests/stream-postpass.i");
 		//
 		// filePath = "../output-dump/imop_useful.i";
@@ -850,16 +861,6 @@ public class Program {
 	}
 
 	private static boolean disableCellPointees = true;
-	/**
-	 * Enables the heuristic that helps in early termination of first phase of
-	 * HIDFAp, by marking those nodes as safe that are reachable on a straight path
-	 * from a safe node (without any other incoming paths to the path).
-	 */
-	public static boolean testSafeMarkingHeuristic = false;
-	/**
-	 * When enabled, SCC-specific parameters will be printed.
-	 */
-	public static boolean profileSCC = false;
 
 	/**
 	 * Obtain a set of all those cells that may point to a symbol.
