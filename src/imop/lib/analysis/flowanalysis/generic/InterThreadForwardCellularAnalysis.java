@@ -213,7 +213,7 @@ public abstract class InterThreadForwardCellularAnalysis<F extends CellularDataF
 
 	// protected Set<Node> copyOfSeedNodesForFirstPhase = new HashSet<>();
 	// protected Set<Node> safeNodesForFirstPhase = new HashSet<>();
-	
+
 	/**
 	 * Processing that is performed when no updates have been done to the program.
 	 * Note that IN objects will never
@@ -242,7 +242,7 @@ public abstract class InterThreadForwardCellularAnalysis<F extends CellularDataF
 				newIN = this.getTop();
 			}
 		}
-	
+
 		boolean inChanged = false;
 		for (IDFAEdge idfaEdge : predecessors) {
 			F predOUT = (F) idfaEdge.getNode().getInfo().getOUT(analysisName);
@@ -260,7 +260,7 @@ public abstract class InterThreadForwardCellularAnalysis<F extends CellularDataF
 			this.addAllSiblingBarriersToWorkList((BarrierDirective) barr);
 		}
 		nodeInfo.setIN(analysisName, newIN);
-	
+
 		propagateFurther |= inChanged;
 		if (propagateFurther) {
 			for (IDFAEdge idfaEdge : nodeInfo.getCFGInfo()
@@ -278,11 +278,11 @@ public abstract class InterThreadForwardCellularAnalysis<F extends CellularDataF
 		NodeInfo nodeInfo = barr.getInfo();
 		F newIN = (F) nodeInfo.getIN(analysisName);
 		assert (newIN != null);
-	
+
 		F oldOUT = (F) nodeInfo.getOUT(analysisName);
 		F newOUT = barr.accept(this, newIN);
 		nodeInfo.setOUT(analysisName, newOUT);
-	
+
 		if (barr instanceof BarrierDirective && (oldOUT == null || !newOUT.isEqualTo(oldOUT))) {
 			for (IDFAEdge idfaEdge : nodeInfo.getCFGInfo()
 					.getInterTaskLeafSuccessorEdges(this.analysisDimension.getSVEDimension())) {
@@ -310,7 +310,7 @@ public abstract class InterThreadForwardCellularAnalysis<F extends CellularDataF
 		if (preOUT == null || preOUT.flowMap == null) {
 			return false;
 		}
-	
+
 		Set<Cell> keysInPost = postIN.flowMap.nonGenericKeySet();
 		boolean changed = false;
 		for (Cell preKey : preOUT.flowMap.nonGenericKeySet()) {
@@ -430,7 +430,7 @@ public abstract class InterThreadForwardCellularAnalysis<F extends CellularDataF
 		// this.copyOfSeedNodesForFirstPhase.clear();
 		// this.copyOfSeedNodesForFirstPhase.addAll(this.nodesToBeUpdated);
 		long localTimer = System.nanoTime();
-	
+
 		/*
 		 * From the set of nodes to be updated, we obtain the workList to be
 		 * processed.
@@ -453,7 +453,7 @@ public abstract class InterThreadForwardCellularAnalysis<F extends CellularDataF
 		// remove it from processing.
 		this.nodesToBeUpdated.removeAll(remSet);
 		// this.nodesToBeUpdated.clear();
-	
+
 		this.safeCurrentSCCNodes = new HashSet<>();
 		this.underApproximated = new HashSet<>();
 		while (!workList.isEmpty()) {
@@ -474,7 +474,7 @@ public abstract class InterThreadForwardCellularAnalysis<F extends CellularDataF
 				stabilizeSCCOf(nodeToBeAnalyzed);
 			}
 		}
-	
+
 		localTimer = System.nanoTime() - localTimer;
 		this.flowAnalysisUpdateTimer += localTimer;
 		if (this.analysisName == AnalysisName.POINTSTO
@@ -496,11 +496,11 @@ public abstract class InterThreadForwardCellularAnalysis<F extends CellularDataF
 	protected final void stabilizeSCCOf(Node node) {
 		this.safeCurrentSCCNodes.clear();
 		this.underApproximated.clear();
-	
+
 		SCC thisSCC = node.getInfo().getCFGInfo().getSCC();
 		int thisSCCNum = node.getInfo().getCFGInfo().getSCCRPOIndex();
 		// System.err.println("*** PROCESSING SCC #" + thisSCCNum);
-	
+
 		assert (thisSCC != null);
 		long localCounterPerPhase = this.nodesProcessedDuringUpdate;
 		do {
@@ -533,16 +533,18 @@ public abstract class InterThreadForwardCellularAnalysis<F extends CellularDataF
 		 * NEW CODE: To check the percent of nodes processed in an SCC in the first
 		 * phase.
 		 */
-		int SCCSize = thisSCC.getNodeCount();
-		double percentInFirst = this.safeCurrentSCCNodes.size() / (SCCSize * 1.0) * 100;
-		if (SCCSize != 1) {
-			System.out.println("Total " + Program.df2.format(percentInFirst) + "% of nodes processed out of " + SCCSize
-					+ " in this SCC.");
+		if (Program.profileSCC) {
+			int SCCSize = thisSCC.getNodeCount();
+			double percentInFirst = this.safeCurrentSCCNodes.size() / (SCCSize * 1.0) * 100;
+			if (SCCSize != 1) {
+				System.out.println("Total " + Program.df2.format(percentInFirst) + "% of nodes processed out of " + SCCSize
+						+ " in this SCC.");
+			}
 		}
 		/*
 		 * <-- NEW CODE Ends.
 		 */
-	
+
 		// Now, the set processedInThisUpdate is not required anymore. Clear it.
 		this.safeCurrentSCCNodes.clear();
 		/*
@@ -570,7 +572,7 @@ public abstract class InterThreadForwardCellularAnalysis<F extends CellularDataF
 			this.processWhenNotUpdated(node); // Note that this is a call to normal processing.
 		} while (true);
 		secondPhaseCount.add(this.nodesProcessedDuringUpdate - localCounterPerPhase);
-	
+
 		// if (node != null) {
 		// int nextSCCNum = node.getInfo().getCFGInfo().getSCCRPOIndex();
 		// System.err.println("*** ENCOUNTERED NEXT SCC with ID #" + nextSCCNum);
@@ -601,7 +603,7 @@ public abstract class InterThreadForwardCellularAnalysis<F extends CellularDataF
 		} else {
 			newIN = oldIN; // Use the same object.
 		}
-	
+
 		boolean inChanged = false;
 		boolean anyPredMissed = false;
 		for (IDFAEdge idfaEdge : predecessors) {
@@ -635,7 +637,7 @@ public abstract class InterThreadForwardCellularAnalysis<F extends CellularDataF
 			F edgeOUT = this.edgeTransferFunction(predOUT, idfaEdge.getNode(), node);
 			inChanged |= newIN.merge(edgeOUT, idfaEdge.getCells());
 		}
-	
+
 		if (node instanceof PostCallNode) {
 			PreCallNode preNode = ((CallStatement) node.getParent()).getPreCallNode();
 			SCC preSCC = preNode.getInfo().getCFGInfo().getSCC();
@@ -685,9 +687,9 @@ public abstract class InterThreadForwardCellularAnalysis<F extends CellularDataF
 				}
 			}
 		}
-	
+
 		nodeInfo.setIN(analysisName, newIN);
-	
+
 		// Step 2: Apply the flow-function on IN, to obtain the OUT.
 		F oldOUT = (F) nodeInfo.getOUT(analysisName);
 		F newOUT;
@@ -703,7 +705,7 @@ public abstract class InterThreadForwardCellularAnalysis<F extends CellularDataF
 		}
 		nodeInfo.setOUT(analysisName, newOUT);
 		this.safeCurrentSCCNodes.add(node); // Mark a node as processed only after its OUT has been "purified".
-	
+
 		// Step 3: Process the successors, if needed.
 		inOrOUTChanged |= inChanged;
 		if (node instanceof BarrierDirective) {
@@ -902,7 +904,7 @@ public abstract class InterThreadForwardCellularAnalysis<F extends CellularDataF
 	@SuppressWarnings("unchecked")
 	public final F visitChanged(BarrierDirective n, F flowFactIN, boolean first) {
 		F newOUT = this.getTop();
-	
+
 		F oldOUT = (F) n.getInfo().getOUT(analysisName);
 		if (first) {
 			// Here, we must ignore the oldOUT, whether null or not.
@@ -912,7 +914,7 @@ public abstract class InterThreadForwardCellularAnalysis<F extends CellularDataF
 				newOUT.merge(oldOUT, null);
 			}
 		}
-	
+
 		// Capture the SCC id for this barrier.
 		int thisBarrNum = n.getInfo().getCFGInfo().getSCCRPOIndex();
 		// Now, take the meet of IN of sibling barriers.

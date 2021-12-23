@@ -129,7 +129,9 @@ public class PointsToAnalysis extends InterThreadForwardCellularAnalysis<PointsT
 			// this.workList.addAll(nSCC.getEntryNodes());
 			// }
 		}
-		System.out.println("Find this in PTA: " + remSet.size());
+		if (Program.profileSCC) {
+			System.out.println("Find this in PTA: " + remSet.size());
+		}
 		// OLD CODE: Now, if we ever find that a node is unconnected to the program, we
 		// remove it from processing.
 		this.nodesToBeUpdated.removeAll(remSet);
@@ -139,7 +141,7 @@ public class PointsToAnalysis extends InterThreadForwardCellularAnalysis<PointsT
 		 * A new piece of code starts: Count the number of SCCs (with cycles) that have
 		 * seed nodes.
 		 */
-		if (Program.countSeededSCCs) {
+		if (Program.countSeededSCCs && Program.profileSCC) {
 			Set<SCC> seededSCCs = new HashSet<>();
 			for (Node n : workList.getIteratorForNonBarrierNodes()) {
 				SCC thisSCC = n.getInfo().getCFGInfo().getSCC();
@@ -208,7 +210,9 @@ public class PointsToAnalysis extends InterThreadForwardCellularAnalysis<PointsT
 				processedSCCCount++;
 			}
 		}
-		System.out.println("Total SCCs processed: " + processedSCCCount + " out of " + SCC.getAllSCCSize());
+		if (Program.profileSCC) {
+			System.out.println("Total SCCs processed: " + processedSCCCount + " out of " + SCC.getAllSCCSize());
+		}
 		Program.memoizeAccesses--;
 	}
 
@@ -270,7 +274,9 @@ public class PointsToAnalysis extends InterThreadForwardCellularAnalysis<PointsT
 				processedSCCCount++;
 			}
 		}
-		System.out.println("Total SCCs processed: " + processedSCCCount + " out of " + SCC.getAllSCCSize());
+		if (Program.profileSCC) {
+			System.out.println("Total SCCs processed: " + processedSCCCount + " out of " + SCC.getAllSCCSize());
+		}
 		Program.memoizeAccesses--;
 	}
 
@@ -299,7 +305,9 @@ public class PointsToAnalysis extends InterThreadForwardCellularAnalysis<PointsT
 				processedSCCCount++;
 			}
 		}
-		System.out.println("Total SCCs processed: " + processedSCCCount + " out of " + SCC.getAllSCCSize());
+		if (Program.profileSCC) {
+			System.out.println("Total SCCs processed: " + processedSCCCount + " out of " + SCC.getAllSCCSize());
+		}
 		Program.memoizeAccesses--;
 	}
 

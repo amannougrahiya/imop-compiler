@@ -856,6 +856,10 @@ public class Program {
 	 * from a safe node (without any other incoming paths to the path).
 	 */
 	public static boolean testSafeMarkingHeuristic = false;
+	/**
+	 * When enabled, SCC-specific parameters will be printed.
+	 */
+	public static boolean profileSCC = false;
 
 	/**
 	 * Obtain a set of all those cells that may point to a symbol.
