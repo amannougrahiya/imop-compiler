@@ -537,8 +537,8 @@ public abstract class InterThreadForwardCellularAnalysis<F extends CellularDataF
 			int SCCSize = thisSCC.getNodeCount();
 			double percentInFirst = this.safeCurrentSCCNodes.size() / (SCCSize * 1.0) * 100;
 			if (SCCSize != 1) {
-				System.out.println("Total " + Program.df2.format(percentInFirst) + "% of nodes processed out of " + SCCSize
-						+ " in this SCC.");
+				System.out.println("Total " + Program.df2.format(percentInFirst) + "% of nodes processed out of "
+						+ SCCSize + " in this SCC.");
 			}
 		}
 		/*

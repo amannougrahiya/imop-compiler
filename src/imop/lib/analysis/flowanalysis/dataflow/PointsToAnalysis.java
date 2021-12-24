@@ -22,10 +22,13 @@ import imop.lib.analysis.flowanalysis.generic.CellularDataFlowAnalysis;
 import imop.lib.analysis.flowanalysis.generic.InterThreadForwardCellularAnalysis;
 import imop.lib.analysis.typeSystem.*;
 import imop.lib.cfg.info.CFGInfo;
+import imop.lib.cg.CallStack;
 import imop.lib.cg.NodeWithStack;
 import imop.lib.util.*;
+import imop.lib.util.CollectorVisitor.NeighbourSetGetter;
 import imop.parser.Program;
 
+import java.util.function.Predicate;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -238,19 +241,33 @@ public class PointsToAnalysis extends InterThreadForwardCellularAnalysis<PointsT
 	}
 
 	private void markFlowFactsOfReachableNodesAsNull() {
-		Set<Node> reachableNodes = new HashSet<>();
+		Set<Node> seedNodes = new HashSet<>();
 		for (Node n : workList.getIteratorForNonBarrierNodes()) {
-			reachableNodes.add(n);
-			reachableNodes.addAll(CollectorVisitor.collectNodesInterTaskForward(n, new HashSet<>(), e -> false));
+			seedNodes.add(n);
 		}
 		for (Node n : workList.getIteratorForBarrierNodes()) {
-			reachableNodes.add(n);
-			reachableNodes.addAll(CollectorVisitor.collectNodesInterTaskForward(n, new HashSet<>(), e -> false));
+			seedNodes.add(n);
 		}
-		for (Node n : reachableNodes) {
-			n.getInfo().removeAnalysisInformation(this.getAnalysisName());
+		Set<NodeWithStack> workSet = new HashSet<>();
+		for (Node n : seedNodes) {
+			workSet.add(new NodeWithStack(n, new CallStack()));
 		}
-		// workList.addAll(reachableNodes);
+
+		Set<NodeWithStack> collectedNodeSet = new HashSet<>();
+		while (!workSet.isEmpty()) {
+			NodeWithStack currentNode = Misc.getAnyElement(workSet);
+			workSet.remove(currentNode);
+			for (NodeWithStack succNode : currentNode.getNode().getInfo().getCFGInfo()
+					.getInterProceduralLeafSuccessors(currentNode.getCallStack())) {
+				if (!collectedNodeSet.contains(succNode)) {
+					collectedNodeSet.add(succNode);
+					workSet.add(succNode);
+				}
+			}
+		}
+		for (NodeWithStack nodeWithStack : collectedNodeSet) {
+			nodeWithStack.getNode().getInfo().removeAnalysisInformation(this.getAnalysisName());
+		}
 	}
 
 	private void restartingIterationsAfterInit() {

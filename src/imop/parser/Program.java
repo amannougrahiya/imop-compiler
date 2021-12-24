@@ -101,7 +101,7 @@ public class Program {
 	 */
 	public static boolean profileSCC = false;
 	public static boolean useNoSCCs = false;
-	public static StabilizationIDFAMode stabilizationIDFAMode = StabilizationIDFAMode.INIT_RETST;
+	public static StabilizationIDFAMode stabilizationIDFAMode = StabilizationIDFAMode.INCIDFA;
 	public static long timerForMarking = 0;
 	/**
 	 * Checks whether at least one symbol is required for communication.
