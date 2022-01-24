@@ -81,8 +81,9 @@ public class Main {
 	public static void main(String[] args) throws FileNotFoundException, InterruptedException {
 		// Thread.sleep(5000);
 		totalTime = System.nanoTime();
+		System.out.println("Hi");
 		Program.parseNormalizeInput(args);
-		DumpSnapshot.forceDumpPointsTo("init");
+		// DumpSnapshot.forceDumpPointsTo("init");
 		// System.exit(0);
 		// DriverModule.askCoExistenceQueries();
 

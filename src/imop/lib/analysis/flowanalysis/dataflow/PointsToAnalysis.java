@@ -165,10 +165,10 @@ public class PointsToAnalysis extends InterThreadForwardCellularAnalysis<PointsT
 		case ALL_SCC:
 			this.reinitAllAndRunSCC();
 			break;
-		case RETST:
+		case RESTART:
 			restartingIterationsAfterInit();
 			break;
-		case INIT_RETST:
+		case INIT_RESTART:
 			markFlowFactsOfReachableNodesAsNull();
 			Program.timerForMarking += System.nanoTime() - localTimer;
 			localTimer = System.nanoTime();

@@ -2,7 +2,7 @@
  * Copyright (c) 2019 Aman Nougrahiya, V Krishna Nandivada, IIT Madras.
  * This file is a part of the project IMOP, licensed under the MIT license.
  * See LICENSE.md for the full text of the license.
- * 
+ *
  * The above notice shall be included in all copies or substantial
  * portions of this file.
  */
@@ -60,6 +60,15 @@ public abstract class CellularDataFlowAnalysis<F extends CellularDataFlowAnalysi
 		}
 
 		@Override
+		/**
+		 * Test that this innocent-looking addition doesn't break anything.
+		 * This addition was done carelessly without looking at the semantics of RestrictedSets.
+		 */
+		public String toString() {
+			return this.getString();
+		}
+
+		@Override
 		public final String getString() {
 			String retString = "";
 			String analysisName = this.getAnalysisNameKey();
@@ -84,6 +93,20 @@ public abstract class CellularDataFlowAnalysis<F extends CellularDataFlowAnalysi
 			return retString;
 		}
 
+		@Override
+		public boolean equals(Object obj) {
+			if (!(obj instanceof FlowFact)) {
+				return false;
+			}
+			FlowFact other = (FlowFact) obj;
+			return this.isEqualTo(other);
+		}
+
+		@Override
+		public int hashCode() {
+			return this.flowMap.hashCode();
+		}
+
 		/**
 		 * Obtain a one-word string that represents the name of this data-flow
 		 * fact,
@@ -91,7 +114,7 @@ public abstract class CellularDataFlowAnalysis<F extends CellularDataFlowAnalysi
 		 * </br>
 		 * For example, {@code ptsTo} is the one-word string that represents
 		 * the flow-fact for points-to analysis.
-		 * 
+		 *
 		 * @return
 		 *         one-word name for this flow-fact.
 		 */
@@ -101,7 +124,7 @@ public abstract class CellularDataFlowAnalysis<F extends CellularDataFlowAnalysi
 		 * Obtain meet of the two elements of the data-flow lattice --
 		 * {@code v1}
 		 * and {@code v2}.
-		 * 
+		 *
 		 * @param v1
 		 *           an element of the data-flow lattice.
 		 * @param v2

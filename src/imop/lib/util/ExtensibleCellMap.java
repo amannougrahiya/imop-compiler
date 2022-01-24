@@ -2,7 +2,7 @@
  * Copyright (c) 2019 Aman Nougrahiya, V Krishna Nandivada, IIT Madras.
  * This file is a part of the project IMOP, licensed under the MIT license.
  * See LICENSE.md for the full text of the license.
- * 
+ *
  * The above notice shall be included in all copies or substantial
  * portions of this file.
  */
@@ -20,7 +20,7 @@ import java.util.function.BinaryOperator;
 /**
  * A variant of CellMap, with notion of keysNotPresent and fallBackMaps.
  * IMPORTANT: NEEDS TO BE REVIEWED.
- * 
+ *
  * @author Aman Nougrahiya
  *
  * @param <V>
@@ -47,7 +47,7 @@ public class ExtensibleCellMap<V extends Immutable> extends CellMap<V> {
 	}
 
 	/**
-	 * 
+	 *
 	 * @param fallBackMap
 	 *                      map, which this map would extend.
 	 * @param maxLinkLength
@@ -95,7 +95,7 @@ public class ExtensibleCellMap<V extends Immutable> extends CellMap<V> {
 	 * Sets the map {@code fallBackMap} as a fall back map for
 	 * {@code extendedMap}, and adds {@code extendedMap} to the set
 	 * {@code extensionMaps} of {@code fallBackMap}.
-	 * 
+	 *
 	 * @param <H>
 	 * @param extendedMap
 	 * @param fallBackMap
@@ -134,7 +134,7 @@ public class ExtensibleCellMap<V extends Immutable> extends CellMap<V> {
 	/**
 	 * Provides the number of elements in the extension chain of this map
 	 * (including this map).
-	 * 
+	 *
 	 * @param map
 	 * @return
 	 */
@@ -188,7 +188,7 @@ public class ExtensibleCellMap<V extends Immutable> extends CellMap<V> {
 	/**
 	 * Checks if the provided {@code key}'s value will be read from the
 	 * {@code fallBackMap}, for the receiver map.
-	 * 
+	 *
 	 * @param key
 	 *            a key to be tested.
 	 * @return
@@ -294,7 +294,7 @@ public class ExtensibleCellMap<V extends Immutable> extends CellMap<V> {
 	 * Returns the value that is mapped to {@code key}. If no such mapping
 	 * exists, then the value mapped to {@link getGenericCell()}, if any,
 	 * is returned, else {@code null} is returned.
-	 * 
+	 *
 	 * @param key
 	 *            key for which corresponding value is required.
 	 * @return
@@ -302,7 +302,7 @@ public class ExtensibleCellMap<V extends Immutable> extends CellMap<V> {
 	 *         exists, then the value mapped to {@link getGenericCell()},
 	 *         if any,
 	 *         is returned, else {@code null} is returned.
-	 * 
+	 *
 	 */
 	@Override
 	public V get(Cell key) {
@@ -347,7 +347,7 @@ public class ExtensibleCellMap<V extends Immutable> extends CellMap<V> {
 	 * {@code value}. Otherwise, a new mapping is added for ({@code key},
 	 * {@code value}). However, if {@code key} is {@link getGenericCell()},
 	 * then the internal map is cleared and the new mapping is added to the map.
-	 * 
+	 *
 	 * @param key
 	 *                 key for the mapping to be added.
 	 * @param newValue
@@ -356,7 +356,7 @@ public class ExtensibleCellMap<V extends Immutable> extends CellMap<V> {
 	 *         the value that is mapped to {@code key}. If no such mapping
 	 *         exists, then the value mapped to {@link getGenericCell()},
 	 *         if any, is returned, else {@code null} is returned.
-	 * 
+	 *
 	 */
 	@Override
 	public V put(Cell key, V newValue) {
@@ -639,7 +639,7 @@ public class ExtensibleCellMap<V extends Immutable> extends CellMap<V> {
 	 * Merges this object with {@code thatMap}, for the cells specified in
 	 * {@code selectedCells} (all, if {@code null}), as per the merge operation
 	 * provided by {@code mergeMethod}.
-	 * 
+	 *
 	 * @param thatMap
 	 *                      map, of same value type, which needs to be merged into
 	 *                      this
@@ -685,6 +685,9 @@ public class ExtensibleCellMap<V extends Immutable> extends CellMap<V> {
 			V thisValue = thisMap.get(thatCell, ConvertMode.OFF);
 			// Note that thisValue may be null. We assume that mergeMethod takes care of
 			// that.
+			if (thatValue == thisValue) {
+				continue;
+			}
 			V newValue = mergeMethod.apply(thisValue, thatValue);
 			if (newValue != null && !newValue.equals(thisValue)) {
 				changed = true;
@@ -704,6 +707,9 @@ public class ExtensibleCellMap<V extends Immutable> extends CellMap<V> {
 				continue;
 			}
 			V thisValue = thisMap.get(thisCell);
+			if (thisValue == thatGenericValue) {
+				continue;
+			}
 			V newValue = mergeMethod.apply(thisValue, thatGenericValue);
 			if (newValue != null && !newValue.equals(thisValue)) {
 				changed = true;
@@ -1062,7 +1068,7 @@ public class ExtensibleCellMap<V extends Immutable> extends CellMap<V> {
 	 * If a mapping already exists for the generic cell, then the map is updated
 	 * and old value is returned. Otherwise, an entry is added, without removing
 	 * existing explicit cell mappings.
-	 * 
+	 *
 	 * @param value
 	 *              value which a generic cell should be mapped to.
 	 * @return

@@ -61,9 +61,9 @@ public class Program {
 	 *
 	 */
 	public enum StabilizationIDFAMode {
-		RETST, // restarting iterations, SCC-wise; imprecise and fast
-		INIT_RETST, // restarting iterations preceded with initialization, SCC-wise; precise and
-					// relatively slower than RETST
+		RESTART, // restarting iterations, SCC-wise; imprecise and fast
+		INIT_RESTART, // restarting iterations preceded with initialization, SCC-wise; precise and
+						// relatively slower than RETST
 		INCIDFA, // our proposed approach
 		ALL_SCC, // reinitializes and recomputes all, SCC-wise
 		ALL_NOSCC, // reinitializes and recomputes all, without taking SCCs into consideration
@@ -100,6 +100,7 @@ public class Program {
 	 * When enabled, SCC-specific parameters will be printed.
 	 */
 	public static boolean profileSCC = false;
+	public static boolean checkForGhostValues = false;
 	public static boolean useNoSCCs = false;
 	public static StabilizationIDFAMode stabilizationIDFAMode = StabilizationIDFAMode.INCIDFA;
 	public static long timerForMarking = 0;
@@ -239,7 +240,7 @@ public class Program {
 		Program.isPrePassPhase = false;
 		Program.removeUnused = true;
 		Program.idfaUpdateCategory = UpdateCategory.LZUPD; // Default is LZUPD.
-		Program.stabilizationIDFAMode = StabilizationIDFAMode.INIT_RETST;
+		Program.stabilizationIDFAMode = StabilizationIDFAMode.INCIDFA;
 		Program.countSeededSCCs = false;
 		// Program.useNoSCCs = true; // Doesn't work.
 		/*
@@ -299,14 +300,15 @@ public class Program {
 		// filePath = ("../tests/npb-post/ep3-0.i");
 		// filePath = ("../tests/npb-post/ft3-0.i");
 		// filePath = ("../tests/npb-post/is3-0.i");
-		// filePath = ("../tests/npb-post/lu3-0.i");
+		filePath = ("../tests/npb-post/lu3-0.i");
 		// filePath = ("../tests/npb-post/mg3-0.i");
 		// filePath = ("../tests/npb-post/sp3-0.i");
 		//
 		// filePath = ("../tests/quake-postpass.i");
 		// filePath = ("../tests/scanner-postpass.i");
-		// filePath = ("../tests/amgmk-postpass.i");
-		filePath = ("../tests/clomp-postpass.i");
+		filePath = ("../tests/amgmk-postpass.i");
+		// filePath = ("../tests/amgmk-small.i");
+		// filePath = ("../tests/clomp-postpass.i");
 		// filePath = ("../tests/stream-postpass.i");
 		//
 		// filePath = "../output-dump/imop_useful.i";

@@ -21,13 +21,16 @@ import imop.lib.analysis.mhp.AbstractPhasePointable;
 import imop.lib.analysis.typeSystem.ArrayType;
 import imop.lib.cfg.info.CFGInfo;
 import imop.lib.util.CellSet;
+import imop.lib.util.ExtensibleCellMap;
 import imop.lib.util.Immutable;
 import imop.lib.util.Misc;
 import imop.parser.Program;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -502,6 +505,11 @@ public abstract class InterThreadForwardCellularAnalysis<F extends CellularDataF
 		// System.err.println("*** PROCESSING SCC #" + thisSCCNum);
 
 		assert (thisSCC != null);
+
+		if (Program.checkForGhostValues) {
+			checkForGhostValues(node);
+		}
+
 		long localCounterPerPhase = this.nodesProcessedDuringUpdate;
 		do {
 			/*
@@ -513,7 +521,20 @@ public abstract class InterThreadForwardCellularAnalysis<F extends CellularDataF
 			this.debugRecursion(node);
 			this.processWhenUpdated(node);
 			// } else {
+			// outer: for (IDFAEdge idfaEdge : node.getInfo().getCFGInfo()
+			// .getInterTaskLeafPredecessorEdges(this.analysisDimension.getSVEDimension()))
+			// {
+			// Node predNode = idfaEdge.getNode();
+			// SCC predSCC = predNode.getInfo().getCFGInfo().getSCC();
+			// if (predSCC == node.getInfo().getCFGInfo().getSCC()) {
+			// if (!this.safeCurrentSCCNodes.contains(predNode)) {
 			// this.underApproximated.add(node);
+			// break outer;
+			// }
+			// }
+			// }
+			// // OR:
+			// // this.underApproximated.add(node);
 			// }
 			node = this.workList.peekFirstElementOfSameSCC(thisSCCNum);
 			if (node == null) {
@@ -579,6 +600,43 @@ public abstract class InterThreadForwardCellularAnalysis<F extends CellularDataF
 		// }
 	}
 
+	private void checkForGhostValues(Node node) {
+		SCC thisSCC = node.getInfo().getCFGInfo().getSCC();
+		assert (thisSCC != null);
+		/*
+		 * Find the node with least size of the cellmap.
+		 */
+		for (Node n : thisSCC.getNodes()) {
+			@SuppressWarnings("unchecked")
+			F ff = (F) n.getInfo().getIN(this.getAnalysisName());
+			if (ff == null) {
+				continue;
+			}
+			ExtensibleCellMap<?> flowMap = ff.flowMap;
+			String retString = "";
+			retString += "[";
+			if (flowMap.isUniversal()) {
+				retString += analysisName + "(globalCell) := " + flowMap.get(Cell.genericCell);
+			}
+			Set<Cell> cellSet = flowMap.nonGenericKeySet();
+			List<Cell> cellList = new ArrayList<>(cellSet);
+			Collections.sort(cellList);
+			for (Cell c : cellList) {
+				retString += analysisName + "(" + c.toString() + ") := ";
+				Object value = flowMap.get(c);
+				if (value != null && value != Cell.getNullCell()) {
+					retString += System.identityHashCode(value);
+				} else {
+					retString += "NULL";
+				}
+				retString += ";\n";
+			}
+			retString += "]";
+			System.out.println(retString);
+		}
+		System.out.println("***************");
+	}
+
 	@SuppressWarnings("unchecked")
 	@Override
 	protected final void processWhenUpdated(Node node) {
@@ -596,10 +654,10 @@ public abstract class InterThreadForwardCellularAnalysis<F extends CellularDataF
 		if (oldIN == null) {
 			// First processing ever of this node!
 			inOrOUTChanged = true;
-			newIN = (predecessors.isEmpty()) ? newIN = this.getEntryFact() : this.getTop();
+			newIN = (predecessors.isEmpty()) ? this.getEntryFact() : this.getTop();
 		} else if (first) {
 			// First processing in the first round of update.
-			newIN = (predecessors.isEmpty()) ? newIN = this.getEntryFact() : this.getTop();
+			newIN = (predecessors.isEmpty()) ? this.getEntryFact() : this.getTop();
 		} else {
 			newIN = oldIN; // Use the same object.
 		}
@@ -649,7 +707,7 @@ public abstract class InterThreadForwardCellularAnalysis<F extends CellularDataF
 					if (!this.safeCurrentSCCNodes.contains(preNode)) {
 						anyPredMissed = true;
 						doNotProcess = true;
-						this.underApproximated.add(node); // New code.
+						// this.underApproximated.add(node); // New code.
 					}
 				}
 			}
@@ -689,6 +747,10 @@ public abstract class InterThreadForwardCellularAnalysis<F extends CellularDataF
 		}
 
 		nodeInfo.setIN(analysisName, newIN);
+
+		if (oldIN != null && oldIN != newIN && !oldIN.isEqualTo(newIN)) {
+			inOrOUTChanged = true;
+		}
 
 		// Step 2: Apply the flow-function on IN, to obtain the OUT.
 		F oldOUT = (F) nodeInfo.getOUT(analysisName);

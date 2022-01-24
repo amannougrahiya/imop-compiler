@@ -2,7 +2,7 @@
  * Copyright (c) 2019 Aman Nougrahiya, V Krishna Nandivada, IIT Madras.
  * This file is a part of the project IMOP, licensed under the MIT license.
  * See LICENSE.md for the full text of the license.
- * 
+ *
  * The above notice shall be included in all copies or substantial
  * portions of this file.
  */
@@ -12,6 +12,7 @@ import imop.lib.analysis.flowanalysis.Cell;
 import imop.lib.analysis.flowanalysis.FreeVariable;
 import imop.lib.analysis.flowanalysis.Symbol;
 import imop.parser.Program;
+import javafx.beans.property.ReadOnlyMapWrapper;
 
 import java.util.*;
 import java.util.function.BiConsumer;
@@ -88,7 +89,7 @@ public class CellMap<V> extends AbstractMap<Cell, V> {
 	 * Returns the value that is mapped to {@code key}. If no such mapping
 	 * exists, then the value mapped to {@link getGenericCell()}, if any,
 	 * is returned, else {@code null} is returned.
-	 * 
+	 *
 	 * @param key
 	 *            key for which corresponding value is required.
 	 * @return
@@ -96,7 +97,7 @@ public class CellMap<V> extends AbstractMap<Cell, V> {
 	 *         exists, then the value mapped to {@link getGenericCell()},
 	 *         if any,
 	 *         is returned, else {@code null} is returned.
-	 * 
+	 *
 	 */
 	public V get(Cell key) {
 		if (key instanceof FreeVariable) {
@@ -145,7 +146,7 @@ public class CellMap<V> extends AbstractMap<Cell, V> {
 	 * {@code value}. Otherwise, a new mapping is added for ({@code key},
 	 * {@code value}). However, if {@code key} is {@link getGenericCell()},
 	 * then the internal map is cleared and the new mapping is added to the map.
-	 * 
+	 *
 	 * @param key
 	 *              key for the mapping to be added.
 	 * @param value
@@ -154,7 +155,7 @@ public class CellMap<V> extends AbstractMap<Cell, V> {
 	 *         the value that is mapped to {@code key}. If no such mapping
 	 *         exists, then the value mapped to {@link getGenericCell()},
 	 *         if any, is returned, else {@code null} is returned.
-	 * 
+	 *
 	 */
 	@Override
 	public V put(Cell key, V value) {
@@ -190,7 +191,7 @@ public class CellMap<V> extends AbstractMap<Cell, V> {
 	 * If a mapping already exists for the generic cell, then the map is updated
 	 * and old value is returned. Otherwise, an entry is added, without removing
 	 * existing explicit cell mappings.
-	 * 
+	 *
 	 * @param value
 	 *              value which a generic cell should be mapped to.
 	 * @return
@@ -415,7 +416,7 @@ public class CellMap<V> extends AbstractMap<Cell, V> {
 	 * Merges this object with {@code thatMap}, for the cells specified in
 	 * {@code selectedCells} (all, if {@code null}), as per the merge operation
 	 * provided by {@code mergeMethod}.
-	 * 
+	 *
 	 * @param thatMap
 	 *                      map, of same value type, which needs to be merged into
 	 *                      this
@@ -453,6 +454,15 @@ public class CellMap<V> extends AbstractMap<Cell, V> {
 			V thisValue = thisMap.get(thatCell);
 			// Note that thisValue may be null. We assume that mergeMethod takes care of
 			// that.
+			/**
+			 * New code: Sat Jan 22 13:17:49 IST 2022
+			 */
+			if (thatValue == thisValue) {
+				continue;
+			}
+			/**
+			 * End of new code.
+			 */
 			V newValue = mergeMethod.apply(thisValue, thatValue);
 			if (!newValue.equals(thisValue)) {
 				changed = true;
@@ -471,6 +481,15 @@ public class CellMap<V> extends AbstractMap<Cell, V> {
 					continue;
 				}
 				V thisValue = thisMap.get(thisCell);
+				/**
+				 * New code: Sat Jan 22 13:17:49 IST 2022
+				 */
+				if (thisValue == thatGenericValue) {
+					continue;
+				}
+				/**
+				 * End of new code.
+				 */
 				V newValue = mergeMethod.apply(thisValue, thatGenericValue);
 				if (!newValue.equals(thisValue)) {
 					changed = true;
@@ -496,10 +515,16 @@ public class CellMap<V> extends AbstractMap<Cell, V> {
 				V thisGenericValue = thisMap.get(Cell.genericCell);
 				// Note that thisGenericValye may be null. We assume that mergeMethod takes care
 				// of this issue.
-				V newGenericValue = mergeMethod.apply(thisGenericValue, thatGenericValue);
-				if (!newGenericValue.equals(thisGenericValue)) {
-					changed = true;
-					thisMap.updateGenericMap(newGenericValue);
+				/**
+				 * New Code (predicate). Sat Jan 22 13:20:55 IST 2022
+				 *
+				 */
+				if (thisGenericValue != thatGenericValue) {
+					V newGenericValue = mergeMethod.apply(thisGenericValue, thatGenericValue);
+					if (!newGenericValue.equals(thisGenericValue)) {
+						changed = true;
+						thisMap.updateGenericMap(newGenericValue);
+					}
 				}
 			}
 		}
