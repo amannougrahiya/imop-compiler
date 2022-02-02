@@ -40,21 +40,21 @@ public class DumpSnapshot {
 		if (Program.printNoFiles) {
 			return;
 		}
-		List<Commentor> commetors = new ArrayList<>();
-		commetors.add((n) -> {
+		List<Commentor> commentors = new ArrayList<>();
+		commentors.add((n) -> {
 			String tempStr = "";
 			tempStr += n.getInfo().getAllCellsAtNodeExclusively();
 			return tempStr;
 		});
-		DumpSnapshot.printToFile(Program.getRoot(), Program.fileName + "-accessibleCells" + str + ".i", commetors);
+		DumpSnapshot.printToFile(Program.getRoot(), Program.fileName + "-accessibleCells" + str + ".i", commentors);
 	}
 
 	public static void dumpCopyInfo(String str) {
 		if (Program.printNoFiles) {
 			return;
 		}
-		List<Commentor> commetors = new ArrayList<>();
-		commetors.add((n) -> {
+		List<Commentor> commentors = new ArrayList<>();
+		commentors.add((n) -> {
 			String tempStr = "";
 			CellMap<Cell> copyMap = n.getInfo().getCopyMap();
 			CellSet set = n.getInfo().getAllCellsAtNode();
@@ -70,7 +70,7 @@ public class DumpSnapshot {
 			}
 			return tempStr;
 		});
-		DumpSnapshot.printToFile(Program.getRoot(), Program.fileName + "-copyMap" + str + ".i", commetors);
+		DumpSnapshot.printToFile(Program.getRoot(), Program.fileName + "-copyMap" + str + ".i", commentors);
 	}
 
 	public static void dumpDataDependence() {
@@ -128,8 +128,8 @@ public class DumpSnapshot {
 		if (Program.printNoFiles) {
 			return;
 		}
-		List<Commentor> commetors = new ArrayList<>();
-		commetors.add((n) -> {
+		List<Commentor> commentors = new ArrayList<>();
+		commentors.add((n) -> {
 			String tempStr = "";
 			Set<Node> dominators = n.getInfo().getDominators();
 			String dominatorStr;
@@ -143,15 +143,15 @@ public class DumpSnapshot {
 			}
 			return tempStr;
 		});
-		DumpSnapshot.printToFile(Program.getRoot(), Program.fileName + "-dominators" + string + ".i", commetors);
+		DumpSnapshot.printToFile(Program.getRoot(), Program.fileName + "-dominators" + string + ".i", commentors);
 	}
 
 	public static void dumpHeapValidity() {
 		if (Program.printNoFiles) {
 			return;
 		}
-		List<Commentor> commetors = new ArrayList<>();
-		commetors.add((n) -> {
+		List<Commentor> commentors = new ArrayList<>();
+		commentors.add((n) -> {
 			String tempStr = "";
 			FlowFact flow = n.getInfo().getOUT(AnalysisName.HEAP_VALIDITY);
 			if (flow != null) {
@@ -159,15 +159,15 @@ public class DumpSnapshot {
 			}
 			return tempStr;
 		});
-		DumpSnapshot.printToFile(Program.getRoot(), Program.fileName + "-heapValidity.i", commetors);
+		DumpSnapshot.printToFile(Program.getRoot(), Program.fileName + "-heapValidity.i", commentors);
 	}
 
 	public static void dumpLiveness() {
 		if (Program.printNoFiles) {
 			return;
 		}
-		List<Commentor> commetors = new ArrayList<>();
-		commetors.add((n) -> {
+		List<Commentor> commentors = new ArrayList<>();
+		commentors.add((n) -> {
 			String tempStr = "";
 			FlowFact flow = n.getInfo().getOUT(AnalysisName.LIVENESS);
 			if (flow != null) {
@@ -181,15 +181,15 @@ public class DumpSnapshot {
 			// }
 			return tempStr;
 		});
-		DumpSnapshot.printToFile(Program.getRoot(), Program.fileName + "-liveness.i", commetors);
+		DumpSnapshot.printToFile(Program.getRoot(), Program.fileName + "-liveness.i", commentors);
 	}
 
 	public static void dumpLockSet() {
 		if (Program.printNoFiles) {
 			return;
 		}
-		List<Commentor> commetors = new ArrayList<>();
-		commetors.add((n) -> {
+		List<Commentor> commentors = new ArrayList<>();
+		commentors.add((n) -> {
 			String tempStr = "";
 			FlowFact flow = n.getInfo().getIN(AnalysisName.LOCKSET_ANALYSIS);
 			if (flow != null) {
@@ -199,7 +199,7 @@ public class DumpSnapshot {
 			}
 			return tempStr;
 		});
-		DumpSnapshot.printToFile(Program.getRoot(), Program.fileName + "-locks.i", commetors);
+		DumpSnapshot.printToFile(Program.getRoot(), Program.fileName + "-locks.i", commentors);
 	}
 
 	public static void dumpLoopHeadersOnSTDOUT() {
@@ -232,8 +232,8 @@ public class DumpSnapshot {
 		if (Program.printNoFiles) {
 			return;
 		}
-		List<Commentor> commetors = new ArrayList<>();
-		commetors.add((n) -> {
+		List<Commentor> commentors = new ArrayList<>();
+		commentors.add((n) -> {
 			String tempStr = "";
 			CellMap<Cell> copyMap = n.getInfo().getCopyMap();
 			CellSet set = n.getInfo().getAllCellsAtNode();
@@ -249,7 +249,7 @@ public class DumpSnapshot {
 			}
 			return tempStr;
 		});
-		commetors.add((n) -> {
+		commentors.add((n) -> {
 			String tempStr = "[";
 			for (AbstractPhase<?, ?> ph : n.getInfo().getNodePhaseInfo().getPhaseSet()) {
 				tempStr += ph.getPhaseId() + "; ";
@@ -257,7 +257,7 @@ public class DumpSnapshot {
 			tempStr += "]";
 			return tempStr;
 		});
-		// commetors.add((n) -> {
+		// commentors.add((n) -> {
 		// String tempStr = "";
 		// if (n instanceof DummyFlushDirective) {
 		// for (Node interSucc :
@@ -272,7 +272,7 @@ public class DumpSnapshot {
 		// }
 		// return tempStr;
 		// });
-		DumpSnapshot.printToFile(Program.getRoot(), Program.fileName + "-copyAndPhase" + str + ".i", commetors);
+		DumpSnapshot.printToFile(Program.getRoot(), Program.fileName + "-copyAndPhase" + str + ".i", commentors);
 	}
 
 	public static void dumpPhaseListOfAllParCons(String string) {
@@ -299,8 +299,8 @@ public class DumpSnapshot {
 				}
 			}
 		}
-		List<Commentor> commetors = new ArrayList<>();
-		commetors.add((n) -> {
+		List<Commentor> commentors = new ArrayList<>();
+		commentors.add((n) -> {
 			List<Integer> arr = new ArrayList<>();
 			for (AbstractPhase<?, ?> ph : n.getInfo().getNodePhaseInfo().getPhaseSet()) {
 				arr.add(newId.indexOf(ph.getPhaseId()) + 1);
@@ -309,7 +309,7 @@ public class DumpSnapshot {
 			String tempStr = arr.toString();
 			return tempStr;
 		});
-		// commetors.add((n) -> {
+		// commentors.add((n) -> {
 		// String tempStr = "";
 		// if (n instanceof DummyFlushDirective) {
 		// for (Node interSucc :
@@ -324,12 +324,12 @@ public class DumpSnapshot {
 		// }
 		// return tempStr;
 		// });
-		DumpSnapshot.printToFile(Program.getRoot(), Program.fileName + string + "-phases.i", commetors);
+		DumpSnapshot.printToFile(Program.getRoot(), Program.fileName + string + "-phases.i", commentors);
 	}
 
 	public static void forceDumpPointsTo(String string) {
-		List<Commentor> commetors = new ArrayList<>();
-		commetors.add((n) -> {
+		List<Commentor> commentors = new ArrayList<>();
+		commentors.add((n) -> {
 			String tempStr = "";
 			FlowFact flow;
 			flow = n.getInfo().getOUT(AnalysisName.POINTSTO);
@@ -338,15 +338,16 @@ public class DumpSnapshot {
 			}
 			return tempStr;
 		});
-		DumpSnapshot.forcePrintToFile(Program.getRoot(), Program.fileName + string + "-pointsTo.i", commetors);
+		DumpSnapshot.forcePrintToFile(Program.getRoot(), Program.fileName + string + "-pointsTo.i", commentors);
 
 	}
+
 	public static void dumpPointsTo(String string) {
 		if (Program.printNoFiles) {
 			return;
 		}
-		List<Commentor> commetors = new ArrayList<>();
-		commetors.add((n) -> {
+		List<Commentor> commentors = new ArrayList<>();
+		commentors.add((n) -> {
 			String tempStr = "";
 			FlowFact flow;
 			// flow = n.getInfo().getIN(AnalysisName.POINTSTO);
@@ -360,7 +361,20 @@ public class DumpSnapshot {
 			}
 			return tempStr;
 		});
-		DumpSnapshot.printToFile(Program.getRoot(), Program.fileName + string + "-pointsTo.i", commetors);
+		DumpSnapshot.printToFile(Program.getRoot(), Program.fileName + string + "-pointsTo.i", commentors);
+
+	}
+
+	public static void forceDumpImpactedSets(String string) {
+		List<Commentor> commentors = new ArrayList<>();
+		commentors.add((n) -> {
+			String tempStr = "";
+			if (n.getInfo().getImpactedSet() != null) {
+				tempStr += "impactedCells: " + n.getInfo().getImpactedSet().toString();
+			}
+			return tempStr;
+		});
+		DumpSnapshot.forcePrintToFile(Program.getRoot(), Program.fileName + string + "-impactedSet.i", commentors);
 
 	}
 
@@ -371,8 +385,8 @@ public class DumpSnapshot {
 		if (Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.YCON) {
 			return;
 		}
-		List<Commentor> commetors = new ArrayList<>();
-		commetors.add((n) -> {
+		List<Commentor> commentors = new ArrayList<>();
+		commentors.add((n) -> {
 			String tempStr = "";
 			FlowFact flow = n.getInfo()
 					.getOUT(Program.useInterProceduralPredicateAnalysis ? AnalysisName.CROSSCALL_PREDICATE_ANALYSIS
@@ -382,15 +396,15 @@ public class DumpSnapshot {
 			}
 			return tempStr;
 		});
-		DumpSnapshot.printToFile(Program.getRoot(), Program.fileName + string + "-predicates.i", commetors);
+		DumpSnapshot.printToFile(Program.getRoot(), Program.fileName + string + "-predicates.i", commentors);
 	}
 
 	public static void dumpReachingDefinitions(String string) {
 		if (Program.printNoFiles) {
 			return;
 		}
-		List<Commentor> commetors = new ArrayList<>();
-		commetors.add((n) -> {
+		List<Commentor> commentors = new ArrayList<>();
+		commentors.add((n) -> {
 			String tempStr = "";
 			String reachingDefStr = n.getInfo().getReachingDefinitions().toString();
 			if (!reachingDefStr.isEmpty()) {
@@ -398,29 +412,29 @@ public class DumpSnapshot {
 			}
 			return tempStr;
 		});
-		DumpSnapshot.printToFile(Program.getRoot(), Program.fileName + string + "-reachingDefs.i", commetors);
+		DumpSnapshot.printToFile(Program.getRoot(), Program.fileName + string + "-reachingDefs.i", commentors);
 	}
 
 	public static void dumpReadDestinations() {
 		if (Program.printNoFiles) {
 			return;
 		}
-		List<Commentor> commetors = new ArrayList<>();
-		commetors.add((n) -> {
+		List<Commentor> commentors = new ArrayList<>();
+		commentors.add((n) -> {
 			String tempStr = "";
 			tempStr += "\nRead_Dest: ";
 			tempStr += n.getInfo().getReadDestinations();
 			return tempStr;
 		});
-		DumpSnapshot.printToFile(Program.getRoot(), Program.fileName + "-readDest.i", commetors);
+		DumpSnapshot.printToFile(Program.getRoot(), Program.fileName + "-readDest.i", commentors);
 	}
 
 	public static void dumpReadSources() {
 		if (Program.printNoFiles) {
 			return;
 		}
-		List<Commentor> commetors = new ArrayList<>();
-		commetors.add((n) -> {
+		List<Commentor> commentors = new ArrayList<>();
+		commentors.add((n) -> {
 			String tempStr = "";
 			DataDependenceForwardFF ff = (DataDependenceForwardFF) n.getInfo()
 					.getIN(AnalysisName.DATA_DEPENDENCE_FORWARD);
@@ -429,15 +443,15 @@ public class DumpSnapshot {
 			}
 			return tempStr;
 		});
-		DumpSnapshot.printToFile(Program.getRoot(), Program.fileName + "-readSrc.i", commetors);
+		DumpSnapshot.printToFile(Program.getRoot(), Program.fileName + "-readSrc.i", commentors);
 	}
 
 	public static void dumpVisibleSharedReadWrittenCells(String string) {
 		if (Program.printNoFiles) {
 			return;
 		}
-		List<Commentor> commetors = new ArrayList<>();
-		commetors.add((n) -> {
+		List<Commentor> commentors = new ArrayList<>();
+		commentors.add((n) -> {
 			String tempStr = "";
 			// tempStr += "ALL: ";
 			// tempStr += n.getInfo().getAllCellsAtNode();
@@ -449,29 +463,29 @@ public class DumpSnapshot {
 			tempStr += n.getInfo().getSharedWrites();
 			return tempStr;
 		});
-		DumpSnapshot.printToFile(Program.getRoot(), Program.fileName + string + "-allAndShared.i", commetors);
+		DumpSnapshot.printToFile(Program.getRoot(), Program.fileName + string + "-allAndShared.i", commentors);
 	}
 
 	private static void dumpWriteDestinations() {
 		if (Program.printNoFiles) {
 			return;
 		}
-		List<Commentor> commetors = new ArrayList<>();
-		commetors.add((n) -> {
+		List<Commentor> commentors = new ArrayList<>();
+		commentors.add((n) -> {
 			String tempStr = "";
 			tempStr += "\nWrite_Dest: ";
 			tempStr += n.getInfo().getWriteDestinations();
 			return tempStr;
 		});
-		DumpSnapshot.printToFile(Program.getRoot(), Program.fileName + "-writeDest.i", commetors);
+		DumpSnapshot.printToFile(Program.getRoot(), Program.fileName + "-writeDest.i", commentors);
 	}
 
 	public static void dumpWriteSources() {
 		if (Program.printNoFiles) {
 			return;
 		}
-		List<Commentor> commetors = new ArrayList<>();
-		commetors.add((n) -> {
+		List<Commentor> commentors = new ArrayList<>();
+		commentors.add((n) -> {
 			String tempStr = "";
 			DataDependenceForwardFF ff = (DataDependenceForwardFF) n.getInfo()
 					.getIN(AnalysisName.DATA_DEPENDENCE_FORWARD);
@@ -483,7 +497,7 @@ public class DumpSnapshot {
 			}
 			return tempStr;
 		});
-		DumpSnapshot.printToFile(Program.getRoot(), Program.fileName + "-writeSrc.i", commetors);
+		DumpSnapshot.printToFile(Program.getRoot(), Program.fileName + "-writeSrc.i", commentors);
 	}
 
 	/**
@@ -556,13 +570,13 @@ public class DumpSnapshot {
 	public static void forceDumpRoot(String identifier) {
 		Node root = Program.getRoot();
 		String fileName = Program.fileName + "-" + identifier + ".i";
-		List<Commentor> commetors = new ArrayList<>();
+		List<Commentor> commentors = new ArrayList<>();
 		String fs = System.getProperty("file.separator");
 		String filePath = Program.class.getProtectionDomain().getCodeSource().getLocation().getFile();
 		fileName = filePath + ".." + fs + "output-dump" + fs + fileName;
 		BufferedWriter bw = Misc.getBufferedWriter(fileName);
 		try {
-			bw.write(root.getInfo().getString(commetors));
+			bw.write(root.getInfo().getString(commentors));
 			bw.append(System.getProperty("line.separator"));
 			bw.close();
 		} catch (IOException e) {
@@ -638,13 +652,13 @@ public class DumpSnapshot {
 		}
 	}
 
-	public static void forcePrintToFile(Node root, String fileName, List<Commentor> commetors) {
+	public static void forcePrintToFile(Node root, String fileName, List<Commentor> commentors) {
 		String fs = System.getProperty("file.separator");
 		String filePath = Program.class.getProtectionDomain().getCodeSource().getLocation().getFile();
 		fileName = filePath + ".." + fs + "output-dump" + fs + fileName;
 		BufferedWriter bw = Misc.getBufferedWriter(fileName);
 		try {
-			bw.write(root.getInfo().getString(commetors));
+			bw.write(root.getInfo().getString(commentors));
 			bw.append(System.getProperty("line.separator"));
 			bw.close();
 		} catch (IOException e) {
@@ -652,7 +666,7 @@ public class DumpSnapshot {
 		}
 	}
 
-	public static void printToFile(Node root, String fileName, List<Commentor> commetors) {
+	public static void printToFile(Node root, String fileName, List<Commentor> commentors) {
 		if (Program.printNoFiles) {
 			return;
 		}
@@ -661,7 +675,7 @@ public class DumpSnapshot {
 		fileName = filePath + ".." + fs + "output-dump" + fs + fileName;
 		BufferedWriter bw = Misc.getBufferedWriter(fileName);
 		try {
-			bw.write(root.getInfo().getString(commetors));
+			bw.write(root.getInfo().getString(commentors));
 			bw.append(System.getProperty("line.separator"));
 			bw.close();
 		} catch (IOException e) {

@@ -89,18 +89,19 @@ public class Program {
 	public static boolean removeUnused = true;
 	public static String fileName;
 	public static boolean enableUnmodifiability;
-	public static boolean countSeededSCCs = false;
 	/**
 	 * Enables the heuristic that helps in early termination of first phase of
 	 * HIDFAp, by marking those nodes as safe that are reachable on a straight path
 	 * from a safe node (without any other incoming paths to the path).
 	 */
 	public static boolean testSafeMarkingHeuristic = false;
+	public static boolean countSeededSCCs = false;
 	/**
 	 * When enabled, SCC-specific parameters will be printed.
 	 */
 	public static boolean profileSCC = false;
 	public static boolean checkForGhostValues = false;
+	public static boolean maintainImpactedSet = false;
 	public static boolean useNoSCCs = false;
 	public static StabilizationIDFAMode stabilizationIDFAMode = StabilizationIDFAMode.INCIDFA;
 	public static long timerForMarking = 0;
@@ -237,15 +238,22 @@ public class Program {
 		 * For IncIDFA -->
 		 *
 		 */
-		Program.isPrePassPhase = false;
-		Program.removeUnused = true;
-		Program.idfaUpdateCategory = UpdateCategory.LZUPD; // Default is LZUPD.
-		Program.stabilizationIDFAMode = StabilizationIDFAMode.INCIDFA;
-		Program.countSeededSCCs = false;
-		// Program.useNoSCCs = true; // Doesn't work.
+		Program.isPrePassPhase = false; // Leave as false, when working with IMOP-preprocessed files.
+		Program.removeUnused = true; // Leave as true, to weed out dead definitions and declarations.
+		Program.idfaUpdateCategory = UpdateCategory.LZUPD; // Leave as LZUPD. Now we use stabilizationIDFAMode as the
+															// flag for IncIDFA results.
+		Program.stabilizationIDFAMode = StabilizationIDFAMode.INCIDFA; // The actual mode to be used.
+		Program.testSafeMarkingHeuristic = false; // Leave as false. Not needed in the current algorithm.
+		Program.profileSCC = false; // To calculate print SCC-processing specific information. Leave as false.
+		Program.countSeededSCCs = false; // To calculate and print part of SCC-processing specific information. Leave as
+											// false.
+		Program.checkForGhostValues = false; // Temporary flag. Leave as false.
+		Program.maintainImpactedSet = true; // To calculate and maintain impactedSet.
+		Program.useNoSCCs = false; // When false, SCCs are used.
 		/*
 		 * <-- for IncIDFA.
 		 */
+
 		Program.invalidLineNum = false;
 		Program.invalidColumnNum = false;
 		Program.enableUnmodifiability = false;
@@ -292,7 +300,7 @@ public class Program {
 		// filePath = ("../tests/classB-preproc/sp-b.i");
 		//
 		// filePath = ("../output-dump/ft-bimop_output_LZINC.i");
-		filePath = ("../tests/npb-post/bt3-0.i");
+		// filePath = ("../tests/npb-post/bt3-0.i");
 		// filePath = ("../tests/bt-contextsensitivity.i");
 		// filePath = ("../tests/bt-recursivequery.i");
 		// filePath = ("../tests/btsmall.i");
@@ -300,7 +308,7 @@ public class Program {
 		// filePath = ("../tests/npb-post/ep3-0.i");
 		// filePath = ("../tests/npb-post/ft3-0.i");
 		// filePath = ("../tests/npb-post/is3-0.i");
-		filePath = ("../tests/npb-post/lu3-0.i");
+		// filePath = ("../tests/npb-post/lu3-0.i");
 		// filePath = ("../tests/npb-post/mg3-0.i");
 		// filePath = ("../tests/npb-post/sp3-0.i");
 		//

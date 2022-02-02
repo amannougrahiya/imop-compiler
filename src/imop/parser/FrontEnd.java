@@ -532,7 +532,7 @@ public class FrontEnd {
 			Program.memoizeAccesses--;
 			timeTaken = System.nanoTime() - timeStart;
 			System.err.println("\tNodes processed " + pta.nodesProcessed + " times.");
-			System.err.println("\tTime taken: " + timeTaken / 1000000000.0 + "s.");
+			System.err.println("\tTime taken: " + timeTaken / 1e9 + "s.");
 			DumpSnapshot.dumpPointsTo("first-" + Program.sveSensitive);
 			// FrontEnd.dumpStatsOfIDFA(pta.tempMap);
 

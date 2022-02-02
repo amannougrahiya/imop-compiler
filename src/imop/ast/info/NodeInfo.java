@@ -93,6 +93,8 @@ public class NodeInfo implements Cloneable {
 	 */
 	protected HashMap<AnalysisName, FlowFact> flowFactsOUT;
 
+	protected CellSet impactedSet;
+
 	protected CFGInfo cfgInfo;
 	private NodePhaseInfo phaseInfo;
 	// private List<InterTaskEdge> interTaskEdgeList; // Not needed, since we will
@@ -847,6 +849,13 @@ public class NodeInfo implements Cloneable {
 		}
 		flowFactsOUT.put(analysisName, flowFact);
 		return;
+	}
+
+	public CellSet getImpactedSet() {
+		if (impactedSet == null) {
+			this.impactedSet = new CellSet();
+		}
+		return this.impactedSet;
 	}
 
 	public void removeAnalysisInformation(AnalysisName analysisName) {

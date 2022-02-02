@@ -127,10 +127,11 @@ public class PointsToAnalysis extends InterThreadForwardCellularAnalysis<PointsT
 				}
 			}
 			// OLD CODE: Now we do not add the entry points of SCCs to be processed.
-			// SCC nSCC = n.getInfo().getCFGInfo().getSCC();
-			// if (nSCC != null) {
-			// this.workList.addAll(nSCC.getEntryNodes());
-			// }
+			// NEW CODE: And now we do. Thu Jan 27 11:47:06 IST 2022
+			SCC nSCC = n.getInfo().getCFGInfo().getSCC();
+			if (nSCC != null) {
+				this.workList.addAll(nSCC.getEntryNodes());
+			}
 		}
 		if (Program.profileSCC) {
 			System.out.println("Size of the seed set for trigger #" + autoUpdateTriggerCounter + ": " + remSet.size());

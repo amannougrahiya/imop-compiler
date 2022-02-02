@@ -176,6 +176,10 @@ public abstract class InterThreadForwardCellularAnalysis<F extends CellularDataF
 		}
 		nodeInfo.setOUT(analysisName, newOUT);
 
+		if (Program.maintainImpactedSet) {
+			this.updateImpactedSet(node, newIN, newOUT);
+		}
+
 		// Step 3: Process the successors, if needed.
 		inOrOUTChanged |= inChanged;
 		if (node instanceof BarrierDirective) {
@@ -413,7 +417,27 @@ public abstract class InterThreadForwardCellularAnalysis<F extends CellularDataF
 		}
 	}
 
+	protected void updateImpactedSet(Node n, F IN, F OUT) {
+		Set<Cell> inCellSet = IN.flowMap.keySet();
+		Set<Cell> outCellSet = OUT.flowMap.keySet();
+		CellSet impacted = n.getInfo().getImpactedSet();
+		for (Cell c : outCellSet) {
+			if (!inCellSet.contains(c)) {
+				impacted.add(c);
+			} else {
+				Object inVal = IN.flowMap.get(c);
+				Object outVal = OUT.flowMap.get(c);
+				if (inVal != outVal) {
+					impacted.add(c);
+				}
+			}
+		}
+	}
+
 	@Override
+	/*
+	 * NOTE: FOR PTA, SEE THE OVERRIDDEN VERSION.
+	 */
 	public void restartAnalysisFromStoredNodes() {
 		assert (!SCC.processingTarjan);
 		if (this.analysisName == AnalysisName.POINTSTO
@@ -767,6 +791,10 @@ public abstract class InterThreadForwardCellularAnalysis<F extends CellularDataF
 		}
 		nodeInfo.setOUT(analysisName, newOUT);
 		this.safeCurrentSCCNodes.add(node); // Mark a node as processed only after its OUT has been "purified".
+
+		if (Program.maintainImpactedSet) {
+			this.updateImpactedSet(node, newIN, newOUT);
+		}
 
 		// Step 3: Process the successors, if needed.
 		inOrOUTChanged |= inChanged;

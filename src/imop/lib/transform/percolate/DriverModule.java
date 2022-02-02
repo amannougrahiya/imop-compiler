@@ -335,6 +335,7 @@ public class DriverModule {
 		System.err.println("This execution ran in " + Program.idfaUpdateCategory + " mode for IDFA update");
 		DumpSnapshot.forceDumpRoot("imop_output_" + Program.idfaUpdateCategory);
 		DumpSnapshot.forceDumpPointsTo("final" + Program.idfaUpdateCategory + Program.stabilizationIDFAMode);
+		DumpSnapshot.forceDumpImpactedSets("final" + Program.idfaUpdateCategory + Program.stabilizationIDFAMode);
 
 		StringBuilder resultString = new StringBuilder(Program.fileName + " " + Program.idfaUpdateCategory + " " + Program.stabilizationIDFAMode + " "
 				+ Program.df2.format(Program.timerForMarking/(1e9*1.0)) + " "

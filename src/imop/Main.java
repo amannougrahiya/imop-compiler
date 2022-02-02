@@ -81,7 +81,6 @@ public class Main {
 	public static void main(String[] args) throws FileNotFoundException, InterruptedException {
 		// Thread.sleep(5000);
 		totalTime = System.nanoTime();
-		System.out.println("Hi");
 		Program.parseNormalizeInput(args);
 		// DumpSnapshot.forceDumpPointsTo("init");
 		// System.exit(0);
@@ -137,6 +136,9 @@ public class Main {
 		// DriverModule.profilePh();
 		// DriverModule.askQueries();
 		// DriverModule.clientAutoUpdateHomeostasis();
+		// System.out.println("Start the profiler in next 10 seconds.");
+		// Thread.sleep(10000);
+
 		DriverModule.clientAutoUpdateIDFA();
 		// DriverModule.clientAutoUpdateIncEPA();
 		// DriverModule.mergeParRegs();
