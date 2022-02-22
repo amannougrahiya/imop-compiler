@@ -18,7 +18,7 @@ import imop.lib.analysis.flowanalysis.Definition;
 import imop.lib.analysis.flowanalysis.Symbol;
 import imop.lib.analysis.mhp.AbstractPhase;
 import imop.lib.analysis.mhp.incMHP.Phase;
-import imop.lib.analysis.typeSystem.ArrayType;
+import imop.lib.analysis.typesystem.ArrayType;
 import imop.lib.transform.updater.NodeRemover;
 import imop.lib.transform.updater.sideeffect.SideEffect;
 import imop.lib.util.CellList;

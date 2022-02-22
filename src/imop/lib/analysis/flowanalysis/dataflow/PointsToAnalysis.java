@@ -20,13 +20,14 @@ import imop.lib.analysis.flowanalysis.generic.AnalysisDimension;
 import imop.lib.analysis.flowanalysis.generic.AnalysisName;
 import imop.lib.analysis.flowanalysis.generic.CellularDataFlowAnalysis;
 import imop.lib.analysis.flowanalysis.generic.InterThreadForwardCellularAnalysis;
-import imop.lib.analysis.typeSystem.*;
+import imop.lib.analysis.typesystem.*;
 import imop.lib.cfg.info.CFGInfo;
 import imop.lib.cg.CallStack;
 import imop.lib.cg.NodeWithStack;
 import imop.lib.util.*;
 import imop.lib.util.CollectorVisitor.NeighbourSetGetter;
 import imop.parser.Program;
+import imop.parser.Program.StabilizationIDFAMode;
 
 import java.util.function.Predicate;
 import java.util.ArrayList;
@@ -67,10 +68,16 @@ public class PointsToAnalysis extends InterThreadForwardCellularAnalysis<PointsT
 		affectedCellsInThisEpoch.clear();
 	}
 
-	public List<Long> counterList = new ArrayList<>();
-
+	/**
+	 * Old implementation of IncIDFA, which was cell unaware.
+	 */
 	public void restartAnalysisFromStoredNodes() {
 		assert (!SCC.processingTarjan);
+		if (Program.stabilizationIDFAMode == StabilizationIDFAMode.INCIDFA) {
+			this.newStabilizationTriggerHandler(); // NOTE: THIS METHOD IS PRESENT IN
+													// INTERTHREADFORWARDCELLULARANALYSIS.
+			return;
+		}
 		// if (this.analysisName == AnalysisName.POINTSTO
 		// && PointsToAnalysis.stateOfPointsTo != PointsToGlobalState.STALE) {
 		// nodesToBeUpdated.clear();
@@ -176,7 +183,10 @@ public class PointsToAnalysis extends InterThreadForwardCellularAnalysis<PointsT
 			restartingIterationsAfterInit();
 			break;
 		case INCIDFA:
-			twoPassPerSCC();
+			Misc.exitDueToError(
+					"Use the alternative for restartAnalaysisFromStoredNodes given in PTA, with name newStabilizationTriggerHandler");
+		case OLD_INCIDFA:
+			obsolete_twoPassPerSCC();
 			break;
 		default:
 			break;
@@ -295,6 +305,7 @@ public class PointsToAnalysis extends InterThreadForwardCellularAnalysis<PointsT
 		Program.memoizeAccesses--;
 	}
 
+	@SuppressWarnings("unused")
 	private void restartingIterationsWithoutInit() {
 		int processedSCCCount = 0;
 		Program.basePointsTo = false; // Unneeded for second and further runs.
@@ -324,9 +335,9 @@ public class PointsToAnalysis extends InterThreadForwardCellularAnalysis<PointsT
 		Program.memoizeAccesses--;
 	}
 
-	private void twoPassPerSCC() {
+	private void obsolete_twoPassPerSCC() {
 		int processedSCCCount = 0;
-		Program.basePointsTo = false; // Unneeded for second and further runs.
+		Program.basePointsTo = false; // Not needed for second and further runs.
 		Program.memoizeAccesses++;
 		this.safeCurrentSCCNodes = new HashSet<>();
 		this.underApproximated = new HashSet<>();
@@ -454,7 +465,7 @@ public class PointsToAnalysis extends InterThreadForwardCellularAnalysis<PointsT
 								} else if (c instanceof FieldCell) {
 									ptsTo.add(c);
 								} else {
-									ptsTo = entryFact.flowMap.get(c);
+									ptsTo = entryFact.getFlowMap().get(c);
 								}
 								if (ptsTo != null && !ptsTo.isEmpty()) {
 									rhsPtsToSet.addAll(ptsTo);
@@ -466,7 +477,7 @@ public class PointsToAnalysis extends InterThreadForwardCellularAnalysis<PointsT
 					}
 
 					if (!rhsPtsToSet.isEmpty()) {
-						entryFact.flowMap.put(sym, new ImmutableCellSet(rhsPtsToSet));
+						entryFact.getFlowMap().put(sym, new ImmutableCellSet(rhsPtsToSet));
 					}
 				}
 			}
@@ -483,7 +494,7 @@ public class PointsToAnalysis extends InterThreadForwardCellularAnalysis<PointsT
 				Cell pointedTo = HeapCell.getUnknownParamPointee(param);
 				if (pointedTo != null) {
 					pointedSet.add(pointedTo);
-					entryFact.flowMap.put(declaredSym, new ImmutableCellSet(pointedSet));
+					entryFact.getFlowMap().put(declaredSym, new ImmutableCellSet(pointedSet));
 				}
 			}
 		}
@@ -530,7 +541,7 @@ public class PointsToAnalysis extends InterThreadForwardCellularAnalysis<PointsT
 					new ImmutableCellSet(rhsPtsToSet));
 			if (!affectedMap.isEmpty()) {
 				flowFactOUT = new PointsToFlowMap(flowFactIN);
-				flowFactOUT.flowMap.mergeWith(affectedMap, (s1, s2) -> {
+				flowFactOUT.getFlowMap().mergeWith(affectedMap, (s1, s2) -> {
 					ImmutableCellSet s3;
 					if (s2 != null) {
 						s3 = s2; // We use same CellSet objects as present in affectedMap.
@@ -599,7 +610,7 @@ public class PointsToAnalysis extends InterThreadForwardCellularAnalysis<PointsT
 					new ImmutableCellSet(rhsPtsToSet));
 			if (!affectedMap.isEmpty()) {
 				flowFactOUT = new PointsToFlowMap(flowFactIN);
-				flowFactOUT.flowMap.mergeWith(affectedMap, (s1, s2) -> {
+				flowFactOUT.getFlowMap().mergeWith(affectedMap, (s1, s2) -> {
 					ImmutableCellSet s3;
 					if (s2 != null) {
 						s3 = s2; // We use same CellSet objects as present in affectedMap.
@@ -911,7 +922,7 @@ public class PointsToAnalysis extends InterThreadForwardCellularAnalysis<PointsT
 		CellMap<ImmutableCellSet> affectedMap = OptimizedPointsToUpdateGetter.generateUpdateMap(n, lhsSet,
 				new ImmutableCellSet(rhsPtsToSet));
 		if (!affectedMap.isEmpty()) {
-			flowFactOUT.flowMap.mergeWith(affectedMap, (s1, s2) -> {
+			flowFactOUT.getFlowMap().mergeWith(affectedMap, (s1, s2) -> {
 				ImmutableCellSet s3;
 				if (s2 != null) {
 					s3 = s2; // We use same CellSet objects as present in affectedMap.
@@ -978,7 +989,7 @@ public class PointsToAnalysis extends InterThreadForwardCellularAnalysis<PointsT
 				new ImmutableCellSet(rhsPtsToSet));
 		if (!affectedMap.isEmpty()) {
 			flowFactOUT = new PointsToFlowMap(flowFactIN);
-			flowFactOUT.flowMap.mergeWith(affectedMap, (s1, s2) -> {
+			flowFactOUT.getFlowMap().mergeWith(affectedMap, (s1, s2) -> {
 				ImmutableCellSet s3;
 				if (s2 != null) {
 					s3 = s2; // We use same CellSet objects as present in affectedMap.
@@ -999,7 +1010,7 @@ public class PointsToAnalysis extends InterThreadForwardCellularAnalysis<PointsT
 		CellMap<ImmutableCellSet> affectedMap = ptsToUpdateGetter.updateMap;
 		if (!affectedMap.isEmpty()) {
 			flowFactOUT = new PointsToFlowMap(flowFactIN);
-			flowFactOUT.flowMap.mergeWith(affectedMap, (s1, s2) -> {
+			flowFactOUT.getFlowMap().mergeWith(affectedMap, (s1, s2) -> {
 				ImmutableCellSet s3;
 				if (s2 != null) {
 					s3 = s2; // We use same CellSet objects as present in affectedMap.

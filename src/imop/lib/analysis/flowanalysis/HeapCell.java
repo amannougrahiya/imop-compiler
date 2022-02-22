@@ -14,8 +14,8 @@ import imop.lib.analysis.flowanalysis.dataflow.HeapValidityAnalysis;
 import imop.lib.analysis.flowanalysis.dataflow.HeapValidityAnalysis.ValidityFlowFact;
 import imop.lib.analysis.flowanalysis.dataflow.PointsToAnalysis.PointsToFlowMap;
 import imop.lib.analysis.flowanalysis.generic.AnalysisName;
-import imop.lib.analysis.typeSystem.ArrayType;
-import imop.lib.analysis.typeSystem.PointerType;
+import imop.lib.analysis.typesystem.ArrayType;
+import imop.lib.analysis.typesystem.PointerType;
 import imop.lib.util.CellList;
 import imop.lib.util.CellSet;
 import imop.lib.util.ImmutableCellSet;
@@ -160,7 +160,7 @@ public class HeapCell extends Cell {
 			if (pff == null) {
 				return retSet; // return an empty points-to set.
 			} else {
-				retSet = pff.flowMap.get(this);
+				retSet = pff.getFlowMap().get(this);
 				if (retSet == null) {
 					retSet = new CellSet();
 				}
@@ -180,7 +180,7 @@ public class HeapCell extends Cell {
 			if (pff == null) {
 				return new ImmutableCellSet(); // return an empty points-to set.
 			} else {
-				retSet = pff.flowMap.get(this);
+				retSet = pff.getFlowMap().get(this);
 				if (retSet == null) {
 					return new ImmutableCellSet();
 				}

@@ -24,7 +24,7 @@ import imop.lib.analysis.flowanalysis.generic.CellularDataFlowAnalysis.CellularF
 import imop.lib.analysis.flowanalysis.generic.FlowAnalysis.FlowFact;
 import imop.lib.analysis.mhp.AbstractPhase;
 import imop.lib.analysis.mhp.AbstractPhasePointable;
-import imop.lib.analysis.typeSystem.ArrayType;
+import imop.lib.analysis.typesystem.ArrayType;
 import imop.lib.cg.CallStack;
 import imop.lib.cg.NodeWithStack;
 import imop.lib.util.CellSet;
@@ -703,11 +703,11 @@ public abstract class InterThreadForwardIDFA<F extends FlowFact> extends GJDepth
 		PreCallNode preNode = node.getParent().getPreCallNode();
 		CellularFlowMap<H> postIN = (CellularFlowMap<H>) incompleteFF;
 		CellularFlowMap<H> preOUT = (CellularFlowMap<H>) preNode.getInfo().getOUT(analysisName);
-		if (preOUT == null || preOUT.flowMap == null) {
+		if (preOUT == null || preOUT.getFlowMap() == null) {
 			return false;
 		}
 
-		Set<Cell> keysInPost = postIN.flowMap.nonGenericKeySet();
+		Set<Cell> keysInPost = postIN.getFlowMap().nonGenericKeySet();
 		// ExtensibleCellMap<H> tempMap = new ExtensibleCellMap<>(preOUT.flowMap);
 		// for (Cell postKey : keysInPost) {
 		// H val = postIN.flowMap.get(postKey);
@@ -730,12 +730,12 @@ public abstract class InterThreadForwardIDFA<F extends FlowFact> extends GJDepth
 		// OLD CODE BELOW: Here, we traversed over bigger keyset (assuming that
 		// the number of globals is less than the number of locals).
 		boolean changed = false;
-		for (Cell preKey : preOUT.flowMap.nonGenericKeySet()) {
+		for (Cell preKey : preOUT.getFlowMap().nonGenericKeySet()) {
 			if (!keysInPost.contains(preKey)) {
 				changed = true;
-				H val = preOUT.flowMap.get(preKey);
+				H val = preOUT.getFlowMap().get(preKey);
 				assert (val != null);
-				postIN.flowMap.put(preKey, val);
+				postIN.getFlowMap().put(preKey, val);
 			}
 		}
 		return changed;
@@ -762,7 +762,7 @@ public abstract class InterThreadForwardIDFA<F extends FlowFact> extends GJDepth
 				FunctionDefinition funcDef = (FunctionDefinition) node.getParent();
 				Set<Symbol> symHere = new HashSet<>(funcDef.getInfo().getSymbolTable().values());
 				symHere.addAll(Program.getRoot().getInfo().getSymbolTable().values());
-				for (Cell c : cellFullFF.flowMap.nonGenericKeySet()) {
+				for (Cell c : cellFullFF.getFlowMap().nonGenericKeySet()) {
 					Symbol sym = null;
 					if (c instanceof Symbol) {
 						sym = (Symbol) c;
@@ -779,7 +779,7 @@ public abstract class InterThreadForwardIDFA<F extends FlowFact> extends GJDepth
 					}
 				}
 				for (Cell removeCell : removalSet) {
-					cellFullFF.flowMap.remove(removeCell);
+					cellFullFF.getFlowMap().remove(removeCell);
 				}
 				// CellSet cellsHere = node.getInfo().getAllCellsAtNode();
 				// removalSet.addAll(cellFullFF.flowMap.nonGenericKeySet().stream().filter(c ->
@@ -809,10 +809,10 @@ public abstract class InterThreadForwardIDFA<F extends FlowFact> extends GJDepth
 				CompoundStatement parentCS = (CompoundStatement) node.getParent();
 				for (Symbol key : parentCS.getInfo().getSymbolTable().values()) {
 					if (!key.isStatic()) {
-						cellFullFF.flowMap.remove(key);
-						cellFullFF.flowMap.remove(key.getAddressCell());
+						cellFullFF.getFlowMap().remove(key);
+						cellFullFF.getFlowMap().remove(key.getAddressCell());
 						if (key.getType() instanceof ArrayType) {
-							cellFullFF.flowMap.remove(key.getFieldCell());
+							cellFullFF.getFlowMap().remove(key.getFieldCell());
 						}
 					}
 				}
@@ -820,10 +820,10 @@ public abstract class InterThreadForwardIDFA<F extends FlowFact> extends GJDepth
 				FunctionDefinition funcDef = (FunctionDefinition) node.getParent();
 				for (Symbol key : funcDef.getInfo().getSymbolTable().values()) {
 					if (!key.isStatic()) {
-						cellFullFF.flowMap.remove(key);
-						cellFullFF.flowMap.remove(key.getAddressCell());
+						cellFullFF.getFlowMap().remove(key);
+						cellFullFF.getFlowMap().remove(key.getAddressCell());
 						if (key.getType() instanceof ArrayType) {
-							cellFullFF.flowMap.remove(key.getFieldCell());
+							cellFullFF.getFlowMap().remove(key.getFieldCell());
 						}
 					}
 				}

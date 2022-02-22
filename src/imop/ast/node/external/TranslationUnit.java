@@ -14,7 +14,7 @@ package imop.ast.node.external;
 
 import imop.ast.info.RootInfo;
 import imop.ast.node.internal.*;
-import imop.lib.analysis.typeSystem.Type;
+import imop.lib.analysis.typesystem.Type;
 
 import java.util.HashMap;
 

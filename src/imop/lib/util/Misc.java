@@ -28,7 +28,7 @@ import imop.lib.analysis.mhp.incMHP.Phase;
 import imop.lib.analysis.mhp.incMHP.PhasePoint;
 import imop.lib.analysis.mhp.lock.AbstractLock;
 import imop.lib.analysis.mhp.yuan.YPhase;
-import imop.lib.analysis.typeSystem.*;
+import imop.lib.analysis.typesystem.*;
 import imop.lib.cfg.info.ProgramElementExactCaches;
 import imop.lib.cfg.parallel.DataFlowGraph;
 import imop.lib.cg.CallSite;

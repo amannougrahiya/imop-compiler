@@ -18,7 +18,7 @@ import imop.ast.node.external.*;
 import imop.ast.node.internal.*;
 import imop.lib.analysis.flowanalysis.Cell;
 import imop.lib.analysis.flowanalysis.Symbol;
-import imop.lib.analysis.typeSystem.*;
+import imop.lib.analysis.typesystem.*;
 import imop.lib.builder.Builder;
 import imop.lib.cfg.info.CompoundStatementCFGInfo;
 import imop.lib.getter.UsedCellsGetter;

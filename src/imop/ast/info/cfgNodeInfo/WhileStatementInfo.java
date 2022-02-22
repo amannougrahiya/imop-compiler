@@ -10,9 +10,9 @@ package imop.ast.info.cfgNodeInfo;
 
 import imop.ast.info.IterationStatementInfo;
 import imop.ast.node.external.*;
-import imop.lib.analysis.typeSystem.FloatingType;
-import imop.lib.analysis.typeSystem.IntegerType;
-import imop.lib.analysis.typeSystem.Type;
+import imop.lib.analysis.typesystem.FloatingType;
+import imop.lib.analysis.typesystem.IntegerType;
+import imop.lib.analysis.typesystem.Type;
 import imop.lib.builder.Builder;
 import imop.lib.cfg.info.WhileStatementCFGInfo;
 import imop.lib.transform.simplify.CompoundStatementNormalizer;

@@ -11,6 +11,9 @@ package imop.lib.util;
 import imop.lib.analysis.flowanalysis.Cell;
 import imop.lib.analysis.flowanalysis.FreeVariable;
 import imop.lib.analysis.flowanalysis.Symbol;
+import imop.lib.analysis.flowanalysis.generic.CellularDataFlowAnalysis;
+import imop.lib.analysis.flowanalysis.generic.CellularDataFlowAnalysis.CellularFlowMap;
+import imop.lib.analysis.flowanalysis.generic.CellularDataFlowAnalysis.NodeAnalysisPair;
 
 import java.util.*;
 import java.util.function.BiConsumer;
@@ -19,7 +22,6 @@ import java.util.function.BinaryOperator;
 
 /**
  * A variant of CellMap, with notion of keysNotPresent and fallBackMaps.
- * IMPORTANT: NEEDS TO BE REVIEWED.
  *
  * @author Aman Nougrahiya
  *
@@ -35,6 +37,74 @@ public class ExtensibleCellMap<V extends Immutable> extends CellMap<V> {
 	private static int LINKLENGTH = 2;
 
 	private static int counterLinkLength = 0;
+	protected boolean connectsToFlowMaps = false; // Special flag used for handling accessed-Calls logging for isEmpty.
+
+	private static int internalCalls = 0;
+
+	private static void addCellsAsAccessed(Set<Cell> set) {
+		if (set == null || set.isEmpty()) {
+			return;
+		}
+		if (CellularDataFlowAnalysis.nodeAnalysisStack.isEmpty()) {
+			return;
+		}
+		NodeAnalysisPair nap = CellularDataFlowAnalysis.nodeAnalysisStack.peek();
+		if (nap == null) {
+			return;
+		}
+		nap.node.getInfo().getAccessedCellSets(nap.analysis).addAll(set);
+	}
+
+	/**
+	 * Return true if and only if this call has been made with following two
+	 * conditions: (i) it is called from the context of a transfer function, and
+	 * (ii) it is not called from any of the safe call-sites of any internal
+	 * methods.
+	 *
+	 * @return
+	 */
+	private boolean isCalledDirectlyFromTransferFunction() {
+		if (internalCalls != 0) {
+			return false;
+		}
+		if (CellularDataFlowAnalysis.nodeAnalysisStack.isEmpty()) {
+			return false;
+		}
+		NodeAnalysisPair nap = CellularDataFlowAnalysis.nodeAnalysisStack.peek();
+		if (nap == null) {
+			return false;
+		}
+		return true;
+	}
+
+	private void throwAssertionErrorIfNeeded() {
+		if (!this.isCalledDirectlyFromTransferFunction()) {
+			return;
+		}
+		assert (false) : "We do not know what to do for this path, in the context of capturing accessedCells. "
+				+ "Disable the appropriate IDFA-optimizing flag in Program, and re-run the compiler";
+
+	}
+
+	private static void addCellAsAccessed(Cell cell) {
+		if (cell == null) {
+			return;
+		}
+		if (CellularDataFlowAnalysis.nodeAnalysisStack.isEmpty()) {
+			return;
+		}
+		NodeAnalysisPair nap = CellularDataFlowAnalysis.nodeAnalysisStack.peek();
+		if (nap == null) {
+			return;
+		}
+		// if (cell == Cell.genericCell) {
+		// assert (false)
+		// : "Disable this assert error, if you are okay with adding a generic cell to
+		// the list of accessed cells at node"
+		// + nap.node;
+		// }
+		nap.node.getInfo().getAccessedCellSets(nap.analysis).add(cell);
+	}
 
 	public ExtensibleCellMap() {
 		this.internalRepresentation = new HashMap<>();
@@ -57,11 +127,20 @@ public class ExtensibleCellMap<V extends Immutable> extends CellMap<V> {
 	public ExtensibleCellMap(ExtensibleCellMap<V> fallBackMap, int maxLinkLength) {
 		this.maxLinkLength = maxLinkLength;
 		this.commonConstruction(fallBackMap);
+		ExtensibleCellMap.addCellsAsAccessed(fallBackMap.keySet());
 	}
 
 	public ExtensibleCellMap(ExtensibleCellMap<V> fallBackMap) {
 		this.maxLinkLength = LINKLENGTH;
 		this.commonConstruction(fallBackMap);
+		ExtensibleCellMap.addCellsAsAccessed(fallBackMap.keySet());
+	}
+
+	public ExtensibleCellMap(CellularFlowMap<V> thatFlowMap) {
+		this.maxLinkLength = LINKLENGTH;
+		this.commonConstruction(thatFlowMap.getFlowMap());
+		this.connectsToFlowMaps = true;
+		// We do not add the cells from key set of thatFlowMap's flowMap as accessed.
 	}
 
 	private void commonConstruction(ExtensibleCellMap<V> fallBackMap) {
@@ -150,6 +229,10 @@ public class ExtensibleCellMap<V extends Immutable> extends CellMap<V> {
 
 	@Override
 	public boolean isUniversal() {
+		if (this.isCalledDirectlyFromTransferFunction()) {
+			assert (false);
+			ExtensibleCellMap.addCellAsAccessed(Cell.genericCell);
+		}
 		if (this.containsUniversal) {
 			return true;
 		}
@@ -210,6 +293,10 @@ public class ExtensibleCellMap<V extends Immutable> extends CellMap<V> {
 
 	@Override
 	public int size() {
+		if (this.isCalledDirectlyFromTransferFunction()) {
+			assert (false);
+			ExtensibleCellMap.addCellAsAccessed(Cell.genericCell);
+		}
 		if (this.isUniversal()) {
 			int notPresent = (this.keysNotPresent == null) ? 0 : this.keysNotPresent.size();
 			return Cell.allCells.size() - notPresent;
@@ -233,6 +320,10 @@ public class ExtensibleCellMap<V extends Immutable> extends CellMap<V> {
 
 	@Override
 	public boolean isEmpty() {
+		if (this.connectsToFlowMaps && this.isCalledDirectlyFromTransferFunction()) {
+			assert (false);
+			ExtensibleCellMap.addCellAsAccessed(Cell.genericCell);
+		}
 		if (this.internalRepresentation.isEmpty()) {
 			if (this.fallBackMap == null) {
 				return true;
@@ -242,7 +333,10 @@ public class ExtensibleCellMap<V extends Immutable> extends CellMap<V> {
 				}
 			}
 		}
-		return this.size() == 0;
+		internalCalls++;
+		int size = this.size();
+		internalCalls--;
+		return size == 0;
 	}
 
 	@Override
@@ -255,6 +349,9 @@ public class ExtensibleCellMap<V extends Immutable> extends CellMap<V> {
 	}
 
 	protected boolean containsKey(Cell key, ConvertMode convertMode) {
+		if (this.isCalledDirectlyFromTransferFunction()) {
+			ExtensibleCellMap.addCellAsAccessed(key);
+		}
 		if (keysNotPresent != null && keysNotPresent.contains(key)) {
 			return false;
 		}
@@ -277,6 +374,7 @@ public class ExtensibleCellMap<V extends Immutable> extends CellMap<V> {
 
 	@Override
 	public boolean containsValue(Object value) {
+		this.throwAssertionErrorIfNeeded();
 		for (Cell key : this.keySetExpanded(ConvertMode.OFF)) {
 			Object keyVal = this.get(key, ConvertMode.OFF);
 			if (keyVal == value || keyVal.equals(value)) {
@@ -309,6 +407,9 @@ public class ExtensibleCellMap<V extends Immutable> extends CellMap<V> {
 		this.testAndConvert();
 		if (key instanceof FreeVariable) {
 			key = this.testAndConvert(key);
+		}
+		if (this.isCalledDirectlyFromTransferFunction()) {
+			ExtensibleCellMap.addCellAsAccessed(key);
 		}
 		return this.get(key, ConvertMode.ON);
 	}
@@ -363,6 +464,9 @@ public class ExtensibleCellMap<V extends Immutable> extends CellMap<V> {
 		assert (newValue != null);
 		if (key instanceof FreeVariable) {
 			key = this.testAndConvert(key);
+		}
+		if (this.isCalledDirectlyFromTransferFunction()) {
+			ExtensibleCellMap.addCellAsAccessed(key);
 		}
 		return this.put(key, newValue, ConvertMode.ON);
 	}
@@ -444,6 +548,9 @@ public class ExtensibleCellMap<V extends Immutable> extends CellMap<V> {
 	}
 
 	protected V remove(Cell key, ConvertMode convertMode) {
+		if (this.isCalledDirectlyFromTransferFunction()) {
+			ExtensibleCellMap.addCellAsAccessed(key);
+		}
 		if (!this.containsKey(key, convertMode)) {
 			return null;
 		}
@@ -546,6 +653,9 @@ public class ExtensibleCellMap<V extends Immutable> extends CellMap<V> {
 
 	@Override
 	public void clear() {
+		if (this.isCalledDirectlyFromTransferFunction()) {
+			ExtensibleCellMap.addCellAsAccessed(Cell.genericCell);
+		}
 		CellSet tempSet = new CellSet();
 		for (Cell key : keySetExpanded(ConvertMode.OFF)) {
 			tempSet.add(key);
@@ -557,6 +667,10 @@ public class ExtensibleCellMap<V extends Immutable> extends CellMap<V> {
 
 	@Override
 	public String toString() {
+		if (this.isCalledDirectlyFromTransferFunction()) {
+			assert (false);
+			ExtensibleCellMap.addCellAsAccessed(Cell.genericCell);
+		}
 		String tempStr = "[";
 		for (Cell c : this.keySetExpanded()) {
 			tempStr += "\n\t" + c + ":" + this.get(c);
@@ -567,6 +681,8 @@ public class ExtensibleCellMap<V extends Immutable> extends CellMap<V> {
 
 	@Override
 	public Object clone() {
+		// Note that we do not need to mark any keys here.
+		// This constructor below will anyway do that.
 		ExtensibleCellMap<V> newMap = new ExtensibleCellMap<>(this);
 		return newMap;
 	}
@@ -574,7 +690,9 @@ public class ExtensibleCellMap<V extends Immutable> extends CellMap<V> {
 	@Override
 	public int hashCode() {
 		// final int prime = 31;
+		internalCalls++;
 		int result = this.size();
+		internalCalls--;
 		// for (Cell key : this.keySetExpanded()) {
 		// result += key.hashCode();
 		// }
@@ -694,7 +812,10 @@ public class ExtensibleCellMap<V extends Immutable> extends CellMap<V> {
 				thisMap.put(thatCell, newValue, ConvertMode.OFF);
 			}
 		}
-		if (!thatMap.isUniversal()) {
+		internalCalls++;
+		boolean thatIsUniversal = thatMap.isUniversal();
+		internalCalls--;
+		if (!thatIsUniversal) {
 			return changed;
 		}
 		// Handle all implicit cells of thatMap.
@@ -776,7 +897,16 @@ public class ExtensibleCellMap<V extends Immutable> extends CellMap<V> {
 	}
 
 	@Override
+	public Set<Cell> keySet() {
+		return this.keySetExpanded();
+	}
+
+	@Override
 	public Set<Cell> keySetExpanded() {
+		if (this.isCalledDirectlyFromTransferFunction()) {
+			assert (false);
+			ExtensibleCellMap.addCellAsAccessed(Cell.genericCell);
+		}
 		this.testAndConvert();
 		return this.keySetExpanded(ConvertMode.OFF);
 	}
@@ -788,7 +918,10 @@ public class ExtensibleCellMap<V extends Immutable> extends CellMap<V> {
 	final class KeySetExpanded extends RestrictedSet<Cell> implements Iterable<Cell> {
 		@Override
 		public int size() {
-			return ExtensibleCellMap.this.size();
+			internalCalls++;
+			int size = ExtensibleCellMap.this.size();
+			internalCalls--;
+			return size;
 		}
 
 		@Override
@@ -914,7 +1047,10 @@ public class ExtensibleCellMap<V extends Immutable> extends CellMap<V> {
 
 		@Override
 		public boolean isEmpty() {
-			return this.size() == 0;
+			internalCalls++;
+			int size = this.size();
+			internalCalls--;
+			return size == 0;
 		}
 
 		@Override
@@ -1009,6 +1145,12 @@ public class ExtensibleCellMap<V extends Immutable> extends CellMap<V> {
 			}
 
 		}
+	}
+
+	@Override
+	public Set<Entry<Cell, V>> entrySet() {
+		this.throwAssertionErrorIfNeeded();
+		return super.entrySet();
 	}
 
 	@Override
@@ -1234,5 +1376,9 @@ public class ExtensibleCellMap<V extends Immutable> extends CellMap<V> {
 		// this.testAndConvert();
 		// this.internalRepresentation.replaceAll(function);
 		// }
+	}
+
+	public void initFallBackMapWith(ExtensibleCellMap<V> ext) {
+		ExtensibleCellMap.setFallBackMap(this, ext);
 	}
 }

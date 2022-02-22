@@ -14,7 +14,7 @@ package imop.ast.node.external;
 
 import imop.ast.info.cfgNodeInfo.FunctionDefinitionInfo;
 import imop.ast.node.internal.*;
-import imop.lib.analysis.typeSystem.Type;
+import imop.lib.analysis.typesystem.Type;
 import imop.lib.transform.simplify.OldFunctionStyleRemover;
 
 import java.util.HashMap;

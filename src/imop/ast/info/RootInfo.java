@@ -13,7 +13,7 @@ import imop.ast.node.internal.*;
 import imop.lib.analysis.flowanalysis.Cell;
 import imop.lib.analysis.flowanalysis.HeapCell;
 import imop.lib.analysis.flowanalysis.Symbol;
-import imop.lib.analysis.typeSystem.*;
+import imop.lib.analysis.typesystem.*;
 import imop.lib.cfg.link.autoupdater.AutomatedUpdater;
 import imop.lib.getter.AllFunctionDefinitionGetter;
 import imop.lib.util.*;

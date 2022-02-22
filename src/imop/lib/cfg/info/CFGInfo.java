@@ -1696,6 +1696,7 @@ public class CFGInfo {
 		 * Note that all specific subclasses of CFGInfo that contain a body
 		 * should override this method.
 		 */
+		assert (false): "Method getBody() in CFGInfo, should not have been invoked.";
 		return null;
 	}
 

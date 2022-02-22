@@ -11,7 +11,7 @@ package imop.lib.transform;
 import imop.ast.node.external.*;
 import imop.ast.node.internal.*;
 import imop.deprecated.Deprecated_ImmediatePredecessorInserter;
-import imop.lib.analysis.typeSystem.Type;
+import imop.lib.analysis.typesystem.Type;
 import imop.lib.builder.Builder;
 import imop.lib.cfg.CFGGenerator;
 import imop.lib.cfg.info.CFGInfo;

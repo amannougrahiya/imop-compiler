@@ -154,10 +154,10 @@ public class ReachingDefinitionAnalysis
 
 		Set<Definition> definedList = defGetter.definitionList;
 		ReachingDefinitionFlowMap flowFactOUT = new ReachingDefinitionFlowMap(flowFactIN);
-		ExtensibleCellMap<ImmutableDefinitionSet> outDefMap = flowFactOUT.flowMap;
+		ExtensibleCellMap<ImmutableDefinitionSet> outDefMap = flowFactOUT.getFlowMap();
 		if (redefinedCells.isUniversal()) {
-			for (Cell key : flowFactIN.flowMap.nonGenericKeySet()) {
-				ImmutableDefinitionSet inSet = flowFactIN.flowMap.get(key);
+			for (Cell key : flowFactIN.getFlowMap().nonGenericKeySet()) {
+				ImmutableDefinitionSet inSet = flowFactIN.getFlowMap().get(key);
 				Set<Definition> newDefSet = new HashSet<>();
 				// assert (redefinedCells.size() == 1);
 				Definition def = Misc.getAnyElement(definedList);
@@ -172,7 +172,7 @@ public class ReachingDefinitionAnalysis
 				}
 			}
 			if (outDefMap.isUniversal()) {
-				ImmutableDefinitionSet inSet = flowFactIN.flowMap.get(Cell.genericCell);
+				ImmutableDefinitionSet inSet = flowFactIN.getFlowMap().get(Cell.genericCell);
 				Set<Definition> newDefSet = new HashSet<>();
 				assert (redefinedCells.size() == 1);
 				Definition def = Misc.getAnyElement(definedList);
@@ -190,7 +190,7 @@ public class ReachingDefinitionAnalysis
 			 * guaranteed to happen. Hence, we do not kill any definitions.
 			 */
 			for (Cell key : redefinedCells) {
-				Set<Definition> inSet = flowFactIN.flowMap.get(key);
+				Set<Definition> inSet = flowFactIN.getFlowMap().get(key);
 				Set<Definition> newDefSet = new HashSet<>();
 				for (Definition def : definedList) {
 					if (def.getCell() == key) {
@@ -211,7 +211,7 @@ public class ReachingDefinitionAnalysis
 			assert (redefinedCells.size() == 1 && definedList.size() == 1);
 			Cell redefinedCell = redefinedCells.getAnyElement();
 			Definition def = Misc.getAnyElement(definedList);
-			Set<Definition> inSet = flowFactIN.flowMap.get(redefinedCell);
+			Set<Definition> inSet = flowFactIN.getFlowMap().get(redefinedCell);
 			assert (def.getCell() == redefinedCell);
 			if (inSet == null || inSet.size() != 1 || !inSet.contains(def)) {
 				newDefSet.add(def);
@@ -227,10 +227,10 @@ public class ReachingDefinitionAnalysis
 		Cell paramCell = parameter.getInfo().getDeclaredSymbol();
 		Definition newDef = new Definition(parameter, paramCell);
 		Set<Definition> newDefSet = new HashSet<>();
-		Set<Definition> inSet = flowFactIN.flowMap.get(paramCell);
+		Set<Definition> inSet = flowFactIN.getFlowMap().get(paramCell);
 		if (inSet == null || inSet.size() != 1 || !inSet.contains(newDef)) {
 			newDefSet.add(newDef);
-			ExtensibleCellMap<ImmutableDefinitionSet> defMap = new ExtensibleCellMap<>(flowFactIN.flowMap);
+			ExtensibleCellMap<ImmutableDefinitionSet> defMap = new ExtensibleCellMap<>(flowFactIN.getFlowMap());
 			defMap.put(newDef.getCell(), new ImmutableDefinitionSet(newDefSet));
 			return new ReachingDefinitionFlowMap(defMap);
 		}

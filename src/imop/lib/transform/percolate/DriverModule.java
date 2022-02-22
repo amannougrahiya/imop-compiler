@@ -38,8 +38,8 @@ import imop.lib.analysis.mhp.yuan.YuanConcurrencyAnalysis;
 import imop.lib.analysis.mhp.yuan.YuanConcurrencyAnalysis.YuanStaticPhase;
 import imop.lib.analysis.solver.ConstraintsGenerator;
 import imop.lib.analysis.solver.FieldSensitivity;
-import imop.lib.analysis.typeSystem.ArrayType;
-import imop.lib.analysis.typeSystem.Type;
+import imop.lib.analysis.typesystem.ArrayType;
+import imop.lib.analysis.typesystem.Type;
 import imop.lib.builder.Builder;
 import imop.lib.cfg.info.CFGInfo;
 import imop.lib.cfg.info.WhileStatementCFGInfo;
@@ -335,7 +335,7 @@ public class DriverModule {
 		System.err.println("This execution ran in " + Program.idfaUpdateCategory + " mode for IDFA update");
 		DumpSnapshot.forceDumpRoot("imop_output_" + Program.idfaUpdateCategory);
 		DumpSnapshot.forceDumpPointsTo("final" + Program.idfaUpdateCategory + Program.stabilizationIDFAMode);
-		DumpSnapshot.forceDumpImpactedSets("final" + Program.idfaUpdateCategory + Program.stabilizationIDFAMode);
+		DumpSnapshot.forceDumpAccessedCellSets("final" + Program.idfaUpdateCategory + Program.stabilizationIDFAMode);
 
 		StringBuilder resultString = new StringBuilder(Program.fileName + " " + Program.idfaUpdateCategory + " " + Program.stabilizationIDFAMode + " "
 				+ Program.df2.format(Program.timerForMarking/(1e9*1.0)) + " "

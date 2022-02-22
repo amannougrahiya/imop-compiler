@@ -11,7 +11,7 @@ package imop.ast.info.cfgNodeInfo;
 import imop.ast.info.NodeInfo;
 import imop.ast.node.external.*;
 import imop.lib.analysis.flowanalysis.BranchEdge;
-import imop.lib.analysis.typeSystem.*;
+import imop.lib.analysis.typesystem.*;
 import imop.lib.getter.CellAccessGetter;
 import imop.lib.util.CellList;
 import imop.lib.util.Misc;

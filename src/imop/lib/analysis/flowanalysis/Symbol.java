@@ -15,7 +15,7 @@ import imop.lib.analysis.flowanalysis.dataflow.PointsToAnalysis;
 import imop.lib.analysis.flowanalysis.dataflow.PointsToAnalysis.PointsToFlowMap;
 import imop.lib.analysis.flowanalysis.generic.AnalysisName;
 import imop.lib.analysis.flowanalysis.generic.FlowAnalysis;
-import imop.lib.analysis.typeSystem.*;
+import imop.lib.analysis.typesystem.*;
 import imop.lib.builder.Builder;
 import imop.lib.util.CellSet;
 import imop.lib.util.ImmutableCellSet;
@@ -321,7 +321,7 @@ public class Symbol extends Cell {
 			if (pff == null) {
 				return retSet; // return an empty points-to set.
 			} else {
-				retSet = pff.flowMap.get(this);
+				retSet = pff.getFlowMap().get(this);
 				if (retSet == null) {
 					retSet = new CellSet();
 				}
@@ -357,7 +357,7 @@ public class Symbol extends Cell {
 			if (opff == null) {
 				return new ImmutableCellSet(); // return an empty points-to set.
 			} else {
-				retSet = opff.flowMap.get(this);
+				retSet = opff.getFlowMap().get(this);
 				if (retSet == null) {
 					// TODO: Uncomment this and test client pass on histo, lbm, and fft.
 					// assert (Program.memoizeAccesses > 0 || (this.type instanceof PointerType

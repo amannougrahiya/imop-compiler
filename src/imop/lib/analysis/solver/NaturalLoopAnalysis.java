@@ -16,7 +16,7 @@ import imop.lib.analysis.solver.tokens.ExpressionTokenizer;
 import imop.lib.analysis.solver.tokens.IdOrConstToken;
 import imop.lib.analysis.solver.tokens.OperatorToken;
 import imop.lib.analysis.solver.tokens.Tokenizable;
-import imop.lib.analysis.typeSystem.ArithmeticType;
+import imop.lib.analysis.typesystem.ArithmeticType;
 import imop.lib.util.CellList;
 import imop.lib.util.CollectorVisitor;
 import imop.lib.util.Misc;

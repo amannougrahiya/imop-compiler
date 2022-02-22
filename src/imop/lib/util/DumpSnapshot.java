@@ -365,17 +365,16 @@ public class DumpSnapshot {
 
 	}
 
-	public static void forceDumpImpactedSets(String string) {
+	public static void forceDumpAccessedCellSets(String string) {
 		List<Commentor> commentors = new ArrayList<>();
 		commentors.add((n) -> {
 			String tempStr = "";
-			if (n.getInfo().getImpactedSet() != null) {
-				tempStr += "impactedCells: " + n.getInfo().getImpactedSet().toString();
+			if (!n.getInfo().getAnalysesWithAccessedCells().isEmpty()) {
+				tempStr += "accessedCells: " + n.getInfo().getAccessedCellSets(AnalysisName.POINTSTO).toString();
 			}
 			return tempStr;
 		});
-		DumpSnapshot.forcePrintToFile(Program.getRoot(), Program.fileName + string + "-impactedSet.i", commentors);
-
+		DumpSnapshot.forcePrintToFile(Program.getRoot(), Program.fileName + string + "-accessedCellSet.i", commentors);
 	}
 
 	public static void dumpPredicates(String string) {

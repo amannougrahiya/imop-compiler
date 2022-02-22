@@ -8,6 +8,7 @@
  */
 package imop.lib.analysis.flowanalysis.generic;
 
+import imop.ast.node.external.Node;
 import imop.lib.analysis.flowanalysis.Cell;
 import imop.lib.util.CellSet;
 import imop.lib.util.ExtensibleCellMap;
@@ -17,23 +18,70 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
+import java.util.Stack;
 
 public abstract class CellularDataFlowAnalysis<F extends CellularDataFlowAnalysis.CellularFlowMap<?>>
 		extends DataFlowAnalysis<F> {
+
+	/**
+	 * A simple (node, IDFA) pair, to be used as element-type of stack of nodes for
+	 * which transfer-function applications are underway.
+	 *
+	 * @author aman
+	 *
+	 */
+	public static class NodeAnalysisPair {
+		public final Node node;
+		public final CellularDataFlowAnalysis<?> analysis;
+
+		public NodeAnalysisPair(Node node, CellularDataFlowAnalysis<?> analysis) {
+			this.node = node;
+			this.analysis = analysis;
+		}
+	}
+
+	public static final Stack<NodeAnalysisPair> nodeAnalysisStack = new Stack<>();
 
 	public CellularDataFlowAnalysis(AnalysisName analysisName, AnalysisDimension analysisDimension) {
 		super(analysisName, analysisDimension);
 	}
 
 	public abstract static class CellularFlowMap<V extends Immutable> extends FlowAnalysis.FlowFact {
-		public ExtensibleCellMap<V> flowMap;
+		protected ExtensibleCellMap<V> flowMap;
 
 		public CellularFlowMap(ExtensibleCellMap<V> flowMap) {
 			this.flowMap = flowMap;
+			// Here, we need to consider all entries of flowMap as "accessed" for the
+			// current (node, IDFA), if any.
+			// Note that this is a special case scenario. Nowhere else can we set the
+			// flowMap manually.
+			// Hence, it's only here that we need to manually mark the cells as accessed.
+			// Note: For PTA, this constructor is being invoked only with an empty flow-map.
+			if (flowMap != null && !CellularDataFlowAnalysis.nodeAnalysisStack.isEmpty()) {
+				NodeAnalysisPair nap = CellularDataFlowAnalysis.nodeAnalysisStack.peek();
+				if (nap != null && !flowMap.nonGenericKeySet().isEmpty()) {
+					if (flowMap.isUniversal()) {
+						nap.node.getInfo().getAccessedCellSets(nap.analysis).add(Cell.genericCell);
+					} else {
+						nap.node.getInfo().getAccessedCellSets(nap.analysis).addAll(flowMap.nonGenericKeySet());
+					}
+				}
+			}
 		}
 
 		public CellularFlowMap(CellularFlowMap<V> thatFlowFact) {
-			this.flowMap = new ExtensibleCellMap<>(thatFlowFact.flowMap);
+			this.flowMap = new ExtensibleCellMap<>(thatFlowFact); // By not passing thatFlowFact.flowMap directly, we
+																	// are ensuring that we do not consider the cells in
+																	// the argument as "accessed".
+		}
+
+		@SuppressWarnings("unchecked")
+		public void initFallBackForExtensibleCellMapWith(ExtensibleCellMap<?> ext) {
+			this.flowMap.initFallBackMapWith((ExtensibleCellMap<V>) ext);
+		}
+
+		public ExtensibleCellMap<V> getFlowMap() {
+			return flowMap;
 		}
 
 		@Override
@@ -46,7 +94,7 @@ public abstract class CellularDataFlowAnalysis<F extends CellularDataFlowAnalysi
 			if (this == that) {
 				return true;
 			}
-			return this.flowMap.equals(that.flowMap);
+			return this.getFlowMap().equals(that.getFlowMap());
 		}
 
 		@Override
@@ -56,13 +104,14 @@ public abstract class CellularDataFlowAnalysis<F extends CellularDataFlowAnalysi
 			}
 			@SuppressWarnings("unchecked")
 			CellularFlowMap<V> that = (CellularFlowMap<V>) other;
-			return this.flowMap.mergeWith(that.flowMap, (s1, s2) -> this.meet(s1, s2), cellSet);
+			return this.getFlowMap().mergeWith(that.getFlowMap(), (s1, s2) -> this.meet(s1, s2), cellSet);
 		}
 
 		@Override
 		/**
 		 * Test that this innocent-looking addition doesn't break anything.
-		 * This addition was done carelessly without looking at the semantics of RestrictedSets.
+		 * This addition was done carelessly without looking at the semantics of
+		 * RestrictedSets.
 		 */
 		public String toString() {
 			return this.getString();
@@ -73,15 +122,15 @@ public abstract class CellularDataFlowAnalysis<F extends CellularDataFlowAnalysi
 			String retString = "";
 			String analysisName = this.getAnalysisNameKey();
 			retString += "[";
-			if (flowMap.isUniversal()) {
-				retString += analysisName + "(globalCell) := " + flowMap.get(Cell.genericCell);
+			if (getFlowMap().isUniversal()) {
+				retString += analysisName + "(globalCell) := " + getFlowMap().get(Cell.genericCell);
 			}
-			Set<Cell> cellSet = flowMap.nonGenericKeySet();
+			Set<Cell> cellSet = getFlowMap().nonGenericKeySet();
 			List<Cell> cellList = new ArrayList<>(cellSet);
 			Collections.sort(cellList);
 			for (Cell c : cellList) {
 				retString += analysisName + "(" + c.toString() + ") := ";
-				V value = flowMap.get(c);
+				V value = getFlowMap().get(c);
 				if (value != null) {
 					retString += value.toString();
 				} else {
@@ -104,7 +153,7 @@ public abstract class CellularDataFlowAnalysis<F extends CellularDataFlowAnalysi
 
 		@Override
 		public int hashCode() {
-			return this.flowMap.hashCode();
+			return this.getFlowMap().hashCode();
 		}
 
 		/**

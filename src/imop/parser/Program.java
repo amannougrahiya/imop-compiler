@@ -64,9 +64,10 @@ public class Program {
 		RESTART, // restarting iterations, SCC-wise; imprecise and fast
 		INIT_RESTART, // restarting iterations preceded with initialization, SCC-wise; precise and
 						// relatively slower than RETST
-		INCIDFA, // our proposed approach
+		INCIDFA, // our new proposed approach, which is cell-aware.
 		ALL_SCC, // reinitializes and recomputes all, SCC-wise
 		ALL_NOSCC, // reinitializes and recomputes all, without taking SCCs into consideration
+		OLD_INCIDFA // old, cell-unaware IncIDFA; obsolete now.
 	}
 
 	public enum CPredAMode {
@@ -101,7 +102,8 @@ public class Program {
 	 */
 	public static boolean profileSCC = false;
 	public static boolean checkForGhostValues = false;
-	public static boolean maintainImpactedSet = false;
+	public static boolean maintainImpactedCells = false;
+	public static final boolean optimizeIdentityFunctions = false;
 	public static boolean useNoSCCs = false;
 	public static StabilizationIDFAMode stabilizationIDFAMode = StabilizationIDFAMode.INCIDFA;
 	public static long timerForMarking = 0;
@@ -238,17 +240,17 @@ public class Program {
 		 * For IncIDFA -->
 		 *
 		 */
-		Program.isPrePassPhase = false; // Leave as false, when working with IMOP-preprocessed files.
+		Program.isPrePassPhase = false; // Leave as false when working with IMOP-preprocessed files.
 		Program.removeUnused = true; // Leave as true, to weed out dead definitions and declarations.
 		Program.idfaUpdateCategory = UpdateCategory.LZUPD; // Leave as LZUPD. Now we use stabilizationIDFAMode as the
 															// flag for IncIDFA results.
-		Program.stabilizationIDFAMode = StabilizationIDFAMode.INCIDFA; // The actual mode to be used.
+		Program.stabilizationIDFAMode = StabilizationIDFAMode.OLD_INCIDFA; // The actual mode to be used.
 		Program.testSafeMarkingHeuristic = false; // Leave as false. Not needed in the current algorithm.
 		Program.profileSCC = false; // To calculate print SCC-processing specific information. Leave as false.
 		Program.countSeededSCCs = false; // To calculate and print part of SCC-processing specific information. Leave as
 											// false.
 		Program.checkForGhostValues = false; // Temporary flag. Leave as false.
-		Program.maintainImpactedSet = true; // To calculate and maintain impactedSet.
+		Program.maintainImpactedCells = true; // To calculate and maintain impactedSet.
 		Program.useNoSCCs = false; // When false, SCCs are used.
 		/*
 		 * <-- for IncIDFA.
@@ -300,7 +302,7 @@ public class Program {
 		// filePath = ("../tests/classB-preproc/sp-b.i");
 		//
 		// filePath = ("../output-dump/ft-bimop_output_LZINC.i");
-		// filePath = ("../tests/npb-post/bt3-0.i");
+		filePath = ("../tests/npb-post/bt3-0.i");
 		// filePath = ("../tests/bt-contextsensitivity.i");
 		// filePath = ("../tests/bt-recursivequery.i");
 		// filePath = ("../tests/btsmall.i");
@@ -314,7 +316,7 @@ public class Program {
 		//
 		// filePath = ("../tests/quake-postpass.i");
 		// filePath = ("../tests/scanner-postpass.i");
-		filePath = ("../tests/amgmk-postpass.i");
+		// filePath = ("../tests/amgmk-postpass.i");
 		// filePath = ("../tests/amgmk-small.i");
 		// filePath = ("../tests/clomp-postpass.i");
 		// filePath = ("../tests/stream-postpass.i");

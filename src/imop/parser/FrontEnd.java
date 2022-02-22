@@ -17,7 +17,7 @@ import imop.lib.analysis.flowanalysis.dataflow.PointsToAnalysis;
 import imop.lib.analysis.flowanalysis.generic.AnalysisDimension.SVEDimension;
 import imop.lib.analysis.flowanalysis.generic.AnalysisName;
 import imop.lib.analysis.mhp.incMHP.MHPAnalyzer;
-import imop.lib.analysis.typeSystem.Type;
+import imop.lib.analysis.typesystem.Type;
 import imop.lib.builder.Builder;
 import imop.lib.cfg.CFGGenerator;
 import imop.lib.cfg.parallel.InterTaskEdge;

@@ -12,7 +12,7 @@ import imop.ast.annotation.Label;
 import imop.ast.node.external.*;
 import imop.ast.node.internal.*;
 import imop.baseVisitor.GJNoArguDepthFirstProcess;
-import imop.lib.analysis.typeSystem.Type;
+import imop.lib.analysis.typesystem.Type;
 import imop.lib.builder.Builder;
 import imop.lib.getter.ExpressionTypeGetter;
 import imop.lib.getter.StructUnionOrEnumInfoGetter;

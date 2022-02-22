@@ -10,7 +10,7 @@ package imop.ast.info;
 
 import imop.ast.node.external.*;
 import imop.lib.analysis.flowanalysis.*;
-import imop.lib.analysis.typeSystem.PointerType;
+import imop.lib.analysis.typesystem.PointerType;
 import imop.lib.util.CellSet;
 
 public class PTAStabilizationHeuristic {

@@ -10,9 +10,9 @@ package imop.lib.analysis.flowanalysis;
 
 import imop.ast.node.external.*;
 import imop.lib.analysis.solver.Accessible;
-import imop.lib.analysis.typeSystem.ArrayType;
-import imop.lib.analysis.typeSystem.StructType;
-import imop.lib.analysis.typeSystem.UnionType;
+import imop.lib.analysis.typesystem.ArrayType;
+import imop.lib.analysis.typesystem.StructType;
+import imop.lib.analysis.typesystem.UnionType;
 import imop.lib.util.CellSet;
 import imop.lib.util.Immutable;
 import imop.lib.util.ImmutableCellSet;

@@ -14,18 +14,22 @@ import imop.ast.node.internal.*;
 import imop.lib.analysis.CoExistenceChecker;
 import imop.lib.analysis.flowanalysis.*;
 import imop.lib.analysis.flowanalysis.dataflow.PointsToAnalysis;
+import imop.lib.analysis.flowanalysis.dataflow.PointsToAnalysis.PointsToFlowMap;
 import imop.lib.analysis.flowanalysis.dataflow.PointsToAnalysis.PointsToGlobalState;
 import imop.lib.analysis.flowanalysis.generic.AnalysisDimension.SVEDimension;
 import imop.lib.analysis.mhp.AbstractPhase;
 import imop.lib.analysis.mhp.AbstractPhasePointable;
-import imop.lib.analysis.typeSystem.ArrayType;
+import imop.lib.analysis.typesystem.ArrayType;
 import imop.lib.cfg.info.CFGInfo;
 import imop.lib.util.CellSet;
 import imop.lib.util.ExtensibleCellMap;
 import imop.lib.util.Immutable;
 import imop.lib.util.Misc;
 import imop.parser.Program;
+import imop.parser.Program.StabilizationIDFAMode;
 
+import java.lang.reflect.Constructor;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -53,6 +57,7 @@ public abstract class InterThreadForwardCellularAnalysis<F extends CellularDataF
 	// }
 	// }
 	//
+	public List<Long> counterList = new ArrayList<>();
 
 	/**
 	 * Perform the analysis, starting at the begin node of the function
@@ -167,6 +172,7 @@ public abstract class InterThreadForwardCellularAnalysis<F extends CellularDataF
 		nodeInfo.setIN(analysisName, newIN);
 
 		// Step 2: Apply the flow-function on IN, to obtain the OUT.
+		CellularDataFlowAnalysis.nodeAnalysisStack.add(new NodeAnalysisPair(node, this));
 		F oldOUT = (F) nodeInfo.getOUT(analysisName);
 		F newOUT = node.accept(this, newIN);
 		if (node instanceof EndNode) {
@@ -174,11 +180,12 @@ public abstract class InterThreadForwardCellularAnalysis<F extends CellularDataF
 		} else if (node instanceof BeginNode) {
 			processBeginNodes((BeginNode) node, newOUT);
 		}
+		CellularDataFlowAnalysis.nodeAnalysisStack.pop();
 		nodeInfo.setOUT(analysisName, newOUT);
 
-		if (Program.maintainImpactedSet) {
-			this.updateImpactedSet(node, newIN, newOUT);
-		}
+		// if (Program.maintainImpactedCells) {
+		// this.updateImpactedCells(node, newIN, newOUT);
+		// }
 
 		// Step 3: Process the successors, if needed.
 		inOrOUTChanged |= inChanged;
@@ -314,20 +321,20 @@ public abstract class InterThreadForwardCellularAnalysis<F extends CellularDataF
 		PreCallNode preNode = node.getParent().getPreCallNode();
 		CellularFlowMap<H> postIN = (CellularFlowMap<H>) incompleteFF;
 		CellularFlowMap<H> preOUT = (CellularFlowMap<H>) preNode.getInfo().getOUT(analysisName);
-		if (preOUT == null || preOUT.flowMap == null) {
+		if (preOUT == null || preOUT.getFlowMap() == null) {
 			return false;
 		}
 
-		Set<Cell> keysInPost = postIN.flowMap.nonGenericKeySet();
+		Set<Cell> keysInPost = postIN.getFlowMap().nonGenericKeySet();
 		boolean changed = false;
-		for (Cell preKey : preOUT.flowMap.nonGenericKeySet()) {
+		for (Cell preKey : preOUT.getFlowMap().nonGenericKeySet()) {
 			if (!keysInPost.contains(preKey)) {
-				H val = preOUT.flowMap.get(preKey);
+				H val = preOUT.getFlowMap().get(preKey);
 				if (val == null) {
 					continue;
 				}
 				changed = true;
-				postIN.flowMap.put(preKey, val);
+				postIN.getFlowMap().put(preKey, val);
 			} // TODO: Do we need an else branch here for meet?
 		}
 		return changed;
@@ -351,7 +358,7 @@ public abstract class InterThreadForwardCellularAnalysis<F extends CellularDataF
 			FunctionDefinition funcDef = (FunctionDefinition) node.getParent();
 			Set<Symbol> symHere = new HashSet<>(funcDef.getInfo().getSymbolTable().values());
 			symHere.addAll(Program.getRoot().getInfo().getSymbolTable().values());
-			for (Cell c : cellFullFF.flowMap.nonGenericKeySet()) {
+			for (Cell c : cellFullFF.getFlowMap().nonGenericKeySet()) {
 				Symbol sym = null;
 				if (c instanceof Symbol) {
 					sym = (Symbol) c;
@@ -368,7 +375,7 @@ public abstract class InterThreadForwardCellularAnalysis<F extends CellularDataF
 				}
 			}
 			for (Cell removeCell : removalSet) {
-				cellFullFF.flowMap.remove(removeCell);
+				cellFullFF.getFlowMap().remove(removeCell);
 			}
 			// CellSet cellsHere = node.getInfo().getAllCellsAtNode();
 			// removalSet.addAll(cellFullFF.flowMap.nonGenericKeySet().stream().filter(c ->
@@ -394,10 +401,10 @@ public abstract class InterThreadForwardCellularAnalysis<F extends CellularDataF
 			CompoundStatement parentCS = (CompoundStatement) node.getParent();
 			for (Symbol key : parentCS.getInfo().getSymbolTable().values()) {
 				if (!key.isStatic()) {
-					cellFullFF.flowMap.remove(key);
-					cellFullFF.flowMap.remove(key.getAddressCell());
+					cellFullFF.getFlowMap().remove(key);
+					cellFullFF.getFlowMap().remove(key.getAddressCell());
 					if (key.getType() instanceof ArrayType) {
-						cellFullFF.flowMap.remove(key.getFieldCell());
+						cellFullFF.getFlowMap().remove(key.getFieldCell());
 					}
 				}
 			}
@@ -405,32 +412,15 @@ public abstract class InterThreadForwardCellularAnalysis<F extends CellularDataF
 			FunctionDefinition funcDef = (FunctionDefinition) node.getParent();
 			for (Symbol key : funcDef.getInfo().getSymbolTable().values()) {
 				if (!key.isStatic()) {
-					cellFullFF.flowMap.remove(key);
-					cellFullFF.flowMap.remove(key.getAddressCell());
+					cellFullFF.getFlowMap().remove(key);
+					cellFullFF.getFlowMap().remove(key.getAddressCell());
 					if (key.getType() instanceof ArrayType) {
-						cellFullFF.flowMap.remove(key.getFieldCell());
+						cellFullFF.getFlowMap().remove(key.getFieldCell());
 					}
 				}
 			}
 		} else {
 			return;
-		}
-	}
-
-	protected void updateImpactedSet(Node n, F IN, F OUT) {
-		Set<Cell> inCellSet = IN.flowMap.keySet();
-		Set<Cell> outCellSet = OUT.flowMap.keySet();
-		CellSet impacted = n.getInfo().getImpactedSet();
-		for (Cell c : outCellSet) {
-			if (!inCellSet.contains(c)) {
-				impacted.add(c);
-			} else {
-				Object inVal = IN.flowMap.get(c);
-				Object outVal = OUT.flowMap.get(c);
-				if (inVal != outVal) {
-					impacted.add(c);
-				}
-			}
 		}
 	}
 
@@ -443,6 +433,11 @@ public abstract class InterThreadForwardCellularAnalysis<F extends CellularDataF
 		if (this.analysisName == AnalysisName.POINTSTO
 				&& PointsToAnalysis.stateOfPointsTo != PointsToGlobalState.STALE) {
 			nodesToBeUpdated.clear();
+			return;
+		}
+		if (Program.stabilizationIDFAMode == StabilizationIDFAMode.INCIDFA) {
+			this.newStabilizationTriggerHandler(); // NOTE: THIS METHOD IS PRESENT IN
+													// INTERTHREADFORWARDCELLULARANALYSIS.
 			return;
 		}
 		this.autoUpdateTriggerCounter++;
@@ -636,7 +631,7 @@ public abstract class InterThreadForwardCellularAnalysis<F extends CellularDataF
 			if (ff == null) {
 				continue;
 			}
-			ExtensibleCellMap<?> flowMap = ff.flowMap;
+			ExtensibleCellMap<?> flowMap = ff.getFlowMap();
 			String retString = "";
 			retString += "[";
 			if (flowMap.isUniversal()) {
@@ -758,7 +753,7 @@ public abstract class InterThreadForwardCellularAnalysis<F extends CellularDataF
 			} else if (oldIN != newIN) {
 				// This was the first processing of the barrier in this round. If the objects
 				// differ semantically, others would get affected.
-				if (!oldIN.equals(newIN)) {
+				if (!oldIN.isEqualTo(newIN)) {
 					this.addAllSiblingBarriersToWorkList((BarrierDirective) node);
 				}
 			} else {
@@ -792,9 +787,9 @@ public abstract class InterThreadForwardCellularAnalysis<F extends CellularDataF
 		nodeInfo.setOUT(analysisName, newOUT);
 		this.safeCurrentSCCNodes.add(node); // Mark a node as processed only after its OUT has been "purified".
 
-		if (Program.maintainImpactedSet) {
-			this.updateImpactedSet(node, newIN, newOUT);
-		}
+		// if (Program.maintainImpactedCells) {
+		// this.updateImpactedCells(node, newIN, newOUT);
+		// }
 
 		// Step 3: Process the successors, if needed.
 		inOrOUTChanged |= inChanged;
@@ -881,6 +876,36 @@ public abstract class InterThreadForwardCellularAnalysis<F extends CellularDataF
 			// } // End of the marking loop.
 			// }
 		}
+	}
+
+	public F copyFlowMap(F newIN) {
+		F top = this.getTop();
+		top.initFallBackForExtensibleCellMapWith(newIN.getFlowMap());
+		return top;
+		// long timer = System.nanoTime();
+		// for (long temp = 0; temp < 1e7; temp++) {
+		// top = this.getTop();
+		// top.initExtensibleCellMapWith(newIN.getFlowMap()); // A cheaper alternative
+		// // top.merge(newIN, null); // A much costlier alternative
+		// }
+		// DecimalFormat df = Program.df2;
+		// System.err.println("Time: " + df.format((System.nanoTime() - timer) / 1e9) +
+		// "s.");
+		// return top;
+	}
+
+	@SuppressWarnings("unchecked")
+	protected F getCopyOfFlowMap(F newIN) {
+		Constructor<?> copyConstructor = null;
+		try {
+			Class<?> classOfFlowMap = newIN.getClass();
+			copyConstructor = classOfFlowMap.getConstructor(CellularFlowMap.class);
+			return (F) copyConstructor.newInstance(newIN);
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.exit(1);
+		}
+		return null;
 	}
 
 	public List<Long> firstPhaseCount = new ArrayList<>();
@@ -1110,6 +1135,35 @@ public abstract class InterThreadForwardCellularAnalysis<F extends CellularDataF
 			return false;
 		}
 		return true;
+	}
+
+	/**
+	 * Capture all those cells that are (i) present in OUT but not IN, or (ii)
+	 * contain possibly-different values for IN and OUT.
+	 *
+	 * @param n
+	 * @param IN
+	 * @param OUT
+	 */
+	@Deprecated
+	protected void updateImpactedCells(Node n, F IN, F OUT) {
+		Set<Cell> outCellSet = OUT.getFlowMap().keySet();
+		CellSet impacted = n.getInfo().getImpactedSet();
+		for (Cell c : outCellSet) {
+			Object inVal = IN.getFlowMap().get(c);
+			if (inVal == null) {
+				continue;
+			}
+			Object outVal = OUT.getFlowMap().get(c);
+			if (inVal != outVal) {
+				/*
+				 * Note that we only do a reference comparison here, hoping that the immutable
+				 * values are being reused. (There's nothing incorrect, but inefficient, with
+				 * marking more cells as impacted.)
+				 */
+				impacted.add(c);
+			}
+		}
 	}
 
 	/**
@@ -1458,6 +1512,413 @@ public abstract class InterThreadForwardCellularAnalysis<F extends CellularDataF
 			PointsToAnalysis.stateOfPointsTo = PointsToGlobalState.CORRECT;
 		}
 		// DumpSnapshot.printToFile(typeList, "a.a");
+	}
+
+	private static enum PhaseOfFirstPass {
+		PHASEONE,
+		PHASETWO
+	}
+
+	/**
+	 * Latest algorithm for achieving incremental version of any generic (forward)
+	 * IDFA.
+	 */
+	protected void newStabilizationTriggerHandler() {
+		this.autoUpdateTriggerCounter++;
+		if (this.analysisName == AnalysisName.POINTSTO) {
+			PointsToAnalysis.enableHeuristic(); // Mark start of next epoch (used in Homeostasis).
+		}
+		long localTimer = System.nanoTime();
+
+		/*
+		 * From the set of seed nodes, we obtain the workList to be
+		 * processed: the seed nodes themselves; and the entry points of the SCCs of the
+		 * seed nodes.
+		 */
+		// Capture the number of nodes "processed".
+		long thisUpdateNodeCounter = this.nodesProcessedDuringUpdate;
+		this.workList.recreate();
+		Set<Node> remSet = new HashSet<>();
+		for (Node n : nodesToBeUpdated) {
+			boolean added = this.workList.add(n);
+			if (added) {
+				remSet.add(n);
+				SCC nSCC = n.getInfo().getCFGInfo().getSCC();
+				if (nSCC != null) {
+					this.workList.addAll(nSCC.getEntryNodes());
+				}
+			}
+			/*
+			 * New code: If n is a Declaration, add the EndNode of its scope to the
+			 * worklist.
+			 */
+			if (n instanceof Declaration) {
+				Scopeable definingScope = Misc.getEnclosingBlock(n);
+				if (definingScope instanceof CompoundStatement) {
+					this.workList
+							.add(((CompoundStatement) definingScope).getInfo().getCFGInfo().getNestedCFG().getBegin());
+					this.workList
+							.add(((CompoundStatement) definingScope).getInfo().getCFGInfo().getNestedCFG().getEnd());
+				}
+			}
+		}
+		// OLD CODE: Now we do not add the entry points of SCCs to be processed.
+		// NEW CODE: And now we do. Thu Jan 27 11:47:06 IST 2022
+		if (Program.profileSCC) {
+			System.out.println("Size of the seed set for trigger #" + autoUpdateTriggerCounter + ": " + remSet.size());
+		}
+		this.nodesToBeUpdated.removeAll(remSet);
+		// this.nodesToBeUpdated.clear();
+
+		/*
+		 * A new piece of code starts: Count the number of SCCs (with cycles) that have
+		 * seed nodes.
+		 */
+		if (Program.countSeededSCCs && Program.profileSCC) {
+			Set<SCC> seededSCCs = new HashSet<>();
+			for (Node n : workList.getIteratorForNonBarrierNodes()) {
+				SCC thisSCC = n.getInfo().getCFGInfo().getSCC();
+				if (thisSCC != null) {
+					seededSCCs.add(thisSCC);
+				}
+			}
+			System.out.println("Seeded SCC: " + seededSCCs.size());
+		}
+		/*
+		 * .. New code for counter ends.
+		 */
+
+		int processedSCCCount = 0;
+		if (this.analysisName == AnalysisName.POINTSTO) {
+			Program.basePointsTo = false; // Not needed for second and further runs.
+			Program.memoizeAccesses++;
+		}
+		this.safeCurrentSCCNodes = new HashSet<>();
+		this.underApproximated = new HashSet<>();
+		while (!this.workList.isEmpty()) {
+			Node nodeToBeAnalyzed = this.workList.removeFirstElement();
+			CFGInfo nInfo = nodeToBeAnalyzed.getInfo().getCFGInfo();
+			if (nInfo.getSCC() == null) {
+				// Here, node itself is an SCC. We do not require two rounds.
+				this.nodesProcessedDuringUpdate++;
+				this.debugRecursion(nodeToBeAnalyzed);
+				this.processWhenNotUpdated(nodeToBeAnalyzed); // Directly invoke the second round processing.
+				continue;
+			} else {
+				/*
+				 * This node belongs to an SCC. We should process the whole of
+				 * SCC in the first phase, followed by its processing in the
+				 * second phase, and only then shall we move on to the next SCC.
+				 */
+				this.stabilizeSCCOfOptimized(nodeToBeAnalyzed);
+				processedSCCCount++;
+			}
+		}
+		if (Program.profileSCC) {
+			System.out.println("Total SCCs processed: " + processedSCCCount + " out of " + SCC.getAllSCCSize());
+		}
+		if (this.analysisName == AnalysisName.POINTSTO) {
+			Program.memoizeAccesses--;
+		}
+
+		localTimer = System.nanoTime() - localTimer;
+		counterList.add(this.nodesProcessedDuringUpdate - thisUpdateNodeCounter);
+		this.flowAnalysisUpdateTimer += localTimer;
+		if (this.analysisName == AnalysisName.POINTSTO
+				&& PointsToAnalysis.stateOfPointsTo == PointsToGlobalState.STALE) {
+			PointsToAnalysis.stateOfPointsTo = PointsToGlobalState.CORRECT;
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	protected final void processWhenUpdatedOptimized(Node node, PhaseOfFirstPass phaseOfFirstPass) {
+		boolean first = false;
+		if (!this.safeCurrentSCCNodes.contains(node)) {
+			first = true;
+			// Don't add the node to this set unless its OUT has been populated.
+		}
+		NodeInfo nodeInfo = node.getInfo();
+		Set<IDFAEdge> predecessors = nodeInfo.getCFGInfo()
+				.getInterTaskLeafPredecessorEdges(this.analysisDimension.getSVEDimension());
+		F oldIN = (F) nodeInfo.getIN(analysisName);
+		boolean inOrOUTChanged = false;
+		F newIN;
+		if (oldIN == null) {
+			// First processing ever of this node!
+			inOrOUTChanged = true;
+			newIN = (predecessors.isEmpty()) ? this.getEntryFact() : this.getTop();
+		} else if (first) {
+			// First processing in the first round of update.
+			newIN = (predecessors.isEmpty()) ? this.getEntryFact() : this.getTop();
+		} else {
+			newIN = oldIN; // Use the same object.
+		}
+
+		boolean inChanged = false;
+		boolean anyPredMissed = false;
+		for (IDFAEdge idfaEdge : predecessors) {
+			Node predNode = idfaEdge.getNode();
+			/*
+			 * Ignore a predecessor if:
+			 * (i) it lies within the SCC, AND
+			 * (ii) it has not been processed yet.
+			 */
+			SCC predSCC = predNode.getInfo().getCFGInfo().getSCC();
+			if (predSCC != null) {
+				// If null, then pred clearly belongs to some other SCC.
+				if (node.getInfo().getCFGInfo().getSCC() == predSCC) {
+					// Predecessor lies within the SCC.
+					if (!this.safeCurrentSCCNodes.contains(predNode)) {
+						anyPredMissed = true;
+						continue;
+					}
+				}
+			}
+			F predOUT = (F) predNode.getInfo().getOUT(analysisName);
+			if (predOUT == null) {
+				/*
+				 * Here, we do not mark anyPredMissed, as this node would be
+				 * marked for processing whenever the predecessor has been
+				 * processed for the first time. Check the setting of
+				 * inOrOUTChanged above.
+				 */
+				continue;
+			}
+			F edgeOUT = this.edgeTransferFunction(predOUT, idfaEdge.getNode(), node);
+			inChanged |= newIN.merge(edgeOUT, idfaEdge.getCells());
+		}
+
+		if (node instanceof PostCallNode) {
+			PreCallNode preNode = ((CallStatement) node.getParent()).getPreCallNode();
+			SCC preSCC = preNode.getInfo().getCFGInfo().getSCC();
+			boolean doNotProcess = false;
+			if (preSCC != null) {
+				// If null, then pred clearly belongs to some other SCC.
+				if (node.getInfo().getCFGInfo().getSCC() == preSCC) {
+					// Predecessor lies within the SCC.
+					if (!this.safeCurrentSCCNodes.contains(preNode)) {
+						anyPredMissed = true;
+						doNotProcess = true;
+						// this.underApproximated.add(node); // New code.
+					}
+				}
+			}
+			if (!doNotProcess) {
+				inChanged |= processPostCallNodes((PostCallNode) node, newIN);
+			}
+		}
+		if (anyPredMissed) {
+			this.underApproximated.add(node);
+		} else {
+			this.underApproximated.remove(node); // MG: 13275 vs 13307 with this line.
+		}
+		/**
+		 * If the IN of a BarrierDirective has changed,
+		 * we should add all its sibling barriers to the workList.
+		 */
+		if (node instanceof BarrierDirective) {
+			if (oldIN == null) {
+				// This was the first processing of the barrier, ever. Others would get affected
+				// only if the in was changed.
+				if (inChanged) {
+					this.addAllSiblingBarriersToWorkList((BarrierDirective) node);
+				}
+			} else if (oldIN != newIN) {
+				// This was the first processing of the barrier in this round. If the objects
+				// differ semantically, others would get affected.
+				if (!oldIN.isEqualTo(newIN)) {
+					this.addAllSiblingBarriersToWorkList((BarrierDirective) node);
+				}
+			} else {
+				// This is any-but-first processing of the barrier in this round. Others would
+				// be impacted only if anything changed in IN.
+				if (inChanged) {
+					this.addAllSiblingBarriersToWorkList((BarrierDirective) node);
+				}
+			}
+		}
+
+		nodeInfo.setIN(analysisName, newIN);
+
+		if (oldIN != null && oldIN != newIN && !oldIN.isEqualTo(newIN)) {
+			inOrOUTChanged = true;
+		}
+
+		// Step 2: Apply the flow-function on IN, to obtain the OUT.
+
+		// NEW CODE, to identify if this transfer function is known to be an identity
+		// function.
+		boolean proceed;
+		if (Program.optimizeIdentityFunctions) {
+			if (!node.getInfo().hasAccessedCellSetsFor(this)) {
+				proceed = true;
+			} else {
+				proceed = node.getInfo().getAccessedCellSets(this).isEmpty();
+			}
+			/*
+			 * Refer to the last point in Note 21.0.1 from IMOP-CR.
+			 */
+			if (node instanceof BeginNode && node.getParent() instanceof FunctionDefinition) {
+				proceed = true;
+			} else if (node instanceof EndNode && node.getParent() instanceof FunctionDefinition) {
+				proceed = true;
+			} else if (node instanceof EndNode && node.getParent() instanceof CompoundStatement) {
+				proceed = true;
+			} else if (node instanceof PostCallNode) {
+				proceed = true;
+			}
+		} else {
+			proceed = true;
+		}
+		CellularDataFlowAnalysis.nodeAnalysisStack.add(new NodeAnalysisPair(node, this));
+		F oldOUT = (F) nodeInfo.getOUT(analysisName);
+		F newOUT;
+		if (node instanceof BarrierDirective) {
+			newOUT = this.visitChanged((BarrierDirective) node, newIN, first);
+		} else {
+			if (proceed) {
+				newOUT = node.accept(this, newIN);
+			} else {
+				newOUT = this.copyFlowMap(newIN);
+			}
+			if (node instanceof EndNode) {
+				processEndNodes((EndNode) node, newOUT);
+			} else if (node instanceof BeginNode) {
+				processBeginNodes((BeginNode) node, newOUT);
+			}
+		}
+		CellularDataFlowAnalysis.nodeAnalysisStack.pop();
+		nodeInfo.setOUT(analysisName, newOUT);
+		this.safeCurrentSCCNodes.add(node); // Mark a node as processed only after its OUT has been "purified".
+
+		// Step 3: Process the successors, if needed.
+		inOrOUTChanged |= inChanged;
+		if (node instanceof BarrierDirective) {
+			if (oldOUT == null || !newOUT.isEqualTo(oldOUT)) {
+				inOrOUTChanged = true;
+			}
+		}
+		if (node instanceof ParameterDeclaration) {
+			// Added this code because finding whether the OUT of ParameterDeclaration has
+			// changed, is complex.
+			// Note that if the IN of a ParameterDeclaration does not change, the OUT may
+			// still change (due to changes at call-sites).
+			inOrOUTChanged = true;
+		}
+		if (inOrOUTChanged) {
+			for (IDFAEdge idfaEdge : nodeInfo.getCFGInfo()
+					.getInterTaskLeafSuccessorEdges(this.analysisDimension.getSVEDimension())) {
+				Node n = idfaEdge.getNode();
+				this.workList.add(n);
+			}
+			if (node instanceof PreCallNode) {
+				PreCallNode pre = (PreCallNode) node;
+				this.workList.add(pre.getParent().getPostCallNode());
+			}
+			// If we are adding successors of a BeginNode of a FunctionDefinition, we should
+			// add all the ParameterDeclarations.
+			if (node instanceof BeginNode && node.getParent() instanceof FunctionDefinition) {
+				FunctionDefinition func = (FunctionDefinition) node.getParent();
+				for (ParameterDeclaration paramDecl : func.getInfo().getCFGInfo().getParameterDeclarationList()) {
+					this.workList.add(paramDecl);
+				}
+			}
+		}
+	}
+
+	/**
+	 * This method starts with the given node, and stabilizes the SCC corresponding
+	 * to it before returning back.
+	 *
+	 * @param node
+	 *             node whose SCC has to be stabilized. Note that the node has
+	 *             already been removed from the workList.
+	 */
+	protected final void stabilizeSCCOfOptimized(Node node) {
+		this.safeCurrentSCCNodes.clear();
+		this.underApproximated.clear();
+
+		SCC thisSCC = node.getInfo().getCFGInfo().getSCC();
+		int thisSCCNum = node.getInfo().getCFGInfo().getSCCRPOIndex();
+
+		assert (thisSCC != null);
+
+		if (Program.checkForGhostValues) {
+			checkForGhostValues(node);
+		}
+
+		long localCounterPerPhase = this.nodesProcessedDuringUpdate;
+		do {
+			/*
+			 * This conditional check is used to minimize the extra work that we perform
+			 * during the first phase.
+			 */
+			// if (!this.safeCurrentSCCNodes.contains(node)) {
+			this.nodesProcessedDuringUpdate++;
+			this.debugRecursion(node);
+			this.processWhenUpdatedOptimized(node, PhaseOfFirstPass.PHASEONE);
+			node = this.workList.peekFirstElementOfSameSCC(thisSCCNum);
+			if (node == null) {
+				break;
+			}
+			SCC nextSCC = node.getInfo().getCFGInfo().getSCC();
+			if (nextSCC == null || nextSCC != thisSCC) {
+				// The next node belongs to a different SCC. Break from the first phase.
+				break;
+			} else {
+				// Extract the next node and process it next.
+				node = this.workList.removeFirstElementOfSameSCC(thisSCCNum);
+			}
+		} while (true);
+		firstPhaseCount.add(this.nodesProcessedDuringUpdate - localCounterPerPhase);
+		/*
+		 * NEW CODE: To check the percent of nodes processed in an SCC in the first
+		 * phase.
+		 */
+		if (Program.profileSCC) {
+			int SCCSize = thisSCC.getNodeCount();
+			double percentInFirst = this.safeCurrentSCCNodes.size() / (SCCSize * 1.0) * 100;
+			if (SCCSize != 1) {
+				System.out.println("Total " + Program.df2.format(percentInFirst) + "% of nodes processed out of "
+						+ SCCSize + " in this SCC.");
+			}
+		}
+		/*
+		 * <-- NEW CODE Ends.
+		 */
+
+		// Now, the set processedInThisUpdate is not required anymore. Clear it.
+		this.safeCurrentSCCNodes.clear();
+		/*
+		 * Next, let's start with the second phase, with all elements of
+		 * yetToBeFinalized in the workList, where we proceed as usual.
+		 */
+		this.workList.addAll(this.underApproximated);
+		this.underApproximated.clear();
+		localCounterPerPhase = this.nodesProcessedDuringUpdate;
+		do {
+			node = this.workList.peekFirstElementOfSameSCC(thisSCCNum);
+			if (node == null) {
+				break;
+			}
+			SCC nextSCC = node.getInfo().getCFGInfo().getSCC();
+			if (nextSCC == null || nextSCC != thisSCC) {
+				// The next node belongs to a different SCC. Break from the second phase.
+				break;
+			} else {
+				// Extract the next node and process it in the second phase.
+				node = this.workList.removeFirstElementOfSameSCC(thisSCCNum);
+			}
+			this.nodesProcessedDuringUpdate++;
+			this.debugRecursion(node);
+			this.processWhenNotUpdated(node); // Note that this is a call to normal processing.
+		} while (true);
+		secondPhaseCount.add(this.nodesProcessedDuringUpdate - localCounterPerPhase);
+
+		// if (node != null) {
+		// int nextSCCNum = node.getInfo().getCFGInfo().getSCCRPOIndex();
+		// System.err.println("*** ENCOUNTERED NEXT SCC with ID #" + nextSCCNum);
+		// }
 	}
 
 }

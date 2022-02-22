@@ -31,6 +31,7 @@ import imop.lib.analysis.flowanalysis.dataflow.CopyPropagationAnalysis.CopyPropa
 import imop.lib.analysis.flowanalysis.dataflow.DataDependenceForward.DataDependenceForwardFF;
 import imop.lib.analysis.flowanalysis.dataflow.ReachingDefinitionAnalysis.ReachingDefinitionFlowMap;
 import imop.lib.analysis.flowanalysis.generic.AnalysisName;
+import imop.lib.analysis.flowanalysis.generic.CellularDataFlowAnalysis;
 import imop.lib.analysis.flowanalysis.generic.ControlFlowAnalysis;
 import imop.lib.analysis.flowanalysis.generic.FlowAnalysis;
 import imop.lib.analysis.flowanalysis.generic.FlowAnalysis.FlowFact;
@@ -46,7 +47,7 @@ import imop.lib.analysis.solver.PointerDereferenceGetter;
 import imop.lib.analysis.solver.SyntacticAccessExpression;
 import imop.lib.analysis.solver.SyntacticAccessExpressionGetter;
 import imop.lib.analysis.solver.tokens.Tokenizable;
-import imop.lib.analysis.typeSystem.*;
+import imop.lib.analysis.typesystem.*;
 import imop.lib.cfg.info.CFGInfo;
 import imop.lib.cfg.link.autoupdater.AutomatedUpdater;
 import imop.lib.cg.CallSite;
@@ -94,6 +95,7 @@ public class NodeInfo implements Cloneable {
 	protected HashMap<AnalysisName, FlowFact> flowFactsOUT;
 
 	protected CellSet impactedSet;
+	protected Map<CellularDataFlowAnalysis<?>, CellSet> accessedCellSets;
 
 	protected CFGInfo cfgInfo;
 	private NodePhaseInfo phaseInfo;
@@ -856,6 +858,57 @@ public class NodeInfo implements Cloneable {
 			this.impactedSet = new CellSet();
 		}
 		return this.impactedSet;
+	}
+
+	public boolean hasAccessedCellSetsFor(CellularDataFlowAnalysis<?> analysis) {
+		if (this.accessedCellSets == null) {
+			return false;
+		}
+		return this.accessedCellSets.keySet().contains(analysis);
+	}
+
+	public CellSet getAccessedCellSets(AnalysisName analysisName) {
+		if (this.accessedCellSets == null) {
+			return new CellSet();
+		}
+		for (CellularDataFlowAnalysis<?> analysis : this.accessedCellSets.keySet()) {
+			if (analysis.getAnalysisName().equals(analysisName)) {
+				return this.accessedCellSets.get(analysis);
+			}
+		}
+		return new CellSet();
+	}
+
+	public Set<CellularDataFlowAnalysis<?>> getAnalysesWithAccessedCells() {
+		Set<CellularDataFlowAnalysis<?>> retSet = new HashSet<>();
+		if (this.accessedCellSets == null) {
+			return retSet;
+		}
+		return this.accessedCellSets.keySet();
+	}
+
+	public CellSet getAccessedCellSets(CellularDataFlowAnalysis<?> analysis) {
+		if (accessedCellSets == null) {
+			accessedCellSets = new HashMap<>();
+		}
+		CellSet retSet = accessedCellSets.get(analysis);
+		if (retSet == null) {
+			retSet = new CellSet();
+			accessedCellSets.put(analysis, retSet);
+		}
+		return retSet;
+	}
+
+	public void clearAccessedCellSets(CellularDataFlowAnalysis<?> analysis) {
+		if (accessedCellSets == null) {
+			return;
+		}
+		CellSet retSet = accessedCellSets.get(analysis);
+		if (retSet == null) {
+			return;
+		}
+		retSet.clear();
+		return;
 	}
 
 	public void removeAnalysisInformation(AnalysisName analysisName) {
@@ -2724,7 +2777,7 @@ public class NodeInfo implements Cloneable {
 		if (cpf == null) {
 			return returnSet;
 		}
-		returnSet = new ExtensibleCellMap<>(cpf.flowMap);
+		returnSet = new ExtensibleCellMap<>(cpf.getFlowMap());
 		return returnSet;
 	}
 
@@ -2765,7 +2818,7 @@ public class NodeInfo implements Cloneable {
 		if (rdf == null) {
 			return returnSet;
 		}
-		return rdf.flowMap.get(cell);
+		return rdf.getFlowMap().get(cell);
 		// OLD CODE:
 		// for (Definition def : rdf.flowMap.get(cell).getInternalSetCopy()) {
 		// Node defNode = def.getDefiningNode();
@@ -2788,16 +2841,16 @@ public class NodeInfo implements Cloneable {
 		if (rdf == null) {
 			return reachingDefinitions;
 		}
-		for (Cell key : rdf.flowMap.nonGenericKeySet()) {
+		for (Cell key : rdf.getFlowMap().nonGenericKeySet()) {
 			if (!cellsHere.contains(key)) {
 				continue;
 			}
 			// ImmutableDefinitionSet tempSet = rdf.flowMap.get(key);
-			reachingDefinitions.addAll(rdf.flowMap.get(key));
+			reachingDefinitions.addAll(rdf.getFlowMap().get(key));
 		}
-		if (rdf.flowMap.isUniversal()) {
+		if (rdf.getFlowMap().isUniversal()) {
 			reachingDefinitions = new HashSet<>(reachingDefinitions);
-			reachingDefinitions.addAll(rdf.flowMap.get(Cell.genericCell));
+			reachingDefinitions.addAll(rdf.getFlowMap().get(Cell.genericCell));
 			// ImmutableDefinitionSet tempSet = rdf.flowMap.get(Cell.genericCell);
 			// for (Definition def : tempSet) {
 			// reachingDefinitions.add(def.getDefiningNode());
