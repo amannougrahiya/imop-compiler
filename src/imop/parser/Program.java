@@ -103,7 +103,6 @@ public class Program {
 	public static boolean profileSCC = false;
 	public static boolean checkForGhostValues = false;
 	public static boolean maintainImpactedCells = false;
-	public static final boolean optimizeIdentityFunctions = false;
 	public static boolean useNoSCCs = false;
 	public static StabilizationIDFAMode stabilizationIDFAMode = StabilizationIDFAMode.INCIDFA;
 	public static long timerForMarking = 0;
@@ -121,7 +120,7 @@ public class Program {
 	 * Decides whether intermediate states of the program should be dumped.
 	 */
 	public static boolean dumpIntermediateStates = false;
-	public static boolean printNoFiles = true;
+	public static boolean printNoFiles = false;
 	public static boolean printNoPredicates = true;
 	/*
 	 * When set, certain checks are performed regarding phase-set of a barrier while
@@ -240,11 +239,11 @@ public class Program {
 		 * For IncIDFA -->
 		 *
 		 */
-		Program.isPrePassPhase = false; // Leave as false when working with IMOP-preprocessed files.
+		Program.isPrePassPhase = true; // Leave as false when working with IMOP-preprocessed files.
 		Program.removeUnused = true; // Leave as true, to weed out dead definitions and declarations.
 		Program.idfaUpdateCategory = UpdateCategory.LZUPD; // Leave as LZUPD. Now we use stabilizationIDFAMode as the
 															// flag for IncIDFA results.
-		Program.stabilizationIDFAMode = StabilizationIDFAMode.OLD_INCIDFA; // The actual mode to be used.
+		Program.stabilizationIDFAMode = StabilizationIDFAMode.INCIDFA; // The actual mode to be used.
 		Program.testSafeMarkingHeuristic = false; // Leave as false. Not needed in the current algorithm.
 		Program.profileSCC = false; // To calculate print SCC-processing specific information. Leave as false.
 		Program.countSeededSCCs = false; // To calculate and print part of SCC-processing specific information. Leave as
@@ -306,7 +305,8 @@ public class Program {
 		// filePath = ("../tests/bt-contextsensitivity.i");
 		// filePath = ("../tests/bt-recursivequery.i");
 		// filePath = ("../tests/btsmall.i");
-		// filePath = ("../tests/npb-post/cg3-0.i");
+		filePath = ("../tests/npb-post/cg3-0.i");
+		filePath = ("../tests/cg3-small.i");
 		// filePath = ("../tests/npb-post/ep3-0.i");
 		// filePath = ("../tests/npb-post/ft3-0.i");
 		// filePath = ("../tests/npb-post/is3-0.i");

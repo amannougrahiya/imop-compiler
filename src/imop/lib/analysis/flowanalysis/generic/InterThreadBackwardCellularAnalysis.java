@@ -48,13 +48,13 @@ public abstract class InterThreadBackwardCellularAnalysis<F extends CellularData
 	@Override
 	public void run(FunctionDefinition funcDef) {
 		EndNode endNode = funcDef.getInfo().getCFGInfo().getNestedCFG().getEnd();
-		this.workList.recreate();
-		this.workList.add(endNode);
+		this.globalWorkList.recreate();
+		this.globalWorkList.add(endNode);
 		do {
-			Node nodeToBeAnalysed = this.workList.removeLastElement();
+			Node nodeToBeAnalysed = this.globalWorkList.removeLastElement();
 			this.debugRecursion(nodeToBeAnalysed);
 			this.processWhenNotUpdated(nodeToBeAnalysed);
-		} while (!workList.isEmpty());
+		} while (!globalWorkList.isEmpty());
 	}
 
 	/**
@@ -161,7 +161,7 @@ public abstract class InterThreadBackwardCellularAnalysis<F extends CellularData
 		 * we should add all its sibling barriers to the workList.
 		 */
 		if (outChanged && node instanceof BarrierDirective) {
-			this.addAllSiblingBarriersToWorkList((BarrierDirective) node);
+			this.addAllSiblingBarriersToGlobalWorkList((BarrierDirective) node);
 		}
 		nodeInfo.setOUT(analysisName, newOUT);
 
@@ -189,7 +189,7 @@ public abstract class InterThreadBackwardCellularAnalysis<F extends CellularData
 			for (IDFAEdge idfaEdge : nodeInfo.getCFGInfo()
 					.getInterTaskLeafPredecessorEdges(this.analysisDimension.getSVEDimension())) {
 				Node n = idfaEdge.getNode();
-				this.workList.add(n);
+				this.globalWorkList.add(n);
 			}
 			// TODO: Write code for handling CallStatement scoping edges. While doing so,
 			// also take care of the extra if-conditional for
@@ -401,7 +401,7 @@ public abstract class InterThreadBackwardCellularAnalysis<F extends CellularData
 		if (oldIN == null || !newIN.isEqualTo(oldIN)) {
 			for (IDFAEdge idfaEdge : nodeInfo.getCFGInfo()
 					.getInterTaskLeafPredecessorEdges(this.analysisDimension.getSVEDimension())) {
-				this.workList.add(idfaEdge.getNode());
+				this.globalWorkList.add(idfaEdge.getNode());
 				// TODO: Write code for handling CallStatement scoping edges. While doing so,
 				// also take care of the extra if-conditional for
 				// BeginNode of a FunctionDefinition that is present in the equivalent code for
@@ -561,7 +561,7 @@ public abstract class InterThreadBackwardCellularAnalysis<F extends CellularData
 					if (myTemp.isEqualTo(tempIN)) {
 						continue;
 					}
-					this.workList.add(siblingBarrier);
+					this.globalWorkList.add(siblingBarrier);
 				}
 			}
 		}
@@ -580,7 +580,7 @@ public abstract class InterThreadBackwardCellularAnalysis<F extends CellularData
 							&& !CoExistenceChecker.canCoExistInPhase(n, siblingBarrier, ph)) {
 						continue;
 					}
-					this.workList.add(siblingBarrier);
+					this.globalWorkList.add(siblingBarrier);
 				}
 			}
 		}

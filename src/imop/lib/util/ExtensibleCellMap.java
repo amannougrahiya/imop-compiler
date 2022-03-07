@@ -757,6 +757,160 @@ public class ExtensibleCellMap<V extends Immutable> extends CellMap<V> {
 	 * Merges this object with {@code thatMap}, for the cells specified in
 	 * {@code selectedCells} (all, if {@code null}), as per the merge operation
 	 * provided by {@code mergeMethod}.
+	 * Additionally, this method also sets a global flag in CellularDataFlowAnalysis
+	 * if there is any change in the value corresponding to any of the cells from
+	 * accessedCells in the receiver map.
+	 *
+	 * @param thatMap
+	 *                      map, of same value type, which needs to be merged into
+	 *                      this
+	 *                      map.
+	 * @param mergeMethod
+	 *                      a binary operator, that takes two arguments and returns
+	 *                      a
+	 *                      value of the same type. This lambda is used to specify
+	 *                      the
+	 *                      merge operation given two elements from the co-domain of
+	 *                      this
+	 *                      map. Note that this method should take care of
+	 *                      {@code null}
+	 *                      values as well (for the first argument).
+	 * @param selectedCells
+	 *                      set of cells for which merge has to be performed; value
+	 *                      {@code null} represents all cells.
+	 * @return
+	 *         true, if this method changed the state (except for the internal
+	 *         free variable to symbol conversions) of the receiver object.
+	 */
+	public boolean mergeWithAccessed(CellMap<V> thatMapExt, BinaryOperator<V> mergeMethod, CellSet selectedCells,
+			CellSet accessedCells) {
+		boolean changed = false;
+		if (thatMapExt == null) {
+			return changed;
+		}
+		if (!(thatMapExt instanceof ExtensibleCellMap<?>)) {
+			Misc.warnDueToLackOfFeature(
+					"The behaviour upon merging a non-ExtensibleCellMap into an ExtensibleCellMap has not been tested yet.",
+					null);
+			return super.mergeWith(thatMapExt, mergeMethod, selectedCells);
+		}
+		ExtensibleCellMap<V> thatMap = (ExtensibleCellMap<V>) thatMapExt;
+		ExtensibleCellMap<V> thisMap = this;
+		Set<Cell> thatNonGenericSet = thatMap.nonGenericKeySet(ConvertMode.OFF);
+		// Handle all explicit cells of thatMap.
+		for (Cell thatCell : thatNonGenericSet) {
+			if (selectedCells != null && !selectedCells.contains(thatCell)) {
+				continue;
+			}
+			V thatValue = thatMap.get(thatCell, ConvertMode.OFF);
+			V thisValue = thisMap.get(thatCell, ConvertMode.OFF);
+			// Note that thisValue may be null. We assume that mergeMethod takes care of
+			// that.
+			if (thatValue == thisValue) {
+				continue;
+			}
+			V newValue = mergeMethod.apply(thisValue, thatValue);
+			if (newValue != null && !newValue.equals(thisValue)) {
+				changed = true;
+				if (!CellularDataFlowAnalysis.accessedCellValueChanged && accessedCells.contains(thatCell)) {
+					CellularDataFlowAnalysis.accessedCellValueChanged = true;
+				}
+				thisMap.put(thatCell, newValue, ConvertMode.OFF);
+			}
+		}
+		internalCalls++;
+		boolean thatIsUniversal = thatMap.isUniversal();
+		internalCalls--;
+		if (!thatIsUniversal) {
+			return changed;
+		}
+		// Handle all implicit cells of thatMap.
+		V thatGenericValue = thatMap.get(Cell.genericCell);
+		Set<Cell> thisNonGenericSet = new HashSet<>(thisMap.nonGenericKeySet(ConvertMode.OFF));
+		// Handle those explicit cells of this map which are not yet taken care of.
+		thisNonGenericSet.removeAll(thatNonGenericSet);
+		for (Cell thisCell : thisNonGenericSet) {
+			if (selectedCells != null && !selectedCells.contains(thisCell)) {
+				continue;
+			}
+			V thisValue = thisMap.get(thisCell);
+			if (thisValue == thatGenericValue) {
+				continue;
+			}
+			V newValue = mergeMethod.apply(thisValue, thatGenericValue);
+			if (newValue != null && !newValue.equals(thisValue)) {
+				changed = true;
+				if (!CellularDataFlowAnalysis.accessedCellValueChanged && accessedCells.contains(thisCell)) {
+					CellularDataFlowAnalysis.accessedCellValueChanged = true;
+				}
+				thisMap.put(thisCell, newValue);
+			}
+		}
+
+		Set<Cell> cellsToUpdate = (selectedCells == null) ? Cell.allCells
+				: (Set<Cell>) selectedCells.getReadOnlyInternal();
+		V thisGenericValue = thisMap.get(Cell.genericCell);
+		V newGenericValue;
+		if (this.containsUniversal) {
+			newGenericValue = mergeMethod.apply(thisGenericValue, thatGenericValue);
+		} else {
+			newGenericValue = null;
+		}
+		for (Cell key : cellsToUpdate) {
+			if (thatNonGenericSet.contains(key)) {
+				continue;
+			}
+			if (thisNonGenericSet.contains(key)) {
+				continue;
+			}
+			if (this.containsUniversal) {
+				changed = true;
+				if (!CellularDataFlowAnalysis.accessedCellValueChanged && accessedCells.contains(key)) {
+					CellularDataFlowAnalysis.accessedCellValueChanged = true;
+				}
+				thisMap.put(key, newGenericValue);
+			} else {
+				changed = true;
+				if (!CellularDataFlowAnalysis.accessedCellValueChanged && accessedCells.contains(key)) {
+					CellularDataFlowAnalysis.accessedCellValueChanged = true;
+				}
+				thisMap.put(key, thatGenericValue);
+			}
+		}
+
+		// OLD CODE: This code below relied upon updateGenericMap(), which was too
+		// clumsy.
+		// if (selectedCells != null) {
+		// // Handle other cells of thisMap.
+		// for (Cell otherCell : selectedCells) {
+		// if (thatNonGenericSet.contains(otherCell)) {
+		// continue;
+		// }
+		// if (thisNonGenericSet.contains(otherCell)) {
+		// continue;
+		// }
+		// changed = true;
+		// thisMap.put(otherCell, thatGenericValue);
+		// }
+		// } else {
+		// // Handle implicit cells of thisMap.
+		// V thisGenericValue = thisMap.get(Cell.genericCell);
+		// // Note that thisGenericValye may be null. We assume that mergeMethod takes
+		// care of this issue.
+		// V newGenericValue = mergeMethod.apply(thisGenericValue, thatGenericValue);
+		// if (!newGenericValue.equals(thisGenericValue)) {
+		// changed = true;
+		// thisMap.updateGenericMap(newGenericValue);
+		// }
+		// }
+		this.containsUniversal = true;
+		return changed;
+	}
+
+	/**
+	 * Merges this object with {@code thatMap}, for the cells specified in
+	 * {@code selectedCells} (all, if {@code null}), as per the merge operation
+	 * provided by {@code mergeMethod}.
 	 *
 	 * @param thatMap
 	 *                      map, of same value type, which needs to be merged into

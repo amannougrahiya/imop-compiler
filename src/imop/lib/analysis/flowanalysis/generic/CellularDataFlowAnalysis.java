@@ -42,6 +42,8 @@ public abstract class CellularDataFlowAnalysis<F extends CellularDataFlowAnalysi
 
 	public static final Stack<NodeAnalysisPair> nodeAnalysisStack = new Stack<>();
 
+	public static boolean accessedCellValueChanged;
+
 	public CellularDataFlowAnalysis(AnalysisName analysisName, AnalysisDimension analysisDimension) {
 		super(analysisName, analysisDimension);
 	}
@@ -95,6 +97,15 @@ public abstract class CellularDataFlowAnalysis<F extends CellularDataFlowAnalysi
 				return true;
 			}
 			return this.getFlowMap().equals(that.getFlowMap());
+		}
+
+		public final boolean mergeWithAccessed(FlowFact other, CellSet cellSet, CellSet accessedSet) {
+			if (other == null || !(other instanceof CellularFlowMap<?>)) {
+				return false;
+			}
+			@SuppressWarnings("unchecked")
+			CellularFlowMap<V> that = (CellularFlowMap<V>) other;
+			return this.getFlowMap().mergeWithAccessed(that.getFlowMap(), (s1, s2) -> this.meet(s1, s2), cellSet, accessedSet);
 		}
 
 		@Override

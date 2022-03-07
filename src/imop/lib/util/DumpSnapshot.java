@@ -8,7 +8,10 @@
  */
 package imop.lib.util;
 
+import imop.ast.info.cfgNodeInfo.ParameterDeclarationInfo;
 import imop.ast.node.external.*;
+import imop.ast.node.internal.BeginNode;
+import imop.ast.node.internal.EndNode;
 import imop.lib.analysis.flowanalysis.Cell;
 import imop.lib.analysis.flowanalysis.Symbol;
 import imop.lib.analysis.flowanalysis.dataflow.DataDependenceForward.DataDependenceForwardFF;
@@ -333,6 +336,13 @@ public class DumpSnapshot {
 			String tempStr = "";
 			FlowFact flow;
 			flow = n.getInfo().getOUT(AnalysisName.POINTSTO);
+			if (n instanceof BeginNode) {
+				tempStr += "[BeginNode of " + n.getParent().getClass().getSimpleName() + "]";
+			} else if (n instanceof EndNode) {
+				tempStr += "[EndNode of " + n.getParent().getClass().getSimpleName() + "]";
+			} else if (n instanceof ParameterDeclaration) {
+				tempStr += "[Parameter: " + n + "]";
+			}
 			if (flow != null) {
 				tempStr += "OUT: " + flow.getString();
 			}

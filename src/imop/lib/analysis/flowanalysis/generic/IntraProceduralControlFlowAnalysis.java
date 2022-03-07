@@ -32,13 +32,13 @@ public abstract class IntraProceduralControlFlowAnalysis<F extends FlowAnalysis.
 	public final void run(FunctionDefinition startingFunc) {
 		for (FunctionDefinition reachableFuncDef : startingFunc.getInfo().getReachableCallGraphNodes()) {
 			BeginNode beginNode = reachableFuncDef.getInfo().getCFGInfo().getNestedCFG().getBegin();
-			this.workList.recreate();
-			this.workList.add(beginNode);
+			this.globalWorkList.recreate();
+			this.globalWorkList.add(beginNode);
 			do {
-				Node nodeToBeAnalysed = this.workList.removeFirstElement();
+				Node nodeToBeAnalysed = this.globalWorkList.removeFirstElement();
 				this.debugRecursion(nodeToBeAnalysed);
 				this.processWhenNotUpdated(nodeToBeAnalysed);
-			} while (!workList.isEmpty());
+			} while (!globalWorkList.isEmpty());
 		}
 	}
 
@@ -145,7 +145,7 @@ public abstract class IntraProceduralControlFlowAnalysis<F extends FlowAnalysis.
 		// Step 3: Process the successors, if needed.
 		propagateFurther |= inChanged;
 		if (propagateFurther) {
-			workList.addAll(nodeInfo.getCFGInfo().getLeafSuccessors());
+			globalWorkList.addAll(nodeInfo.getCFGInfo().getLeafSuccessors());
 		}
 		return;
 	}
@@ -231,7 +231,7 @@ public abstract class IntraProceduralControlFlowAnalysis<F extends FlowAnalysis.
 		// Step 3: Process the successors.
 		propagateFurther |= inChanged;
 		if (propagateFurther) {
-			this.workList.addAll(nodeInfo.getCFGInfo().getLeafSuccessors());
+			this.globalWorkList.addAll(nodeInfo.getCFGInfo().getLeafSuccessors());
 		}
 	}
 

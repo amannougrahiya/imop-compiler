@@ -286,10 +286,10 @@ public class PredicateAnalysis extends IntraProceduralControlFlowAnalysis<Predic
 		 * processed.
 		 * We add all the entry points of the SCC of each node.
 		 */
-		this.workList.recreate();
+		this.globalWorkList.recreate();
 		for (Node n : nodesToBeUpdated) {
 			if (n.getInfo().isConnectedToProgram()) {
-				this.workList.add(n);
+				this.globalWorkList.add(n);
 			}
 		}
 		// OLD CODE: Now, if we ever find that a node is unconnected to the program, we
@@ -299,8 +299,8 @@ public class PredicateAnalysis extends IntraProceduralControlFlowAnalysis<Predic
 
 		this.safeCurrentSCCNodes = new HashSet<>();
 		this.underApproximated = new HashSet<>();
-		while (!workList.isEmpty()) {
-			Node nodeToBeAnalyzed = workList.removeFirstElement();
+		while (!globalWorkList.isEmpty()) {
+			Node nodeToBeAnalyzed = globalWorkList.removeFirstElement();
 			CFGInfo nInfo = nodeToBeAnalyzed.getInfo().getCFGInfo();
 			if (nInfo.getSCC() == null) {
 				// Here, node itself is an SCC. We do not require two rounds.
@@ -333,7 +333,7 @@ public class PredicateAnalysis extends IntraProceduralControlFlowAnalysis<Predic
 			ReversePath newPath = new ReversePath(n, new ImmutableList<>(new LinkedList<>()));
 			Set<ReversePath> newPathSet = new HashSet<>();
 			newPathSet.add(newPath);
-			this.workList.add(n.getParent().getInfo().getCFGInfo().getNestedCFG().getEnd()); // TODO: Verify.
+			this.globalWorkList.add(n.getParent().getInfo().getCFGInfo().getNestedCFG().getEnd()); // TODO: Verify.
 			return new PredicateAnalysis.PredicateFlowFact(new ImmutableSet<>(newPathSet));
 		} else if (n.getParent() instanceof FunctionDefinition) {
 			ReversePath newPath = new ReversePath(n, new ImmutableList<>(new LinkedList<>()));

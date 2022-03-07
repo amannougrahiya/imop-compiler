@@ -2673,32 +2673,33 @@ public class NodeInfo implements Cloneable {
 
 	public String getDebugString() {
 		List<Commentor> commentors = new ArrayList<>();
-		commentors.add((n) -> {
-			String tempStr = "";
-			// FlowFact flow = n.getInfo().getCurrentIN(AnalysisName.PREDICATE_ANALYSIS);
-			// if (flow != null) {
-			// tempStr += "IN: " + flow.getString();
-			// }
-			FlowFact flow = n.getInfo().getCurrentOUT(AnalysisName.CROSSCALL_PREDICATE_ANALYSIS);
-			if (flow != null) {
-				tempStr += "OUT: " + flow.getString();
-			}
-			return tempStr;
-		});
 		// commentors.add((n) -> {
 		// String tempStr = "";
-		// FlowFact flow;
-		// // flow = n.getInfo().getIN(AnalysisName.POINTSTO);
+		// // FlowFact flow = n.getInfo().getCurrentIN(AnalysisName.PREDICATE_ANALYSIS);
 		// // if (flow != null) {
 		// // tempStr += "IN: " + flow.getString();
 		// // }
-		// // tempStr += "\n";
-		// flow = n.getInfo().getCurrentOUT(AnalysisName.POINTSTO);
+		// FlowFact flow =
+		// n.getInfo().getCurrentOUT(AnalysisName.CROSSCALL_PREDICATE_ANALYSIS);
 		// if (flow != null) {
 		// tempStr += "OUT: " + flow.getString();
 		// }
 		// return tempStr;
 		// });
+		commentors.add((n) -> {
+			String tempStr = "";
+			FlowFact flow;
+			// flow = n.getInfo().getIN(AnalysisName.POINTSTO);
+			// if (flow != null) {
+			// tempStr += "IN: " + flow.getString();
+			// }
+			// tempStr += "\n";
+			flow = n.getInfo().getCurrentOUT(AnalysisName.POINTSTO);
+			if (flow != null) {
+				tempStr += "OUT: " + flow.getString();
+			}
+			return tempStr;
+		});
 		// commentors.add((n) -> {
 		// String tempStr = "[";
 		// for (AbstractPhase<?, ?> ph :

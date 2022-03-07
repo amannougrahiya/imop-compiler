@@ -289,6 +289,7 @@ public class DriverModule {
 		double totTime = (System.nanoTime() - Main.totalTime) / (1.0 * 1e9);
 		double incIDFATime = 0.0;
 		long incIDFATriggers = 0;
+		long transferFunctionSkips = 0;
 		long finalIncNodes = 0;
 		long tarjanCount = 0;
 		double sccTime = 0.0;
@@ -297,6 +298,7 @@ public class DriverModule {
 			System.err.println("\t For " + analysis.getAnalysisName() + ": " + analysis.autoUpdateTriggerCounter);
 			if (analysis.getAnalysisName() == AnalysisName.POINTSTO) {
 				incIDFATriggers = analysis.autoUpdateTriggerCounter;
+				transferFunctionSkips = analysis.transferFunctionsSkipped;
 				// triggerSizeCountList = analysis.localList;
 			}
 		}
@@ -337,12 +339,13 @@ public class DriverModule {
 		DumpSnapshot.forceDumpPointsTo("final" + Program.idfaUpdateCategory + Program.stabilizationIDFAMode);
 		DumpSnapshot.forceDumpAccessedCellSets("final" + Program.idfaUpdateCategory + Program.stabilizationIDFAMode);
 
-		StringBuilder resultString = new StringBuilder(Program.fileName + " " + Program.idfaUpdateCategory + " " + Program.stabilizationIDFAMode + " "
-				+ Program.df2.format(Program.timerForMarking/(1e9*1.0)) + " "
+		StringBuilder resultString = new StringBuilder(Program.fileName + " " + Program.idfaUpdateCategory + " "
+				+ Program.stabilizationIDFAMode + " " + Program.df2.format(Program.timerForMarking / (1e9 * 1.0)) + " "
 				+ Program.df2.format(incIDFATime) + " " + Program.df2.format(totTime) + " " + incIDFATriggers + " "
-				+ finalIncNodes + " " + tarjanCount + " " + Program.df2.format(sccTime));
+				+ transferFunctionSkips + " " + finalIncNodes + " " + tarjanCount + " " + Program.df2.format(sccTime));
 		System.out.println(resultString);
 		System.err.println(resultString);
+		DumpSnapshot.printToFile(FlowAnalysis.nodes, "allNodes" + Program.stabilizationIDFAMode + ".txt");
 
 		System.exit(0);
 	}

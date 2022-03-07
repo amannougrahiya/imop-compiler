@@ -11,6 +11,7 @@ package imop.lib.analysis.flowanalysis.generic;
 import imop.ast.node.external.*;
 import imop.ast.node.internal.*;
 import imop.lib.analysis.CoExistenceChecker;
+import imop.lib.analysis.flowanalysis.SCC;
 import imop.lib.analysis.flowanalysis.generic.AnalysisDimension.ContextDimension;
 import imop.lib.analysis.flowanalysis.generic.AnalysisDimension.SVEDimension;
 import imop.lib.analysis.mhp.AbstractPhase;
@@ -34,7 +35,7 @@ public abstract class DataFlowAnalysis<F extends FlowAnalysis.FlowFact> extends 
 		super(analysisName, analysisDimension);
 	}
 
-	protected final void addAllSiblingBarriersToWorkList(BarrierDirective barrier) {
+	protected final void addAllSiblingBarriersToGlobalWorkList(BarrierDirective barrier) {
 		for (AbstractPhase<?, ?> ph : new HashSet<>(barrier.getInfo().getNodePhaseInfo().getPhaseSet())) {
 			for (AbstractPhasePointable abstractEndingPhasePoint : ph.getEndPoints()) {
 				if (Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.YCON) {
@@ -51,7 +52,7 @@ public abstract class DataFlowAnalysis<F extends FlowAnalysis.FlowFact> extends 
 							&& !CoExistenceChecker.canCoExistInPhase(barrier, siblingBarrier, ph)) {
 						continue;
 					}
-					this.workList.add(siblingBarrier);
+					this.globalWorkList.add(siblingBarrier);
 				} else {
 					PhasePoint endingPhasePoint = (PhasePoint) abstractEndingPhasePoint;
 					if (!(endingPhasePoint.getNode() instanceof BarrierDirective)) {
@@ -66,7 +67,55 @@ public abstract class DataFlowAnalysis<F extends FlowAnalysis.FlowFact> extends 
 							&& !CoExistenceChecker.canCoExistInPhase(barrier, siblingBarrier, ph)) {
 						continue;
 					}
-					this.workList.add(siblingBarrier);
+					this.globalWorkList.add(siblingBarrier);
+				}
+			}
+		}
+	}
+
+	protected final void addAllSiblingBarriersToWorkList(BarrierDirective barrier, SCC thisSCC) {
+		for (AbstractPhase<?, ?> ph : new HashSet<>(barrier.getInfo().getNodePhaseInfo().getPhaseSet())) {
+			for (AbstractPhasePointable abstractEndingPhasePoint : ph.getEndPoints()) {
+				if (Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.YCON) {
+					YPhasePoint endingPhasePoint = (YPhasePoint) abstractEndingPhasePoint;
+					if (!(endingPhasePoint.getNode() instanceof BarrierDirective)) {
+						continue;
+					}
+					BarrierDirective siblingBarrier = (BarrierDirective) endingPhasePoint.getNode();
+					if (siblingBarrier == barrier) {
+						continue;
+					}
+					if (Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.ICON
+							&& this.analysisDimension.getSVEDimension() == SVEDimension.SVE_SENSITIVE
+							&& !CoExistenceChecker.canCoExistInPhase(barrier, siblingBarrier, ph)) {
+						continue;
+					}
+					SCC siblingSCC = siblingBarrier.getInfo().getCFGInfo().getSCC();
+					if (siblingSCC == null || siblingSCC != thisSCC) {
+						this.globalWorkList.add(siblingBarrier);
+					} else {
+						this.intraSCCWorkList.add(siblingBarrier);
+					}
+				} else {
+					PhasePoint endingPhasePoint = (PhasePoint) abstractEndingPhasePoint;
+					if (!(endingPhasePoint.getNode() instanceof BarrierDirective)) {
+						continue;
+					}
+					BarrierDirective siblingBarrier = (BarrierDirective) endingPhasePoint.getNode();
+					if (siblingBarrier == barrier) {
+						continue;
+					}
+					if (Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.ICON
+							&& this.analysisDimension.getSVEDimension() == SVEDimension.SVE_SENSITIVE
+							&& !CoExistenceChecker.canCoExistInPhase(barrier, siblingBarrier, ph)) {
+						continue;
+					}
+					SCC siblingSCC = siblingBarrier.getInfo().getCFGInfo().getSCC();
+					if (siblingSCC == null || siblingSCC != thisSCC) {
+						this.globalWorkList.add(siblingBarrier);
+					} else {
+						this.intraSCCWorkList.add(siblingBarrier);
+					}
 				}
 			}
 		}

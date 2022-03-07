@@ -4009,6 +4009,9 @@ public class Misc {
 		 * in the built-in files.
 		 */
 		if (disconnected) {
+			if (Program.getRoot() == null) {
+				FrontEnd.parseAndNormalize("int main() {}", TranslationUnit.class);
+			}
 			HashMap<String, Symbol> symbolTable = Program.getRoot().getInfo().getSymbolTable();
 			if (symbolTable.containsKey(name)) {
 				return symbolTable.get(name);
