@@ -20,7 +20,7 @@ public class Demo0 {
 	 * messages printed to STDERR, by Program.parseNormalizeInput().
 	 *
 	 * Note 2: For these demo programs, we hard-code the example input
-	 * (runner/pldi-eg/example.i), using the "-f" switch.
+	 * (runner/cgo-eg/example.i), using the "-f" switch.
 	 * We also use another switch, "-nru" to instruct IMOP to not remove unused
 	 * variables/functions.
 	 *
