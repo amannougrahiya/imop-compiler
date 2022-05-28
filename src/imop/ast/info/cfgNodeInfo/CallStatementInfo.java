@@ -22,6 +22,7 @@ import imop.lib.util.CellList;
 import imop.lib.util.ImmutableCellSet;
 import imop.lib.util.Misc;
 import imop.lib.util.ProfileSS;
+import imop.parser.Program;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -121,14 +122,25 @@ public class CallStatementInfo extends StatementInfo {
 				Cell funcDesig = this.getFunctionDesignator();
 				if (funcDesig != null) {
 					ImmutableCellSet set = funcDesig.getPointsTo(this.getNode());
-					set.applyAllExpanded((cell) -> {
-						if (cell instanceof Symbol) {
-							Symbol sym = (Symbol) cell;
-							if (sym.getDeclaringNode() instanceof FunctionDefinition) {
-								calledDefinitions.add((FunctionDefinition) sym.getDeclaringNode());
+					if (set.isUniversal()) {
+						// New Code: Now we do not add definition for main
+						for (FunctionDefinition fd : Program.getRoot().getInfo().getAllFunctionDefinitions()) {
+							if (fd != Program.getRoot().getInfo().getMainFunction()) {
+								calledDefinitions.add(fd);
 							}
 						}
-					});
+						// Old Code: We were adding all the function definitions.
+						// calledDefinitions.addAll(Program.getRoot().getInfo().getAllFunctionDefinitions());
+					} else {
+						set.applyAllExpanded((cell) -> {
+							if (cell instanceof Symbol) {
+								Symbol sym = (Symbol) cell;
+								if (sym.getDeclaringNode() instanceof FunctionDefinition) {
+									calledDefinitions.add((FunctionDefinition) sym.getDeclaringNode());
+								}
+							}
+						});
+					}
 				}
 			} else {
 				Cell cell = this.getFunctionDesignator();

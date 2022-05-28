@@ -518,10 +518,10 @@ public abstract class FlowAnalysis<F extends FlowAnalysis.FlowFact> extends GJDe
 	 * @param node
 	 */
 	protected final void debugRecursion(Node node) {
-		FlowAnalysis.nodes += (node instanceof BeginNode || node instanceof EndNode)
-				? (node.getParent().getClass().getSimpleName()
-						+ ((node instanceof BeginNode) ? ".BeginNode\n" : ".EndNode\n"))
-				: node.toString() + "\n";
+		// FlowAnalysis.nodes += (node instanceof BeginNode || node instanceof EndNode)
+		// ? (node.getParent().getClass().getSimpleName()
+		// + ((node instanceof BeginNode) ? ".BeginNode\n" : ".EndNode\n"))
+		// : node.toString() + "\n";
 		nodesProcessed++;
 		// localCount++;
 		Integer nodeProcessCount = tempMap.get(node);

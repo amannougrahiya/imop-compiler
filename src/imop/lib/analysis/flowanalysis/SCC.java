@@ -13,15 +13,20 @@ import imop.ast.node.external.*;
 import imop.ast.node.internal.*;
 import imop.lib.analysis.CoExistenceChecker;
 import imop.lib.analysis.flowanalysis.generic.AnalysisDimension.SVEDimension;
+import imop.lib.analysis.flowanalysis.generic.CellularDataFlowAnalysis;
 import imop.lib.analysis.mhp.AbstractPhase;
 import imop.lib.analysis.mhp.AbstractPhasePointable;
 import imop.lib.cfg.info.CFGInfo;
 import imop.lib.cfg.parallel.InterTaskEdge;
+import imop.lib.util.CellSet;
+import imop.lib.util.Misc;
 import imop.lib.util.TraversalOrderObtainer;
 import imop.parser.Program;
 
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.Stack;
 
@@ -45,7 +50,7 @@ public class SCC implements DFable {
 	private static int tarjanI;
 	private static int currentNonCircularSCCCount = -1;
 
-	private static Set<SCC> allSCCs = new HashSet<>();
+	public static Set<SCC> allSCCs = new HashSet<>();
 	private static Set<Node> allSCCNodes = new HashSet<>();
 
 	public static void setCurrentNonCircularSCCCount(int count) {
@@ -360,6 +365,39 @@ public class SCC implements DFable {
 			}
 		}
 		return returnSet;
+	}
+
+	public boolean processKeyDependenceGraphForAnalysis(CellularDataFlowAnalysis<?> dfa, Set<Node> thisSeeds) {
+		Map<Cell, Set<Cell>> adjacencyListMap = new HashMap<>();
+		Set<Node> allImpacted = new HashSet<>();
+		for (Node seed : thisSeeds) {
+			allImpacted.add(seed);
+			if (seed instanceof BeginNode) {
+				allImpacted.addAll(seed.getParent().getInfo().getCFGInfo().getIntraTaskCFGLeafContents());
+			}
+		}
+		for (Node node : allImpacted) {
+			if (!node.getInfo().hasAccessedCellSetsFor(dfa)) {
+				continue;
+			}
+			for (Cell sourceCell : node.getInfo().getReadCellSets(dfa)) {
+				Set<Cell> neighbours = adjacencyListMap.get(sourceCell);
+				if (neighbours == null) {
+					neighbours = new HashSet<>();
+					adjacencyListMap.put(sourceCell, neighbours);
+				}
+				neighbours.addAll(node.getInfo().getWrittenCellSets(dfa));
+			}
+		}
+
+		// Check if a cycle exists in adjacencyListMap.
+		boolean foundACycle = false;
+		for (Cell src : adjacencyListMap.keySet()) {
+			foundACycle |= TraversalOrderObtainer.containsACycle(src, node -> {
+				return adjacencyListMap.get(node);
+			});
+		}
+		return foundACycle;
 	}
 
 }

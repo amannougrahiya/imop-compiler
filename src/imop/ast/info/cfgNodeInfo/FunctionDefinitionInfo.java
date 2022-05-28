@@ -2,7 +2,7 @@
  * Copyright (c) 2019 Aman Nougrahiya, V Krishna Nandivada, IIT Madras.
  * This file is a part of the project IMOP, licensed under the MIT license.
  * See LICENSE.md for the full text of the license.
- * 
+ *
  * The above notice shall be included in all copies or substantial
  * portions of this file.
  */
@@ -30,7 +30,7 @@ import java.util.*;
 
 /**
  * This class holds the information specific to a FunctionDefinition node.
- * 
+ *
  * @author aman
  *
  */
@@ -401,17 +401,31 @@ public class FunctionDefinitionInfo extends NodeInfo {
 	/**
 	 * Returns a set of all those call-sites in the known part of the program
 	 * which may call this function-definition.
-	 * 
+	 *
 	 * @return
 	 */
 	public Set<CallStatement> getCallersOfThis() {
 		ProfileSS.addRelevantChangePoint(ProfileSS.cgSet);
 		Set<CallStatement> possibleSites = new HashSet<>();
-		for (CallStatement callSite : Program.getRoot().getInfo().getLexicallyEnclosedCallStatements()) {
-			for (FunctionDefinition funcDef : callSite.getInfo().getCalledDefinitions()) {
-				if (funcDef.equals(getNode())) {
-					possibleSites.add(callSite);
-					break;
+		if (Program.getRoot().getInfo().getMainFunction() == null) {
+			for (CallStatement callSite : Program.getRoot().getInfo().getLexicallyEnclosedCallStatements()) {
+				for (FunctionDefinition funcDef : callSite.getInfo().getCalledDefinitions()) {
+					if (funcDef.equals(getNode())) {
+						possibleSites.add(callSite);
+						break;
+					}
+				}
+			}
+		} else {
+			// for (CallStatement callSite :
+			// Program.getRoot().getInfo().getLexicallyEnclosedCallStatements()) {
+			for (CallStatement callSite : Program.getRoot().getInfo().getMainFunction().getInfo()
+					.getReachableCallStatementsInclusive()) {
+				for (FunctionDefinition funcDef : callSite.getInfo().getCalledDefinitions()) {
+					if (funcDef.equals(getNode())) {
+						possibleSites.add(callSite);
+						break;
+					}
 				}
 			}
 		}
@@ -421,7 +435,7 @@ public class FunctionDefinitionInfo extends NodeInfo {
 	/**
 	 * Returns a set of all those call-sites in the known part of the program
 	 * which may call this function-definition.
-	 * 
+	 *
 	 * @return
 	 * @deprecated
 	 */

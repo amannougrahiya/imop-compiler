@@ -29,6 +29,7 @@ import imop.lib.analysis.flowanalysis.controlflow.CrossCallPredicateAnalysis;
 import imop.lib.analysis.flowanalysis.dataflow.*;
 import imop.lib.analysis.flowanalysis.dataflow.CopyPropagationAnalysis.CopyPropagationFlowMap;
 import imop.lib.analysis.flowanalysis.dataflow.DataDependenceForward.DataDependenceForwardFF;
+import imop.lib.analysis.flowanalysis.dataflow.PointsToAnalysis.PointsToFlowMap;
 import imop.lib.analysis.flowanalysis.dataflow.ReachingDefinitionAnalysis.ReachingDefinitionFlowMap;
 import imop.lib.analysis.flowanalysis.generic.AnalysisName;
 import imop.lib.analysis.flowanalysis.generic.CellularDataFlowAnalysis;
@@ -96,6 +97,8 @@ public class NodeInfo implements Cloneable {
 
 	protected CellSet impactedSet;
 	protected Map<CellularDataFlowAnalysis<?>, CellSet> accessedCellSets;
+	protected Map<CellularDataFlowAnalysis<?>, CellSet> readCellSets;
+	protected Map<CellularDataFlowAnalysis<?>, CellSet> writtenCellSets;
 
 	protected CFGInfo cfgInfo;
 	private NodePhaseInfo phaseInfo;
@@ -725,6 +728,25 @@ public class NodeInfo implements Cloneable {
 		if (flowFactsIN == null) {
 			flowFactsIN = new HashMap<>();
 		}
+		// /*
+		// * Debugging code starts.
+		// */
+		// if (flowFact instanceof PointsToFlowMap) {
+		// PointsToFlowMap map = (PointsToFlowMap) flowFact;
+		// for (Cell key : map.getFlowMap().keySet()) {
+		// if (!key.toString().contains("363")) {
+		// continue;
+		// }
+		// ImmutableCellSet ics = map.getFlowMap().get(key);
+		// if (ics.size() == 2) {
+		// System.err.println("Found 363 in IN.");
+		// }
+		// }
+		// }
+		// /*
+		// * Debugging code ends.
+		// */
+
 		FlowFact oldIN = flowFactsIN.get(analysisName);
 		if (oldIN == flowFact) {
 			return;
@@ -840,6 +862,26 @@ public class NodeInfo implements Cloneable {
 		if (flowFactsOUT == null) {
 			flowFactsOUT = new HashMap<>();
 		}
+
+		// /*
+		// * Debugging code starts.
+		// */
+		// if (flowFact instanceof PointsToFlowMap) {
+		// PointsToFlowMap map = (PointsToFlowMap) flowFact;
+		// for (Cell key : map.getFlowMap().keySet()) {
+		// if (!key.toString().contains("363")) {
+		// continue;
+		// }
+		// ImmutableCellSet ics = map.getFlowMap().get(key);
+		// if (ics.size() == 2) {
+		// System.err.println("Found 363 in OUT.");
+		// }
+		// }
+		// }
+		// /*
+		// * Debugging code ends.
+		// */
+
 		FlowFact oldOUT = flowFactsOUT.get(analysisName);
 		if (oldOUT == flowFact) {
 			return;
@@ -867,6 +909,20 @@ public class NodeInfo implements Cloneable {
 		return this.accessedCellSets.keySet().contains(analysis);
 	}
 
+	public boolean hasReadCellSetsFor(CellularDataFlowAnalysis<?> analysis) {
+		if (this.readCellSets == null) {
+			return false;
+		}
+		return this.readCellSets.keySet().contains(analysis);
+	}
+
+	public boolean hasWrittenCellSetsFor(CellularDataFlowAnalysis<?> analysis) {
+		if (this.writtenCellSets == null) {
+			return false;
+		}
+		return this.writtenCellSets.keySet().contains(analysis);
+	}
+
 	public CellSet getAccessedCellSets(AnalysisName analysisName) {
 		if (this.accessedCellSets == null) {
 			return new CellSet();
@@ -879,12 +935,52 @@ public class NodeInfo implements Cloneable {
 		return new CellSet();
 	}
 
+	public CellSet getReadCellSets(AnalysisName analysisName) {
+		if (this.readCellSets == null) {
+			return new CellSet();
+		}
+		for (CellularDataFlowAnalysis<?> analysis : this.readCellSets.keySet()) {
+			if (analysis.getAnalysisName().equals(analysisName)) {
+				return this.readCellSets.get(analysis);
+			}
+		}
+		return new CellSet();
+	}
+
+	public CellSet getWrittenCellSets(AnalysisName analysisName) {
+		if (this.writtenCellSets == null) {
+			return new CellSet();
+		}
+		for (CellularDataFlowAnalysis<?> analysis : this.writtenCellSets.keySet()) {
+			if (analysis.getAnalysisName().equals(analysisName)) {
+				return this.writtenCellSets.get(analysis);
+			}
+		}
+		return new CellSet();
+	}
+
 	public Set<CellularDataFlowAnalysis<?>> getAnalysesWithAccessedCells() {
 		Set<CellularDataFlowAnalysis<?>> retSet = new HashSet<>();
 		if (this.accessedCellSets == null) {
 			return retSet;
 		}
 		return this.accessedCellSets.keySet();
+	}
+
+	public Set<CellularDataFlowAnalysis<?>> getAnalysesWithReadCells() {
+		Set<CellularDataFlowAnalysis<?>> retSet = new HashSet<>();
+		if (this.readCellSets == null) {
+			return retSet;
+		}
+		return this.readCellSets.keySet();
+	}
+
+	public Set<CellularDataFlowAnalysis<?>> getAnalysesWithWrittenCells() {
+		Set<CellularDataFlowAnalysis<?>> retSet = new HashSet<>();
+		if (this.writtenCellSets == null) {
+			return retSet;
+		}
+		return this.writtenCellSets.keySet();
 	}
 
 	public CellSet getAccessedCellSets(CellularDataFlowAnalysis<?> analysis) {
@@ -899,11 +995,59 @@ public class NodeInfo implements Cloneable {
 		return retSet;
 	}
 
+	public CellSet getReadCellSets(CellularDataFlowAnalysis<?> analysis) {
+		if (readCellSets == null) {
+			readCellSets = new HashMap<>();
+		}
+		CellSet retSet = readCellSets.get(analysis);
+		if (retSet == null) {
+			retSet = new CellSet();
+			readCellSets.put(analysis, retSet);
+		}
+		return retSet;
+	}
+
+	public CellSet getWrittenCellSets(CellularDataFlowAnalysis<?> analysis) {
+		if (writtenCellSets == null) {
+			writtenCellSets = new HashMap<>();
+		}
+		CellSet retSet = writtenCellSets.get(analysis);
+		if (retSet == null) {
+			retSet = new CellSet();
+			writtenCellSets.put(analysis, retSet);
+		}
+		return retSet;
+	}
+
 	public void clearAccessedCellSets(CellularDataFlowAnalysis<?> analysis) {
 		if (accessedCellSets == null) {
 			return;
 		}
 		CellSet retSet = accessedCellSets.get(analysis);
+		if (retSet == null) {
+			return;
+		}
+		retSet.clear();
+		return;
+	}
+
+	public void clearReadCellSets(CellularDataFlowAnalysis<?> analysis) {
+		if (readCellSets == null) {
+			return;
+		}
+		CellSet retSet = readCellSets.get(analysis);
+		if (retSet == null) {
+			return;
+		}
+		retSet.clear();
+		return;
+	}
+
+	public void clearWrittenCellSets(CellularDataFlowAnalysis<?> analysis) {
+		if (writtenCellSets == null) {
+			return;
+		}
+		CellSet retSet = writtenCellSets.get(analysis);
 		if (retSet == null) {
 			return;
 		}

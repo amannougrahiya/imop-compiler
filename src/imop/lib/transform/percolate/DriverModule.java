@@ -28,6 +28,7 @@ import imop.lib.analysis.flowanalysis.controlflow.ReversePath;
 import imop.lib.analysis.flowanalysis.generic.AnalysisDimension.SVEDimension;
 import imop.lib.analysis.flowanalysis.generic.AnalysisName;
 import imop.lib.analysis.flowanalysis.generic.FlowAnalysis;
+import imop.lib.analysis.flowanalysis.generic.InterThreadForwardCellularAnalysis;
 import imop.lib.analysis.mhp.AbstractPhase;
 import imop.lib.analysis.mhp.DependenceCounter;
 import imop.lib.analysis.mhp.incMHP.BeginPhasePoint;
@@ -52,6 +53,7 @@ import imop.lib.transform.CopyEliminator;
 import imop.lib.transform.simplify.*;
 import imop.lib.transform.updater.InsertImmediatePredecessor;
 import imop.lib.transform.updater.InsertOnTheEdge;
+import imop.lib.transform.updater.sideeffect.RemovedDeadCode;
 import imop.lib.util.*;
 import imop.parser.FrontEnd;
 import imop.parser.Program;
@@ -279,12 +281,28 @@ public class DriverModule {
 		// assert !Program.isPrePassPhase : "The input program should have been
 		// preprocessed already by IMOP.";
 
+		System.err.println("Pass: Removing declarations for unused elements.");
+		Program.getRoot().getInfo().removeUnusedElements();
+
+		System.err.println("Pass: Merging parallel regions.");
 		ParallelConstructExpander.mergeParallelRegions(Program.getRoot());
+
+		System.err.println("Pass: Removing redundant barriers.");
 		RedundantSynchronizationRemovalForYA.removeBarriers(Program.getRoot());
+
 		// Uncomment these:
-		// FunctionDefinition mainFunc = Program.getRoot().getInfo().getMainFunction();
-		// FunctionInliner.inline(mainFunc);
-		// RedundantSynchronizationRemovalForYA.removeBarriers(Program.getRoot());
+		System.err.println("Pass: Inlining function-calls, selectively. (See notes on BarrElim.)");
+		FunctionDefinition mainFunc = Program.getRoot().getInfo().getMainFunction();
+		FunctionInliner.inline(mainFunc);
+
+		System.err.println("Pass: Removing declarations for unused elements.");
+		Program.getRoot().getInfo().removeUnusedElements();
+
+		System.err.println("Pass: Removing redundant barriers.");
+		RedundantSynchronizationRemovalForYA.removeBarriers(Program.getRoot());
+
+		System.err.println("Pass: Removing declarations for unused elements.");
+		Program.getRoot().getInfo().removeUnusedElements();
 
 		double totTime = (System.nanoTime() - Main.totalTime) / (1.0 * 1e9);
 		double incIDFATime = 0.0;
@@ -293,6 +311,11 @@ public class DriverModule {
 		long finalIncNodes = 0;
 		long tarjanCount = 0;
 		double sccTime = 0.0;
+
+		DumpSnapshot.forceDumpRoot("imop_output_" + Program.idfaUpdateCategory);
+		DumpSnapshot.forceDumpPointsTo("final" + Program.idfaUpdateCategory + Program.stabilizationIDFAMode);
+		DumpSnapshot.forceDumpAccessedCellSets("final" + Program.idfaUpdateCategory + Program.stabilizationIDFAMode);
+
 		System.err.println("Number of times IDFA update were triggered -- ");
 		for (FlowAnalysis<?> analysis : FlowAnalysis.getAllAnalyses().values()) {
 			System.err.println("\t For " + analysis.getAnalysisName() + ": " + analysis.autoUpdateTriggerCounter);
@@ -335,14 +358,14 @@ public class DriverModule {
 		System.err.println("IncIDFA Time: " + incIDFATime + "s.");
 		System.err.println("TOTAL TIME (including disk I/O time): " + totTime + "s.");
 		System.err.println("This execution ran in " + Program.idfaUpdateCategory + " mode for IDFA update");
-		DumpSnapshot.forceDumpRoot("imop_output_" + Program.idfaUpdateCategory);
-		DumpSnapshot.forceDumpPointsTo("final" + Program.idfaUpdateCategory + Program.stabilizationIDFAMode);
-		DumpSnapshot.forceDumpAccessedCellSets("final" + Program.idfaUpdateCategory + Program.stabilizationIDFAMode);
 
 		StringBuilder resultString = new StringBuilder(Program.fileName + " " + Program.idfaUpdateCategory + " "
-				+ Program.stabilizationIDFAMode + " " + Program.df2.format(Program.timerForMarking / (1e9 * 1.0)) + " "
-				+ Program.df2.format(incIDFATime) + " " + Program.df2.format(totTime) + " " + incIDFATriggers + " "
-				+ transferFunctionSkips + " " + finalIncNodes + " " + tarjanCount + " " + Program.df2.format(sccTime));
+				+ Program.stabilizationIDFAMode + " " + ((Program.useAccessedCellsWithExhaustive) ? "AE \t" : "NAE \t")
+				+ Program.df2.format(Program.timerForMarking / (1e9 * 1.0)) + " " + Program.df2.format(incIDFATime)
+				+ " " + Program.df2.format(totTime) + " " + incIDFATriggers + " " + transferFunctionSkips + " "
+				+ finalIncNodes + " " + tarjanCount + " " + Program.df2.format(sccTime) + " "
+				+ InterThreadForwardCellularAnalysis.innerCount + " "
+				+ Program.df2.format(InterThreadForwardCellularAnalysis.innerTimer / (1e9 * 1.0)));
 		System.out.println(resultString);
 		System.err.println(resultString);
 		DumpSnapshot.printToFile(FlowAnalysis.nodes, "allNodes" + Program.stabilizationIDFAMode + ".txt");

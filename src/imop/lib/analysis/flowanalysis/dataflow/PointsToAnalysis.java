@@ -409,7 +409,17 @@ public class PointsToAnalysis extends InterThreadForwardCellularAnalysis<PointsT
 					s3 = s1;
 				} else {
 					CellSet newSet = new CellSet(s1);
-					newSet.addAll(s2);
+					if (Program.retainNullCellsInPTAMaps) {
+						newSet.addAll(s2);
+					} else {
+						while (newSet.remove(Cell.getNullCell()))
+							;
+						for (Cell c : s2) {
+							if (c != Cell.getNullCell()) {
+								newSet.add(c);
+							}
+						}
+					}
 					s3 = new ImmutableCellSet(newSet);
 				}
 			}

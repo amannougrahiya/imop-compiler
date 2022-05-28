@@ -205,6 +205,7 @@ public class Program {
 													// of relevant CPs.
 
 	public static CPredAMode cpaMode = CPredAMode.H1H2H3; // The default mode is H1H2H3.
+	public static boolean temporaryFlagToDisableSymbolsAtDummyFlushes = false;
 
 	public static void rememberInitialPhasesIfRequired() {
 		if (Program.getRoot() == null) {
@@ -226,6 +227,11 @@ public class Program {
 		return;
 	}
 
+	// possible.
+	public static boolean checkForCyclesInKeyDependenceGraph = false; // A profiling flag. Disable for normal
+																		// runs.
+	public static boolean useAccessedCellsWithExhaustive = false;
+
 	/**
 	 * Sets the various defaults for global flags (and filenames), which will be
 	 * used in the absence of any command-line
@@ -239,7 +245,7 @@ public class Program {
 		 * For IncIDFA -->
 		 *
 		 */
-		Program.isPrePassPhase = true; // Leave as false when working with IMOP-preprocessed files.
+		Program.isPrePassPhase = false; // Leave as false when working with IMOP-preprocessed files.
 		Program.removeUnused = true; // Leave as true, to weed out dead definitions and declarations.
 		Program.idfaUpdateCategory = UpdateCategory.LZUPD; // Leave as LZUPD. Now we use stabilizationIDFAMode as the
 															// flag for IncIDFA results.
@@ -291,7 +297,7 @@ public class Program {
 		}
 
 		String filePath = "";
-		filePath = ("../tests/classB-preproc/bt-b.i");
+		// filePath = ("../tests/classB-preproc/bt-b.i");
 		// filePath = ("../tests/classB-preproc/cg-b.i");
 		// filePath = ("../tests/classB-preproc/ep-b.i");
 		// filePath = ("../tests/classB-preproc/ft-b.i");
@@ -305,21 +311,26 @@ public class Program {
 		// filePath = ("../tests/bt-contextsensitivity.i");
 		// filePath = ("../tests/bt-recursivequery.i");
 		// filePath = ("../tests/btsmall.i");
-		filePath = ("../tests/npb-post/cg3-0.i");
-		filePath = ("../tests/cg3-small.i");
+		// filePath = ("../tests/npb-post/cg3-0.i");
+		// filePath = ("../tests/cg3-small.i");
 		// filePath = ("../tests/npb-post/ep3-0.i");
-		// filePath = ("../tests/npb-post/ft3-0.i");
-		// filePath = ("../tests/npb-post/is3-0.i");
+		filePath = ("../tests/npb-post/ft3-0.i");
+		// filePath = ("../tests/ft3-small.i");
+		filePath = ("../tests/npb-post/is3-0.i");
+		filePath = ("../tests/is-small.i");
 		// filePath = ("../tests/npb-post/lu3-0.i");
+		// filePath = ("../tests/lu-small.i");
 		// filePath = ("../tests/npb-post/mg3-0.i");
+		// filePath = ("../tests/tExample5.i");
+		// filePath = ("../tests/mg3-small.i");
 		// filePath = ("../tests/npb-post/sp3-0.i");
 		//
 		// filePath = ("../tests/quake-postpass.i");
-		// filePath = ("../tests/scanner-postpass.i");
 		// filePath = ("../tests/amgmk-postpass.i");
 		// filePath = ("../tests/amgmk-small.i");
 		// filePath = ("../tests/clomp-postpass.i");
 		// filePath = ("../tests/stream-postpass.i");
+		// filePath = ("../tests/scanner-postpass.i");
 		//
 		// filePath = "../output-dump/imop_useful.i";
 		// filePath = ("../src/imop/lib/testcases/cfgTests/singleLooping.c");
@@ -564,6 +575,12 @@ public class Program {
 				Program.concurrencyAlgorithm = ConcurrencyAlgorithm.YCON;
 				Program.sveSensitive = SVEDimension.SVE_SENSITIVE;
 				Program.sveSensitivityOfIDFAEdges = SVEDimension.SVE_SENSITIVE;
+			}
+			if (str.equals("--accessedExhaustive") || str.equals("-ae")) {
+				Program.useAccessedCellsWithExhaustive = true;
+			}
+			if (str.equals("--noAccessedExhaustive") || str.equals("-nae")) {
+				Program.useAccessedCellsWithExhaustive = false;
 			}
 			if (str.equals("--icon") || str.equals("-icon")) {
 				Program.concurrencyAlgorithm = ConcurrencyAlgorithm.ICON;
@@ -873,6 +890,7 @@ public class Program {
 	}
 
 	private static boolean disableCellPointees = true;
+	public static boolean retainNullCellsInPTAMaps = false; // Decides whether PTA maps of the form {nullCell, a, b} are
 
 	/**
 	 * Obtain a set of all those cells that may point to a symbol.

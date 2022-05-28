@@ -79,7 +79,7 @@ public class Main {
 	public static boolean timerOn = false;
 
 	public static void main(String[] args) throws FileNotFoundException, InterruptedException {
-		// Thread.sleep(5000);
+		// Thread.sleep(10000);
 		totalTime = System.nanoTime();
 		Program.parseNormalizeInput(args);
 		// DumpSnapshot.forceDumpPointsTo("init");

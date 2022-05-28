@@ -328,6 +328,7 @@ public class AutomatedUpdater {
 	 *                before the node has actually been removed.
 	 */
 	public static void updateSymbolsAtDummyFlushesUponRemoval(Node oldNode) {
+		if (Program.temporaryFlagToDisableSymbolsAtDummyFlushes) return;
 		oldNode = Misc.getCFGNodeFor(oldNode);
 		Node backwardStartPoint;
 		Node forwardStartPoint;
@@ -390,6 +391,7 @@ public class AutomatedUpdater {
 	 *                a node that has been inserted at a certain point in the CFG.
 	 */
 	public static void updateSymbolsAtDummyFlushesUponAddition(Node newNode) {
+		if (Program.temporaryFlagToDisableSymbolsAtDummyFlushes) return;
 		newNode = Misc.getCFGNodeFor(newNode);
 		Node backwardStartPoint;
 		Node forwardStartPoint;

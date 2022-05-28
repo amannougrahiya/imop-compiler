@@ -55,6 +55,34 @@ public class ExtensibleCellMap<V extends Immutable> extends CellMap<V> {
 		nap.node.getInfo().getAccessedCellSets(nap.analysis).addAll(set);
 	}
 
+	private static void addCellsAsRead(Set<Cell> set) {
+		if (set == null || set.isEmpty()) {
+			return;
+		}
+		if (CellularDataFlowAnalysis.nodeAnalysisStack.isEmpty()) {
+			return;
+		}
+		NodeAnalysisPair nap = CellularDataFlowAnalysis.nodeAnalysisStack.peek();
+		if (nap == null) {
+			return;
+		}
+		nap.node.getInfo().getReadCellSets(nap.analysis).addAll(set);
+	}
+
+	private static void addCellsAsWritten(Set<Cell> set) {
+		if (set == null || set.isEmpty()) {
+			return;
+		}
+		if (CellularDataFlowAnalysis.nodeAnalysisStack.isEmpty()) {
+			return;
+		}
+		NodeAnalysisPair nap = CellularDataFlowAnalysis.nodeAnalysisStack.peek();
+		if (nap == null) {
+			return;
+		}
+		nap.node.getInfo().getWrittenCellSets(nap.analysis).addAll(set);
+	}
+
 	/**
 	 * Return true if and only if this call has been made with following two
 	 * conditions: (i) it is called from the context of a transfer function, and
@@ -106,6 +134,46 @@ public class ExtensibleCellMap<V extends Immutable> extends CellMap<V> {
 		nap.node.getInfo().getAccessedCellSets(nap.analysis).add(cell);
 	}
 
+	private static void addCellAsRead(Cell cell) {
+		if (cell == null) {
+			return;
+		}
+		if (CellularDataFlowAnalysis.nodeAnalysisStack.isEmpty()) {
+			return;
+		}
+		NodeAnalysisPair nap = CellularDataFlowAnalysis.nodeAnalysisStack.peek();
+		if (nap == null) {
+			return;
+		}
+		// if (cell == Cell.genericCell) {
+		// assert (false)
+		// : "Disable this assert error, if you are okay with adding a generic cell to
+		// the list of read cells at node"
+		// + nap.node;
+		// }
+		nap.node.getInfo().getReadCellSets(nap.analysis).add(cell);
+	}
+
+	private static void addCellAsWritten(Cell cell) {
+		if (cell == null) {
+			return;
+		}
+		if (CellularDataFlowAnalysis.nodeAnalysisStack.isEmpty()) {
+			return;
+		}
+		NodeAnalysisPair nap = CellularDataFlowAnalysis.nodeAnalysisStack.peek();
+		if (nap == null) {
+			return;
+		}
+		// if (cell == Cell.genericCell) {
+		// assert (false)
+		// : "Disable this assert error, if you are okay with adding a generic cell to
+		// the list of written cells at node"
+		// + nap.node;
+		// }
+		nap.node.getInfo().getWrittenCellSets(nap.analysis).add(cell);
+	}
+
 	public ExtensibleCellMap() {
 		this.internalRepresentation = new HashMap<>();
 		this.keysNotPresent = null;
@@ -128,12 +196,14 @@ public class ExtensibleCellMap<V extends Immutable> extends CellMap<V> {
 		this.maxLinkLength = maxLinkLength;
 		this.commonConstruction(fallBackMap);
 		ExtensibleCellMap.addCellsAsAccessed(fallBackMap.keySet());
+		ExtensibleCellMap.addCellsAsWritten(fallBackMap.keySet());
 	}
 
 	public ExtensibleCellMap(ExtensibleCellMap<V> fallBackMap) {
 		this.maxLinkLength = LINKLENGTH;
 		this.commonConstruction(fallBackMap);
 		ExtensibleCellMap.addCellsAsAccessed(fallBackMap.keySet());
+		ExtensibleCellMap.addCellsAsWritten(fallBackMap.keySet());
 	}
 
 	public ExtensibleCellMap(CellularFlowMap<V> thatFlowMap) {
@@ -232,6 +302,7 @@ public class ExtensibleCellMap<V extends Immutable> extends CellMap<V> {
 		if (this.isCalledDirectlyFromTransferFunction()) {
 			assert (false);
 			ExtensibleCellMap.addCellAsAccessed(Cell.genericCell);
+			ExtensibleCellMap.addCellAsRead(Cell.genericCell);
 		}
 		if (this.containsUniversal) {
 			return true;
@@ -296,6 +367,7 @@ public class ExtensibleCellMap<V extends Immutable> extends CellMap<V> {
 		if (this.isCalledDirectlyFromTransferFunction()) {
 			assert (false);
 			ExtensibleCellMap.addCellAsAccessed(Cell.genericCell);
+			ExtensibleCellMap.addCellAsRead(Cell.genericCell);
 		}
 		if (this.isUniversal()) {
 			int notPresent = (this.keysNotPresent == null) ? 0 : this.keysNotPresent.size();
@@ -323,6 +395,7 @@ public class ExtensibleCellMap<V extends Immutable> extends CellMap<V> {
 		if (this.connectsToFlowMaps && this.isCalledDirectlyFromTransferFunction()) {
 			assert (false);
 			ExtensibleCellMap.addCellAsAccessed(Cell.genericCell);
+			ExtensibleCellMap.addCellAsRead(Cell.genericCell);
 		}
 		if (this.internalRepresentation.isEmpty()) {
 			if (this.fallBackMap == null) {
@@ -351,6 +424,7 @@ public class ExtensibleCellMap<V extends Immutable> extends CellMap<V> {
 	protected boolean containsKey(Cell key, ConvertMode convertMode) {
 		if (this.isCalledDirectlyFromTransferFunction()) {
 			ExtensibleCellMap.addCellAsAccessed(key);
+			// ExtensibleCellMap.addCellAsRead(key);
 		}
 		if (keysNotPresent != null && keysNotPresent.contains(key)) {
 			return false;
@@ -410,6 +484,7 @@ public class ExtensibleCellMap<V extends Immutable> extends CellMap<V> {
 		}
 		if (this.isCalledDirectlyFromTransferFunction()) {
 			ExtensibleCellMap.addCellAsAccessed(key);
+			ExtensibleCellMap.addCellAsRead(key);
 		}
 		return this.get(key, ConvertMode.ON);
 	}
@@ -467,8 +542,25 @@ public class ExtensibleCellMap<V extends Immutable> extends CellMap<V> {
 		}
 		if (this.isCalledDirectlyFromTransferFunction()) {
 			ExtensibleCellMap.addCellAsAccessed(key);
+			ExtensibleCellMap.addCellAsWritten(key);
 		}
 		return this.put(key, newValue, ConvertMode.ON);
+	}
+
+	@SuppressWarnings("unchecked")
+	public V putSpecial(Cell key, ExtensibleCellMap<?> flowMap, Cell c) {
+		internalCalls++;
+		Immutable newValue = flowMap.get(c);
+		internalCalls--;
+		assert (newValue != null);
+		if (key instanceof FreeVariable) {
+			key = this.testAndConvert(key);
+		}
+		if (this.isCalledDirectlyFromTransferFunction()) {
+			ExtensibleCellMap.addCellAsAccessed(key);
+			ExtensibleCellMap.addCellAsWritten(key);
+		}
+		return this.put(key, (V) newValue, ConvertMode.ON);
 	}
 
 	protected V put(Cell key, V newValue, ConvertMode convertMode) {
@@ -550,6 +642,7 @@ public class ExtensibleCellMap<V extends Immutable> extends CellMap<V> {
 	protected V remove(Cell key, ConvertMode convertMode) {
 		if (this.isCalledDirectlyFromTransferFunction()) {
 			ExtensibleCellMap.addCellAsAccessed(key);
+			ExtensibleCellMap.addCellAsWritten(key);
 		}
 		if (!this.containsKey(key, convertMode)) {
 			return null;
@@ -655,6 +748,7 @@ public class ExtensibleCellMap<V extends Immutable> extends CellMap<V> {
 	public void clear() {
 		if (this.isCalledDirectlyFromTransferFunction()) {
 			ExtensibleCellMap.addCellAsAccessed(Cell.genericCell);
+			ExtensibleCellMap.addCellAsWritten(Cell.genericCell);
 		}
 		CellSet tempSet = new CellSet();
 		for (Cell key : keySetExpanded(ConvertMode.OFF)) {
@@ -667,10 +761,10 @@ public class ExtensibleCellMap<V extends Immutable> extends CellMap<V> {
 
 	@Override
 	public String toString() {
-		if (this.isCalledDirectlyFromTransferFunction()) {
-			assert (false);
-			ExtensibleCellMap.addCellAsAccessed(Cell.genericCell);
-		}
+		// if (this.isCalledDirectlyFromTransferFunction()) {
+		// assert (false);
+		// ExtensibleCellMap.addCellAsAccessed(Cell.genericCell);
+		// }
 		String tempStr = "[";
 		for (Cell c : this.keySetExpanded()) {
 			tempStr += "\n\t" + c + ":" + this.get(c);
@@ -1060,6 +1154,7 @@ public class ExtensibleCellMap<V extends Immutable> extends CellMap<V> {
 		if (this.isCalledDirectlyFromTransferFunction()) {
 			assert (false);
 			ExtensibleCellMap.addCellAsAccessed(Cell.genericCell);
+			ExtensibleCellMap.addCellAsRead(Cell.genericCell);
 		}
 		this.testAndConvert();
 		return this.keySetExpanded(ConvertMode.OFF);

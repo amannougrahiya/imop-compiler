@@ -12,6 +12,8 @@ import imop.ast.info.cfgNodeInfo.ParameterDeclarationInfo;
 import imop.ast.node.external.*;
 import imop.ast.node.internal.BeginNode;
 import imop.ast.node.internal.EndNode;
+import imop.ast.node.internal.PostCallNode;
+import imop.ast.node.internal.PreCallNode;
 import imop.lib.analysis.flowanalysis.Cell;
 import imop.lib.analysis.flowanalysis.Symbol;
 import imop.lib.analysis.flowanalysis.dataflow.DataDependenceForward.DataDependenceForwardFF;
@@ -342,6 +344,10 @@ public class DumpSnapshot {
 				tempStr += "[EndNode of " + n.getParent().getClass().getSimpleName() + "]";
 			} else if (n instanceof ParameterDeclaration) {
 				tempStr += "[Parameter: " + n + "]";
+			} else if (n instanceof PreCallNode) {
+				tempStr += "[PRECALL NODE] ";
+			} else if (n instanceof PostCallNode) {
+				tempStr += "[POSTCALL NODE] ";
 			}
 			if (flow != null) {
 				tempStr += "OUT: " + flow.getString();
@@ -380,7 +386,13 @@ public class DumpSnapshot {
 		commentors.add((n) -> {
 			String tempStr = "";
 			if (!n.getInfo().getAnalysesWithAccessedCells().isEmpty()) {
-				tempStr += "accessedCells: " + n.getInfo().getAccessedCellSets(AnalysisName.POINTSTO).toString();
+				tempStr += "accessedCells: " + n.getInfo().getAccessedCellSets(AnalysisName.POINTSTO).toString() + "\n\t";
+			}
+			if (!n.getInfo().getAnalysesWithReadCells().isEmpty()) {
+				tempStr += "readCells: " + n.getInfo().getReadCellSets(AnalysisName.POINTSTO).toString() + "\n\t";
+			}
+			if (!n.getInfo().getAnalysesWithWrittenCells().isEmpty()) {
+				tempStr += "writtenCells: " + n.getInfo().getWrittenCellSets(AnalysisName.POINTSTO).toString();
 			}
 			return tempStr;
 		});

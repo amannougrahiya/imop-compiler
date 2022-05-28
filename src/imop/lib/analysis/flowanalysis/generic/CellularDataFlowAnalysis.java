@@ -16,6 +16,8 @@ import imop.lib.util.Immutable;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.Stack;
@@ -105,7 +107,8 @@ public abstract class CellularDataFlowAnalysis<F extends CellularDataFlowAnalysi
 			}
 			@SuppressWarnings("unchecked")
 			CellularFlowMap<V> that = (CellularFlowMap<V>) other;
-			return this.getFlowMap().mergeWithAccessed(that.getFlowMap(), (s1, s2) -> this.meet(s1, s2), cellSet, accessedSet);
+			return this.getFlowMap().mergeWithAccessed(that.getFlowMap(), (s1, s2) -> this.meet(s1, s2), cellSet,
+					accessedSet);
 		}
 
 		@Override
@@ -138,14 +141,39 @@ public abstract class CellularDataFlowAnalysis<F extends CellularDataFlowAnalysi
 			}
 			Set<Cell> cellSet = getFlowMap().nonGenericKeySet();
 			List<Cell> cellList = new ArrayList<>(cellSet);
-			Collections.sort(cellList);
+			Collections.sort(cellList, new Comparator<Cell>() {
+				@Override
+				public int compare(Cell o1, Cell o2) {
+					int val = o1.toString().compareTo(o2.toString());
+					if (val == 0) {
+						val = o1.compareTo(o2);
+					}
+					return val;
+				}
+			});
 			for (Cell c : cellList) {
 				retString += analysisName + "(" + c.toString() + ") := ";
 				V value = getFlowMap().get(c);
-				if (value != null) {
-					retString += value.toString();
+				if (value instanceof CellSet) {
+					Set<Cell> rhsCells = new HashSet<>(((CellSet) value).getReadOnlyInternal());
+					List<Cell> rhsCellList = new ArrayList<>(rhsCells);
+					Collections.sort(rhsCellList, new Comparator<Cell>() {
+						@Override
+						public int compare(Cell o1, Cell o2) {
+							int val = o1.toString().compareTo(o2.toString());
+							if (val == 0) {
+								val = o1.compareTo(o2);
+							}
+							return val;
+						}
+					});
+					retString += rhsCellList.toString();
 				} else {
-					retString += "NULL";
+					if (value != null) {
+						retString += value.toString();
+					} else {
+						retString += "NULL";
+					}
 				}
 				retString += ";\n";
 			}
