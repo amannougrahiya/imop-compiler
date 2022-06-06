@@ -12,7 +12,6 @@ import imop.lib.analysis.flowanalysis.Cell;
 import imop.lib.analysis.flowanalysis.FreeVariable;
 import imop.lib.analysis.flowanalysis.Symbol;
 import imop.parser.Program;
-import javafx.beans.property.ReadOnlyMapWrapper;
 
 import java.util.*;
 import java.util.function.BiConsumer;

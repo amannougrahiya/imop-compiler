@@ -39,23 +39,22 @@ public class Program {
 
 	public enum UpdateCategory {
 		EGINV, // eager invalidation, upon each elementary transformation, with rerun of the
-				// analysis.
+		// analysis.
 		EGUPD, // eager update, upon each elementary transformation, with incremental update to
-				// the analysis data.
+		// the analysis data.
 		CPINV, // CP-based invalidation
 		CPUPD, // CP-based update
 		LZINV, // lazy invalidation, involving rerun of the analysis, whenever first read is
-				// performed after transformation.
+		// performed after transformation.
 		LZUPD, // lazy update, with incremental update to the analysis data, whenever first
-				// read is performed after transformation.
+		// read is performed after transformation.
 	}
 
 	/**
 	 * Various fine-grained stabilization-modes for IDFA stabilization. Note that
 	 * all these modes employ lazy triggers; one should ensure that by using "LZUPD"
-	 * mode of stabilization.
-	 * (Further note that the {@link UpdateCategory#LZUPD} mode of stabilization
-	 * with ALL_* is similar to the earlier LZINV mode.
+	 * mode of stabilization. (Further note that the {@link UpdateCategory#LZUPD}
+	 * mode of stabilization with ALL_* is similar to the earlier LZINV mode.
 	 *
 	 * @author aman
 	 *
@@ -63,7 +62,7 @@ public class Program {
 	public enum StabilizationIDFAMode {
 		RESTART, // restarting iterations, SCC-wise; imprecise and fast
 		INIT_RESTART, // restarting iterations preceded with initialization, SCC-wise; precise and
-						// relatively slower than RETST
+		// relatively slower than RETST
 		INCIDFA, // our new proposed approach, which is cell-aware.
 		ALL_SCC, // reinitializes and recomputes all, SCC-wise
 		ALL_NOSCC, // reinitializes and recomputes all, without taking SCCs into consideration
@@ -120,7 +119,7 @@ public class Program {
 	 * Decides whether intermediate states of the program should be dumped.
 	 */
 	public static boolean dumpIntermediateStates = false;
-	public static boolean printNoFiles = false;
+	public static boolean printNoFiles = true;
 	public static boolean printNoPredicates = true;
 	/*
 	 * When set, certain checks are performed regarding phase-set of a barrier while
@@ -135,16 +134,15 @@ public class Program {
 	public static UpdateCategory idfaUpdateCategory = UpdateCategory.LZUPD;
 	public static UpdateCategory mhpUpdateCategory = UpdateCategory.LZUPD;
 	/*
-	 * Decides whether the local-stabilization heuristic is used with Yuan
-	 * (where we simply assume that no changes impact the SVEness of any of the
-	 * predicates.)
+	 * Decides whether the local-stabilization heuristic is used with Yuan (where we
+	 * simply assume that no changes impact the SVEness of any of the predicates.)
 	 * Note that in the absence of any special checks validating our assumption,
 	 * this heuristic would not be correct for Yuan's concurrency analysis.
 	 */
 	public static boolean useHeuristicWithYuan = false;
 	public static boolean useHeuristicWithIcon = true;
 	public static boolean useInterProceduralPredicateAnalysis = false; // false; the queries have been modified
-																		// accordingly.
+	// accordingly.
 	public static boolean useTimerForIncEPARuns = false;
 	public static int secondsForIncEPARuns = 900;
 
@@ -152,8 +150,8 @@ public class Program {
 
 	/**
 	 * Set the default SVE sensitivity for the whole program.<br>
-	 * Note that IDFA's <i>may</i> have their fixed SVE
-	 * sensitivity values, defined in their constructors.
+	 * Note that IDFA's <i>may</i> have their fixed SVE sensitivity values, defined
+	 * in their constructors.
 	 */
 	public static SVEDimension sveSensitive = SVEDimension.SVE_INSENSITIVE;
 	public static SVEDimension sveSensitivityOfIDFAEdges = SVEDimension.SVE_INSENSITIVE;
@@ -169,30 +167,27 @@ public class Program {
 	public static ConcurrencyAlgorithm concurrencyAlgorithm = ConcurrencyAlgorithm.ICON;
 	/*
 	 * Decides whether all predicates are assumed to be SVE; note that this flag
-	 * does not impact
-	 * the way that the co-existence checks are handled.
+	 * does not impact the way that the co-existence checks are handled.
 	 */
 	public static boolean sveNoCheck = true;
 	private static Set<Symbol> addressTakenSymbols;
 	/*
-	 * When set to true, the call-stacks can never contain two call-statements
-	 * that have same function-designator node (string-wise).
+	 * When set to true, the call-stacks can never contain two call-statements that
+	 * have same function-designator node (string-wise).
 	 */
 	public static boolean oneEntryPerFDInCallStack = true;
 	/**
 	 * When this flag is set, points-to information is not obtained from the
-	 * corresponding flow-facts. Just before
-	 * running the points-to analysis, this flag is reset to false, so that the
-	 * analysis does not get polluted by the
+	 * corresponding flow-facts. Just before running the points-to analysis, this
+	 * flag is reset to false, so that the analysis does not get polluted by the
 	 * conservative approximations of the base points-to sets.
 	 */
 	public static boolean basePointsTo = true;
 	/**
 	 * Just before running any points-to analysis, we should increment this field by
-	 * 1, and should decrement it back
-	 * after the points-to analysis. That way, the points-to sets will read from the
-	 * IN flow-fact unless the fixed point
-	 * is reached.
+	 * 1, and should decrement it back after the points-to analysis. That way, the
+	 * points-to sets will read from the IN flow-fact unless the fixed point is
+	 * reached.
 	 */
 	public static int memoizeAccesses = 0;
 	private static boolean initialPhasesRemembered = false;
@@ -200,9 +195,9 @@ public class Program {
 	public static DecimalFormat df2 = new DecimalFormat("#.##");
 	public static boolean disableLineNumbers = false;
 	public static int numExpansionAllowed = 100; // Default, applicable for the command-line arguments. This is set
-													// again in the method {@link defaultCommandLineArguments()}.
+	// again in the method {@link defaultCommandLineArguments()}.
 	public static final boolean addRelCPs = false; // Default: false; when true, we profile to obtain and print the set
-													// of relevant CPs.
+	// of relevant CPs.
 
 	public static CPredAMode cpaMode = CPredAMode.H1H2H3; // The default mode is H1H2H3.
 	public static boolean temporaryFlagToDisableSymbolsAtDummyFlushes = false;
@@ -229,14 +224,13 @@ public class Program {
 
 	// possible.
 	public static boolean checkForCyclesInKeyDependenceGraph = false; // A profiling flag. Disable for normal
-																		// runs.
+	// runs.
 	public static boolean useAccessedCellsWithExhaustive = false;
 
 	/**
 	 * Sets the various defaults for global flags (and filenames), which will be
-	 * used in the absence of any command-line
-	 * arguments. Also, this method sets/resets some other flags to their initial
-	 * state.
+	 * used in the absence of any command-line arguments. Also, this method
+	 * sets/resets some other flags to their initial state.
 	 *
 	 * @return a string representing the path of the input file.
 	 */
@@ -248,12 +242,12 @@ public class Program {
 		Program.isPrePassPhase = false; // Leave as false when working with IMOP-preprocessed files.
 		Program.removeUnused = true; // Leave as true, to weed out dead definitions and declarations.
 		Program.idfaUpdateCategory = UpdateCategory.LZUPD; // Leave as LZUPD. Now we use stabilizationIDFAMode as the
-															// flag for IncIDFA results.
-		Program.stabilizationIDFAMode = StabilizationIDFAMode.INCIDFA; // The actual mode to be used.
+		// flag for IncIDFA results.
+		Program.stabilizationIDFAMode = StabilizationIDFAMode.ALL_SCC; // The actual mode to be used.
 		Program.testSafeMarkingHeuristic = false; // Leave as false. Not needed in the current algorithm.
 		Program.profileSCC = false; // To calculate print SCC-processing specific information. Leave as false.
 		Program.countSeededSCCs = false; // To calculate and print part of SCC-processing specific information. Leave as
-											// false.
+		// false.
 		Program.checkForGhostValues = false; // Temporary flag. Leave as false.
 		Program.maintainImpactedCells = true; // To calculate and maintain impactedSet.
 		Program.useNoSCCs = false; // When false, SCCs are used.
@@ -317,9 +311,9 @@ public class Program {
 		filePath = ("../tests/npb-post/ft3-0.i");
 		// filePath = ("../tests/ft3-small.i");
 		filePath = ("../tests/npb-post/is3-0.i");
-		filePath = ("../tests/is-small.i");
-		// filePath = ("../tests/npb-post/lu3-0.i");
-		// filePath = ("../tests/lu-small.i");
+		// filePath = ("../tests/is-small.i");
+		filePath = ("../tests/npb-post/lu3-0.i");
+		filePath = ("../tests/lu-small.i");
 		// filePath = ("../tests/npb-post/mg3-0.i");
 		// filePath = ("../tests/tExample5.i");
 		// filePath = ("../tests/mg3-small.i");
@@ -505,7 +499,7 @@ public class Program {
 		// filePath = ("../tests/barr-opt-tests/adi.i");
 		// filePath = ("../tests/barr-opt-tests/amgmk.i");
 		// filePath = ("../tests/icon-tests/smithwa.i");
-		// filePath = ("../tests/barr-opt-tests/kmeans.i");
+		filePath = ("../tests/barr-opt-tests/kmeans.i");
 		// filePath = ("../tests/barr-opt-tests/clomp.i");
 		// filePath = ("../tests/barr-opt-tests/stream.i");
 		// filePath = ("../tests/stream-postpass.i");
@@ -527,12 +521,11 @@ public class Program {
 
 	/**
 	 * Given the string of command-line arguments as input, this method, firstly,
-	 * sets the default values for various
-	 * global flags. These default values are then overridden by the flags specified
-	 * in the command-line arguments.
-	 * After setting of the flags, this method transfers the control the
-	 * {@link FrontEnd#parseAndNormalize(java.io.InputStream)}
-	 * which parses the input file.
+	 * sets the default values for various global flags. These default values are
+	 * then overridden by the flags specified in the command-line arguments. After
+	 * setting of the flags, this method transfers the control the
+	 * {@link FrontEnd#parseAndNormalize(java.io.InputStream)} which parses the
+	 * input file.
 	 *
 	 * @param args
 	 */
@@ -723,7 +716,7 @@ public class Program {
 			return;
 		}
 		String[] command = { "bash", "-c",
-				"source ~/.bash_profile; source ~/.bashrc; source ~/.profile; echo $Z3HOME" };
+		"source ~/.bash_profile; source ~/.bashrc; source ~/.profile; echo $Z3HOME" };
 		try {
 			Process proc = Runtime.getRuntime().exec(command);
 			proc.waitFor();

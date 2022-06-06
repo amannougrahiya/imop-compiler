@@ -72,12 +72,13 @@ public class PointsToAnalysis extends InterThreadForwardCellularAnalysis<PointsT
 	/**
 	 * Old implementation of IncIDFA, which was cell unaware.
 	 */
+	@Override
 	public void restartAnalysisFromStoredNodes() {
 		assert (!SCC.processingTarjan);
 		FlowAnalysis.nodes += "/////\n";
 		if (Program.stabilizationIDFAMode == StabilizationIDFAMode.INCIDFA) {
 			this.newStabilizationTriggerHandler(); // NOTE: THIS METHOD IS PRESENT IN
-													// INTERTHREADFORWARDCELLULARANALYSIS.
+			// INTERTHREADFORWARDCELLULARANALYSIS.
 			return;
 		}
 		// if (this.analysisName == AnalysisName.POINTSTO

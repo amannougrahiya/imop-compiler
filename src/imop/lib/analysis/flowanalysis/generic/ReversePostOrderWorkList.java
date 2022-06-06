@@ -34,6 +34,7 @@ public class ReversePostOrderWorkList {
 	}
 
 	public void recreate() {
+		this.stage = Stage.NONBARRIER;
 		if (this.barrierSet == null) {
 			this.barrierSet = new HashSet<>();
 		} else {
@@ -152,6 +153,7 @@ public class ReversePostOrderWorkList {
 		ret += ".";
 		return ret;
 	}
+
 	//
 	// private String foo(List<Node> list) {
 	// String s = "[";

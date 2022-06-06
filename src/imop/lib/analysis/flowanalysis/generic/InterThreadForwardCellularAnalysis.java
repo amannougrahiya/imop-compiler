@@ -45,7 +45,7 @@ import java.util.Set;
  * iterative data-flow analysis.
  */
 public abstract class InterThreadForwardCellularAnalysis<F extends CellularDataFlowAnalysis.CellularFlowMap<?>>
-		extends CellularDataFlowAnalysis<F> {
+extends CellularDataFlowAnalysis<F> {
 
 	public InterThreadForwardCellularAnalysis(AnalysisName analysisName, AnalysisDimension analysisDimension) {
 		super(analysisName, analysisDimension);
@@ -65,11 +65,10 @@ public abstract class InterThreadForwardCellularAnalysis<F extends CellularDataF
 	/**
 	 * Perform the analysis, starting at the begin node of the function
 	 * {@code funcDef}.<br>
-	 * <i>Note that this method does not clear the analysis information, if
-	 * already present.</i>
+	 * <i>Note that this method does not clear the analysis information, if already
+	 * present.</i>
 	 *
-	 * @param funcDef
-	 *                function-definition on which this analysis has to be
+	 * @param funcDef function-definition on which this analysis has to be
 	 *                performed.
 	 */
 	@Override
@@ -124,8 +123,8 @@ public abstract class InterThreadForwardCellularAnalysis<F extends CellularDataF
 
 	/**
 	 * Processing that is performed when no updates have been done to the program.
-	 * Note that IN objects will never
-	 * change -- their value may change monotonically.
+	 * Note that IN objects will never change -- their value may change
+	 * monotonically.
 	 *
 	 * @param node
 	 * @param stateINChanged
@@ -141,8 +140,8 @@ public abstract class InterThreadForwardCellularAnalysis<F extends CellularDataF
 		F newIN = (F) nodeInfo.getIN(analysisName);
 		if (newIN == null) {
 			/*
-			 * In this scenario, we must set the propagation flag, so that
-			 * all successors are processed at least once.
+			 * In this scenario, we must set the propagation flag, so that all successors
+			 * are processed at least once.
 			 */
 			inOrOUTChanged = true;
 			if (predecessors.isEmpty()) {
@@ -191,15 +190,15 @@ public abstract class InterThreadForwardCellularAnalysis<F extends CellularDataF
 			}
 			if (node instanceof ParameterDeclaration) {
 				proceedAhead = true; // Note that the value of arguments won't be present in the IN flow-map. Hence,
-										// conservatively, we set this flag.
+				// conservatively, we set this flag.
 			} else if (node instanceof PostCallNode) {
 				proceedAhead = true;
 			}
 		}
 
 		/**
-		 * If the IN of a BarrierDirective has changed,
-		 * we should add all its sibling barriers to the workList.
+		 * If the IN of a BarrierDirective has changed, we should add all its sibling
+		 * barriers to the workList.
 		 */
 		if (inChanged && node instanceof BarrierDirective) {
 			this.addAllSiblingBarriersToGlobalWorkList((BarrierDirective) node);
@@ -299,8 +298,8 @@ public abstract class InterThreadForwardCellularAnalysis<F extends CellularDataF
 
 	/**
 	 * Processing that is performed when no updates have been done to the program.
-	 * Note that IN objects will never
-	 * change -- their value may change monotonically.
+	 * Note that IN objects will never change -- their value may change
+	 * monotonically.
 	 *
 	 * @param barr
 	 * @param stateINChanged
@@ -315,8 +314,8 @@ public abstract class InterThreadForwardCellularAnalysis<F extends CellularDataF
 		F newIN = (F) nodeInfo.getIN(analysisName);
 		if (newIN == null) {
 			/*
-			 * In this scenario, we must set the propagation flag, so that
-			 * all successors are processed at least once.
+			 * In this scenario, we must set the propagation flag, so that all successors
+			 * are processed at least once.
 			 */
 			propagateFurther = true;
 			if (predecessors.isEmpty()) {
@@ -336,8 +335,8 @@ public abstract class InterThreadForwardCellularAnalysis<F extends CellularDataF
 			inChanged |= newIN.merge(edgeOUT, idfaEdge.getCells());
 		}
 		/**
-		 * If the IN of a BarrierDirective has changed,
-		 * we should add all its sibling barriers to the workList.
+		 * If the IN of a BarrierDirective has changed, we should add all its sibling
+		 * barriers to the workList.
 		 */
 		if (inChanged && barr instanceof BarrierDirective) {
 			this.addAllSiblingBarriersToGlobalWorkList((BarrierDirective) barr);
@@ -378,11 +377,10 @@ public abstract class InterThreadForwardCellularAnalysis<F extends CellularDataF
 
 	/**
 	 * Adds missing information from the OUT of the corresponding PreCallNode to the
-	 * given {@code incompleteFF}, which
-	 * is the final IN state of the given post-call node, {@code node}.
+	 * given {@code incompleteFF}, which is the final IN state of the given
+	 * post-call node, {@code node}.
 	 *
-	 * @param node
-	 *                     a postCallNode.
+	 * @param node         a postCallNode.
 	 * @param incompleteFF
 	 */
 	@SuppressWarnings("unchecked")
@@ -426,13 +424,11 @@ public abstract class InterThreadForwardCellularAnalysis<F extends CellularDataF
 
 	/**
 	 * This method removes those entries from the flow-map {@code fullFF} that do
-	 * not correspond to accessible symbols
-	 * at the function which the given begin-node, {@code node}, begins.
+	 * not correspond to accessible symbols at the function which the given
+	 * begin-node, {@code node}, begins.
 	 *
-	 * @param node
-	 *               a begin-node
-	 * @param fullFF
-	 *               state of the OUT of the begin-node; note that this object's
+	 * @param node   a begin-node
+	 * @param fullFF state of the OUT of the begin-node; note that this object's
 	 *               values may get modified.
 	 */
 	private void processBeginNodes(BeginNode node, F fullFF) {
@@ -470,13 +466,11 @@ public abstract class InterThreadForwardCellularAnalysis<F extends CellularDataF
 
 	/**
 	 * This method removes those entries from the flow-map {@code fullFF} which
-	 * correspond to local keys of the scope
-	 * that the given end-node, {@code node}, ends.
+	 * correspond to local keys of the scope that the given end-node, {@code node},
+	 * ends.
 	 *
-	 * @param node
-	 *               an end-node.
-	 * @param fullFF
-	 *               state of OUT of the end-node; note that this object's values
+	 * @param node   an end-node.
+	 * @param fullFF state of OUT of the end-node; note that this object's values
 	 *               may get modified.
 	 */
 	private void processEndNodes(EndNode node, F fullFF) {
@@ -537,8 +531,7 @@ public abstract class InterThreadForwardCellularAnalysis<F extends CellularDataF
 		long localTimer = System.nanoTime();
 
 		/*
-		 * From the set of nodes to be updated, we obtain the workList to be
-		 * processed.
+		 * From the set of nodes to be updated, we obtain the workList to be processed.
 		 * We add all the entry points of the SCC of each node.
 		 */
 		this.globalWorkList.recreate();
@@ -573,9 +566,9 @@ public abstract class InterThreadForwardCellularAnalysis<F extends CellularDataF
 				continue;
 			} else {
 				/*
-				 * This node belongs to an SCC. We should process the whole of
-				 * SCC in the first phase, followed by its processing in the
-				 * second phase, and only then shall we move on to the next SCC.
+				 * This node belongs to an SCC. We should process the whole of SCC in the first
+				 * phase, followed by its processing in the second phase, and only then shall we
+				 * move on to the next SCC.
 				 */
 				stabilizeSCCOf(nodeToBeAnalyzed);
 			}
@@ -595,10 +588,10 @@ public abstract class InterThreadForwardCellularAnalysis<F extends CellularDataF
 	 * This method starts with the given node, and stabilizes the SCC corresponding
 	 * to it before returning back.
 	 *
-	 * @param node
-	 *             node whose SCC has to be stabilized. Note that the node has
+	 * @param node node whose SCC has to be stabilized. Note that the node has
 	 *             already been removed from the workList.
 	 */
+	@Override
 	protected final void stabilizeSCCOf(Node node) {
 		this.safeCurrentSCCNodes.clear();
 		this.underApproximated.clear();
@@ -773,9 +766,8 @@ public abstract class InterThreadForwardCellularAnalysis<F extends CellularDataF
 		for (IDFAEdge idfaEdge : predecessors) {
 			Node predNode = idfaEdge.getNode();
 			/*
-			 * Ignore a predecessor if:
-			 * (i) it lies within the SCC, AND
-			 * (ii) it has not been processed yet.
+			 * Ignore a predecessor if: (i) it lies within the SCC, AND (ii) it has not been
+			 * processed yet.
 			 */
 			SCC predSCC = predNode.getInfo().getCFGInfo().getSCC();
 			if (predSCC != null) {
@@ -791,10 +783,9 @@ public abstract class InterThreadForwardCellularAnalysis<F extends CellularDataF
 			F predOUT = (F) predNode.getInfo().getOUT(analysisName);
 			if (predOUT == null) {
 				/*
-				 * Here, we do not mark anyPredMissed, as this node would be
-				 * marked for processing whenever the predecessor has been
-				 * processed for the first time. Check the setting of
-				 * inOrOUTChanged above.
+				 * Here, we do not mark anyPredMissed, as this node would be marked for
+				 * processing whenever the predecessor has been processed for the first time.
+				 * Check the setting of inOrOUTChanged above.
 				 */
 				continue;
 			}
@@ -834,8 +825,8 @@ public abstract class InterThreadForwardCellularAnalysis<F extends CellularDataF
 			this.underApproximated.remove(node); // MG: 13275 vs 13307 with this line.
 		}
 		/**
-		 * If the IN of a BarrierDirective has changed,
-		 * we should add all its sibling barriers to the workList.
+		 * If the IN of a BarrierDirective has changed, we should add all its sibling
+		 * barriers to the workList.
 		 */
 		if (node instanceof BarrierDirective) {
 			if (oldIN == null) {
@@ -861,8 +852,12 @@ public abstract class InterThreadForwardCellularAnalysis<F extends CellularDataF
 
 		nodeInfo.setIN(analysisName, newIN);
 
-		if (oldIN != null && oldIN != newIN && !oldIN.isEqualTo(newIN)) {
-			inOrOUTChanged = true;
+		//		if (oldIN != null && oldIN != newIN && !oldIN.isEqualTo(newIN)) {
+		//			inOrOUTChanged = true;
+		//		}
+		// NEW, RECTIFIED CODE:
+		if (oldIN != null && oldIN != newIN) {
+			inChanged = !oldIN.isEqualTo(newIN);
 		}
 
 		// Step 2: Apply the flow-function on IN, to obtain the OUT.
@@ -923,14 +918,12 @@ public abstract class InterThreadForwardCellularAnalysis<F extends CellularDataF
 			}
 		} else if (Program.testSafeMarkingHeuristic) {
 			/*
-			 * Mon Nov 1 20:35:26 IST 2021
-			 * TODO: TEST THIS CODE; ADDED AS A HEURISTIC FOR EARLY TERMINATION OF FIRST
-			 * PASS.
-			 * This code was thought about while writing the paper on HIDFAp (or IncIDFA).
-			 * If the current node has "stabilized" without requiring any changes on its
-			 * initial state and if we aren't planning on processing its successors, we
-			 * should perform the following when, the worklist contains at least one other
-			 * element to be processed in the same SCC:
+			 * Mon Nov 1 20:35:26 IST 2021 TODO: TEST THIS CODE; ADDED AS A HEURISTIC FOR
+			 * EARLY TERMINATION OF FIRST PASS. This code was thought about while writing
+			 * the paper on HIDFAp (or IncIDFA). If the current node has "stabilized"
+			 * without requiring any changes on its initial state and if we aren't planning
+			 * on processing its successors, we should perform the following when, the
+			 * worklist contains at least one other element to be processed in the same SCC:
 			 * Mark all those nodes as "processed" for which this node is a dominator.
 			 *
 			 */
@@ -1266,22 +1259,18 @@ public abstract class InterThreadForwardCellularAnalysis<F extends CellularDataF
 
 	/**
 	 * Given a node connected to the program, this method ensures that the IN and
-	 * OUT of all the leaf nodes within the
-	 * given node are set to be the meet of OUT of all the predecessors of the entry
-	 * point of the node (there must be
-	 * just one entry point, and no internal barriers/flushes). Note that since the
-	 * {@code affectedNode} has been
-	 * checked to not affect the flow-analysis, we should use the same object for IN
-	 * as well as OUT of each node.<br>
+	 * OUT of all the leaf nodes within the given node are set to be the meet of OUT
+	 * of all the predecessors of the entry point of the node (there must be just
+	 * one entry point, and no internal barriers/flushes). Note that since the
+	 * {@code affectedNode} has been checked to not affect the flow-analysis, we
+	 * should use the same object for IN as well as OUT of each node.<br>
 	 * Important: If the OUT of predecessors of the entry node is not stable, we
-	 * will still use the unstable values for
-	 * now; not that the stabilization process, whenever triggered, would take care
-	 * of these nodes as well.
+	 * will still use the unstable values for now; not that the stabilization
+	 * process, whenever triggered, would take care of these nodes as well.
 	 *
-	 * @param affectedNode
-	 *                     node which does not seem to affect the analysis (and
-	 *                     hence, for which we just copy same IN and OUT to all
-	 *                     its internal nodes).
+	 * @param affectedNode node which does not seem to affect the analysis (and
+	 *                     hence, for which we just copy same IN and OUT to all its
+	 *                     internal nodes).
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
@@ -1442,13 +1431,12 @@ public abstract class InterThreadForwardCellularAnalysis<F extends CellularDataF
 		long localTimer = System.nanoTime();
 
 		/*
-		 * Step 0: Collect information about reachable predecessor for seed
-		 * nodes.
+		 * Step 0: Collect information about reachable predecessor for seed nodes.
 		 */
 		this.populateReachablePredecessorMap();
 		/*
-		 * Step 1: Start processing from the leaf elements of updateSeedSet in
-		 * "update" mode.
+		 * Step 1: Start processing from the leaf elements of updateSeedSet in "update"
+		 * mode.
 		 */
 		this.globalWorkList.recreate();
 		for (Node n : nodesToBeUpdated) {
@@ -1469,8 +1457,8 @@ public abstract class InterThreadForwardCellularAnalysis<F extends CellularDataF
 
 		/****************************/
 		/*
-		 * Step 2: Reprocess those nodes whose IDFA is not yet finalized, in
-		 * "normal" mode.
+		 * Step 2: Reprocess those nodes whose IDFA is not yet finalized, in "normal"
+		 * mode.
 		 */
 		this.globalWorkList.addAll(underApproximated);
 		while (!globalWorkList.isEmpty()) {
@@ -1489,8 +1477,7 @@ public abstract class InterThreadForwardCellularAnalysis<F extends CellularDataF
 
 	/**
 	 * Processing that is performed when the program has been updated. Note that IN
-	 * objects would be reinitialized for
-	 * all encountered nodes.
+	 * objects would be reinitialized for all encountered nodes.
 	 *
 	 * @param node
 	 * @param stateINChanged
@@ -1529,16 +1516,14 @@ public abstract class InterThreadForwardCellularAnalysis<F extends CellularDataF
 				continue;
 			}
 			/*
-			 * Ignore the "may be imprecise" OUT of all those predecessors that
-			 * have not been processed since this update yet.
-			 * There are two scenarios now: (i) we will encounter this node
-			 * again, after updating the OUT of this predecessor upon processing
-			 * it, OR (ii) the IDFA flow-facts will stabilize well before we get
-			 * a chance to process this node again.
-			 * In order to ensure that the final value of this flow-fact is
-			 * correct even if we encounter scenario "(ii)" above, we should add
-			 * this node to the list of nodes that should be processed once
-			 * more, in NO-PROGRAM-UPDATE mode.
+			 * Ignore the "may be imprecise" OUT of all those predecessors that have not
+			 * been processed since this update yet. There are two scenarios now: (i) we
+			 * will encounter this node again, after updating the OUT of this predecessor
+			 * upon processing it, OR (ii) the IDFA flow-facts will stabilize well before we
+			 * get a chance to process this node again. In order to ensure that the final
+			 * value of this flow-fact is correct even if we encounter scenario "(ii)"
+			 * above, we should add this node to the list of nodes that should be processed
+			 * once more, in NO-PROGRAM-UPDATE mode.
 			 */
 			F edgeOUT = this.edgeTransferFunction(predOUT, idfaEdge.getNode(), node);
 			newIN.merge(edgeOUT, idfaEdge.getCells());
@@ -1586,11 +1571,10 @@ public abstract class InterThreadForwardCellularAnalysis<F extends CellularDataF
 	/**
 	 * Perform the analysis, starting at the begin node of the function
 	 * {@code funcDef}.<br>
-	 * <i>Note that this method does not clear the analysis information, if
-	 * already present.</i>
+	 * <i>Note that this method does not clear the analysis information, if already
+	 * present.</i>
 	 *
-	 * @param funcDef
-	 *                function-definition on which this analysis has to be
+	 * @param funcDef function-definition on which this analysis has to be
 	 *                performed.
 	 */
 	@Deprecated
@@ -1641,8 +1625,7 @@ public abstract class InterThreadForwardCellularAnalysis<F extends CellularDataF
 
 	/**
 	 * Latest algorithm for achieving incremental version of any generic (forward)
-	 * IDFA.
-	 * Tue Feb 22 16:58:01 IST 2022
+	 * IDFA. Tue Feb 22 16:58:01 IST 2022
 	 */
 	protected void newStabilizationTriggerHandler() {
 		this.autoUpdateTriggerCounter++;
@@ -1728,12 +1711,11 @@ public abstract class InterThreadForwardCellularAnalysis<F extends CellularDataF
 				// Here, node itself is an SCC. We do not require two rounds.
 				this.nodesProcessedDuringUpdate++;
 				this.debugRecursion(nodeToBeAnalyzed);
-				this.processWhenNotUpdated(nodeToBeAnalyzed); // Directly invoke the second round processing.
+				this.processNonSCCNodeOptimized(nodeToBeAnalyzed); // Directly invoke the second round processing.
 			} else {
 				/*
-				 * This node belongs to an SCC. We should process the whole of
-				 * till fixed-point in various phases,
-				 * and only then shall we move on to the next SCC.
+				 * This node belongs to an SCC. We should process the whole of till fixed-point
+				 * in various phases, and only then shall we move on to the next SCC.
 				 */
 				processedSCCCount++;
 				this.stabilizeSCCOfOptimized(nodeToBeAnalyzed);
@@ -1748,7 +1730,7 @@ public abstract class InterThreadForwardCellularAnalysis<F extends CellularDataF
 		}
 
 		counterList.add(this.nodesProcessedDuringUpdate - thisUpdateNodeCounter); // Total number of nodes processed in
-																					// this stabilization trigger.
+		// this stabilization trigger.
 		if (Program.checkForCyclesInKeyDependenceGraph) {
 			System.out.println("Time spent in this trigger: " + localTimer / 1e9 + "s.");
 		}
@@ -1767,8 +1749,7 @@ public abstract class InterThreadForwardCellularAnalysis<F extends CellularDataF
 	 * This method starts with the given node, and stabilizes the SCC corresponding
 	 * to it before returning back.
 	 *
-	 * @param node
-	 *             node whose SCC has to be stabilized. Note that the node has
+	 * @param node node whose SCC has to be stabilized. Note that the node has
 	 *             already been removed from the workList.
 	 */
 	protected final void stabilizeSCCOfOptimized(Node node) {
@@ -1777,9 +1758,9 @@ public abstract class InterThreadForwardCellularAnalysis<F extends CellularDataF
 		int thisSCCNum = node.getInfo().getCFGInfo().getSCCRPOIndex();
 
 		/*
-		 * Step: Initialize safeCurrentSCCNodes, underApproximated, and
-		 * thisSeeds, as per the SCC of the current node.
-		 * Note that the node has already been removed from the SCC.
+		 * Step: Initialize safeCurrentSCCNodes, underApproximated, and thisSeeds, as
+		 * per the SCC of the current node. Note that the node has already been removed
+		 * from the SCC.
 		 */
 		this.safeCurrentSCCNodes.clear();
 		this.underApproximated.clear();
@@ -1807,10 +1788,9 @@ public abstract class InterThreadForwardCellularAnalysis<F extends CellularDataF
 		/*
 		 * Step: Take snapshot of OUT of all exit nodes of thisSCC.
 		 *
-		 * NOTE: This step relies on the property that there will be no in-place
-		 * changes in the OUT object of any node during stabilization of its SCC.
-		 * Otherwise we will have to store a copy of these OUT values.
-		 * TODO: Verify this property.
+		 * NOTE: This step relies on the property that there will be no in-place changes
+		 * in the OUT object of any node during stabilization of its SCC. Otherwise we
+		 * will have to store a copy of these OUT values. TODO: Verify this property.
 		 */
 		Map<Node, CellularFlowMap<?>> snapShotOfOut = new HashMap<>();
 		for (Node exit : thisSCC.getExitNodes()) {
@@ -1832,19 +1812,17 @@ public abstract class InterThreadForwardCellularAnalysis<F extends CellularDataF
 		 */
 
 		/**
-		 * FIRST PASS: Contains two phases -- PHASE-I and PHASE-II.
-		 * In PHASE-I, we start from the entry-nodes and move till seed-nodes or exit
-		 * within this SCC.
-		 * We ensure that each reachable node on those paths is processed at least once.
-		 * In PHASE-II, we start with the seed-nodes and proceed until there is not
-		 * change within the SCC nodes.
+		 * FIRST PASS: Contains two phases -- PHASE-I and PHASE-II. In PHASE-I, we start
+		 * from the entry-nodes and move till seed-nodes or exit within this SCC. We
+		 * ensure that each reachable node on those paths is processed at least once. In
+		 * PHASE-II, we start with the seed-nodes and proceed until there is not change
+		 * within the SCC nodes.
 		 */
 		long localCounterPerPhase = this.nodesProcessedDuringUpdate;
 		if (!Program.checkForCyclesInKeyDependenceGraph || foundACycle) {
 			/*
-			 * FIRST PASS, PHASE-I.
-			 * We start only with the entry-nodes. Not all nodes are considered safe. May
-			 * write to underApproximated.
+			 * FIRST PASS, PHASE-I. We start only with the entry-nodes. Not all nodes are
+			 * considered safe. May write to underApproximated.
 			 */
 			this.intraSCCWorkList.recreate();
 			this.addEntryNodesForSCCOf(node, this.intraSCCWorkList);
@@ -1861,10 +1839,10 @@ public abstract class InterThreadForwardCellularAnalysis<F extends CellularDataF
 
 			FlowAnalysis.nodes += "***\n";
 			/*
-			 * FIRST PASS, PHASE-II.
-			 * All seed-nodes contain at least partial (non-empty) information. Not all
-			 * nodes are considered safe. May write to underApproximated. The phase ends
-			 * when all nodes are guaranteed to contain safe values.
+			 * FIRST PASS, PHASE-II. All seed-nodes contain at least partial (non-empty)
+			 * information. Not all nodes are considered safe. May write to
+			 * underApproximated. The phase ends when all nodes are guaranteed to contain
+			 * safe values.
 			 */
 			assert (this.intraSCCWorkList.isEmpty());
 			this.intraSCCWorkList.addAll(this.thisSeeds);
@@ -1889,7 +1867,7 @@ public abstract class InterThreadForwardCellularAnalysis<F extends CellularDataF
 				double percentInFirst = this.safeCurrentSCCNodes.size() / (SCCSize * 1.0) * 100;
 				if (SCCSize != 1) {
 					System.out.println("Total " + Program.df2.format(percentInFirst)
-							+ "% of unique nodes processed out of " + SCCSize + " in this SCC.");
+					+ "% of unique nodes processed out of " + SCCSize + " in this SCC.");
 				}
 			}
 			/*
@@ -1898,11 +1876,10 @@ public abstract class InterThreadForwardCellularAnalysis<F extends CellularDataF
 		}
 
 		/**
-		 * SECOND PASS.
-		 * Note that at the end of FIRST PASS, we will have a set of nodes that are
-		 * "underApproximated" -- they are processed in the SECOND PASS.
-		 * All nodes are considered safe. Here we start with the underApproximated nodes
-		 * and reach the fixed-point for the complete SCC.
+		 * SECOND PASS. Note that at the end of FIRST PASS, we will have a set of nodes
+		 * that are "underApproximated" -- they are processed in the SECOND PASS. All
+		 * nodes are considered safe. Here we start with the underApproximated nodes and
+		 * reach the fixed-point for the complete SCC.
 		 */
 		this.safeCurrentSCCNodes.clear();
 		this.globalWorkList.addAll(this.underApproximated);
@@ -1962,15 +1939,13 @@ public abstract class InterThreadForwardCellularAnalysis<F extends CellularDataF
 	 * seeds). This method does not add nodes of other SCCs in the worklist. The
 	 * worklist being used is intraSCCWorklist. This worklist was initialized with
 	 * the entry nodes of "thisSCC". The successors are always added to the
-	 * worklist,
-	 * as long as they belong to the same SCC, and are not the seed nodes.
+	 * worklist, as long as they belong to the same SCC, and are not the seed nodes.
 	 * When a node is processed for the first time in this stabilization trigger, a
 	 * fresh object is always created for the IN object.
 	 *
 	 * @param node
 	 * @param thisSCC
-	 * @param phaseOne
-	 *                 when set to {@code true}, traversal is performed
+	 * @param phaseOne when set to {@code true}, traversal is performed
 	 *                 unconditionally till the current set of seed nodes.
 	 */
 	@SuppressWarnings("unchecked")
@@ -2011,9 +1986,8 @@ public abstract class InterThreadForwardCellularAnalysis<F extends CellularDataF
 		for (IDFAEdge idfaEdge : predecessors) {
 			Node predNode = idfaEdge.getNode();
 			/*
-			 * Ignore a predecessor if:
-			 * (i) it lies within the SCC, AND
-			 * (ii) it has not been processed yet.
+			 * Ignore a predecessor if: (i) it lies within the SCC, AND (ii) it has not been
+			 * processed yet.
 			 */
 			SCC predSCC = predNode.getInfo().getCFGInfo().getSCC();
 			if (predSCC != null) {
@@ -2029,10 +2003,9 @@ public abstract class InterThreadForwardCellularAnalysis<F extends CellularDataF
 			F predOUT = (F) predNode.getInfo().getOUT(analysisName);
 			if (predOUT == null) {
 				/*
-				 * Here, we do not mark anyPredMissed, as this node would be
-				 * marked for processing whenever the predecessor has been
-				 * processed for the first time. Check the setting of
-				 * inOrOUTChanged above.
+				 * Here, we do not mark anyPredMissed, as this node would be marked for
+				 * processing whenever the predecessor has been processed for the first time.
+				 * Check the setting of inOrOUTChanged above.
 				 */
 				continue;
 			}
@@ -2102,13 +2075,13 @@ public abstract class InterThreadForwardCellularAnalysis<F extends CellularDataF
 		}
 		if (node instanceof ParameterDeclaration) {
 			proceedAhead = true; // Note that the value of arguments won't be present in the IN flow-map. Hence,
-									// conservatively, we set this flag.
+			// conservatively, we set this flag.
 		} else if (node instanceof PostCallNode) {
 			proceedAhead = true;
 		}
 		/**
-		 * If the IN of a BarrierDirective has changed,
-		 * we should add all its sibling barriers to the workList.
+		 * If the IN of a BarrierDirective has changed, we should add all its sibling
+		 * barriers to the workList.
 		 */
 		if (node instanceof BarrierDirective) {
 			if (oldIN == null) {
@@ -2148,8 +2121,8 @@ public abstract class InterThreadForwardCellularAnalysis<F extends CellularDataF
 			newOUT = this.visitChanged((BarrierDirective) node, newIN, first);
 		} else {
 			/*
-			 * Refer to the last point in Note 21.0.1 from IMOP-CR.
-			 * TODO: Verify the second operand of || below. Taken from Phase II.
+			 * Refer to the last point in Note 21.0.1 from IMOP-CR. TODO: Verify the second
+			 * operand of || below. Taken from Phase II.
 			 */
 			if (proceedAhead || (node instanceof BeginNode && node.getParent() instanceof FunctionDefinition)) {
 				newOUT = node.accept(this, newIN);
@@ -2245,9 +2218,8 @@ public abstract class InterThreadForwardCellularAnalysis<F extends CellularDataF
 
 	/**
 	 * Processing that is performed as per standard IDFA for nodes to be processed
-	 * in the second pass of processing an SCC.
-	 * Note that in this method, no nodes of other SCC should be inserted in the
-	 * worklist.
+	 * in the second pass of processing an SCC. Note that in this method, no nodes
+	 * of other SCC should be inserted in the worklist.
 	 *
 	 * @param node
 	 * @param stateINChanged
@@ -2261,8 +2233,8 @@ public abstract class InterThreadForwardCellularAnalysis<F extends CellularDataF
 		F newIN = (F) nodeInfo.getIN(analysisName);
 		if (newIN == null) {
 			/*
-			 * In this scenario, we must set the propagation flag, so that
-			 * all successors are processed at least once.
+			 * In this scenario, we must set the propagation flag, so that all successors
+			 * are processed at least once.
 			 */
 			inOrOUTChanged = true;
 			if (predecessors.isEmpty()) {
@@ -2295,8 +2267,8 @@ public abstract class InterThreadForwardCellularAnalysis<F extends CellularDataF
 		}
 
 		/**
-		 * If the IN of a BarrierDirective has changed,
-		 * we should add all its sibling barriers to the workList.
+		 * If the IN of a BarrierDirective has changed, we should add all its sibling
+		 * barriers to the workList.
 		 */
 		if (inChanged && node instanceof BarrierDirective) {
 			this.addAllSiblingBarriersToGlobalWorkList((BarrierDirective) node);
@@ -2361,6 +2333,215 @@ public abstract class InterThreadForwardCellularAnalysis<F extends CellularDataF
 				FunctionDefinition func = (FunctionDefinition) node.getParent();
 				for (ParameterDeclaration paramDecl : func.getInfo().getCFGInfo().getParameterDeclarationList()) {
 					this.intraSCCWorkList.add(paramDecl);
+				}
+			}
+		}
+	}
+
+	/**
+	 *
+	 * @param node
+	 * @param stateINChanged
+	 */
+	@SuppressWarnings("unchecked")
+	protected final void processNonSCCNodeOptimized(Node node) {
+		boolean first = true; // We just assume that each non-SCC node is processed exactly once in RPO.
+		NodeInfo nodeInfo = node.getInfo();
+		Set<IDFAEdge> predecessors = nodeInfo.getCFGInfo()
+				.getInterTaskLeafPredecessorEdges(this.analysisDimension.getSVEDimension());
+		F oldIN = (F) nodeInfo.getIN(analysisName);
+		F newIN;
+		boolean inChanged = false;
+		boolean proceedAhead = false; // To indicate whether the transfer function should be applied.
+		boolean firstProcessingOfExistingNode = false;
+		if (oldIN == null) {
+			inChanged = true;
+			newIN = (predecessors.isEmpty()) ? this.getEntryFact() : this.getTop();
+			proceedAhead = true;
+		} else if (first) {
+			firstProcessingOfExistingNode = true;
+			// First processing in the first round of update.
+			newIN = (predecessors.isEmpty()) ? this.getEntryFact() : this.getTop();
+		} else {
+			newIN = oldIN; // Use the same object
+		}
+
+		CellSet accessedCells = node.getInfo().getAccessedCellSets(this);
+		CellularDataFlowAnalysis.accessedCellValueChanged = false;
+
+		CellSet nonLocalCells = null;
+		for (IDFAEdge idfaEdge : predecessors) {
+			F predOUT = (F) idfaEdge.getNode().getInfo().getOUT(analysisName);
+			if (predOUT == null) {
+				continue;
+			}
+			F edgeOUT = this.edgeTransferFunction(predOUT, idfaEdge.getNode(), node);
+			inChanged |= newIN.mergeWithAccessed(edgeOUT, idfaEdge.getCells(), accessedCells);
+			if (node instanceof PostCallNode) {
+				if (nonLocalCells == null) {
+					nonLocalCells = new CellSet();
+				}
+				// Capture nonLocalCells.
+				nonLocalCells.addAll(predOUT.flowMap.keySet());
+			}
+		}
+
+		boolean anyChangesDueToPre = inChanged;
+		if (node instanceof PostCallNode) {
+			inChanged |= processPostCallNodes((PostCallNode) node, newIN, nonLocalCells);
+		}
+		if (anyChangesDueToPre != inChanged) {
+			proceedAhead = true;
+		}
+
+		if (firstProcessingOfExistingNode) {
+			assert (oldIN != null);
+			if (!proceedAhead) {
+				if (oldIN.flowMap != null && newIN.flowMap != null) {
+					for (Cell c : accessedCells) {
+						boolean oldContains = oldIN.flowMap.containsKey(c);
+						boolean newContains = newIN.flowMap.containsKey(c);
+						// If the entry is present in OLD, but not NEW, then we should re-apply the
+						// transfer function.
+						if (oldContains && !newContains) {
+							proceedAhead = true;
+							break;
+						}
+						if (newContains && !newIN.flowMap.get(c).equals(oldIN.flowMap.get(c))) {
+							proceedAhead = true;
+							break;
+						}
+					}
+				}
+			}
+		} else {
+			if (CellularDataFlowAnalysis.accessedCellValueChanged) {
+				proceedAhead = true;
+			}
+		}
+
+		if (node instanceof ParameterDeclaration) {
+			proceedAhead = true; // Note that the value of arguments won't be present in the IN flow-map. Hence,
+			// conservatively, we set this flag.
+		} else if (node instanceof PostCallNode) {
+			proceedAhead = true;
+		}
+
+		/**
+		 * If the IN of a BarrierDirective has changed, we should add all its sibling
+		 * barriers to the workList.
+		 */
+		if (node instanceof BarrierDirective) {
+			if (oldIN == null) {
+				// This was the first processing of the barrier, ever. Others would get affected
+				// only if the in was changed.
+				if (inChanged) {
+					this.addAllSiblingBarriersToGlobalWorkList((BarrierDirective) node);
+				}
+			} else if (oldIN != newIN) {
+				// This was the first processing of the barrier in this round. If the objects
+				// differ semantically, others would get affected.
+				if (!oldIN.isEqualTo(newIN)) {
+					this.addAllSiblingBarriersToGlobalWorkList((BarrierDirective) node);
+				}
+			} else {
+				// This is any-but-first processing of the barrier in this round. Others would
+				// be impacted only if anything changed in IN.
+				if (inChanged) {
+					this.addAllSiblingBarriersToGlobalWorkList((BarrierDirective) node);
+				}
+			}
+		}
+		// if (inChanged && node instanceof BarrierDirective) {
+		// this.addAllSiblingBarriersToGlobalWorkList((BarrierDirective) node);
+		// }
+
+		nodeInfo.setIN(analysisName, newIN);
+
+		// OLD CODE:
+		//		if (oldIN != null && oldIN != newIN && !oldIN.isEqualTo(newIN)) {
+		//			inChanged = true;
+		//		}
+		// NEW, RECTIFIED CODE:
+		if (oldIN != null && oldIN != newIN) {
+			inChanged = !oldIN.isEqualTo(newIN);
+		}
+		// Step 2: Apply the flow-function on IN, to obtain the OUT.
+		CellularDataFlowAnalysis.nodeAnalysisStack.add(new NodeAnalysisPair(node, this));
+		F oldOUT = (F) nodeInfo.getOUT(analysisName);
+		F newOUT;
+		if (node instanceof BarrierDirective) {
+			newOUT = this.visitChanged((BarrierDirective) node, newIN, first);
+		} else {
+			if (proceedAhead || (node instanceof BeginNode && node.getParent() instanceof FunctionDefinition)) {
+				newOUT = node.accept(this, newIN);
+			} else {
+				this.transferFunctionsSkipped++;
+				if (node instanceof BeginNode && node.getParent() instanceof FunctionDefinition) {
+					newOUT = this.copyFlowMap(newIN);
+				} else if (node instanceof EndNode && node.getParent() instanceof FunctionDefinition) {
+					newOUT = this.copyFlowMap(newIN);
+				} else if (node instanceof EndNode && node.getParent() instanceof CompoundStatement) {
+					newOUT = this.copyFlowMap(newIN);
+				} else if (node instanceof PostCallNode) {
+					newOUT = this.copyFlowMap(newIN);
+				} else {
+					if (accessedCells.isEmpty()) {
+						newOUT = newIN;
+					} else {
+						newOUT = this.copyFlowMap(newIN);
+						for (Cell c : accessedCells) {
+							if (oldOUT.flowMap.containsKey(c)) {
+								newOUT.flowMap.putSpecial(c, oldOUT.flowMap, c);
+							}
+						}
+					}
+				}
+			}
+		}
+		if (node instanceof EndNode) {
+			processEndNodes((EndNode) node, newOUT);
+		} else if (node instanceof BeginNode) {
+			processBeginNodes((BeginNode) node, newOUT);
+		}
+		CellularDataFlowAnalysis.nodeAnalysisStack.pop();
+		nodeInfo.setOUT(analysisName, newOUT);
+
+		// if (Program.maintainImpactedCells) {
+		// this.updateImpactedCells(node, newIN, newOUT);
+		// }
+
+		// Step 3: Process the successors, if needed.
+		boolean inOrOUTChanged = false;
+		inOrOUTChanged |= inChanged;
+		if (node instanceof BarrierDirective) {
+			if (oldOUT == null || !newOUT.isEqualTo(oldOUT)) {
+				inOrOUTChanged = true;
+			}
+		}
+		if (node instanceof ParameterDeclaration) {
+			// Added this code because finding whether the OUT of ParameterDeclaration has
+			// changed, is complex.
+			// Note that if the IN of a ParameterDeclaration does not change, the OUT may
+			// still change (due to changes at call-sites).
+			inOrOUTChanged = true;
+		}
+		if (inOrOUTChanged) {
+			for (IDFAEdge idfaEdge : nodeInfo.getCFGInfo()
+					.getInterTaskLeafSuccessorEdges(this.analysisDimension.getSVEDimension())) {
+				Node n = idfaEdge.getNode();
+				this.globalWorkList.add(n);
+			}
+			if (node instanceof PreCallNode) {
+				PreCallNode pre = (PreCallNode) node;
+				this.globalWorkList.add(pre.getParent().getPostCallNode());
+			}
+			// If we are adding successors of a BeginNode of a FunctionDefinition, we should
+			// add all the ParameterDeclarations.
+			if (node instanceof BeginNode && node.getParent() instanceof FunctionDefinition) {
+				FunctionDefinition func = (FunctionDefinition) node.getParent();
+				for (ParameterDeclaration paramDecl : func.getInfo().getCFGInfo().getParameterDeclarationList()) {
+					this.globalWorkList.add(paramDecl);
 				}
 			}
 		}
