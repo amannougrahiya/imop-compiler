@@ -92,6 +92,7 @@ public abstract class DataFlowAnalysis<F extends FlowAnalysis.FlowFact> extends 
 					}
 					SCC siblingSCC = siblingBarrier.getInfo().getCFGInfo().getSCC();
 					if (siblingSCC == null || siblingSCC != thisSCC) {
+						// ReversePostOrderWorkList.checkNode(siblingBarrier, this.globalWorkList);
 						this.globalWorkList.add(siblingBarrier);
 					} else {
 						this.intraSCCWorkList.add(siblingBarrier);
@@ -157,19 +158,15 @@ public abstract class DataFlowAnalysis<F extends FlowAnalysis.FlowFact> extends 
 
 	/**
 	 * Given a parameter-declaration {@code parameter}, and a
-	 * simple-primary-expression {@code argument} that represents
-	 * the argument for this parameter from some call-site, this method should model
-	 * the flow-function of the write to
-	 * the parameter that happens implicitly.
+	 * simple-primary-expression {@code argument} that represents the argument for
+	 * this parameter from some call-site, this method should model the
+	 * flow-function of the write to the parameter that happens implicitly.
 	 *
-	 * @param parameter
-	 *                    a {@code ParameterDeclaration} which needs to be assigned
+	 * @param parameter   a {@code ParameterDeclaration} which needs to be assigned
 	 *                    with the {@code argument}.
-	 * @param argument
-	 *                    a {@code SimplePrimaryExpression} which is assigned to the
+	 * @param argument    a {@code SimplePrimaryExpression} which is assigned to the
 	 *                    {@code parameter}.
-	 * @param flowFactOne
-	 *                    the IN/OUT flow-fact for the implicit assignment of the
+	 * @param flowFactOne the IN/OUT flow-fact for the implicit assignment of the
 	 *                    {@code argument} to the {@code parameter}.
 	 *
 	 * @return the OUT/IN flow-fact, as a result of the implicit assignment of the

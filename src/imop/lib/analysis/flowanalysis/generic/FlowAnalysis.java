@@ -357,8 +357,8 @@ public abstract class FlowAnalysis<F extends FlowAnalysis.FlowFact> extends GJDe
 	 * <i>Note that the processing of these nodes may recursively process the
 	 * successor nodes as well.</i>
 	 */
-	protected ReversePostOrderWorkList globalWorkList = new ReversePostOrderWorkList();
-	protected ReversePostOrderWorkList intraSCCWorkList = new ReversePostOrderWorkList();
+	protected ReversePostOrderWorkList globalWorkList = new SinglePhasedRPOWorklist();
+	protected ReversePostOrderWorkList intraSCCWorkList = new SinglePhasedRPOWorklist();
 
 	public long nodesProcessed = 0;
 	// public long localCount = -1;
@@ -541,7 +541,7 @@ public abstract class FlowAnalysis<F extends FlowAnalysis.FlowFact> extends GJDe
 						i++;
 						System.out.println(
 								"Node #" + i + n + " with phases: " + n.getInfo().getNodePhaseInfo().getPhaseSet()
-										+ n.getInfo().getIN(this.analysisName).getString());
+								+ n.getInfo().getIN(this.analysisName).getString());
 					}
 					Misc.exitDueToError("At " + node + ", we exceeeded " + Program.thresholdIDFAProcessingCount
 							+ " iterations for IDFA analysis " + analysisName + ".");

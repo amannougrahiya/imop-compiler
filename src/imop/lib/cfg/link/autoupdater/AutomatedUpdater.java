@@ -58,6 +58,7 @@ public class AutomatedUpdater {
 		public void apply(Node n);
 	}
 
+	public static int reachableCounter = 0;
 	/**
 	 * Flushes various cached data that we cannot rely upon due to program update.
 	 * <br>
@@ -65,6 +66,7 @@ public class AutomatedUpdater {
 	 * (and inefficient) solution to maintain consistency, for any given caching.
 	 */
 	public static void flushCaches() {
+		reachableCounter++;
 		MemoizedPhaseInformation.flushMemoizedInformation();
 		Program.rememberInitialPhasesIfRequired();
 		CoExistenceChecker.flushCoExistenceCaches();
@@ -123,7 +125,7 @@ public class AutomatedUpdater {
 		updateSetForAddition.add(AutomatedUpdater::updateSymbolsAtDummyFlushesUponAddition);
 		updateSetForAddition.add(AutomatedUpdater::updateCallStatementsUponAddition);
 		updateSetForAddition.add(AutomatedUpdater::performInitOfMHPUponAddition); // TODO: Verify this order for various
-																					// cases.
+		// cases.
 		updateSetForAddition.add(AutomatedUpdater::updatePhaseAndInterTaskEdgesUponAddition);
 		updateSetForAddition.add(AutomatedUpdater::setPointsToInstabilityFlagIfRequiredForAddition);
 
@@ -748,7 +750,7 @@ public class AutomatedUpdater {
 				if (analysis
 						.getAnalysisName() == (Program.useInterProceduralPredicateAnalysis
 								? AnalysisName.CROSSCALL_PREDICATE_ANALYSIS
-								: AnalysisName.PSEUDO_INTER_PREDICATE_ANALYSIS)
+										: AnalysisName.PSEUDO_INTER_PREDICATE_ANALYSIS)
 						|| analysis instanceof InterThreadForwardCellularAnalysis
 						|| analysis instanceof InterThreadForwardNonCellularAnalysis) {
 					analysis.storeNodesToBeUpdated(new HashSet<>()); // This will just mark the IDFA as invalid.
@@ -782,7 +784,7 @@ public class AutomatedUpdater {
 				if (analysis
 						.getAnalysisName() == (Program.useInterProceduralPredicateAnalysis
 								? AnalysisName.CROSSCALL_PREDICATE_ANALYSIS
-								: AnalysisName.PSEUDO_INTER_PREDICATE_ANALYSIS)
+										: AnalysisName.PSEUDO_INTER_PREDICATE_ANALYSIS)
 						|| analysis instanceof InterThreadForwardCellularAnalysis
 						|| analysis instanceof InterThreadForwardNonCellularAnalysis) {
 					analysis.storeNodesToBeUpdated(nodeSet);
@@ -1165,7 +1167,7 @@ public class AutomatedUpdater {
 				Scopeable nestingScope = Misc.getEnclosingBlock(node);
 				if (nestingScope instanceof CompoundStatement) {
 					((CompoundStatement) nestingScope).getInfo()
-							.removeDeclarationFromSymbolOrTypeTable((Declaration) node);
+					.removeDeclarationFromSymbolOrTypeTable((Declaration) node);
 				}
 			}
 		}
@@ -1219,7 +1221,7 @@ public class AutomatedUpdater {
 		assert (!(node instanceof BeginNode));
 		if (node instanceof BarrierDirective || !node.getInfo().isControlConfined()
 				|| node.getInfo().getCFGInfo().getIntraTaskCFGLeafContentsOfSameParLevel().stream()
-						.anyMatch(n -> n.getNode() instanceof BarrierDirective)) {
+				.anyMatch(n -> n.getNode() instanceof BarrierDirective)) {
 			return false;
 		}
 		Set<Node> predSet = node.getInfo().getCFGInfo().getInterProceduralLeafPredecessors();
@@ -1302,7 +1304,7 @@ public class AutomatedUpdater {
 		assert (!(node instanceof EndNode));
 		if (node instanceof BarrierDirective || !node.getInfo().isControlConfined()
 				|| node.getInfo().getCFGInfo().getIntraTaskCFGLeafContentsOfSameParLevel().stream()
-						.anyMatch(n -> n.getNode() instanceof BarrierDirective)) {
+				.anyMatch(n -> n.getNode() instanceof BarrierDirective)) {
 			return false;
 		}
 		Set<Node> predSet = node.getInfo().getCFGInfo().getInterProceduralLeafPredecessors();

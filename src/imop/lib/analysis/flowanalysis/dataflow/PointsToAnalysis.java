@@ -108,8 +108,7 @@ public class PointsToAnalysis extends InterThreadForwardCellularAnalysis<PointsT
 		long localTimer = System.nanoTime();
 
 		/*
-		 * From the set of nodes to be updated, we obtain the workList to be
-		 * processed.
+		 * From the set of nodes to be updated, we obtain the workList to be processed.
 		 * OLD: We add all the entry points of the SCC of each node.
 		 */
 		long thisUpdateNodeCounter = this.nodesProcessedDuringUpdate;
@@ -355,9 +354,9 @@ public class PointsToAnalysis extends InterThreadForwardCellularAnalysis<PointsT
 				continue;
 			} else {
 				/*
-				 * This node belongs to an SCC. We should process the whole of
-				 * SCC in the first phase, followed by its processing in the
-				 * second phase, and only then shall we move on to the next SCC.
+				 * This node belongs to an SCC. We should process the whole of SCC in the first
+				 * phase, followed by its processing in the second phase, and only then shall we
+				 * move on to the next SCC.
 				 */
 				stabilizeSCCOf(nodeToBeAnalyzed);
 				processedSCCCount++;
@@ -516,9 +515,7 @@ public class PointsToAnalysis extends InterThreadForwardCellularAnalysis<PointsT
 	}
 
 	/**
-	 * f0 ::= DeclarationSpecifiers()
-	 * f1 ::= ( InitDeclaratorList() )?
-	 * f2 ::= ";"
+	 * f0 ::= DeclarationSpecifiers() f1 ::= ( InitDeclaratorList() )? f2 ::= ";"
 	 */
 	@Override
 	public PointsToFlowMap visit(Declaration n, PointsToFlowMap flowFactIN) {
@@ -526,8 +523,8 @@ public class PointsToAnalysis extends InterThreadForwardCellularAnalysis<PointsT
 		Symbol sym = n.getInfo().getDeclaredSymbol();
 		if (sym == null || (!(sym.getType() instanceof PointerType))) {
 			/*
-			 * This is a type definition -- struct/union/enum/typedef, etc,
-			 * or definition of some non pointer type.
+			 * This is a type definition -- struct/union/enum/typedef, etc, or definition of
+			 * some non pointer type.
 			 */
 			return flowFactIN;
 		}
@@ -570,8 +567,7 @@ public class PointsToAnalysis extends InterThreadForwardCellularAnalysis<PointsT
 	}
 
 	/**
-	 * f0 ::= "#"
-	 * f1 ::= <UNKNOWN_CPP>
+	 * f0 ::= "#" f1 ::= <UNKNOWN_CPP>
 	 */
 	@Override
 	public PointsToFlowMap visit(UnknownCpp n, PointsToFlowMap flowFactIN) {
@@ -579,9 +575,7 @@ public class PointsToAnalysis extends InterThreadForwardCellularAnalysis<PointsT
 	}
 
 	/**
-	 * f0 ::= "#"
-	 * f1 ::= <PRAGMA>
-	 * f2 ::= <UNKNOWN_CPP>
+	 * f0 ::= "#" f1 ::= <PRAGMA> f2 ::= <UNKNOWN_CPP>
 	 */
 	@Override
 	public PointsToFlowMap visit(UnknownPragma n, PointsToFlowMap flowFactIN) {
@@ -589,18 +583,15 @@ public class PointsToAnalysis extends InterThreadForwardCellularAnalysis<PointsT
 	}
 
 	/**
-	 * f0 ::= <IDENTIFIER>
-	 * f1 ::= "="
-	 * f2 ::= Expression()
+	 * f0 ::= <IDENTIFIER> f1 ::= "=" f2 ::= Expression()
 	 */
 	@Override
 	public PointsToFlowMap visit(OmpForInitExpression n, PointsToFlowMap flowFactIN) {
 		PointsToFlowMap flowFactOUT = flowFactIN;
 		/*
-		 * Note that in a well-defined OpenMP program, no side-effects should
-		 * exist in the
-		 * computation of the RHS expression.
-		 * Next, we model the effect of f0 = f2, if f0 is a pointer-type.
+		 * Note that in a well-defined OpenMP program, no side-effects should exist in
+		 * the computation of the RHS expression. Next, we model the effect of f0 = f2,
+		 * if f0 is a pointer-type.
 		 */
 		Symbol lhs = Misc.getSymbolEntry(n.getF0().toString(), n);
 		if (lhs == null || !(lhs.getType() instanceof PointerType)) {
@@ -638,31 +629,22 @@ public class PointsToAnalysis extends InterThreadForwardCellularAnalysis<PointsT
 	}
 
 	/**
-	 * f0 ::= OmpForLTCondition()
-	 * | OmpForLECondition()
-	 * | OmpForGTCondition()
-	 * | OmpForGECondition()
+	 * f0 ::= OmpForLTCondition() | OmpForLECondition() | OmpForGTCondition() |
+	 * OmpForGECondition()
 	 */
 	@Override
 	public PointsToFlowMap visit(OmpForCondition n, PointsToFlowMap flowFactIN) {
 		/*
-		 * Note that in a well-defined OpenMP program, no side-effects should
-		 * exist in the
-		 * computation of the RHS operator.
+		 * Note that in a well-defined OpenMP program, no side-effects should exist in
+		 * the computation of the RHS operator.
 		 */
 		return flowFactIN;
 	}
 
 	/**
-	 * f0 ::= PostIncrementId()
-	 * | PostDecrementId()
-	 * | PreIncrementId()
-	 * | PreDecrementId()
-	 * | ShortAssignPlus()
-	 * | ShortAssignMinus()
-	 * | OmpForAdditive()
-	 * | OmpForSubtractive()
-	 * | OmpForMultiplicative()
+	 * f0 ::= PostIncrementId() | PostDecrementId() | PreIncrementId() |
+	 * PreDecrementId() | ShortAssignPlus() | ShortAssignMinus() | OmpForAdditive()
+	 * | OmpForSubtractive() | OmpForMultiplicative()
 	 */
 	@Override
 	public PointsToFlowMap visit(OmpForReinitExpression n, PointsToFlowMap flowFactIN) {
@@ -670,10 +652,7 @@ public class PointsToAnalysis extends InterThreadForwardCellularAnalysis<PointsT
 	}
 
 	/**
-	 * f0 ::= OmpPragma()
-	 * f1 ::= <FLUSH>
-	 * f2 ::= ( FlushVars() )?
-	 * f3 ::= OmpEol()
+	 * f0 ::= OmpPragma() f1 ::= <FLUSH> f2 ::= ( FlushVars() )? f3 ::= OmpEol()
 	 */
 	@Override
 	public PointsToFlowMap visit(FlushDirective n, PointsToFlowMap flowFactIN) {
@@ -686,9 +665,7 @@ public class PointsToAnalysis extends InterThreadForwardCellularAnalysis<PointsT
 	}
 
 	/**
-	 * f0 ::= OmpPragma()
-	 * f1 ::= <TASKWAIT>
-	 * f2 ::= OmpEol()
+	 * f0 ::= OmpPragma() f1 ::= <TASKWAIT> f2 ::= OmpEol()
 	 */
 	@Override
 	public PointsToFlowMap visit(TaskwaitDirective n, PointsToFlowMap flowFactIN) {
@@ -696,9 +673,7 @@ public class PointsToAnalysis extends InterThreadForwardCellularAnalysis<PointsT
 	}
 
 	/**
-	 * f0 ::= OmpPragma()
-	 * f1 ::= <TASKYIELD>
-	 * f2 ::= OmpEol()
+	 * f0 ::= OmpPragma() f1 ::= <TASKYIELD> f2 ::= OmpEol()
 	 */
 	@Override
 	public PointsToFlowMap visit(TaskyieldDirective n, PointsToFlowMap flowFactIN) {
@@ -706,8 +681,7 @@ public class PointsToAnalysis extends InterThreadForwardCellularAnalysis<PointsT
 	}
 
 	/**
-	 * f0 ::= ( Expression() )?
-	 * f1 ::= ";"
+	 * f0 ::= ( Expression() )? f1 ::= ";"
 	 */
 	@Override
 	public PointsToFlowMap visit(ExpressionStatement n, PointsToFlowMap flowFactIN) {
@@ -720,9 +694,7 @@ public class PointsToAnalysis extends InterThreadForwardCellularAnalysis<PointsT
 	}
 
 	/**
-	 * f0 ::= <GOTO>
-	 * f1 ::= <IDENTIFIER>
-	 * f2 ::= ";"
+	 * f0 ::= <GOTO> f1 ::= <IDENTIFIER> f2 ::= ";"
 	 */
 	@Override
 	public PointsToFlowMap visit(GotoStatement n, PointsToFlowMap flowFactIN) {
@@ -730,8 +702,7 @@ public class PointsToAnalysis extends InterThreadForwardCellularAnalysis<PointsT
 	}
 
 	/**
-	 * f0 ::= <CONTINUE>
-	 * f1 ::= ";"
+	 * f0 ::= <CONTINUE> f1 ::= ";"
 	 */
 	@Override
 	public PointsToFlowMap visit(ContinueStatement n, PointsToFlowMap flowFactIN) {
@@ -739,8 +710,7 @@ public class PointsToAnalysis extends InterThreadForwardCellularAnalysis<PointsT
 	}
 
 	/**
-	 * f0 ::= <BREAK>
-	 * f1 ::= ";"
+	 * f0 ::= <BREAK> f1 ::= ";"
 	 */
 	@Override
 	public PointsToFlowMap visit(BreakStatement n, PointsToFlowMap flowFactIN) {
@@ -748,9 +718,7 @@ public class PointsToAnalysis extends InterThreadForwardCellularAnalysis<PointsT
 	}
 
 	/**
-	 * f0 ::= <RETURN>
-	 * f1 ::= ( Expression() )?
-	 * f2 ::= ";"
+	 * f0 ::= <RETURN> f1 ::= ( Expression() )? f2 ::= ";"
 	 */
 	@Override
 	public PointsToFlowMap visit(ReturnStatement n, PointsToFlowMap flowFactIN) {
@@ -763,8 +731,7 @@ public class PointsToAnalysis extends InterThreadForwardCellularAnalysis<PointsT
 	}
 
 	/**
-	 * f0 ::= AssignmentExpression()
-	 * f1 ::= ( "," AssignmentExpression() )*
+	 * f0 ::= AssignmentExpression() f1 ::= ( "," AssignmentExpression() )*
 	 */
 	@Override
 	public PointsToFlowMap visit(Expression n, PointsToFlowMap flowFactIN) {
@@ -774,10 +741,7 @@ public class PointsToAnalysis extends InterThreadForwardCellularAnalysis<PointsT
 	}
 
 	/**
-	 * f0 ::= <IF>
-	 * f1 ::= "("
-	 * f2 ::= Expression()
-	 * f3 ::= ")"
+	 * f0 ::= <IF> f1 ::= "(" f2 ::= Expression() f3 ::= ")"
 	 */
 	@Override
 	public PointsToFlowMap visit(IfClause n, PointsToFlowMap flowFactIN) {
@@ -787,10 +751,7 @@ public class PointsToAnalysis extends InterThreadForwardCellularAnalysis<PointsT
 	}
 
 	/**
-	 * f0 ::= <NUM_THREADS>
-	 * f1 ::= "("
-	 * f2 ::= Expression()
-	 * f3 ::= ")"
+	 * f0 ::= <NUM_THREADS> f1 ::= "(" f2 ::= Expression() f3 ::= ")"
 	 */
 	@Override
 	public PointsToFlowMap visit(NumThreadsClause n, PointsToFlowMap flowFactIN) {
@@ -800,10 +761,7 @@ public class PointsToAnalysis extends InterThreadForwardCellularAnalysis<PointsT
 	}
 
 	/**
-	 * f0 ::= <FINAL>
-	 * f1 ::= "("
-	 * f2 ::= Expression()
-	 * f3 ::= ")"
+	 * f0 ::= <FINAL> f1 ::= "(" f2 ::= Expression() f3 ::= ")"
 	 */
 	@Override
 	public PointsToFlowMap visit(FinalClause n, PointsToFlowMap flowFactIN) {
@@ -950,22 +908,17 @@ public class PointsToAnalysis extends InterThreadForwardCellularAnalysis<PointsT
 
 	/**
 	 * Given a parameter-declaration {@code parameter}, and a
-	 * simple-primary-expression {@code argument} that represents the argument
-	 * for this parameter from some call-site, this method should model the
+	 * simple-primary-expression {@code argument} that represents the argument for
+	 * this parameter from some call-site, this method should model the
 	 * flow-function of the write to the parameter that happens implicitly.
 	 *
-	 * @param parameter
-	 *                   a {@code ParameterDeclaration} which needs to be assigned
-	 *                   with
-	 *                   the {@code argument}.
-	 * @param argument
-	 *                   a {@code SimplePrimaryExpression} which is assigned to the
+	 * @param parameter  a {@code ParameterDeclaration} which needs to be assigned
+	 *                   with the {@code argument}.
+	 * @param argument   a {@code SimplePrimaryExpression} which is assigned to the
 	 *                   {@code parameter}.
-	 * @param flowFactIN
-	 *                   the IN flow-fact for the implicit assignment of the
+	 * @param flowFactIN the IN flow-fact for the implicit assignment of the
 	 *                   {@code argument} to the {@code parameter}.
-	 * @return
-	 *         the OUT flow-fact, as a result of the implicit assignment of the
+	 * @return the OUT flow-fact, as a result of the implicit assignment of the
 	 *         {@code argument} to the {@code parameter}.
 	 */
 	@Override
@@ -1038,8 +991,8 @@ public class PointsToAnalysis extends InterThreadForwardCellularAnalysis<PointsT
 
 	/**
 	 *
-	 * This visitor is used to obtain the "modifications" in the points-to sets
-	 * of various symbols, as a result of the symbolic execution of the visited
+	 * This visitor is used to obtain the "modifications" in the points-to sets of
+	 * various symbols, as a result of the symbolic execution of the visited
 	 * expression.
 	 *
 	 * @author Aman Nougrahiya
@@ -1049,9 +1002,8 @@ public class PointsToAnalysis extends InterThreadForwardCellularAnalysis<PointsT
 		public CellMap<ImmutableCellSet> updateMap = new ExtensibleCellMap<>();
 
 		/**
-		 * f0 ::= UnaryExpression()
-		 * f1 ::= AssignmentOperator()
-		 * f2 ::= AssignmentExpression()
+		 * f0 ::= UnaryExpression() f1 ::= AssignmentOperator() f2 ::=
+		 * AssignmentExpression()
 		 */
 		@Override
 		public void visit(NonConditionalExpression n) {
@@ -1066,7 +1018,23 @@ public class PointsToAnalysis extends InterThreadForwardCellularAnalysis<PointsT
 					if (lhsSym != Cell.genericCell && !(lhsSym.getType() instanceof PointerType)) {
 						return;
 					}
+				} else if (lhsCell instanceof FieldCell) {
+					/*
+					 * New Code: Now we do not maintain points-to sets for those field-cells whose
+					 * aggregate's element type is not of an ArrayType or PointerType.
+					 */
+					Symbol lhsParentSym = ((FieldCell) lhsCell).getAggregateElement();
+					if (lhsParentSym.getType() instanceof ArrayType) {
+						Type elementType = ((ArrayType) lhsParentSym.getType()).getElementType();
+						if (elementType != null && !(elementType instanceof PointerType)
+								&& !(elementType instanceof ArrayType)) {
+							// System.err.println(">>>> Skipping the expression: " + n);
+							return;
+						}
+					}
+
 				}
+
 			}
 			CellSet rhsPtsToSet = new CellSet();
 			if (rhsSet.isUniversal()) {
@@ -1092,8 +1060,7 @@ public class PointsToAnalysis extends InterThreadForwardCellularAnalysis<PointsT
 		}
 
 		/**
-		 * f0 ::= SizeofTypeName()
-		 * | SizeofUnaryExpression()
+		 * f0 ::= SizeofTypeName() | SizeofUnaryExpression()
 		 */
 		@Override
 		public void visit(UnarySizeofExpression n) {
@@ -1102,8 +1069,7 @@ public class PointsToAnalysis extends InterThreadForwardCellularAnalysis<PointsT
 		}
 
 		/**
-		 * f0 ::= <SIZEOF>
-		 * f1 ::= UnaryExpression()
+		 * f0 ::= <SIZEOF> f1 ::= UnaryExpression()
 		 */
 		@Override
 		public void visit(SizeofUnaryExpression n) {

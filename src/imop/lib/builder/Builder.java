@@ -2,7 +2,7 @@
  * Copyright (c) 2019 Aman Nougrahiya, V Krishna Nandivada, IIT Madras.
  * This file is a part of the project IMOP, licensed under the MIT license.
  * See LICENSE.md for the full text of the license.
- * 
+ *
  * The above notice shall be included in all copies or substantial
  * portions of this file.
  */
@@ -19,6 +19,7 @@ import imop.lib.analysis.flowanalysis.Symbol;
 import imop.lib.analysis.typesystem.StructType;
 import imop.lib.analysis.typesystem.Type;
 import imop.lib.analysis.typesystem.VoidType;
+import imop.lib.cfg.link.autoupdater.AutomatedUpdater;
 import imop.lib.getter.StringGetter;
 import imop.lib.util.Misc;
 import imop.parser.FrontEnd;
@@ -26,16 +27,17 @@ import imop.parser.Program;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class Builder {
 	public static int counterVar = 0;
 
 	/**
 	 * To obtain a new temporary name.
-	 * 
-	 * @return
-	 *         a temporary name.
+	 *
+	 * @return a temporary name.
 	 */
 	public static String getNewTempName() {
 		if (Program.isPrePassPhase) {
@@ -55,7 +57,7 @@ public class Builder {
 
 	/**
 	 * Adds the declaration decl to the global list of elements in root
-	 * 
+	 *
 	 * @param decl
 	 */
 	public static void addDeclarationToGlobals(Declaration decl) {
@@ -78,7 +80,7 @@ public class Builder {
 
 	/**
 	 * Adds the declaration decl to the global list of elements in root
-	 * 
+	 *
 	 * @param decl
 	 */
 	public static void addDeclarationToGlobals(int index, Declaration decl) {
@@ -174,6 +176,17 @@ public class Builder {
 		ElementsOfTranslation elemOfTranslation = Misc.getEnclosingNode(decl, ElementsOfTranslation.class);
 		root.getF0().removeNode(elemOfTranslation);
 		root.getInfo().removeDeclarationEffects(decl); // TODO: This line needs to be tested.
+
+		/*
+		 * Code to add entry point of main() to the set of nodes starting which all
+		 * forward IDFAs need to be updated.
+		 */
+		Set<Node> entryNodes = new HashSet<>();
+		if (Program.getRoot().getInfo().getMainFunction() != null) {
+			entryNodes.add(
+					Program.getRoot().getInfo().getMainFunction().getInfo().getCFGInfo().getNestedCFG().getBegin());
+		}
+		AutomatedUpdater.updateFlowFactsForward(entryNodes);
 	}
 
 	/**
@@ -199,33 +212,26 @@ public class Builder {
 	}
 
 	/**
-	 * @param baseSymbol
-	 *                   Symbol from which type is taken to create a new symbol.
-	 * @return a declaration for a new variable which is of the type same
-	 *         as that of the baseSymbol.
-	 *         IMPORTANT:
-	 *         Before calling this function ensure consistency of following
-	 *         function calls:
-	 *         1.) InitParent
-	 *         2.) InitSymbolTable
+	 * @param baseSymbol Symbol from which type is taken to create a new symbol.
+	 * @return a declaration for a new variable which is of the type same as that of
+	 *         the baseSymbol. IMPORTANT: Before calling this function ensure
+	 *         consistency of following function calls: 1.) InitParent 2.)
+	 *         InitSymbolTable
 	 */
 	public static Declaration getDeclarationFromSymbol(Symbol baseSymbol) {
 		// Get the new name for new Declaration
 		String varName = getNewTempName();
 
 		/*
-		 * There are two possibilities:
-		 * A.) baseSymbol belongs to a Declaration.
-		 * B.) baseSymbol belongs to a ParameterDeclaration
-		 * Both these cases have been handled below
+		 * There are two possibilities: A.) baseSymbol belongs to a Declaration. B.)
+		 * baseSymbol belongs to a ParameterDeclaration Both these cases have been
+		 * handled below
 		 */
 		if (baseSymbol.getDeclaringNode() == null || baseSymbol.getDeclaringNode() instanceof ParameterDeclaration) {
 			/*
-			 * CASE B:
-			 * baseSymbol belongs to a ParameterDeclaration
-			 * Two subcases arise:
-			 * i.) baseSymbol has been defined in old-style parameter list.
-			 * ii.) baseSymbol has been defined in the new-style parameter list.
+			 * CASE B: baseSymbol belongs to a ParameterDeclaration Two subcases arise: i.)
+			 * baseSymbol has been defined in old-style parameter list. ii.) baseSymbol has
+			 * been defined in the new-style parameter list.
 			 */
 			// Call getDeclarationFromParameter to solve this case
 			// It requires the functionDefinition and parameter number
@@ -271,8 +277,7 @@ public class Builder {
 			return getDeclarationFromParameter(func, num);
 		} else if (baseSymbol.getDeclaringNode() instanceof Declaration) {
 			/*
-			 * CASE A:
-			 * baseSymbol belongs to a Declaration
+			 * CASE A: baseSymbol belongs to a Declaration
 			 */
 			Declaration baseDecl = (Declaration) baseSymbol.getDeclaringNode();
 			DeclarationStringFromDeclarationGetter declStringGetter = new DeclarationStringFromDeclarationGetter();
@@ -285,13 +290,10 @@ public class Builder {
 	}
 
 	/**
-	 * @param func
-	 *             : A function
-	 * @param num
-	 *             : A parameter number (starts from 0)
-	 * @return a declaration for a new variable which is of the type same as
-	 *         that
-	 *         of the num-th parameter of given function.
+	 * @param func : A function
+	 * @param num  : A parameter number (starts from 0)
+	 * @return a declaration for a new variable which is of the type same as that of
+	 *         the num-th parameter of given function.
 	 */
 	public static Declaration getDeclarationFromParameter(FunctionDefinition func, int num) {
 		// Get num-th parameter
@@ -379,9 +381,9 @@ public class Builder {
 	}
 
 	/**
-	 * Returns a Declaration node with a new variable which holds the return
-	 * value of func when it is inlined.
-	 * 
+	 * Returns a Declaration node with a new variable which holds the return value
+	 * of func when it is inlined.
+	 *
 	 * @param func
 	 * @return
 	 */
@@ -405,14 +407,12 @@ public class Builder {
 	}
 
 	/**
-	 * Obtain a copy of {@code origBody} that can be repeated in the target
-	 * loop.
-	 * <i>NOTE: The returned String is a list of statements, and not enclosed
-	 * with a CompoundStatement.</i>.
-	 * The resulting string should not have re-declarations of the same
-	 * variable, but should have initializations; all label sources and
+	 * Obtain a copy of {@code origBody} that can be repeated in the target loop.
+	 * <i>NOTE: The returned String is a list of statements, and not enclosed with a
+	 * CompoundStatement.</i>. The resulting string should not have re-declarations
+	 * of the same variable, but should have initializations; all label sources and
 	 * destinations must be renamed;
-	 * 
+	 *
 	 * @param origBody
 	 * @return
 	 */
@@ -491,11 +491,9 @@ public class Builder {
 	/**
 	 * Creates and returns a new copy of the {@code targetNode}, if it is a
 	 * {@link Statement} or a {@link Declaration}.
-	 * 
-	 * @return
-	 *         a new copy of the {@code targetNode}, if it is a
-	 *         {@link Statement} or a {@link Declaration};
-	 *         {@code null} otherwise.
+	 *
+	 * @return a new copy of the {@code targetNode}, if it is a {@link Statement} or
+	 *         a {@link Declaration}; {@code null} otherwise.
 	 */
 	public static Node getCopiedTarget(Node targetNode) {
 		// TODO: Handle repetitions of labels.

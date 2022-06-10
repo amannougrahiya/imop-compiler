@@ -79,6 +79,10 @@ public class Main {
 	public static boolean timerOn = false;
 
 	public static void main(String[] args) throws FileNotFoundException, InterruptedException {
+		FrontEnd.getK2Builtins();
+		FrontEnd.getMacBuiltins();
+		FrontEnd.getOtherBuiltins();
+		// System.err.println("Profile now.");
 		// Thread.sleep(10000);
 		totalTime = System.nanoTime();
 		Program.parseNormalizeInput(args);
@@ -307,8 +311,7 @@ public class Main {
 		// timeTaken / (1000000.0 * 28));
 
 		/*
-		 * Testing CFG insertion...
-		 * //
+		 * Testing CFG insertion... //
 		 */
 		// for (Node node : root.getInfo().getCFGNodes()) {
 		// ExpressionStatement expStmtTarget = (ExpressionStatement)
@@ -515,56 +518,30 @@ public class Main {
 		/*
 		 * root = (TranslationUnit)
 		 * CParser.createRefinedASTNode(root.getInfo().getString(),
-		 * TranslationUnit.class);
-		 * // for (Node whileNode : Misc.getExactEnclosee(root,
-		 * WhileStatement.class)) {
-		 * // WhileStatement whileStmt = (WhileStatement) whileNode;
-		 * // WhileStatement newWhileStmt =
-		 * LoopTransformations.unrollWhile(whileStmt, 2);
-		 * // BasicTransform.crudeReplaceOldWithNew(whileStmt,
-		 * newWhileStmt);
-		 * // }
-		 * // root = (TranslationUnit)
-		 * CParser.createRefinedASTNode(root.getInfo().getString(),
-		 * TranslationUnit.class);
-		 * //
-		 * // System.err.println("==== Performing MHP Analysis ====");
-		 * // Misc.performMHPAnalysis(root);
-		 * //
-		 * // System.err.
-		 * println("==== Performing Intra-thread Reaching Definition Analysis ===="
-		 * );
-		 * // Misc.performReachingDefinitionsAnalysis(root);
-		 * //
-		 * // System.err.
-		 * println("==== Performing Intra-thread DU and UD chains Analysis ===="
-		 * );
-		 * // root.accept(new DUChainGenerator());
-		 * //
-		 * // System.err.
-		 * println("==== Performing Data Dependence Analyses ====");
-		 * // Misc.performDataDependenceAnalysis(root);
-		 * //
-		 * // System.err.
+		 * TranslationUnit.class); // for (Node whileNode : Misc.getExactEnclosee(root,
+		 * WhileStatement.class)) { // WhileStatement whileStmt = (WhileStatement)
+		 * whileNode; // WhileStatement newWhileStmt =
+		 * LoopTransformations.unrollWhile(whileStmt, 2); //
+		 * BasicTransform.crudeReplaceOldWithNew(whileStmt, newWhileStmt); // } // root
+		 * = (TranslationUnit) CParser.createRefinedASTNode(root.getInfo().getString(),
+		 * TranslationUnit.class); // //
+		 * System.err.println("==== Performing MHP Analysis ===="); //
+		 * Misc.performMHPAnalysis(root); // // System.err.
+		 * println("==== Performing Intra-thread Reaching Definition Analysis ====" );
+		 * // Misc.performReachingDefinitionsAnalysis(root); // // System.err.
+		 * println("==== Performing Intra-thread DU and UD chains Analysis ====" ); //
+		 * root.accept(new DUChainGenerator()); // // System.err.
+		 * println("==== Performing Data Dependence Analyses ===="); //
+		 * Misc.performDataDependenceAnalysis(root); // // System.err.
 		 * println("==== Performing Memory Renaming to remove Anti-dependence on the shared variables ===="
-		 * );
-		 * for (ParallelConstruct parCons : Misc.getParConstructs(root)) {
-		 * for (Node whileNode : Misc.getExactEnclosee(parCons,
-		 * WhileStatement.class)) {
-		 * int i = 2;
-		 * while (i < 4) {
-		 * WhileStatement whileStmt = (WhileStatement) whileNode;
-		 * WhileStatement newWhileStmt =
-		 * LoopTransformations.unrollWhile(whileStmt, i++);
-		 * BasicTransform.crudeReplaceOldWithNew(whileStmt, newWhileStmt);
-		 * setupRoot();
-		 * RemoveAnti.removeAntiDependence(parCons);
-		 * Misc.printToFile(root, "output.i" + i);
-		 * BasicTransform.crudeReplaceOldWithNew(newWhileStmt, whileStmt);
-		 * }
-		 * }
-		 * }
-		 * System.err.flush();
+		 * ); for (ParallelConstruct parCons : Misc.getParConstructs(root)) { for (Node
+		 * whileNode : Misc.getExactEnclosee(parCons, WhileStatement.class)) { int i =
+		 * 2; while (i < 4) { WhileStatement whileStmt = (WhileStatement) whileNode;
+		 * WhileStatement newWhileStmt = LoopTransformations.unrollWhile(whileStmt,
+		 * i++); BasicTransform.crudeReplaceOldWithNew(whileStmt, newWhileStmt);
+		 * setupRoot(); RemoveAnti.removeAntiDependence(parCons); Misc.printToFile(root,
+		 * "output.i" + i); BasicTransform.crudeReplaceOldWithNew(newWhileStmt,
+		 * whileStmt); } } } System.err.flush();
 		 */
 		// System.exit(0);
 		/*
@@ -594,8 +571,7 @@ public class Main {
 		// declarations of their objects.
 
 		/*
-		 * CFG Creation
-		 * Testing: Done on NPB (not semantically)
+		 * CFG Creation Testing: Done on NPB (not semantically)
 		 */
 		// Done in createRefinedASTNode: root.accept(new
 		// CFGGenerator(root));
@@ -607,8 +583,7 @@ public class Main {
 		// dotGen.create(TypeOfCFG.SIMPLE);
 
 		/*
-		 * Parallel Region Analysis
-		 * Testing: Done on NPB (not semantically)
+		 * Parallel Region Analysis Testing: Done on NPB (not semantically)
 		 */
 		// Not-needed Code:
 		// System.out.println("==== Finding Parallel Regions ====");
@@ -738,11 +713,8 @@ public class Main {
 		/*
 		 * Node firstNode = ((RootInfo)
 		 * root.getInfo()).getMainFunction().getInfo().getCFGInfo().
-		 * getNestedCFG().begin;
-		 * ReachingDefinitionAnalysis rda = new
-		 * ReachingDefinitionAnalysis(firstNode);
-		 * rda.run();
-		 * rda.printFacts();
+		 * getNestedCFG().begin; ReachingDefinitionAnalysis rda = new
+		 * ReachingDefinitionAnalysis(firstNode); rda.run(); rda.printFacts();
 		 */
 		// System.err.println("==== Performing Memory Renaming to remove Anti-dependence
 		// on the shared variables ====");
@@ -755,7 +727,7 @@ public class Main {
 
 	public static void countPhases() {
 		assert (Program.concurrencyAlgorithm == ConcurrencyAlgorithm.YCON)
-				: "Run this method only with Yuan's analysis. Single-barrier paired static phases won't make sense otherwise.";
+		: "Run this method only with Yuan's analysis. Single-barrier paired static phases won't make sense otherwise.";
 		Set<YPhase> aggPhaseSet = new HashSet<>();
 		for (ParallelConstruct parCons : Misc.getExactEnclosee(Program.getRoot(), ParallelConstruct.class)) {
 			for (AbstractPhase<?, ?> ph : parCons.getInfo().getConnectedPhases()) {
@@ -841,7 +813,7 @@ public class Main {
 
 	private static void debugDeclarationEscalator(WhileStatement whileStmt) {
 		DeclarationEscalator
-				.pushAllDeclarationsUpFromLevel((CompoundStatement) whileStmt.getInfo().getCFGInfo().getBody());
+		.pushAllDeclarationsUpFromLevel((CompoundStatement) whileStmt.getInfo().getCFGInfo().getBody());
 		DumpSnapshot.dumpVisibleSharedReadWrittenCells("");
 		System.exit(0);
 	}
@@ -1249,7 +1221,7 @@ public class Main {
 				continue;
 			}
 			System.err.println(exp + ": " + tokens + "\n Postfix: " + ExpressionTokenizer.getPostfixTokens(exp)
-					+ "\n Prefix: " + ExpressionTokenizer.getPrefixTokens(exp));
+			+ "\n Prefix: " + ExpressionTokenizer.getPrefixTokens(exp));
 		}
 		System.exit(0);
 	}
@@ -2224,7 +2196,7 @@ public class Main {
 					str = "EndNode";
 				}
 				System.out
-						.println("Following node has some issue: " + str + " of type " + n.getClass().getSimpleName());
+				.println("Following node has some issue: " + str + " of type " + n.getClass().getSimpleName());
 			}
 		}
 
@@ -2322,10 +2294,9 @@ public class Main {
 
 	private static void testPA_A4() {
 		/*
-		 * Step 1: Find all null-pointer or dangling-pointer dereferences, and
-		 * the corresponding temporaries in which we try to save the value of
-		 * these dereferences.
-		 * Also, remove all such assignment statements.
+		 * Step 1: Find all null-pointer or dangling-pointer dereferences, and the
+		 * corresponding temporaries in which we try to save the value of these
+		 * dereferences. Also, remove all such assignment statements.
 		 */
 		CellList riskyDerefs = new CellList();
 		for (FunctionDefinition func : Program.getRoot().getInfo().getAllFunctionDefinitions()) {
@@ -2338,9 +2309,8 @@ public class Main {
 						risky = true;
 					} else {
 						/*
-						 * Now, if any element in points-to set of accessed
-						 * location is invalid, then this location is a dangling
-						 * pointer.
+						 * Now, if any element in points-to set of accessed location is invalid, then
+						 * this location is a dangling pointer.
 						 */
 						for (Cell cell : accessed.getPointsTo(cfgNode)) {
 							if (cell instanceof HeapCell) {
@@ -2370,8 +2340,8 @@ public class Main {
 		}
 
 		/*
-		 * Step 2: Find and delete all print statements that may be reading from
-		 * any riskyDerefs.
+		 * Step 2: Find and delete all print statements that may be reading from any
+		 * riskyDerefs.
 		 */
 		for (CallStatement callStmt : Misc.getInheritedEnclosee(Program.getRoot(), CallStatement.class)) {
 			if (callStmt.getFunctionDesignatorNode().toString().equals("printf")) {
@@ -2388,8 +2358,8 @@ public class Main {
 
 	/**
 	 * This sample pass adds a {@code printf} statement that prints {@code true},
-	 * before all pointer-dereference writes
-	 * (i.e., before stores, such as {@code *p = ...;}.
+	 * before all pointer-dereference writes (i.e., before stores, such as
+	 * {@code *p = ...;}.
 	 * <p>
 	 * NOTE: To use this method, paste it in the {@code Main} class, and invoke it
 	 * after {@code

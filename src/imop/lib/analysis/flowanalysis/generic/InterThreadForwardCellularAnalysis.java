@@ -45,7 +45,7 @@ import java.util.Set;
  * iterative data-flow analysis.
  */
 public abstract class InterThreadForwardCellularAnalysis<F extends CellularDataFlowAnalysis.CellularFlowMap<?>>
-extends CellularDataFlowAnalysis<F> {
+		extends CellularDataFlowAnalysis<F> {
 
 	public InterThreadForwardCellularAnalysis(AnalysisName analysisName, AnalysisDimension analysisDimension) {
 		super(analysisName, analysisDimension);
@@ -852,9 +852,9 @@ extends CellularDataFlowAnalysis<F> {
 
 		nodeInfo.setIN(analysisName, newIN);
 
-		//		if (oldIN != null && oldIN != newIN && !oldIN.isEqualTo(newIN)) {
-		//			inOrOUTChanged = true;
-		//		}
+		// if (oldIN != null && oldIN != newIN && !oldIN.isEqualTo(newIN)) {
+		// inOrOUTChanged = true;
+		// }
 		// NEW, RECTIFIED CODE:
 		if (oldIN != null && oldIN != newIN) {
 			inChanged = !oldIN.isEqualTo(newIN);
@@ -1603,6 +1603,7 @@ extends CellularDataFlowAnalysis<F> {
 		}
 	}
 
+	@Deprecated
 	private static enum PhaseOfFirstPass {
 		PHASEONE, PHASETWO
 	}
@@ -1753,6 +1754,8 @@ extends CellularDataFlowAnalysis<F> {
 	 *             already been removed from the workList.
 	 */
 	protected final void stabilizeSCCOfOptimized(Node node) {
+		// System.err.println("PROCESSING SCC ID#" +
+		// node.getInfo().getCFGInfo().getSCCRPOIndex());
 		SCC thisSCC = node.getInfo().getCFGInfo().getSCC();
 		assert (thisSCC != null);
 		int thisSCCNum = node.getInfo().getCFGInfo().getSCCRPOIndex();
@@ -1825,31 +1828,41 @@ extends CellularDataFlowAnalysis<F> {
 			 * considered safe. May write to underApproximated.
 			 */
 			this.intraSCCWorkList.recreate();
-			this.addEntryNodesForSCCOf(node, this.intraSCCWorkList);
-			do {
-				Node tempNode = this.intraSCCWorkList.removeFirstElementOfSameSCC(thisSCCNum);
-				if (tempNode == null) {
-					break;
-				}
-				// Program.tempString += (tempNode.toString());
-				this.nodesProcessedDuringUpdate++;
-				this.debugRecursion(tempNode);
-				this.processWhenUpdatedOptimized(tempNode, thisSCC, true);
-			} while (true);
+			if (Program.runFirstPartOfFirstPass) {
+				this.addEntryNodesForSCCOf(node, this.intraSCCWorkList);
+				do {
+					Node tempNode = this.intraSCCWorkList.removeFirstElementOfSameSCC(thisSCCNum);
+					if (tempNode == null) {
+						break;
+					}
+					if (this.safeCurrentSCCNodes.contains(tempNode)) {
+						this.underApproximated.add(tempNode);
+						continue;
+					}
+					// Program.tempString += (tempNode.toString());
+					this.nodesProcessedDuringUpdate++;
+					this.debugRecursion(tempNode);
+					this.processWhenUpdatedOptimized(tempNode, thisSCC, true);
+				} while (true);
 
-			FlowAnalysis.nodes += "***\n";
+				FlowAnalysis.nodes += "***\n";
+				assert (this.intraSCCWorkList.isEmpty());
+			}
 			/*
 			 * FIRST PASS, PHASE-II. All seed-nodes contain at least partial (non-empty)
 			 * information. Not all nodes are considered safe. May write to
 			 * underApproximated. The phase ends when all nodes are guaranteed to contain
 			 * safe values.
 			 */
-			assert (this.intraSCCWorkList.isEmpty());
 			this.intraSCCWorkList.addAll(this.thisSeeds);
 			do {
 				Node tempNode = this.intraSCCWorkList.removeFirstElementOfSameSCC(thisSCCNum);
 				if (tempNode == null) {
 					break;
+				}
+				if (this.safeCurrentSCCNodes.contains(tempNode)) {
+					this.underApproximated.add(tempNode);
+					continue;
 				}
 				// Program.tempString += (tempNode.toString());
 				this.nodesProcessedDuringUpdate++;
@@ -1867,7 +1880,7 @@ extends CellularDataFlowAnalysis<F> {
 				double percentInFirst = this.safeCurrentSCCNodes.size() / (SCCSize * 1.0) * 100;
 				if (SCCSize != 1) {
 					System.out.println("Total " + Program.df2.format(percentInFirst)
-					+ "% of unique nodes processed out of " + SCCSize + " in this SCC.");
+							+ "% of unique nodes processed out of " + SCCSize + " in this SCC.");
 				}
 			}
 			/*
@@ -1882,14 +1895,14 @@ extends CellularDataFlowAnalysis<F> {
 		 * reach the fixed-point for the complete SCC.
 		 */
 		this.safeCurrentSCCNodes.clear();
-		this.globalWorkList.addAll(this.underApproximated);
+		this.intraSCCWorkList.addAll(this.underApproximated);
 		this.underApproximated.clear();
 		if (Program.checkForCyclesInKeyDependenceGraph && !foundACycle) {
-			this.globalWorkList.addAll(this.thisSeeds);
+			this.intraSCCWorkList.addAll(this.thisSeeds);
 		}
 		localCounterPerPhase = this.nodesProcessedDuringUpdate;
 		do {
-			node = this.globalWorkList.removeFirstElementOfSameSCC(thisSCCNum);
+			node = this.intraSCCWorkList.removeFirstElementOfSameSCC(thisSCCNum);
 			if (node == null) {
 				break;
 			}
@@ -2107,8 +2120,12 @@ extends CellularDataFlowAnalysis<F> {
 
 		nodeInfo.setIN(analysisName, newIN);
 
-		if (oldIN != null && oldIN != newIN && !oldIN.isEqualTo(newIN)) {
-			inChanged = true;
+		// if (oldIN != null && oldIN != newIN && !oldIN.isEqualTo(newIN)) {
+		// inOrOUTChanged = true;
+		// }
+		// NEW, RECTIFIED CODE:
+		if (oldIN != null && oldIN != newIN) {
+			inChanged = !oldIN.isEqualTo(newIN);
 		}
 
 		// Step 2: Apply the flow-function on IN, to obtain the OUT.
@@ -2187,6 +2204,7 @@ extends CellularDataFlowAnalysis<F> {
 				if (otherSCC == thisSCC) {
 					this.intraSCCWorkList.add(n);
 				} else if (node instanceof ParameterDeclaration) {
+					// ReversePostOrderWorkList.checkNode(n, this.globalWorkList);
 					this.globalWorkList.add(n);
 				}
 			}
@@ -2197,6 +2215,7 @@ extends CellularDataFlowAnalysis<F> {
 				if (otherSCC == thisSCC) {
 					this.intraSCCWorkList.add(post);
 				} else {
+					// ReversePostOrderWorkList.checkNode(post, this.globalWorkList);
 					this.globalWorkList.add(post);
 				}
 			}
@@ -2209,6 +2228,7 @@ extends CellularDataFlowAnalysis<F> {
 					if (otherSCC == thisSCC) {
 						this.intraSCCWorkList.add(paramDecl);
 					} else {
+						// ReversePostOrderWorkList.checkNode(paramDecl, this.globalWorkList);
 						this.globalWorkList.add(paramDecl);
 					}
 				}
@@ -2271,7 +2291,7 @@ extends CellularDataFlowAnalysis<F> {
 		 * barriers to the workList.
 		 */
 		if (inChanged && node instanceof BarrierDirective) {
-			this.addAllSiblingBarriersToGlobalWorkList((BarrierDirective) node);
+			this.addAllSiblingBarriersToWorkList((BarrierDirective) node, thisSCC);
 		}
 		nodeInfo.setIN(analysisName, newIN);
 
@@ -2332,7 +2352,12 @@ extends CellularDataFlowAnalysis<F> {
 			if (node instanceof BeginNode && node.getParent() instanceof FunctionDefinition) {
 				FunctionDefinition func = (FunctionDefinition) node.getParent();
 				for (ParameterDeclaration paramDecl : func.getInfo().getCFGInfo().getParameterDeclarationList()) {
-					this.intraSCCWorkList.add(paramDecl);
+					SCC otherSCC = paramDecl.getInfo().getCFGInfo().getSCC();
+					if (otherSCC == thisSCC) {
+						this.intraSCCWorkList.add(paramDecl);
+					} else {
+						this.globalWorkList.add(paramDecl);
+					}
 				}
 			}
 		}
@@ -2459,9 +2484,9 @@ extends CellularDataFlowAnalysis<F> {
 		nodeInfo.setIN(analysisName, newIN);
 
 		// OLD CODE:
-		//		if (oldIN != null && oldIN != newIN && !oldIN.isEqualTo(newIN)) {
-		//			inChanged = true;
-		//		}
+		// if (oldIN != null && oldIN != newIN && !oldIN.isEqualTo(newIN)) {
+		// inChanged = true;
+		// }
 		// NEW, RECTIFIED CODE:
 		if (oldIN != null && oldIN != newIN) {
 			inChanged = !oldIN.isEqualTo(newIN);

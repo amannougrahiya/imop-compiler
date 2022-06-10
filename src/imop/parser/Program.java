@@ -226,6 +226,7 @@ public class Program {
 	public static boolean checkForCyclesInKeyDependenceGraph = false; // A profiling flag. Disable for normal
 	// runs.
 	public static boolean useAccessedCellsWithExhaustive = false;
+	public static boolean runFirstPartOfFirstPass = false; // Default: true
 
 	/**
 	 * Sets the various defaults for global flags (and filenames), which will be
@@ -243,7 +244,7 @@ public class Program {
 		Program.removeUnused = true; // Leave as true, to weed out dead definitions and declarations.
 		Program.idfaUpdateCategory = UpdateCategory.LZUPD; // Leave as LZUPD. Now we use stabilizationIDFAMode as the
 		// flag for IncIDFA results.
-		Program.stabilizationIDFAMode = StabilizationIDFAMode.ALL_SCC; // The actual mode to be used.
+		Program.stabilizationIDFAMode = StabilizationIDFAMode.INCIDFA; // The actual mode to be used.
 		Program.testSafeMarkingHeuristic = false; // Leave as false. Not needed in the current algorithm.
 		Program.profileSCC = false; // To calculate print SCC-processing specific information. Leave as false.
 		Program.countSeededSCCs = false; // To calculate and print part of SCC-processing specific information. Leave as
@@ -263,7 +264,7 @@ public class Program {
 		Program.maxThreads = 13;
 		Program.z3TimeoutInMilliSecs = "5000"; // 5s timeout for each z3 query.
 		Program.oneEntryPerFDInCallStack = true;
-		Program.disableLineNumbers = false; // Unless we need line numbers, keep this as true.
+		Program.disableLineNumbers = true; // Unless we need line numbers, keep this as true.
 		Program.basePointsTo = true;
 		Program.memoizeAccesses = 0;
 		Program.preciseDFDEdges = false;
@@ -302,27 +303,19 @@ public class Program {
 		//
 		// filePath = ("../output-dump/ft-bimop_output_LZINC.i");
 		filePath = ("../tests/npb-post/bt3-0.i");
-		// filePath = ("../tests/bt-contextsensitivity.i");
-		// filePath = ("../tests/bt-recursivequery.i");
-		// filePath = ("../tests/btsmall.i");
 		// filePath = ("../tests/npb-post/cg3-0.i");
-		// filePath = ("../tests/cg3-small.i");
-		// filePath = ("../tests/npb-post/ep3-0.i");
-		filePath = ("../tests/npb-post/ft3-0.i");
-		// filePath = ("../tests/ft3-small.i");
-		filePath = ("../tests/npb-post/is3-0.i");
+		filePath = ("../tests/npb-post/ep3-0.i");
+		// filePath = ("../tests/npb-post/ft3-0.i");
+		// filePath = ("../tests/npb-post/is3-0.i");
 		// filePath = ("../tests/is-small.i");
 		filePath = ("../tests/npb-post/lu3-0.i");
-		filePath = ("../tests/lu-small.i");
 		// filePath = ("../tests/npb-post/mg3-0.i");
-		// filePath = ("../tests/tExample5.i");
-		// filePath = ("../tests/mg3-small.i");
 		// filePath = ("../tests/npb-post/sp3-0.i");
 		//
 		// filePath = ("../tests/quake-postpass.i");
 		// filePath = ("../tests/amgmk-postpass.i");
 		// filePath = ("../tests/amgmk-small.i");
-		// filePath = ("../tests/clomp-postpass.i");
+		filePath = ("../tests/clomp-postpass.i");
 		// filePath = ("../tests/stream-postpass.i");
 		// filePath = ("../tests/scanner-postpass.i");
 		//
@@ -499,7 +492,8 @@ public class Program {
 		// filePath = ("../tests/barr-opt-tests/adi.i");
 		// filePath = ("../tests/barr-opt-tests/amgmk.i");
 		// filePath = ("../tests/icon-tests/smithwa.i");
-		filePath = ("../tests/barr-opt-tests/kmeans.i");
+		// filePath = ("../tests/barr-opt-tests/kmeans.i");
+		// filePath = ("../tests/kmeans-small.i");
 		// filePath = ("../tests/barr-opt-tests/clomp.i");
 		// filePath = ("../tests/barr-opt-tests/stream.i");
 		// filePath = ("../tests/stream-postpass.i");
