@@ -122,8 +122,8 @@ public class AutomatedUpdater {
 		// updateSetForAddition.add(AutomatedUpdater::invalidateEnclosingSymbolSets);
 		updateSetForAddition.add(AutomatedUpdater::modelAdditionOfLabels);
 		// updateSetForAddition.add(AutomatedUpdater::updateSymbolTableOnNodeAddition);
-		updateSetForAddition.add(AutomatedUpdater::updateSymbolsAtDummyFlushesUponAddition);
 		updateSetForAddition.add(AutomatedUpdater::updateCallStatementsUponAddition);
+		updateSetForAddition.add(AutomatedUpdater::updateSymbolsAtDummyFlushesUponAddition);
 		updateSetForAddition.add(AutomatedUpdater::performInitOfMHPUponAddition); // TODO: Verify this order for various
 		// cases.
 		updateSetForAddition.add(AutomatedUpdater::updatePhaseAndInterTaskEdgesUponAddition);

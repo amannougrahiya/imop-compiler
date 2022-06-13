@@ -2764,6 +2764,17 @@ public class NodeInfo implements Cloneable {
 			// }
 			// tempStr += "\n";
 			flow = n.getInfo().getCurrentOUT(AnalysisName.POINTSTO);
+			if (n instanceof BeginNode) {
+				tempStr += "[BeginNode of " + n.getParent().getClass().getSimpleName() + "]";
+			} else if (n instanceof EndNode) {
+				tempStr += "[EndNode of " + n.getParent().getClass().getSimpleName() + "]";
+			} else if (n instanceof ParameterDeclaration) {
+				tempStr += "[Parameter: " + n + "]";
+			} else if (n instanceof PreCallNode) {
+				tempStr += "[PRECALL NODE] ";
+			} else if (n instanceof PostCallNode) {
+				tempStr += "[POSTCALL NODE] ";
+			}
 			if (flow != null) {
 				tempStr += "OUT: " + flow.getString();
 			}

@@ -1083,10 +1083,21 @@ public class PointsToAnalysis extends InterThreadForwardCellularAnalysis<PointsT
 				return updateMap;
 			}
 			boolean strongUpdate = true;
-			if (lhsSet.size() > 1) {
+			if (lhsSet.size() > 1 && !(lhsSet.size() == 2 && lhsSet.contains(Cell.getNullCell()))) {
 				strongUpdate = false;
 			} else {
-				Cell cell = lhsSet.getAnyElement();
+				Cell cell = null;
+				if (lhsSet.size() == 2) {
+					for (Cell cell1 : lhsSet) {
+						if (cell1 == Cell.getNullCell()) {
+							continue;
+						}
+						cell = cell1;
+						break;
+					}
+				} else {
+					cell = lhsSet.getAnyElement();
+				}
 				if (cell == Cell.genericCell) {
 					strongUpdate = false;
 				}
@@ -1101,11 +1112,21 @@ public class PointsToAnalysis extends InterThreadForwardCellularAnalysis<PointsT
 			}
 
 			if (strongUpdate) {
-				Cell lhsCell = lhsSet.getAnyElement();
-				if (lhsCell == Cell.getNullCell()) {
-					return updateMap;
+				if (lhsSet.size() == 2) {
+					for (Cell lhsCell : lhsSet) {
+						if (lhsCell == Cell.getNullCell()) {
+							continue;
+						}
+						updateMap.put(lhsCell, rhsPtsToSet);
+						break;
+					}
+				} else { // lhsSet singleton
+					Cell lhsCell = lhsSet.getAnyElement();
+					if (lhsCell == Cell.getNullCell()) {
+						return updateMap;
+					}
+					updateMap.put(lhsCell, rhsPtsToSet);
 				}
-				updateMap.put(lhsCell, rhsPtsToSet);
 				return updateMap;
 			} else {
 				if (lhsSet.isUniversal()) {

@@ -29,9 +29,9 @@ import java.util.function.BinaryOperator;
  */
 public class ExtensibleCellMap<V extends Immutable> extends CellMap<V> {
 	protected CellSet keysNotPresent; // Set of keys which are assumed to be not present; shouldn't accept a universal
-										// element.
+	// element.
 	protected ExtensibleCellMap<V> fallBackMap;// Backup map which this map extends; used when keys are not found in
-												// this map.
+	// this map.
 	private List<ExtensibleCellMap<V>> extensionMaps = new ArrayList<>(); // Those maps which extend upon this map.
 	private final int maxLinkLength;
 	private static int LINKLENGTH = 2;
@@ -110,7 +110,7 @@ public class ExtensibleCellMap<V extends Immutable> extends CellMap<V> {
 			return;
 		}
 		assert (false) : "We do not know what to do for this path, in the context of capturing accessedCells. "
-				+ "Disable the appropriate IDFA-optimizing flag in Program, and re-run the compiler";
+		+ "Disable the appropriate IDFA-optimizing flag in Program, and re-run the compiler";
 
 	}
 
@@ -897,6 +897,7 @@ public class ExtensibleCellMap<V extends Immutable> extends CellMap<V> {
 				continue;
 			}
 			V thatValue = thatMap.get(thatCell, ConvertMode.OFF);
+			// if thisMap does not contain thatCell then thisValue = thatValue.
 			V thisValue = thisMap.get(thatCell, ConvertMode.OFF);
 			// Note that thisValue may be null. We assume that mergeMethod takes care of
 			// that.

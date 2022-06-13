@@ -176,17 +176,6 @@ public class Builder {
 		ElementsOfTranslation elemOfTranslation = Misc.getEnclosingNode(decl, ElementsOfTranslation.class);
 		root.getF0().removeNode(elemOfTranslation);
 		root.getInfo().removeDeclarationEffects(decl); // TODO: This line needs to be tested.
-
-		/*
-		 * Code to add entry point of main() to the set of nodes starting which all
-		 * forward IDFAs need to be updated.
-		 */
-		Set<Node> entryNodes = new HashSet<>();
-		if (Program.getRoot().getInfo().getMainFunction() != null) {
-			entryNodes.add(
-					Program.getRoot().getInfo().getMainFunction().getInfo().getCFGInfo().getNestedCFG().getBegin());
-		}
-		AutomatedUpdater.updateFlowFactsForward(entryNodes);
 	}
 
 	/**

@@ -45,7 +45,7 @@ import java.util.Set;
  * iterative data-flow analysis.
  */
 public abstract class InterThreadForwardCellularAnalysis<F extends CellularDataFlowAnalysis.CellularFlowMap<?>>
-		extends CellularDataFlowAnalysis<F> {
+extends CellularDataFlowAnalysis<F> {
 
 	public InterThreadForwardCellularAnalysis(AnalysisName analysisName, AnalysisDimension analysisDimension) {
 		super(analysisName, analysisDimension);
@@ -1756,6 +1756,7 @@ public abstract class InterThreadForwardCellularAnalysis<F extends CellularDataF
 	protected final void stabilizeSCCOfOptimized(Node node) {
 		// System.err.println("PROCESSING SCC ID#" +
 		// node.getInfo().getCFGInfo().getSCCRPOIndex());
+		// Node copyNode = node;
 		SCC thisSCC = node.getInfo().getCFGInfo().getSCC();
 		assert (thisSCC != null);
 		int thisSCCNum = node.getInfo().getCFGInfo().getSCCRPOIndex();
@@ -1822,6 +1823,7 @@ public abstract class InterThreadForwardCellularAnalysis<F extends CellularDataF
 		 * within the SCC nodes.
 		 */
 		long localCounterPerPhase = this.nodesProcessedDuringUpdate;
+		// long totalThisSCC = 0;
 		if (!Program.checkForCyclesInKeyDependenceGraph || foundACycle) {
 			/*
 			 * FIRST PASS, PHASE-I. We start only with the entry-nodes. Not all nodes are
@@ -1835,10 +1837,10 @@ public abstract class InterThreadForwardCellularAnalysis<F extends CellularDataF
 					if (tempNode == null) {
 						break;
 					}
-					if (this.safeCurrentSCCNodes.contains(tempNode)) {
-						this.underApproximated.add(tempNode);
-						continue;
-					}
+					// if (this.safeCurrentSCCNodes.contains(tempNode)) {
+					// this.underApproximated.add(tempNode);
+					// continue;
+					// }
 					// Program.tempString += (tempNode.toString());
 					this.nodesProcessedDuringUpdate++;
 					this.debugRecursion(tempNode);
@@ -1871,6 +1873,7 @@ public abstract class InterThreadForwardCellularAnalysis<F extends CellularDataF
 			} while (true);
 
 			firstPhaseCount.add(this.nodesProcessedDuringUpdate - localCounterPerPhase);
+			// totalThisSCC += (this.nodesProcessedDuringUpdate - localCounterPerPhase);
 			/*
 			 * NEW CODE: To check the percent of nodes processed in an SCC in the first
 			 * phase.
@@ -1880,7 +1883,7 @@ public abstract class InterThreadForwardCellularAnalysis<F extends CellularDataF
 				double percentInFirst = this.safeCurrentSCCNodes.size() / (SCCSize * 1.0) * 100;
 				if (SCCSize != 1) {
 					System.out.println("Total " + Program.df2.format(percentInFirst)
-							+ "% of unique nodes processed out of " + SCCSize + " in this SCC.");
+					+ "% of unique nodes processed out of " + SCCSize + " in this SCC.");
 				}
 			}
 			/*
@@ -1914,6 +1917,7 @@ public abstract class InterThreadForwardCellularAnalysis<F extends CellularDataF
 			this.processWhenNotUpdatedOptimized(node, thisSCC); // Note that this is a call to normal processing.
 		} while (true);
 		secondPhaseCount.add(this.nodesProcessedDuringUpdate - localCounterPerPhase);
+		// totalThisSCC += (this.nodesProcessedDuringUpdate - localCounterPerPhase);
 
 		/*
 		 * Step: Add nodes of successor SCCs, if the OUT of exit nodes has changed.
@@ -1941,6 +1945,11 @@ public abstract class InterThreadForwardCellularAnalysis<F extends CellularDataF
 				}
 			}
 		}
+		// System.err.println("Finished processing SCC ID#" +
+		// copyNode.getInfo().getCFGInfo().getSCCRPOIndex() + " having "
+		// + copyNode.getInfo().getCFGInfo().getSCC().getNodeCount() + " nodes, " + "by
+		// processing a total of "
+		// + totalThisSCC + " nodes.");
 	}
 
 	public static long innerTimer = 0;

@@ -222,11 +222,13 @@ public class Program {
 		return;
 	}
 
-	// possible.
 	public static boolean checkForCyclesInKeyDependenceGraph = false; // A profiling flag. Disable for normal
 	// runs.
 	public static boolean useAccessedCellsWithExhaustive = false;
-	public static boolean runFirstPartOfFirstPass = false; // Default: true
+	public static boolean runFirstPartOfFirstPass = true; // Default: true
+
+	public static boolean retainNullCellsInPTAMaps = false; // Decides whether PTA maps of the form {nullCell, a, b} are
+	// possible.
 
 	/**
 	 * Sets the various defaults for global flags (and filenames), which will be
@@ -309,13 +311,13 @@ public class Program {
 		// filePath = ("../tests/npb-post/is3-0.i");
 		// filePath = ("../tests/is-small.i");
 		filePath = ("../tests/npb-post/lu3-0.i");
-		// filePath = ("../tests/npb-post/mg3-0.i");
+		filePath = ("../tests/npb-post/mg3-0.i");
 		// filePath = ("../tests/npb-post/sp3-0.i");
 		//
 		// filePath = ("../tests/quake-postpass.i");
-		// filePath = ("../tests/amgmk-postpass.i");
+		// filePath = ("../tests/amgmk-postp
 		// filePath = ("../tests/amgmk-small.i");
-		filePath = ("../tests/clomp-postpass.i");
+		// filePath = ("../tests/clomp-postpass.i");
 		// filePath = ("../tests/stream-postpass.i");
 		// filePath = ("../tests/scanner-postpass.i");
 		//
@@ -877,7 +879,6 @@ public class Program {
 	}
 
 	private static boolean disableCellPointees = true;
-	public static boolean retainNullCellsInPTAMaps = false; // Decides whether PTA maps of the form {nullCell, a, b} are
 
 	/**
 	 * Obtain a set of all those cells that may point to a symbol.
