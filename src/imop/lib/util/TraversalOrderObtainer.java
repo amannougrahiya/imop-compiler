@@ -2,7 +2,7 @@
  * Copyright (c) 2019 Aman Nougrahiya, V Krishna Nandivada, IIT Madras.
  * This file is a part of the project IMOP, licensed under the MIT license.
  * See LICENSE.md for the full text of the license.
- * 
+ *
  * The above notice shall be included in all copies or substantial
  * portions of this file.
  */
@@ -24,7 +24,7 @@ public class TraversalOrderObtainer {
 	 * lambda to obtain the list of successors, this method returns a list that
 	 * contains all reachable nodes in postorder assuming {@code entryNode} as
 	 * the root. Note that the cycles are ignored.
-	 * 
+	 *
 	 * @param entryNode
 	 *                        starting node, from which postorder traversal has to
 	 *                        be
@@ -49,7 +49,7 @@ public class TraversalOrderObtainer {
 	 * lambda to obtain the list of successors, this method returns a list that
 	 * contains all reachable nodes in reverse postorder assuming
 	 * {@code entryNode} as the root. Note that the cycles are ignored.
-	 * 
+	 *
 	 * @param entryNode
 	 *                        starting node, from which reverse postorder traversal
 	 *                        has to
@@ -93,4 +93,47 @@ public class TraversalOrderObtainer {
 		blackSet.add(currentNode);
 		printList.add(currentNode);
 	}
+
+	/**
+	 * Checks whether a cycle exists in the reachable part of a graph starting with {@code entryNode}.
+	 * @param <T>
+	 * @param entryNode
+	 * @param neighbourGetter
+	 * @return
+	 */
+	public static <T> boolean containsACycle(T entryNode, NeighbourSetGetter<T> neighbourGetter) {
+		Set<T> graySet = new HashSet<>();
+		Set<T> blackSet = new HashSet<>();
+		boolean cycle = TraversalOrderObtainer.postOrderCycleDetector(entryNode, neighbourGetter, graySet, blackSet);
+		return cycle;
+	}
+
+	private static <T> boolean postOrderCycleDetector(T currentNode, NeighbourSetGetter<T> neighbourGetter,
+			final Set<T> graySet, final Set<T> blackSet) {
+		if (graySet.contains(currentNode)) {
+			return true;
+		} else {
+			graySet.add(currentNode);
+		}
+		Set<T> neighbours = neighbourGetter.getImmediateNeighbours(currentNode);
+		for (T neighbour : neighbours) {
+			// If a neighbour is black skip it.
+			if (blackSet.contains(neighbour)) {
+				continue;
+			} else {
+				/*
+				 * Otherwise, visit the neighbour. (Note that the gray
+				 * neighbours would be ignored by the first branch above.).
+				 */
+				boolean cycleAhead = postOrderCycleDetector(neighbour, neighbourGetter, graySet, blackSet);
+				if (cycleAhead == true) {
+					return true;
+				}
+			}
+		}
+		graySet.remove(currentNode);
+		blackSet.add(currentNode);
+		return false;
+	}
+
 }

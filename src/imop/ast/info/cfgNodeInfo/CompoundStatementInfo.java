@@ -2,7 +2,7 @@
  * Copyright (c) 2019 Aman Nougrahiya, V Krishna Nandivada, IIT Madras.
  * This file is a part of the project IMOP, licensed under the MIT license.
  * See LICENSE.md for the full text of the license.
- * 
+ *
  * The above notice shall be included in all copies or substantial
  * portions of this file.
  */
@@ -18,7 +18,7 @@ import imop.ast.node.external.*;
 import imop.ast.node.internal.*;
 import imop.lib.analysis.flowanalysis.Cell;
 import imop.lib.analysis.flowanalysis.Symbol;
-import imop.lib.analysis.typeSystem.*;
+import imop.lib.analysis.typesystem.*;
 import imop.lib.builder.Builder;
 import imop.lib.cfg.info.CompoundStatementCFGInfo;
 import imop.lib.getter.UsedCellsGetter;
@@ -386,7 +386,7 @@ public class CompoundStatementInfo extends StatementInfo {
 	 * <li>all internal labels are renamed.</li>
 	 * <li></li>
 	 * </ul>
-	 * 
+	 *
 	 * @return
 	 */
 	public Statement getCopyForUnrolling() {
@@ -464,7 +464,7 @@ public class CompoundStatementInfo extends StatementInfo {
 	}
 
 	public CellSet getUsedCellsBetween(int startIndex, int endIndex) {
-		if (!(startIndex > 0 && endIndex >= startIndex)) {
+		if (!(startIndex >= 0 && endIndex >= startIndex)) {
 			return new CellSet();
 		}
 		List<Node> elements = this.getCFGInfo().getElementList();
@@ -505,7 +505,7 @@ public class CompoundStatementInfo extends StatementInfo {
 	}
 
 	public CellSet getSymbolAccessesBetween(int startIndex, int endIndex) {
-		if (!(startIndex > 0 && endIndex >= startIndex)) {
+		if (!(startIndex >= 0 && endIndex >= startIndex)) {
 			return new CellSet();
 		}
 		List<Node> elements = this.getCFGInfo().getElementList();
@@ -522,7 +522,7 @@ public class CompoundStatementInfo extends StatementInfo {
 	}
 
 	public CellSet getAccessesBetween(int startIndex, int endIndex) {
-		if (!(startIndex > 0 && endIndex >= startIndex)) {
+		if (!(startIndex >= 0 && endIndex >= startIndex)) {
 			return new CellSet();
 		}
 		List<Node> elements = this.getCFGInfo().getElementList();
@@ -551,7 +551,7 @@ public class CompoundStatementInfo extends StatementInfo {
 	}
 
 	public CellSet getWritesBetween(int startIndex, int endIndex) {
-		if (!(startIndex > 0 && endIndex >= startIndex)) {
+		if (!(startIndex >= 0 && endIndex >= startIndex)) {
 			return new CellSet();
 		}
 		List<Node> elements = this.getCFGInfo().getElementList();
@@ -580,7 +580,7 @@ public class CompoundStatementInfo extends StatementInfo {
 	}
 
 	public CellSet getReadsBetween(int startIndex, int endIndex) {
-		if (!(startIndex > 0 && endIndex >= startIndex)) {
+		if (!(startIndex >= 0 && endIndex >= startIndex)) {
 			return new CellSet();
 		}
 		List<Node> elements = this.getCFGInfo().getElementList();

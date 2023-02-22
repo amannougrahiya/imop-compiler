@@ -2,7 +2,7 @@
  * Copyright (c) 2019 Aman Nougrahiya, V Krishna Nandivada, IIT Madras.
  * This file is a part of the project IMOP, licensed under the MIT license.
  * See LICENSE.md for the full text of the license.
- * 
+ *
  * The above notice shall be included in all copies or substantial
  * portions of this file.
  */
@@ -103,7 +103,7 @@ public class CopyPropagationAnalysis
 
 	/**
 	 * Adds the assignment, if any, from {@code node} to the {@code copyMap}.
-	 * 
+	 *
 	 * @param declaration
 	 * @param copyMap
 	 * @return
@@ -187,10 +187,10 @@ public class CopyPropagationAnalysis
 			 * Note that in "(IN-KILL) U GEN", the GEN is empty for this case.
 			 */
 			if (writes.isUniversal()) {
-				flowFactOUT.flowMap = new ExtensibleCellMap<>();
+				flowFactOUT.getFlowMap().clear();
 				return flowFactOUT;
 			} else {
-				ExtensibleCellMap<Cell> map = flowFactOUT.flowMap;
+				ExtensibleCellMap<Cell> map = flowFactOUT.getFlowMap();
 				for (Cell w : writes) {
 					if (!(w instanceof Symbol)) {
 						continue;
@@ -216,7 +216,7 @@ public class CopyPropagationAnalysis
 
 			// Change all mappings a->lhsCell to a->G;
 			boolean foundMirror = false;
-			ExtensibleCellMap<Cell> map = flowFactOUT.flowMap;
+			ExtensibleCellMap<Cell> map = flowFactOUT.getFlowMap();
 			for (Cell a : map.nonGenericKeySet()) {
 				/*
 				 * UPDATE: Now, we ensure that "b=a" does not kill a flow-fact
@@ -255,12 +255,12 @@ public class CopyPropagationAnalysis
 		if (rhsCell == null || !(rhsCell instanceof Symbol)) {
 			return flowFactIN;
 		}
-		Cell oldCell = flowFactIN.flowMap.get(lhsCell);
+		Cell oldCell = flowFactIN.getFlowMap().get(lhsCell);
 		if (oldCell == rhsCell) {
 			return flowFactIN;
 		} else {
 			CopyPropagationFlowMap flowFactOUT = new CopyPropagationFlowMap(flowFactIN);
-			flowFactOUT.flowMap.put(lhsCell, rhsCell);
+			flowFactOUT.getFlowMap().put(lhsCell, rhsCell);
 			return flowFactOUT;
 		}
 	}

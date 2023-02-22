@@ -2,7 +2,7 @@
  * Copyright (c) 2019 Aman Nougrahiya, V Krishna Nandivada, IIT Madras.
  * This file is a part of the project IMOP, licensed under the MIT license.
  * See LICENSE.md for the full text of the license.
- * 
+ *
  * The above notice shall be included in all copies or substantial
  * portions of this file.
  */
@@ -15,8 +15,8 @@ import imop.ast.info.NodeInfo;
 import imop.ast.node.external.*;
 import imop.ast.node.internal.*;
 import imop.lib.analysis.flowanalysis.Symbol;
-import imop.lib.analysis.typeSystem.*;
-import imop.lib.analysis.typeSystem.FunctionType.Parameter;
+import imop.lib.analysis.typesystem.*;
+import imop.lib.analysis.typesystem.FunctionType.Parameter;
 import imop.lib.builder.Builder;
 import imop.lib.cfg.info.FunctionDefinitionCFGInfo;
 import imop.lib.cg.CallSite;
@@ -30,15 +30,14 @@ import java.util.*;
 
 /**
  * This class holds the information specific to a FunctionDefinition node.
- * 
+ *
  * @author aman
  *
  */
 public class FunctionDefinitionInfo extends NodeInfo {
 
 	/**
-	 * Set of all the symbols that can be accessed within this
-	 * compound-statement.
+	 * Set of all the symbols that can be accessed within this compound-statement.
 	 */
 	private CellSet allCellsInclusive;
 
@@ -102,8 +101,7 @@ public class FunctionDefinitionInfo extends NodeInfo {
 
 	/**
 	 * Obtain a set of all those symbols that are accessible at this node
-	 * (inclusively)
-	 * (after their declarations).
+	 * (inclusively) (after their declarations).
 	 */
 	@Override
 	public CellSet getAllCellsAtNode() {
@@ -115,9 +113,8 @@ public class FunctionDefinitionInfo extends NodeInfo {
 	}
 
 	/**
-	 * Obtain a set of all those cells that can be accessed everywhere within
-	 * this node
-	 * (after their declarations).
+	 * Obtain a set of all those cells that can be accessed everywhere within this
+	 * node (after their declarations).
 	 */
 	@Override
 	public CellSet getSharedCellsAtNode() {
@@ -173,16 +170,15 @@ public class FunctionDefinitionInfo extends NodeInfo {
 
 	/**
 	 * Although rarely used, a function may define structs/unions in its
-	 * parameter-list,
-	 * and may use the created type in its definition.
-	 * Not that a function can't define a typedef in its parameter-list.
-	 * Hence we do not need a similar table for typedef's.
+	 * parameter-list, and may use the created type in its definition. Not that a
+	 * function can't define a typedef in its parameter-list. Hence we do not need a
+	 * similar table for typedef's.
 	 */
 	@Deprecated
 	private HashMap<String, Type> typeTable;
 
 	private boolean runInParallel = false; // This flag is set for those function defs which may become a part of a
-											// parallel region.
+	// parallel region.
 	private String functionName;
 	private HashMap<String, Symbol> symbolTable;
 
@@ -207,8 +203,7 @@ public class FunctionDefinitionInfo extends NodeInfo {
 	}
 
 	/**
-	 * @param onPath:
-	 *                a vector of all those functions which have been traversed so
+	 * @param onPath: a vector of all those functions which have been traversed so
 	 *                far.
 	 * @return True if this function may be recursive in nature
 	 */
@@ -280,8 +275,7 @@ public class FunctionDefinitionInfo extends NodeInfo {
 	// }
 
 	/**
-	 * Dumps a list of variables/functions declared in this
-	 * CompoundStatementInfo
+	 * Dumps a list of variables/functions declared in this CompoundStatementInfo
 	 */
 	public void dumpSymbolTable() {
 		if (symbolTable.isEmpty()) {
@@ -307,9 +301,9 @@ public class FunctionDefinitionInfo extends NodeInfo {
 	}
 
 	/**
-	 * This method populates the symbolTable field of
-	 * the owner FunctionDefinition "node" of this info,
-	 * with the names (and later types) of the various parameters.
+	 * This method populates the symbolTable field of the owner FunctionDefinition
+	 * "node" of this info, with the names (and later types) of the various
+	 * parameters.
 	 */
 	public void populateSymbolTable() {
 		this.symbolTable = new HashMap<>();
@@ -399,19 +393,33 @@ public class FunctionDefinitionInfo extends NodeInfo {
 	// }
 
 	/**
-	 * Returns a set of all those call-sites in the known part of the program
-	 * which may call this function-definition.
-	 * 
+	 * Returns a set of all those call-sites in the known part of the program which
+	 * may call this function-definition.
+	 *
 	 * @return
 	 */
 	public Set<CallStatement> getCallersOfThis() {
 		ProfileSS.addRelevantChangePoint(ProfileSS.cgSet);
 		Set<CallStatement> possibleSites = new HashSet<>();
-		for (CallStatement callSite : Program.getRoot().getInfo().getLexicallyEnclosedCallStatements()) {
-			for (FunctionDefinition funcDef : callSite.getInfo().getCalledDefinitions()) {
-				if (funcDef.equals(getNode())) {
-					possibleSites.add(callSite);
-					break;
+		if (Program.getRoot().getInfo().getMainFunction() == null) {
+			for (CallStatement callSite : Program.getRoot().getInfo().getLexicallyEnclosedCallStatements()) {
+				for (FunctionDefinition funcDef : callSite.getInfo().getCalledDefinitions()) {
+					if (funcDef.equals(getNode())) {
+						possibleSites.add(callSite);
+						break;
+					}
+				}
+			}
+		} else {
+			// for (CallStatement callSite :
+			// Program.getRoot().getInfo().getLexicallyEnclosedCallStatements()) {
+			for (CallStatement callSite : Program.getRoot().getInfo().getMainFunction().getInfo()
+					.getReachableCallStatementsInclusive()) {
+				for (FunctionDefinition funcDef : callSite.getInfo().getCalledDefinitions()) {
+					if (funcDef.equals(getNode())) {
+						possibleSites.add(callSite);
+						break;
+					}
 				}
 			}
 		}
@@ -419,9 +427,9 @@ public class FunctionDefinitionInfo extends NodeInfo {
 	}
 
 	/**
-	 * Returns a set of all those call-sites in the known part of the program
-	 * which may call this function-definition.
-	 * 
+	 * Returns a set of all those call-sites in the known part of the program which
+	 * may call this function-definition.
+	 *
 	 * @return
 	 * @deprecated
 	 */

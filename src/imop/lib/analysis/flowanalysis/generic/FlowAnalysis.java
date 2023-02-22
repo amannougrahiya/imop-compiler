@@ -135,19 +135,19 @@ public abstract class FlowAnalysis<F extends FlowAnalysis.FlowFact> extends GJDe
 		 * Step 1: Start processing from the leaf elements of updateSeedSet in
 		 * "update" mode.
 		 */
-		this.workList.recreate();
+		this.globalWorkList.recreate();
 		for (Node n : nodesToBeUpdated) {
 			if (n.getInfo().isConnectedToProgram()) {
-				this.workList.add(n);
+				this.globalWorkList.add(n);
 			}
 		}
 		// this.workList.addAll(nodesToBeUpdated);
 		this.nodesToBeUpdated.clear();
-		this.processedInThisUpdate = new HashSet<>();
-		this.yetToBeFinalized = new HashSet<>();
-		while (!workList.isEmpty()) {
+		this.safeCurrentSCCNodes = new HashSet<>();
+		this.underApproximated = new HashSet<>();
+		while (!globalWorkList.isEmpty()) {
 			this.nodesProcessedDuringUpdate++;
-			Node nodeToBeAnalysed = this.workList.removeFirstElement();
+			Node nodeToBeAnalysed = this.globalWorkList.removeFirstElement();
 			this.debugRecursion(nodeToBeAnalysed);
 			this.processWhenUpdated(nodeToBeAnalysed);
 		}
@@ -157,10 +157,10 @@ public abstract class FlowAnalysis<F extends FlowAnalysis.FlowFact> extends GJDe
 		 * Step 2: Reprocess those nodes whose IDFA is not yet finalized, in
 		 * "normal" mode.
 		 */
-		this.workList.addAll(yetToBeFinalized);
-		while (!workList.isEmpty()) {
+		this.globalWorkList.addAll(underApproximated);
+		while (!globalWorkList.isEmpty()) {
 			this.nodesProcessedDuringUpdate++;
-			Node nodeToBeAnalysed = this.workList.removeFirstElement();
+			Node nodeToBeAnalysed = this.globalWorkList.removeFirstElement();
 			this.debugRecursion(nodeToBeAnalysed);
 			this.processWhenNotUpdated(nodeToBeAnalysed);
 		}
@@ -177,8 +177,8 @@ public abstract class FlowAnalysis<F extends FlowAnalysis.FlowFact> extends GJDe
 	 *             already been removed from the workList.
 	 */
 	protected void stabilizeSCCOf(Node node) {
-		this.processedInThisUpdate.clear();
-		this.yetToBeFinalized.clear();
+		this.safeCurrentSCCNodes.clear();
+		this.underApproximated.clear();
 
 		SCC thisSCC = node.getInfo().getCFGInfo().getSCC();
 		int thisSCCNum = node.getInfo().getCFGInfo().getSCCRPOIndex();
@@ -189,7 +189,7 @@ public abstract class FlowAnalysis<F extends FlowAnalysis.FlowFact> extends GJDe
 			this.nodesProcessedDuringUpdate++;
 			this.debugRecursion(node);
 			this.processWhenUpdated(node);
-			node = this.workList.peekFirstElementOfSameSCC(thisSCCNum);
+			node = this.globalWorkList.peekFirstElementOfSameSCC(thisSCCNum);
 			if (node == null) {
 				break;
 			}
@@ -199,19 +199,19 @@ public abstract class FlowAnalysis<F extends FlowAnalysis.FlowFact> extends GJDe
 				break;
 			} else {
 				// Extract the next node and process it next.
-				node = this.workList.removeFirstElementOfSameSCC(thisSCCNum);
+				node = this.globalWorkList.removeFirstElementOfSameSCC(thisSCCNum);
 			}
 		} while (true);
 		// Now, the set processedInThisUpdate is not required anymore. Clear it.
-		this.processedInThisUpdate.clear();
+		this.safeCurrentSCCNodes.clear();
 		/*
 		 * Next, let's start with the second phase, with all elements of
 		 * yetToBeFinalized in the workList, where we proceed as usual.
 		 */
-		this.workList.addAll(this.yetToBeFinalized);
-		this.yetToBeFinalized.clear();
+		this.globalWorkList.addAll(this.underApproximated);
+		this.underApproximated.clear();
 		do {
-			node = this.workList.peekFirstElementOfSameSCC(thisSCCNum);
+			node = this.globalWorkList.peekFirstElementOfSameSCC(thisSCCNum);
 			if (node == null) {
 				break;
 			}
@@ -221,7 +221,7 @@ public abstract class FlowAnalysis<F extends FlowAnalysis.FlowFact> extends GJDe
 				break;
 			} else {
 				// Extract the next node and process it in the second phase.
-				node = this.workList.removeFirstElementOfSameSCC(thisSCCNum);
+				node = this.globalWorkList.removeFirstElementOfSameSCC(thisSCCNum);
 			}
 			this.nodesProcessedDuringUpdate++;
 			this.debugRecursion(node);
@@ -256,7 +256,7 @@ public abstract class FlowAnalysis<F extends FlowAnalysis.FlowFact> extends GJDe
 	public abstract void cloneFlowFactsToAllWithin(Node affectedNode);
 
 	public boolean hasUnprocessedNodes() {
-		return !this.nodesToBeUpdated.isEmpty() || !this.workList.isEmpty();
+		return !this.nodesToBeUpdated.isEmpty() || !this.globalWorkList.isEmpty();
 	}
 
 	protected abstract void processWhenNotUpdated(Node node);
@@ -357,7 +357,8 @@ public abstract class FlowAnalysis<F extends FlowAnalysis.FlowFact> extends GJDe
 	 * <i>Note that the processing of these nodes may recursively process the
 	 * successor nodes as well.</i>
 	 */
-	protected ReversePostOrderWorkList workList = new ReversePostOrderWorkList();
+	protected ReversePostOrderWorkList globalWorkList = new SinglePhasedRPOWorklist();
+	protected ReversePostOrderWorkList intraSCCWorkList = new SinglePhasedRPOWorklist();
 
 	public long nodesProcessed = 0;
 	// public long localCount = -1;
@@ -372,11 +373,15 @@ public abstract class FlowAnalysis<F extends FlowAnalysis.FlowFact> extends GJDe
 
 	protected boolean isInvalid = false;
 	public long nodesProcessedDuringUpdate = 0;
+	public long transferFunctionsSkipped = 0;
 	public int autoUpdateTriggerCounter = 0;
 	public long flowAnalysisUpdateTimer = 0;
 	public Set<Node> nodesToBeUpdated = new HashSet<>();
-	protected Set<Node> processedInThisUpdate = new HashSet<>();
-	protected Set<Node> yetToBeFinalized = new HashSet<>();
+	protected Set<Node> safeCurrentSCCNodes = new HashSet<>();
+	protected Set<Node> underApproximated = new HashSet<>();
+	protected Set<Node> thisSeeds = new HashSet<>();
+
+	@Deprecated
 	protected HashMap<Node, Set<Node>> reachablePredecessorsOfSeeds = new HashMap<>();
 
 	/**
@@ -507,10 +512,16 @@ public abstract class FlowAnalysis<F extends FlowAnalysis.FlowFact> extends GJDe
 		}
 	}
 
+	public static String nodes = "";
+
 	/**
 	 * @param node
 	 */
 	protected final void debugRecursion(Node node) {
+		// FlowAnalysis.nodes += (node instanceof BeginNode || node instanceof EndNode)
+		// ? (node.getParent().getClass().getSimpleName()
+		// + ((node instanceof BeginNode) ? ".BeginNode\n" : ".EndNode\n"))
+		// : node.toString() + "\n";
 		nodesProcessed++;
 		// localCount++;
 		Integer nodeProcessCount = tempMap.get(node);
@@ -530,7 +541,7 @@ public abstract class FlowAnalysis<F extends FlowAnalysis.FlowFact> extends GJDe
 						i++;
 						System.out.println(
 								"Node #" + i + n + " with phases: " + n.getInfo().getNodePhaseInfo().getPhaseSet()
-										+ n.getInfo().getIN(this.analysisName).getString());
+								+ n.getInfo().getIN(this.analysisName).getString());
 					}
 					Misc.exitDueToError("At " + node + ", we exceeeded " + Program.thresholdIDFAProcessingCount
 							+ " iterations for IDFA analysis " + analysisName + ".");

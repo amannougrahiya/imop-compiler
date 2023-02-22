@@ -13,7 +13,7 @@ import imop.ast.annotation.IncompleteEdge.TypeOfIncompleteness;
 import imop.ast.info.cfgNodeInfo.ReturnStatementInfo;
 import imop.ast.node.external.*;
 import imop.ast.node.internal.*;
-import imop.lib.analysis.typeSystem.Type;
+import imop.lib.analysis.typesystem.Type;
 import imop.lib.builder.Builder;
 import imop.lib.builder.Copier;
 import imop.lib.cfg.CFGLinkFinder;

@@ -1446,7 +1446,7 @@ public class CFGInfo {
 	public static CellSet getCommunicationVariables(DummyFlushDirective tailFlush, DummyFlushDirective headFlush) {
 		CellSet commVars = new CellSet();
 
-		if (Program.memoizeAccesses > 0) {
+		if (Program.memoizeAccesses > 0 || Program.temporaryFlagToDisableSymbolsAtDummyFlushes) {
 			/*
 			 * This scenario implies that during the processing of PTA information,
 			 * there was an attempt to obtain precise inter-task edges.
@@ -1696,6 +1696,7 @@ public class CFGInfo {
 		 * Note that all specific subclasses of CFGInfo that contain a body
 		 * should override this method.
 		 */
+		assert (false): "Method getBody() in CFGInfo, should not have been invoked.";
 		return null;
 	}
 

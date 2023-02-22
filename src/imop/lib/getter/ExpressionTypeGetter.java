@@ -12,7 +12,7 @@ import imop.ast.node.external.*;
 import imop.ast.node.internal.*;
 import imop.baseVisitor.GJNoArguDepthFirstProcess;
 import imop.lib.analysis.flowanalysis.Symbol;
-import imop.lib.analysis.typeSystem.*;
+import imop.lib.analysis.typesystem.*;
 import imop.lib.util.Misc;
 import imop.parser.CParserConstants;
 

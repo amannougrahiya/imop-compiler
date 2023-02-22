@@ -28,7 +28,7 @@ import imop.lib.analysis.mhp.incMHP.Phase;
 import imop.lib.analysis.mhp.incMHP.PhasePoint;
 import imop.lib.analysis.mhp.lock.AbstractLock;
 import imop.lib.analysis.mhp.yuan.YPhase;
-import imop.lib.analysis.typeSystem.*;
+import imop.lib.analysis.typesystem.*;
 import imop.lib.cfg.info.ProgramElementExactCaches;
 import imop.lib.cfg.parallel.DataFlowGraph;
 import imop.lib.cg.CallSite;
@@ -4009,6 +4009,9 @@ public class Misc {
 		 * in the built-in files.
 		 */
 		if (disconnected) {
+			if (Program.getRoot() == null) {
+				FrontEnd.parseAndNormalize("int main() {}", TranslationUnit.class);
+			}
 			HashMap<String, Symbol> symbolTable = Program.getRoot().getInfo().getSymbolTable();
 			if (symbolTable.containsKey(name)) {
 				return symbolTable.get(name);

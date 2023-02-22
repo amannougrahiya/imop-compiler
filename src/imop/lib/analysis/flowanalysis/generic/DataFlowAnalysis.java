@@ -11,6 +11,7 @@ package imop.lib.analysis.flowanalysis.generic;
 import imop.ast.node.external.*;
 import imop.ast.node.internal.*;
 import imop.lib.analysis.CoExistenceChecker;
+import imop.lib.analysis.flowanalysis.SCC;
 import imop.lib.analysis.flowanalysis.generic.AnalysisDimension.ContextDimension;
 import imop.lib.analysis.flowanalysis.generic.AnalysisDimension.SVEDimension;
 import imop.lib.analysis.mhp.AbstractPhase;
@@ -34,7 +35,7 @@ public abstract class DataFlowAnalysis<F extends FlowAnalysis.FlowFact> extends 
 		super(analysisName, analysisDimension);
 	}
 
-	protected final void addAllSiblingBarriersToWorkList(BarrierDirective barrier) {
+	protected final void addAllSiblingBarriersToGlobalWorkList(BarrierDirective barrier) {
 		for (AbstractPhase<?, ?> ph : new HashSet<>(barrier.getInfo().getNodePhaseInfo().getPhaseSet())) {
 			for (AbstractPhasePointable abstractEndingPhasePoint : ph.getEndPoints()) {
 				if (Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.YCON) {
@@ -51,7 +52,7 @@ public abstract class DataFlowAnalysis<F extends FlowAnalysis.FlowFact> extends 
 							&& !CoExistenceChecker.canCoExistInPhase(barrier, siblingBarrier, ph)) {
 						continue;
 					}
-					this.workList.add(siblingBarrier);
+					this.globalWorkList.add(siblingBarrier);
 				} else {
 					PhasePoint endingPhasePoint = (PhasePoint) abstractEndingPhasePoint;
 					if (!(endingPhasePoint.getNode() instanceof BarrierDirective)) {
@@ -66,7 +67,56 @@ public abstract class DataFlowAnalysis<F extends FlowAnalysis.FlowFact> extends 
 							&& !CoExistenceChecker.canCoExistInPhase(barrier, siblingBarrier, ph)) {
 						continue;
 					}
-					this.workList.add(siblingBarrier);
+					this.globalWorkList.add(siblingBarrier);
+				}
+			}
+		}
+	}
+
+	protected final void addAllSiblingBarriersToWorkList(BarrierDirective barrier, SCC thisSCC) {
+		for (AbstractPhase<?, ?> ph : new HashSet<>(barrier.getInfo().getNodePhaseInfo().getPhaseSet())) {
+			for (AbstractPhasePointable abstractEndingPhasePoint : ph.getEndPoints()) {
+				if (Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.YCON) {
+					YPhasePoint endingPhasePoint = (YPhasePoint) abstractEndingPhasePoint;
+					if (!(endingPhasePoint.getNode() instanceof BarrierDirective)) {
+						continue;
+					}
+					BarrierDirective siblingBarrier = (BarrierDirective) endingPhasePoint.getNode();
+					if (siblingBarrier == barrier) {
+						continue;
+					}
+					if (Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.ICON
+							&& this.analysisDimension.getSVEDimension() == SVEDimension.SVE_SENSITIVE
+							&& !CoExistenceChecker.canCoExistInPhase(barrier, siblingBarrier, ph)) {
+						continue;
+					}
+					SCC siblingSCC = siblingBarrier.getInfo().getCFGInfo().getSCC();
+					if (siblingSCC == null || siblingSCC != thisSCC) {
+						// ReversePostOrderWorkList.checkNode(siblingBarrier, this.globalWorkList);
+						this.globalWorkList.add(siblingBarrier);
+					} else {
+						this.intraSCCWorkList.add(siblingBarrier);
+					}
+				} else {
+					PhasePoint endingPhasePoint = (PhasePoint) abstractEndingPhasePoint;
+					if (!(endingPhasePoint.getNode() instanceof BarrierDirective)) {
+						continue;
+					}
+					BarrierDirective siblingBarrier = (BarrierDirective) endingPhasePoint.getNode();
+					if (siblingBarrier == barrier) {
+						continue;
+					}
+					if (Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.ICON
+							&& this.analysisDimension.getSVEDimension() == SVEDimension.SVE_SENSITIVE
+							&& !CoExistenceChecker.canCoExistInPhase(barrier, siblingBarrier, ph)) {
+						continue;
+					}
+					SCC siblingSCC = siblingBarrier.getInfo().getCFGInfo().getSCC();
+					if (siblingSCC == null || siblingSCC != thisSCC) {
+						this.globalWorkList.add(siblingBarrier);
+					} else {
+						this.intraSCCWorkList.add(siblingBarrier);
+					}
 				}
 			}
 		}
@@ -108,19 +158,15 @@ public abstract class DataFlowAnalysis<F extends FlowAnalysis.FlowFact> extends 
 
 	/**
 	 * Given a parameter-declaration {@code parameter}, and a
-	 * simple-primary-expression {@code argument} that represents
-	 * the argument for this parameter from some call-site, this method should model
-	 * the flow-function of the write to
-	 * the parameter that happens implicitly.
+	 * simple-primary-expression {@code argument} that represents the argument for
+	 * this parameter from some call-site, this method should model the
+	 * flow-function of the write to the parameter that happens implicitly.
 	 *
-	 * @param parameter
-	 *                    a {@code ParameterDeclaration} which needs to be assigned
+	 * @param parameter   a {@code ParameterDeclaration} which needs to be assigned
 	 *                    with the {@code argument}.
-	 * @param argument
-	 *                    a {@code SimplePrimaryExpression} which is assigned to the
+	 * @param argument    a {@code SimplePrimaryExpression} which is assigned to the
 	 *                    {@code parameter}.
-	 * @param flowFactOne
-	 *                    the IN/OUT flow-fact for the implicit assignment of the
+	 * @param flowFactOne the IN/OUT flow-fact for the implicit assignment of the
 	 *                    {@code argument} to the {@code parameter}.
 	 *
 	 * @return the OUT/IN flow-fact, as a result of the implicit assignment of the

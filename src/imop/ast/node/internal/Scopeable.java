@@ -8,9 +8,9 @@
  */
 package imop.ast.node.internal;
 
-import imop.lib.analysis.typeSystem.Type;
-
 import java.util.HashMap;
+
+import imop.lib.analysis.typesystem.Type;
 
 /**
  * Nodes (or Types) that implement this interface, may start a new scope

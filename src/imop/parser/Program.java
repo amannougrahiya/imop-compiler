@@ -39,16 +39,34 @@ public class Program {
 
 	public enum UpdateCategory {
 		EGINV, // eager invalidation, upon each elementary transformation, with rerun of the
-				// analysis.
+		// analysis.
 		EGUPD, // eager update, upon each elementary transformation, with incremental update to
-				// the analysis data.
+		// the analysis data.
 		CPINV, // CP-based invalidation
 		CPUPD, // CP-based update
 		LZINV, // lazy invalidation, involving rerun of the analysis, whenever first read is
-				// performed after transformation.
-		LZUPD // lazy update, with incremental update to the analysis data, whenever first
-				// read is performed after transformation.
+		// performed after transformation.
+		LZUPD, // lazy update, with incremental update to the analysis data, whenever first
+		// read is performed after transformation.
+	}
 
+	/**
+	 * Various fine-grained stabilization-modes for IDFA stabilization. Note that
+	 * all these modes employ lazy triggers; one should ensure that by using "LZUPD"
+	 * mode of stabilization. (Further note that the {@link UpdateCategory#LZUPD}
+	 * mode of stabilization with ALL_* is similar to the earlier LZINV mode.
+	 *
+	 * @author aman
+	 *
+	 */
+	public enum StabilizationIDFAMode {
+		RESTART, // restarting iterations, SCC-wise; imprecise and fast
+		INIT_RESTART, // restarting iterations preceded with initialization, SCC-wise; precise and
+		// relatively slower than RETST
+		INCIDFA, // our new proposed approach, which is cell-aware.
+		ALL_SCC, // reinitializes and recomputes all, SCC-wise
+		ALL_NOSCC, // reinitializes and recomputes all, without taking SCCs into consideration
+		OLD_INCIDFA // old, cell-unaware IncIDFA; obsolete now.
 	}
 
 	public enum CPredAMode {
@@ -71,6 +89,22 @@ public class Program {
 	public static boolean removeUnused = true;
 	public static String fileName;
 	public static boolean enableUnmodifiability;
+	/**
+	 * Enables the heuristic that helps in early termination of first phase of
+	 * HIDFAp, by marking those nodes as safe that are reachable on a straight path
+	 * from a safe node (without any other incoming paths to the path).
+	 */
+	public static boolean testSafeMarkingHeuristic = false;
+	public static boolean countSeededSCCs = false;
+	/**
+	 * When enabled, SCC-specific parameters will be printed.
+	 */
+	public static boolean profileSCC = false;
+	public static boolean checkForGhostValues = false;
+	public static boolean maintainImpactedCells = false;
+	public static boolean useNoSCCs = false;
+	public static StabilizationIDFAMode stabilizationIDFAMode = StabilizationIDFAMode.INCIDFA;
+	public static long timerForMarking = 0;
 	/**
 	 * Checks whether at least one symbol is required for communication.
 	 */
@@ -100,23 +134,24 @@ public class Program {
 	public static UpdateCategory idfaUpdateCategory = UpdateCategory.LZUPD;
 	public static UpdateCategory mhpUpdateCategory = UpdateCategory.LZUPD;
 	/*
-	 * Decides whether the local-stabilization heuristic is used with Yuan
-	 * (where we simply assume that no changes impact the SVEness of any of the
-	 * predicates.)
+	 * Decides whether the local-stabilization heuristic is used with Yuan (where we
+	 * simply assume that no changes impact the SVEness of any of the predicates.)
 	 * Note that in the absence of any special checks validating our assumption,
 	 * this heuristic would not be correct for Yuan's concurrency analysis.
 	 */
 	public static boolean useHeuristicWithYuan = false;
 	public static boolean useHeuristicWithIcon = true;
 	public static boolean useInterProceduralPredicateAnalysis = false; // false; the queries have been modified
-																		// accordingly.
+	// accordingly.
 	public static boolean useTimerForIncEPARuns = false;
 	public static int secondsForIncEPARuns = 900;
 
+	public static boolean useContextSensitiveQueryResolver = true;
+
 	/**
 	 * Set the default SVE sensitivity for the whole program.<br>
-	 * Note that IDFA's <i>may</i> have their fixed SVE
-	 * sensitivity values, defined in their constructors.
+	 * Note that IDFA's <i>may</i> have their fixed SVE sensitivity values, defined
+	 * in their constructors.
 	 */
 	public static SVEDimension sveSensitive = SVEDimension.SVE_INSENSITIVE;
 	public static SVEDimension sveSensitivityOfIDFAEdges = SVEDimension.SVE_INSENSITIVE;
@@ -132,30 +167,27 @@ public class Program {
 	public static ConcurrencyAlgorithm concurrencyAlgorithm = ConcurrencyAlgorithm.ICON;
 	/*
 	 * Decides whether all predicates are assumed to be SVE; note that this flag
-	 * does not impact
-	 * the way that the co-existence checks are handled.
+	 * does not impact the way that the co-existence checks are handled.
 	 */
 	public static boolean sveNoCheck = true;
 	private static Set<Symbol> addressTakenSymbols;
 	/*
-	 * When set to true, the call-stacks can never contain two call-statements
-	 * that have same function-designator node (string-wise).
+	 * When set to true, the call-stacks can never contain two call-statements that
+	 * have same function-designator node (string-wise).
 	 */
 	public static boolean oneEntryPerFDInCallStack = true;
 	/**
 	 * When this flag is set, points-to information is not obtained from the
-	 * corresponding flow-facts. Just before
-	 * running the points-to analysis, this flag is reset to false, so that the
-	 * analysis does not get polluted by the
+	 * corresponding flow-facts. Just before running the points-to analysis, this
+	 * flag is reset to false, so that the analysis does not get polluted by the
 	 * conservative approximations of the base points-to sets.
 	 */
 	public static boolean basePointsTo = true;
 	/**
 	 * Just before running any points-to analysis, we should increment this field by
-	 * 1, and should decrement it back
-	 * after the points-to analysis. That way, the points-to sets will read from the
-	 * IN flow-fact unless the fixed point
-	 * is reached.
+	 * 1, and should decrement it back after the points-to analysis. That way, the
+	 * points-to sets will read from the IN flow-fact unless the fixed point is
+	 * reached.
 	 */
 	public static int memoizeAccesses = 0;
 	private static boolean initialPhasesRemembered = false;
@@ -163,11 +195,12 @@ public class Program {
 	public static DecimalFormat df2 = new DecimalFormat("#.##");
 	public static boolean disableLineNumbers = false;
 	public static int numExpansionAllowed = 100; // Default, applicable for the command-line arguments. This is set
-													// again in the method {@link defaultCommandLineArguments()}.
+	// again in the method {@link defaultCommandLineArguments()}.
 	public static final boolean addRelCPs = false; // Default: false; when true, we profile to obtain and print the set
-													// of relevant CPs.
+	// of relevant CPs.
 
 	public static CPredAMode cpaMode = CPredAMode.H1H2H3; // The default mode is H1H2H3.
+	public static boolean temporaryFlagToDisableSymbolsAtDummyFlushes = false;
 
 	public static void rememberInitialPhasesIfRequired() {
 		if (Program.getRoot() == null) {
@@ -189,33 +222,59 @@ public class Program {
 		return;
 	}
 
+	public static boolean checkForCyclesInKeyDependenceGraph = false; // A profiling flag. Disable for normal
+	// runs.
+	public static boolean useAccessedCellsWithExhaustive = false;
+	public static boolean runFirstPartOfFirstPass = true; // Default: true
+
+	public static boolean retainNullCellsInPTAMaps = false; // Decides whether PTA maps of the form {nullCell, a, b} are
+	// possible.
+
 	/**
 	 * Sets the various defaults for global flags (and filenames), which will be
-	 * used in the absence of any command-line
-	 * arguments. Also, this method sets/resets some other flags to their initial
-	 * state.
+	 * used in the absence of any command-line arguments. Also, this method
+	 * sets/resets some other flags to their initial state.
 	 *
 	 * @return a string representing the path of the input file.
 	 */
 	private static String defaultCommandLineArguments() {
+		/*
+		 * For IncIDFA -->
+		 *
+		 */
+		Program.isPrePassPhase = false; // Leave as false when working with IMOP-preprocessed files.
+		Program.removeUnused = true; // Leave as true, to weed out dead definitions and declarations.
+		Program.idfaUpdateCategory = UpdateCategory.LZUPD; // Leave as LZUPD. Now we use stabilizationIDFAMode as the
+		// flag for IncIDFA results.
+		Program.stabilizationIDFAMode = StabilizationIDFAMode.INCIDFA; // The actual mode to be used.
+		Program.testSafeMarkingHeuristic = false; // Leave as false. Not needed in the current algorithm.
+		Program.profileSCC = false; // To calculate print SCC-processing specific information. Leave as false.
+		Program.countSeededSCCs = false; // To calculate and print part of SCC-processing specific information. Leave as
+		// false.
+		Program.checkForGhostValues = false; // Temporary flag. Leave as false.
+		Program.maintainImpactedCells = true; // To calculate and maintain impactedSet.
+		Program.useNoSCCs = false; // When false, SCCs are used.
+		/*
+		 * <-- for IncIDFA.
+		 */
+
 		Program.invalidLineNum = false;
 		Program.invalidColumnNum = false;
 		Program.enableUnmodifiability = false;
-		Program.isPrePassPhase = true;
 		Program.proceedBeyond = true;
-		Program.removeUnused = true;
 		Program.fieldSensitive = false;
 		Program.maxThreads = 13;
 		Program.z3TimeoutInMilliSecs = "5000"; // 5s timeout for each z3 query.
 		Program.oneEntryPerFDInCallStack = true;
-		Program.disableLineNumbers = false; // Unless we need line numbers, keep this as true.
+		Program.disableLineNumbers = true; // Unless we need line numbers, keep this as true.
 		Program.basePointsTo = true;
 		Program.memoizeAccesses = 0;
 		Program.preciseDFDEdges = false;
-		Program.idfaUpdateCategory = UpdateCategory.LZUPD; // Default is LZUPD.
-		Program.concurrencyAlgorithm = ConcurrencyAlgorithm.ICON;
+		Program.testSafeMarkingHeuristic = false;
+		Program.concurrencyAlgorithm = ConcurrencyAlgorithm.YCON;
 		Program.mhpUpdateCategory = UpdateCategory.LZUPD; // Default is LZUPD.
 		Program.sveSensitive = SVEDimension.SVE_SENSITIVE;
+		Program.useContextSensitiveQueryResolver = false;
 		Program.cpaMode = CPredAMode.H1H2H3;
 		Program.useInterProceduralPredicateAnalysis = false;
 		Program.useTimerForIncEPARuns = false;
@@ -231,11 +290,11 @@ public class Program {
 		if (Program.concurrencyAlgorithm == ConcurrencyAlgorithm.YCON) {
 			Program.mhpUpdateCategory = UpdateCategory.LZINV;
 			Program.sveNoCheck = true;
-			Program.idfaUpdateCategory = UpdateCategory.LZUPD;
+			// Program.idfaUpdateCategory = UpdateCategory.LZUPD;
 		}
 
 		String filePath = "";
-		filePath = ("../tests/classB-preproc/bt-b.i");
+		// filePath = ("../tests/classB-preproc/bt-b.i");
 		// filePath = ("../tests/classB-preproc/cg-b.i");
 		// filePath = ("../tests/classB-preproc/ep-b.i");
 		// filePath = ("../tests/classB-preproc/ft-b.i");
@@ -246,16 +305,21 @@ public class Program {
 		//
 		// filePath = ("../output-dump/ft-bimop_output_LZINC.i");
 		filePath = ("../tests/npb-post/bt3-0.i");
-		// filePath = ("../tests/bt-contextsensitivity.i");
-		// filePath = ("../tests/bt-recursivequery.i");
-		// filePath = ("../tests/btsmall.i");
 		// filePath = ("../tests/npb-post/cg3-0.i");
-		// filePath = ("../tests/npb-post/ep3-0.i");
+		filePath = ("../tests/npb-post/ep3-0.i");
 		// filePath = ("../tests/npb-post/ft3-0.i");
 		// filePath = ("../tests/npb-post/is3-0.i");
-		// filePath = ("../tests/npb-post/lu3-0.i");
-		// filePath = ("../tests/npb-post/mg3-0.i");
+		// filePath = ("../tests/is-small.i");
+		filePath = ("../tests/npb-post/lu3-0.i");
+		filePath = ("../tests/npb-post/mg3-0.i");
 		// filePath = ("../tests/npb-post/sp3-0.i");
+		//
+		// filePath = ("../tests/quake-postpass.i");
+		// filePath = ("../tests/amgmk-postp
+		// filePath = ("../tests/amgmk-small.i");
+		// filePath = ("../tests/clomp-postpass.i");
+		// filePath = ("../tests/stream-postpass.i");
+		// filePath = ("../tests/scanner-postpass.i");
 		//
 		// filePath = "../output-dump/imop_useful.i";
 		// filePath = ("../src/imop/lib/testcases/cfgTests/singleLooping.c");
@@ -431,8 +495,10 @@ public class Program {
 		// filePath = ("../tests/barr-opt-tests/amgmk.i");
 		// filePath = ("../tests/icon-tests/smithwa.i");
 		// filePath = ("../tests/barr-opt-tests/kmeans.i");
+		// filePath = ("../tests/kmeans-small.i");
 		// filePath = ("../tests/barr-opt-tests/clomp.i");
 		// filePath = ("../tests/barr-opt-tests/stream.i");
+		// filePath = ("../tests/stream-postpass.i");
 		// filePath = ("../tests/barr-opt-tests/quake.i");
 		// filePath = ("../src/imop/lib/testcases/allKnown.c");
 		// filePath = ("../output-dump/imop_output.i");
@@ -451,12 +517,11 @@ public class Program {
 
 	/**
 	 * Given the string of command-line arguments as input, this method, firstly,
-	 * sets the default values for various
-	 * global flags. These default values are then overridden by the flags specified
-	 * in the command-line arguments.
-	 * After setting of the flags, this method transfers the control the
-	 * {@link FrontEnd#parseAndNormalize(java.io.InputStream)}
-	 * which parses the input file.
+	 * sets the default values for various global flags. These default values are
+	 * then overridden by the flags specified in the command-line arguments. After
+	 * setting of the flags, this method transfers the control the
+	 * {@link FrontEnd#parseAndNormalize(java.io.InputStream)} which parses the
+	 * input file.
 	 *
 	 * @param args
 	 */
@@ -500,6 +565,12 @@ public class Program {
 				Program.sveSensitive = SVEDimension.SVE_SENSITIVE;
 				Program.sveSensitivityOfIDFAEdges = SVEDimension.SVE_SENSITIVE;
 			}
+			if (str.equals("--accessedExhaustive") || str.equals("-ae")) {
+				Program.useAccessedCellsWithExhaustive = true;
+			}
+			if (str.equals("--noAccessedExhaustive") || str.equals("-nae")) {
+				Program.useAccessedCellsWithExhaustive = false;
+			}
 			if (str.equals("--icon") || str.equals("-icon")) {
 				Program.concurrencyAlgorithm = ConcurrencyAlgorithm.ICON;
 			}
@@ -515,50 +586,32 @@ public class Program {
 			} else if (str.equals("-h1")) {
 				Program.cpaMode = CPredAMode.H1;
 			}
+			if (str.equals("--idfaMode") || str.equals("-im")) {
+				String next = args[index + 1];
+				Program.stabilizationIDFAMode = StabilizationIDFAMode.valueOf(next);
+				if (Program.stabilizationIDFAMode == null) {
+					System.out.println("Please use a valid identifier for IDFA stabilization mode: "
+							+ StabilizationIDFAMode.values());
+					System.out.println("Read the documentation for more details. Exiting..");
+					System.exit(0);
+				}
+			}
 			if (str.equals("--category") || str.equals("-c")) {
 				String next = args[index + 1];
-				switch (next) {
-				case "EGINV":
-					Program.idfaUpdateCategory = UpdateCategory.EGINV;
-					break;
-				case "CPINV":
-					Program.idfaUpdateCategory = UpdateCategory.CPINV;
-					break;
-				case "LZINV":
-					Program.idfaUpdateCategory = UpdateCategory.LZINV;
-					break;
-				case "EGUPD":
-					Program.idfaUpdateCategory = UpdateCategory.EGUPD;
-					break;
-				case "CPUPD":
-					Program.idfaUpdateCategory = UpdateCategory.CPUPD;
-					break;
-				case "LZUPD":
-					Program.idfaUpdateCategory = UpdateCategory.LZUPD;
-					break;
-				default:
-					System.out.println(
-							"Please use a valid identifier for IDFA update category: EGINV, CPINV, LZINV, EGUPD, CPUPD, or LZUPD.");
+				try {
+					Program.idfaUpdateCategory = UpdateCategory.valueOf(next);
+				} catch (Exception e) {
+					System.out.println("Please use a valid identifier for IDFA update category: "
+							+ Arrays.asList(UpdateCategory.values()));
 					System.out.println("Read the documentation for more details. Exiting..");
 					System.exit(0);
 				}
 			}
 			if (str.equals("--categoryMHP") || str.equals("-cm")) {
 				String next = args[index + 1];
-				switch (next) {
-				case "EGINV":
-					Program.mhpUpdateCategory = UpdateCategory.EGINV;
-					break;
-				case "LZINV":
-					Program.mhpUpdateCategory = UpdateCategory.LZINV;
-					break;
-				case "EGUPD":
-					Program.mhpUpdateCategory = UpdateCategory.EGUPD;
-					break;
-				case "LZUPD":
-					Program.mhpUpdateCategory = UpdateCategory.LZUPD;
-					break;
-				default:
+				try {
+					Program.mhpUpdateCategory = UpdateCategory.valueOf(next);
+				} catch (Exception e) {
 					System.out.println(
 							"Please use a valid identifier for MHP update category: EGINV, LZINV, EGUPD, or LZUPD.");
 					System.out.println("Read the documentation for more details. Exiting..");
@@ -659,7 +712,7 @@ public class Program {
 			return;
 		}
 		String[] command = { "bash", "-c",
-				"source ~/.bash_profile; source ~/.bashrc; source ~/.profile; echo $Z3HOME" };
+		"source ~/.bash_profile; source ~/.bashrc; source ~/.profile; echo $Z3HOME" };
 		try {
 			Process proc = Runtime.getRuntime().exec(command);
 			proc.waitFor();

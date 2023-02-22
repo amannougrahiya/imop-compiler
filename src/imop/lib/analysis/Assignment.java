@@ -13,7 +13,7 @@ import imop.ast.info.cfgNodeInfo.ExpressionInfo;
 import imop.ast.node.external.*;
 import imop.lib.analysis.flowanalysis.Cell;
 import imop.lib.analysis.flowanalysis.Symbol;
-import imop.lib.analysis.typeSystem.ArrayType;
+import imop.lib.analysis.typesystem.ArrayType;
 import imop.lib.util.CellSet;
 import imop.lib.util.Misc;
 

@@ -2,7 +2,7 @@
  * Copyright (c) 2019 Aman Nougrahiya, V Krishna Nandivada, IIT Madras.
  * This file is a part of the project IMOP, licensed under the MIT license.
  * See LICENSE.md for the full text of the license.
- * 
+ *
  * The above notice shall be included in all copies or substantial
  * portions of this file.
  */
@@ -11,6 +11,9 @@ package imop.lib.util;
 import imop.lib.analysis.flowanalysis.Cell;
 import imop.lib.analysis.flowanalysis.FreeVariable;
 import imop.lib.analysis.flowanalysis.Symbol;
+import imop.lib.analysis.flowanalysis.generic.CellularDataFlowAnalysis;
+import imop.lib.analysis.flowanalysis.generic.CellularDataFlowAnalysis.CellularFlowMap;
+import imop.lib.analysis.flowanalysis.generic.CellularDataFlowAnalysis.NodeAnalysisPair;
 
 import java.util.*;
 import java.util.function.BiConsumer;
@@ -19,22 +22,157 @@ import java.util.function.BinaryOperator;
 
 /**
  * A variant of CellMap, with notion of keysNotPresent and fallBackMaps.
- * IMPORTANT: NEEDS TO BE REVIEWED.
- * 
+ *
  * @author Aman Nougrahiya
  *
  * @param <V>
  */
 public class ExtensibleCellMap<V extends Immutable> extends CellMap<V> {
 	protected CellSet keysNotPresent; // Set of keys which are assumed to be not present; shouldn't accept a universal
-										// element.
+	// element.
 	protected ExtensibleCellMap<V> fallBackMap;// Backup map which this map extends; used when keys are not found in
-												// this map.
+	// this map.
 	private List<ExtensibleCellMap<V>> extensionMaps = new ArrayList<>(); // Those maps which extend upon this map.
 	private final int maxLinkLength;
 	private static int LINKLENGTH = 2;
 
 	private static int counterLinkLength = 0;
+	protected boolean connectsToFlowMaps = false; // Special flag used for handling accessed-Calls logging for isEmpty.
+
+	private static int internalCalls = 0;
+
+	private static void addCellsAsAccessed(Set<Cell> set) {
+		if (set == null || set.isEmpty()) {
+			return;
+		}
+		if (CellularDataFlowAnalysis.nodeAnalysisStack.isEmpty()) {
+			return;
+		}
+		NodeAnalysisPair nap = CellularDataFlowAnalysis.nodeAnalysisStack.peek();
+		if (nap == null) {
+			return;
+		}
+		nap.node.getInfo().getAccessedCellSets(nap.analysis).addAll(set);
+	}
+
+	private static void addCellsAsRead(Set<Cell> set) {
+		if (set == null || set.isEmpty()) {
+			return;
+		}
+		if (CellularDataFlowAnalysis.nodeAnalysisStack.isEmpty()) {
+			return;
+		}
+		NodeAnalysisPair nap = CellularDataFlowAnalysis.nodeAnalysisStack.peek();
+		if (nap == null) {
+			return;
+		}
+		nap.node.getInfo().getReadCellSets(nap.analysis).addAll(set);
+	}
+
+	private static void addCellsAsWritten(Set<Cell> set) {
+		if (set == null || set.isEmpty()) {
+			return;
+		}
+		if (CellularDataFlowAnalysis.nodeAnalysisStack.isEmpty()) {
+			return;
+		}
+		NodeAnalysisPair nap = CellularDataFlowAnalysis.nodeAnalysisStack.peek();
+		if (nap == null) {
+			return;
+		}
+		nap.node.getInfo().getWrittenCellSets(nap.analysis).addAll(set);
+	}
+
+	/**
+	 * Return true if and only if this call has been made with following two
+	 * conditions: (i) it is called from the context of a transfer function, and
+	 * (ii) it is not called from any of the safe call-sites of any internal
+	 * methods.
+	 *
+	 * @return
+	 */
+	private boolean isCalledDirectlyFromTransferFunction() {
+		if (internalCalls != 0) {
+			return false;
+		}
+		if (CellularDataFlowAnalysis.nodeAnalysisStack.isEmpty()) {
+			return false;
+		}
+		NodeAnalysisPair nap = CellularDataFlowAnalysis.nodeAnalysisStack.peek();
+		if (nap == null) {
+			return false;
+		}
+		return true;
+	}
+
+	private void throwAssertionErrorIfNeeded() {
+		if (!this.isCalledDirectlyFromTransferFunction()) {
+			return;
+		}
+		assert (false) : "We do not know what to do for this path, in the context of capturing accessedCells. "
+		+ "Disable the appropriate IDFA-optimizing flag in Program, and re-run the compiler";
+
+	}
+
+	private static void addCellAsAccessed(Cell cell) {
+		if (cell == null) {
+			return;
+		}
+		if (CellularDataFlowAnalysis.nodeAnalysisStack.isEmpty()) {
+			return;
+		}
+		NodeAnalysisPair nap = CellularDataFlowAnalysis.nodeAnalysisStack.peek();
+		if (nap == null) {
+			return;
+		}
+		// if (cell == Cell.genericCell) {
+		// assert (false)
+		// : "Disable this assert error, if you are okay with adding a generic cell to
+		// the list of accessed cells at node"
+		// + nap.node;
+		// }
+		nap.node.getInfo().getAccessedCellSets(nap.analysis).add(cell);
+	}
+
+	private static void addCellAsRead(Cell cell) {
+		if (cell == null) {
+			return;
+		}
+		if (CellularDataFlowAnalysis.nodeAnalysisStack.isEmpty()) {
+			return;
+		}
+		NodeAnalysisPair nap = CellularDataFlowAnalysis.nodeAnalysisStack.peek();
+		if (nap == null) {
+			return;
+		}
+		// if (cell == Cell.genericCell) {
+		// assert (false)
+		// : "Disable this assert error, if you are okay with adding a generic cell to
+		// the list of read cells at node"
+		// + nap.node;
+		// }
+		nap.node.getInfo().getReadCellSets(nap.analysis).add(cell);
+	}
+
+	private static void addCellAsWritten(Cell cell) {
+		if (cell == null) {
+			return;
+		}
+		if (CellularDataFlowAnalysis.nodeAnalysisStack.isEmpty()) {
+			return;
+		}
+		NodeAnalysisPair nap = CellularDataFlowAnalysis.nodeAnalysisStack.peek();
+		if (nap == null) {
+			return;
+		}
+		// if (cell == Cell.genericCell) {
+		// assert (false)
+		// : "Disable this assert error, if you are okay with adding a generic cell to
+		// the list of written cells at node"
+		// + nap.node;
+		// }
+		nap.node.getInfo().getWrittenCellSets(nap.analysis).add(cell);
+	}
 
 	public ExtensibleCellMap() {
 		this.internalRepresentation = new HashMap<>();
@@ -47,7 +185,7 @@ public class ExtensibleCellMap<V extends Immutable> extends CellMap<V> {
 	}
 
 	/**
-	 * 
+	 *
 	 * @param fallBackMap
 	 *                      map, which this map would extend.
 	 * @param maxLinkLength
@@ -57,11 +195,22 @@ public class ExtensibleCellMap<V extends Immutable> extends CellMap<V> {
 	public ExtensibleCellMap(ExtensibleCellMap<V> fallBackMap, int maxLinkLength) {
 		this.maxLinkLength = maxLinkLength;
 		this.commonConstruction(fallBackMap);
+		ExtensibleCellMap.addCellsAsAccessed(fallBackMap.keySet());
+		ExtensibleCellMap.addCellsAsWritten(fallBackMap.keySet());
 	}
 
 	public ExtensibleCellMap(ExtensibleCellMap<V> fallBackMap) {
 		this.maxLinkLength = LINKLENGTH;
 		this.commonConstruction(fallBackMap);
+		ExtensibleCellMap.addCellsAsAccessed(fallBackMap.keySet());
+		ExtensibleCellMap.addCellsAsWritten(fallBackMap.keySet());
+	}
+
+	public ExtensibleCellMap(CellularFlowMap<V> thatFlowMap) {
+		this.maxLinkLength = LINKLENGTH;
+		this.commonConstruction(thatFlowMap.getFlowMap());
+		this.connectsToFlowMaps = true;
+		// We do not add the cells from key set of thatFlowMap's flowMap as accessed.
 	}
 
 	private void commonConstruction(ExtensibleCellMap<V> fallBackMap) {
@@ -95,7 +244,7 @@ public class ExtensibleCellMap<V extends Immutable> extends CellMap<V> {
 	 * Sets the map {@code fallBackMap} as a fall back map for
 	 * {@code extendedMap}, and adds {@code extendedMap} to the set
 	 * {@code extensionMaps} of {@code fallBackMap}.
-	 * 
+	 *
 	 * @param <H>
 	 * @param extendedMap
 	 * @param fallBackMap
@@ -134,7 +283,7 @@ public class ExtensibleCellMap<V extends Immutable> extends CellMap<V> {
 	/**
 	 * Provides the number of elements in the extension chain of this map
 	 * (including this map).
-	 * 
+	 *
 	 * @param map
 	 * @return
 	 */
@@ -150,6 +299,11 @@ public class ExtensibleCellMap<V extends Immutable> extends CellMap<V> {
 
 	@Override
 	public boolean isUniversal() {
+		if (this.isCalledDirectlyFromTransferFunction()) {
+			assert (false);
+			ExtensibleCellMap.addCellAsAccessed(Cell.genericCell);
+			ExtensibleCellMap.addCellAsRead(Cell.genericCell);
+		}
 		if (this.containsUniversal) {
 			return true;
 		}
@@ -188,7 +342,7 @@ public class ExtensibleCellMap<V extends Immutable> extends CellMap<V> {
 	/**
 	 * Checks if the provided {@code key}'s value will be read from the
 	 * {@code fallBackMap}, for the receiver map.
-	 * 
+	 *
 	 * @param key
 	 *            a key to be tested.
 	 * @return
@@ -210,6 +364,11 @@ public class ExtensibleCellMap<V extends Immutable> extends CellMap<V> {
 
 	@Override
 	public int size() {
+		if (this.isCalledDirectlyFromTransferFunction()) {
+			assert (false);
+			ExtensibleCellMap.addCellAsAccessed(Cell.genericCell);
+			ExtensibleCellMap.addCellAsRead(Cell.genericCell);
+		}
 		if (this.isUniversal()) {
 			int notPresent = (this.keysNotPresent == null) ? 0 : this.keysNotPresent.size();
 			return Cell.allCells.size() - notPresent;
@@ -233,6 +392,11 @@ public class ExtensibleCellMap<V extends Immutable> extends CellMap<V> {
 
 	@Override
 	public boolean isEmpty() {
+		if (this.connectsToFlowMaps && this.isCalledDirectlyFromTransferFunction()) {
+			assert (false);
+			ExtensibleCellMap.addCellAsAccessed(Cell.genericCell);
+			ExtensibleCellMap.addCellAsRead(Cell.genericCell);
+		}
 		if (this.internalRepresentation.isEmpty()) {
 			if (this.fallBackMap == null) {
 				return true;
@@ -242,7 +406,10 @@ public class ExtensibleCellMap<V extends Immutable> extends CellMap<V> {
 				}
 			}
 		}
-		return this.size() == 0;
+		internalCalls++;
+		int size = this.size();
+		internalCalls--;
+		return size == 0;
 	}
 
 	@Override
@@ -255,6 +422,10 @@ public class ExtensibleCellMap<V extends Immutable> extends CellMap<V> {
 	}
 
 	protected boolean containsKey(Cell key, ConvertMode convertMode) {
+		if (this.isCalledDirectlyFromTransferFunction()) {
+			ExtensibleCellMap.addCellAsAccessed(key);
+			// ExtensibleCellMap.addCellAsRead(key);
+		}
 		if (keysNotPresent != null && keysNotPresent.contains(key)) {
 			return false;
 		}
@@ -277,6 +448,7 @@ public class ExtensibleCellMap<V extends Immutable> extends CellMap<V> {
 
 	@Override
 	public boolean containsValue(Object value) {
+		this.throwAssertionErrorIfNeeded();
 		for (Cell key : this.keySetExpanded(ConvertMode.OFF)) {
 			Object keyVal = this.get(key, ConvertMode.OFF);
 			if (keyVal == value || keyVal.equals(value)) {
@@ -294,7 +466,7 @@ public class ExtensibleCellMap<V extends Immutable> extends CellMap<V> {
 	 * Returns the value that is mapped to {@code key}. If no such mapping
 	 * exists, then the value mapped to {@link getGenericCell()}, if any,
 	 * is returned, else {@code null} is returned.
-	 * 
+	 *
 	 * @param key
 	 *            key for which corresponding value is required.
 	 * @return
@@ -302,13 +474,17 @@ public class ExtensibleCellMap<V extends Immutable> extends CellMap<V> {
 	 *         exists, then the value mapped to {@link getGenericCell()},
 	 *         if any,
 	 *         is returned, else {@code null} is returned.
-	 * 
+	 *
 	 */
 	@Override
 	public V get(Cell key) {
 		this.testAndConvert();
 		if (key instanceof FreeVariable) {
 			key = this.testAndConvert(key);
+		}
+		if (this.isCalledDirectlyFromTransferFunction()) {
+			ExtensibleCellMap.addCellAsAccessed(key);
+			ExtensibleCellMap.addCellAsRead(key);
 		}
 		return this.get(key, ConvertMode.ON);
 	}
@@ -347,7 +523,7 @@ public class ExtensibleCellMap<V extends Immutable> extends CellMap<V> {
 	 * {@code value}. Otherwise, a new mapping is added for ({@code key},
 	 * {@code value}). However, if {@code key} is {@link getGenericCell()},
 	 * then the internal map is cleared and the new mapping is added to the map.
-	 * 
+	 *
 	 * @param key
 	 *                 key for the mapping to be added.
 	 * @param newValue
@@ -356,7 +532,7 @@ public class ExtensibleCellMap<V extends Immutable> extends CellMap<V> {
 	 *         the value that is mapped to {@code key}. If no such mapping
 	 *         exists, then the value mapped to {@link getGenericCell()},
 	 *         if any, is returned, else {@code null} is returned.
-	 * 
+	 *
 	 */
 	@Override
 	public V put(Cell key, V newValue) {
@@ -364,7 +540,27 @@ public class ExtensibleCellMap<V extends Immutable> extends CellMap<V> {
 		if (key instanceof FreeVariable) {
 			key = this.testAndConvert(key);
 		}
+		if (this.isCalledDirectlyFromTransferFunction()) {
+			ExtensibleCellMap.addCellAsAccessed(key);
+			ExtensibleCellMap.addCellAsWritten(key);
+		}
 		return this.put(key, newValue, ConvertMode.ON);
+	}
+
+	@SuppressWarnings("unchecked")
+	public V putSpecial(Cell key, ExtensibleCellMap<?> flowMap, Cell c) {
+		internalCalls++;
+		Immutable newValue = flowMap.get(c);
+		internalCalls--;
+		assert (newValue != null);
+		if (key instanceof FreeVariable) {
+			key = this.testAndConvert(key);
+		}
+		if (this.isCalledDirectlyFromTransferFunction()) {
+			ExtensibleCellMap.addCellAsAccessed(key);
+			ExtensibleCellMap.addCellAsWritten(key);
+		}
+		return this.put(key, (V) newValue, ConvertMode.ON);
 	}
 
 	protected V put(Cell key, V newValue, ConvertMode convertMode) {
@@ -444,6 +640,10 @@ public class ExtensibleCellMap<V extends Immutable> extends CellMap<V> {
 	}
 
 	protected V remove(Cell key, ConvertMode convertMode) {
+		if (this.isCalledDirectlyFromTransferFunction()) {
+			ExtensibleCellMap.addCellAsAccessed(key);
+			ExtensibleCellMap.addCellAsWritten(key);
+		}
 		if (!this.containsKey(key, convertMode)) {
 			return null;
 		}
@@ -546,6 +746,10 @@ public class ExtensibleCellMap<V extends Immutable> extends CellMap<V> {
 
 	@Override
 	public void clear() {
+		if (this.isCalledDirectlyFromTransferFunction()) {
+			ExtensibleCellMap.addCellAsAccessed(Cell.genericCell);
+			ExtensibleCellMap.addCellAsWritten(Cell.genericCell);
+		}
 		CellSet tempSet = new CellSet();
 		for (Cell key : keySetExpanded(ConvertMode.OFF)) {
 			tempSet.add(key);
@@ -557,6 +761,10 @@ public class ExtensibleCellMap<V extends Immutable> extends CellMap<V> {
 
 	@Override
 	public String toString() {
+		// if (this.isCalledDirectlyFromTransferFunction()) {
+		// assert (false);
+		// ExtensibleCellMap.addCellAsAccessed(Cell.genericCell);
+		// }
 		String tempStr = "[";
 		for (Cell c : this.keySetExpanded()) {
 			tempStr += "\n\t" + c + ":" + this.get(c);
@@ -567,6 +775,8 @@ public class ExtensibleCellMap<V extends Immutable> extends CellMap<V> {
 
 	@Override
 	public Object clone() {
+		// Note that we do not need to mark any keys here.
+		// This constructor below will anyway do that.
 		ExtensibleCellMap<V> newMap = new ExtensibleCellMap<>(this);
 		return newMap;
 	}
@@ -574,7 +784,9 @@ public class ExtensibleCellMap<V extends Immutable> extends CellMap<V> {
 	@Override
 	public int hashCode() {
 		// final int prime = 31;
+		internalCalls++;
 		int result = this.size();
+		internalCalls--;
 		// for (Cell key : this.keySetExpanded()) {
 		// result += key.hashCode();
 		// }
@@ -639,7 +851,162 @@ public class ExtensibleCellMap<V extends Immutable> extends CellMap<V> {
 	 * Merges this object with {@code thatMap}, for the cells specified in
 	 * {@code selectedCells} (all, if {@code null}), as per the merge operation
 	 * provided by {@code mergeMethod}.
-	 * 
+	 * Additionally, this method also sets a global flag in CellularDataFlowAnalysis
+	 * if there is any change in the value corresponding to any of the cells from
+	 * accessedCells in the receiver map.
+	 *
+	 * @param thatMap
+	 *                      map, of same value type, which needs to be merged into
+	 *                      this
+	 *                      map.
+	 * @param mergeMethod
+	 *                      a binary operator, that takes two arguments and returns
+	 *                      a
+	 *                      value of the same type. This lambda is used to specify
+	 *                      the
+	 *                      merge operation given two elements from the co-domain of
+	 *                      this
+	 *                      map. Note that this method should take care of
+	 *                      {@code null}
+	 *                      values as well (for the first argument).
+	 * @param selectedCells
+	 *                      set of cells for which merge has to be performed; value
+	 *                      {@code null} represents all cells.
+	 * @return
+	 *         true, if this method changed the state (except for the internal
+	 *         free variable to symbol conversions) of the receiver object.
+	 */
+	public boolean mergeWithAccessed(CellMap<V> thatMapExt, BinaryOperator<V> mergeMethod, CellSet selectedCells,
+			CellSet accessedCells) {
+		boolean changed = false;
+		if (thatMapExt == null) {
+			return changed;
+		}
+		if (!(thatMapExt instanceof ExtensibleCellMap<?>)) {
+			Misc.warnDueToLackOfFeature(
+					"The behaviour upon merging a non-ExtensibleCellMap into an ExtensibleCellMap has not been tested yet.",
+					null);
+			return super.mergeWith(thatMapExt, mergeMethod, selectedCells);
+		}
+		ExtensibleCellMap<V> thatMap = (ExtensibleCellMap<V>) thatMapExt;
+		ExtensibleCellMap<V> thisMap = this;
+		Set<Cell> thatNonGenericSet = thatMap.nonGenericKeySet(ConvertMode.OFF);
+		// Handle all explicit cells of thatMap.
+		for (Cell thatCell : thatNonGenericSet) {
+			if (selectedCells != null && !selectedCells.contains(thatCell)) {
+				continue;
+			}
+			V thatValue = thatMap.get(thatCell, ConvertMode.OFF);
+			// if thisMap does not contain thatCell then thisValue = thatValue.
+			V thisValue = thisMap.get(thatCell, ConvertMode.OFF);
+			// Note that thisValue may be null. We assume that mergeMethod takes care of
+			// that.
+			if (thatValue == thisValue) {
+				continue;
+			}
+			V newValue = mergeMethod.apply(thisValue, thatValue);
+			if (newValue != null && !newValue.equals(thisValue)) {
+				changed = true;
+				if (!CellularDataFlowAnalysis.accessedCellValueChanged && accessedCells.contains(thatCell)) {
+					CellularDataFlowAnalysis.accessedCellValueChanged = true;
+				}
+				thisMap.put(thatCell, newValue, ConvertMode.OFF);
+			}
+		}
+		internalCalls++;
+		boolean thatIsUniversal = thatMap.isUniversal();
+		internalCalls--;
+		if (!thatIsUniversal) {
+			return changed;
+		}
+		// Handle all implicit cells of thatMap.
+		V thatGenericValue = thatMap.get(Cell.genericCell);
+		Set<Cell> thisNonGenericSet = new HashSet<>(thisMap.nonGenericKeySet(ConvertMode.OFF));
+		// Handle those explicit cells of this map which are not yet taken care of.
+		thisNonGenericSet.removeAll(thatNonGenericSet);
+		for (Cell thisCell : thisNonGenericSet) {
+			if (selectedCells != null && !selectedCells.contains(thisCell)) {
+				continue;
+			}
+			V thisValue = thisMap.get(thisCell);
+			if (thisValue == thatGenericValue) {
+				continue;
+			}
+			V newValue = mergeMethod.apply(thisValue, thatGenericValue);
+			if (newValue != null && !newValue.equals(thisValue)) {
+				changed = true;
+				if (!CellularDataFlowAnalysis.accessedCellValueChanged && accessedCells.contains(thisCell)) {
+					CellularDataFlowAnalysis.accessedCellValueChanged = true;
+				}
+				thisMap.put(thisCell, newValue);
+			}
+		}
+
+		Set<Cell> cellsToUpdate = (selectedCells == null) ? Cell.allCells
+				: (Set<Cell>) selectedCells.getReadOnlyInternal();
+		V thisGenericValue = thisMap.get(Cell.genericCell);
+		V newGenericValue;
+		if (this.containsUniversal) {
+			newGenericValue = mergeMethod.apply(thisGenericValue, thatGenericValue);
+		} else {
+			newGenericValue = null;
+		}
+		for (Cell key : cellsToUpdate) {
+			if (thatNonGenericSet.contains(key)) {
+				continue;
+			}
+			if (thisNonGenericSet.contains(key)) {
+				continue;
+			}
+			if (this.containsUniversal) {
+				changed = true;
+				if (!CellularDataFlowAnalysis.accessedCellValueChanged && accessedCells.contains(key)) {
+					CellularDataFlowAnalysis.accessedCellValueChanged = true;
+				}
+				thisMap.put(key, newGenericValue);
+			} else {
+				changed = true;
+				if (!CellularDataFlowAnalysis.accessedCellValueChanged && accessedCells.contains(key)) {
+					CellularDataFlowAnalysis.accessedCellValueChanged = true;
+				}
+				thisMap.put(key, thatGenericValue);
+			}
+		}
+
+		// OLD CODE: This code below relied upon updateGenericMap(), which was too
+		// clumsy.
+		// if (selectedCells != null) {
+		// // Handle other cells of thisMap.
+		// for (Cell otherCell : selectedCells) {
+		// if (thatNonGenericSet.contains(otherCell)) {
+		// continue;
+		// }
+		// if (thisNonGenericSet.contains(otherCell)) {
+		// continue;
+		// }
+		// changed = true;
+		// thisMap.put(otherCell, thatGenericValue);
+		// }
+		// } else {
+		// // Handle implicit cells of thisMap.
+		// V thisGenericValue = thisMap.get(Cell.genericCell);
+		// // Note that thisGenericValye may be null. We assume that mergeMethod takes
+		// care of this issue.
+		// V newGenericValue = mergeMethod.apply(thisGenericValue, thatGenericValue);
+		// if (!newGenericValue.equals(thisGenericValue)) {
+		// changed = true;
+		// thisMap.updateGenericMap(newGenericValue);
+		// }
+		// }
+		this.containsUniversal = true;
+		return changed;
+	}
+
+	/**
+	 * Merges this object with {@code thatMap}, for the cells specified in
+	 * {@code selectedCells} (all, if {@code null}), as per the merge operation
+	 * provided by {@code mergeMethod}.
+	 *
 	 * @param thatMap
 	 *                      map, of same value type, which needs to be merged into
 	 *                      this
@@ -685,13 +1052,19 @@ public class ExtensibleCellMap<V extends Immutable> extends CellMap<V> {
 			V thisValue = thisMap.get(thatCell, ConvertMode.OFF);
 			// Note that thisValue may be null. We assume that mergeMethod takes care of
 			// that.
+			if (thatValue == thisValue) {
+				continue;
+			}
 			V newValue = mergeMethod.apply(thisValue, thatValue);
 			if (newValue != null && !newValue.equals(thisValue)) {
 				changed = true;
 				thisMap.put(thatCell, newValue, ConvertMode.OFF);
 			}
 		}
-		if (!thatMap.isUniversal()) {
+		internalCalls++;
+		boolean thatIsUniversal = thatMap.isUniversal();
+		internalCalls--;
+		if (!thatIsUniversal) {
 			return changed;
 		}
 		// Handle all implicit cells of thatMap.
@@ -704,6 +1077,9 @@ public class ExtensibleCellMap<V extends Immutable> extends CellMap<V> {
 				continue;
 			}
 			V thisValue = thisMap.get(thisCell);
+			if (thisValue == thatGenericValue) {
+				continue;
+			}
 			V newValue = mergeMethod.apply(thisValue, thatGenericValue);
 			if (newValue != null && !newValue.equals(thisValue)) {
 				changed = true;
@@ -770,7 +1146,17 @@ public class ExtensibleCellMap<V extends Immutable> extends CellMap<V> {
 	}
 
 	@Override
+	public Set<Cell> keySet() {
+		return this.keySetExpanded();
+	}
+
+	@Override
 	public Set<Cell> keySetExpanded() {
+		if (this.isCalledDirectlyFromTransferFunction()) {
+			assert (false);
+			ExtensibleCellMap.addCellAsAccessed(Cell.genericCell);
+			ExtensibleCellMap.addCellAsRead(Cell.genericCell);
+		}
 		this.testAndConvert();
 		return this.keySetExpanded(ConvertMode.OFF);
 	}
@@ -782,7 +1168,10 @@ public class ExtensibleCellMap<V extends Immutable> extends CellMap<V> {
 	final class KeySetExpanded extends RestrictedSet<Cell> implements Iterable<Cell> {
 		@Override
 		public int size() {
-			return ExtensibleCellMap.this.size();
+			internalCalls++;
+			int size = ExtensibleCellMap.this.size();
+			internalCalls--;
+			return size;
 		}
 
 		@Override
@@ -908,7 +1297,10 @@ public class ExtensibleCellMap<V extends Immutable> extends CellMap<V> {
 
 		@Override
 		public boolean isEmpty() {
-			return this.size() == 0;
+			internalCalls++;
+			int size = this.size();
+			internalCalls--;
+			return size == 0;
 		}
 
 		@Override
@@ -1006,6 +1398,12 @@ public class ExtensibleCellMap<V extends Immutable> extends CellMap<V> {
 	}
 
 	@Override
+	public Set<Entry<Cell, V>> entrySet() {
+		this.throwAssertionErrorIfNeeded();
+		return super.entrySet();
+	}
+
+	@Override
 	protected void testAndConvert() {
 		// if (true) {
 		// return;
@@ -1062,7 +1460,7 @@ public class ExtensibleCellMap<V extends Immutable> extends CellMap<V> {
 	 * If a mapping already exists for the generic cell, then the map is updated
 	 * and old value is returned. Otherwise, an entry is added, without removing
 	 * existing explicit cell mappings.
-	 * 
+	 *
 	 * @param value
 	 *              value which a generic cell should be mapped to.
 	 * @return
@@ -1228,5 +1626,9 @@ public class ExtensibleCellMap<V extends Immutable> extends CellMap<V> {
 		// this.testAndConvert();
 		// this.internalRepresentation.replaceAll(function);
 		// }
+	}
+
+	public void initFallBackMapWith(ExtensibleCellMap<V> ext) {
+		ExtensibleCellMap.setFallBackMap(this, ext);
 	}
 }

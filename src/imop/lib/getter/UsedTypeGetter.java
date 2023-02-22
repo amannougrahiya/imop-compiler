@@ -10,7 +10,7 @@ package imop.lib.getter;
 
 import imop.ast.node.external.*;
 import imop.baseVisitor.DepthFirstProcess;
-import imop.lib.analysis.typeSystem.Type;
+import imop.lib.analysis.typesystem.Type;
 import imop.lib.util.Misc;
 
 import java.util.HashSet;

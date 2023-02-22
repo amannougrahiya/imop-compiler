@@ -2,7 +2,7 @@
  * Copyright (c) 2019 Aman Nougrahiya, V Krishna Nandivada, IIT Madras.
  * This file is a part of the project IMOP, licensed under the MIT license.
  * See LICENSE.md for the full text of the license.
- * 
+ *
  * The above notice shall be included in all copies or substantial
  * portions of this file.
  */
@@ -19,27 +19,65 @@ import imop.parser.Program;
 import java.util.*;
 
 public class ReversePostOrderWorkList {
-	private static enum Stage {
+	protected static enum Stage {
 		NONBARRIER, BARRIER
 	}
 
-	private Stage stage = Stage.NONBARRIER;
+	protected Stage stage = Stage.NONBARRIER;
 	public static int ignored = 0;
 
-	private List<Node> nonBarrierList = new LinkedList<>();
-	private Set<Node> barrierSet = new HashSet<>();
+	protected List<Node> nonBarrierList = new LinkedList<>();
+	protected Set<Node> barrierSet = new HashSet<>();
 
 	public boolean isEmpty() {
 		return this.barrierSet.isEmpty() && this.nonBarrierList.isEmpty();
 	}
 
 	public void recreate() {
-		this.barrierSet = new HashSet<>();
-		this.nonBarrierList = new LinkedList<>();
+		this.stage = Stage.NONBARRIER; // The first stage must always be NONBARRIER.
+		if (this.barrierSet == null) {
+			this.barrierSet = new HashSet<>();
+		} else {
+			this.barrierSet.clear();
+		}
+		if (this.nonBarrierList == null) {
+			this.nonBarrierList = new LinkedList<>();
+		} else {
+			this.nonBarrierList.clear();
+		}
 	}
 
 	public void setStageToBarrier() {
 		this.stage = Stage.BARRIER;
+	}
+
+	/**
+	 * Checks whether the node to be inserted in the {@code rpo} is smaller, in
+	 * RPO-order, than the first element of the list.
+	 *
+	 * @param node
+	 * @param rpo
+	 */
+	public static void checkNode(Node node, ReversePostOrderWorkList rpo) {
+		SCC sccOfNewNode = node.getInfo().getCFGInfo().getSCC();
+		Node firstNode = rpo.peekFirstElement();
+		SCC sccOfExistingNode = firstNode.getInfo().getCFGInfo().getSCC();
+		int n1Num, n2Num;
+		if (sccOfNewNode == null) {
+			n1Num = node.getReversePostOrder();
+		} else {
+			n1Num = sccOfNewNode.getReversePostOrder();
+		}
+		if (sccOfExistingNode == null) {
+			n2Num = firstNode.getReversePostOrder();
+		} else {
+			n2Num = sccOfExistingNode.getReversePostOrder();
+		}
+		if (n1Num < n2Num) {
+			Misc.exitDueToError(
+					"Attempting to insert a node at a global index that is lesser than that of the first element of the list.");
+		}
+
 	}
 
 	public boolean add(Node node) {
@@ -50,8 +88,7 @@ public class ReversePostOrderWorkList {
 		int ind = node.getReversePostOrder();
 		if (ind < 0) {
 			/*
-			 * This does not seem to be a connected node. Is it, though? Let's
-			 * check.
+			 * This does not seem to be a connected node. Is it, though? Let's check.
 			 */
 			// assert
 			// (!Program.getRoot().getInfo().getCFGInfo().getLexicalCFGContents().contains(node))
@@ -113,7 +150,7 @@ public class ReversePostOrderWorkList {
 
 	}
 
-	private String foo(List<Node> nonBarrList, Node node, int insertionIndex) {
+	protected String foo(List<Node> nonBarrList, Node node, int insertionIndex) {
 		String ret = "The list IDs are: [\n";
 		for (Node n : nonBarrList) {
 			if (n.getInfo().getCFGInfo().getSCC() == null) {
@@ -144,8 +181,9 @@ public class ReversePostOrderWorkList {
 		ret += ".";
 		return ret;
 	}
+
 	//
-	// private String foo(List<Node> list) {
+	// protected String foo(List<Node> list) {
 	// String s = "[";
 	// for (Node n : list) {
 	// s += n.hashCode() + "; ";
@@ -257,6 +295,7 @@ public class ReversePostOrderWorkList {
 				if (this.hasEmptyBarrierSetForId(sccId)) {
 					return null;
 				} else {
+					assert (false);
 					for (Node barr : this.barrierSet) {
 						if (barr.getInfo().getCFGInfo().getSCCRPOIndex() == sccId) {
 							return barr;
@@ -265,7 +304,15 @@ public class ReversePostOrderWorkList {
 					return null;
 				}
 			} else {
-				return this.nonBarrierList.get(0);
+				Node first = this.nonBarrierList.get(0);
+				// for (Node n : this.nonBarrierList) {
+				// if (n.getInfo().getCFGInfo().getSCCRPOIndex() == sccId) {
+				// first = n;
+				// break;
+				// }
+				// }
+				// assert (first != null);
+				return first;
 			}
 		} else {
 			// In BARRIER stage.
@@ -273,7 +320,15 @@ public class ReversePostOrderWorkList {
 				if (this.hasEmptyNonBarrierListForId(sccId)) {
 					return null;
 				} else {
-					return this.nonBarrierList.get(0);
+					Node first = null;
+					for (Node n : this.nonBarrierList) {
+						if (n.getInfo().getCFGInfo().getSCCRPOIndex() == sccId) {
+							first = n;
+							break;
+						}
+					}
+					assert (first != null);
+					return first;
 				}
 			} else {
 				for (Node barr : this.barrierSet) {
@@ -286,6 +341,18 @@ public class ReversePostOrderWorkList {
 		}
 	}
 
+	public Set<Node> getIteratorForBarrierNodes() {
+		return Collections.unmodifiableSet(this.barrierSet);
+	}
+
+	public List<Node> getIteratorForNonBarrierNodes() {
+		return Collections.unmodifiableList(this.nonBarrierList);
+	}
+
+	public boolean contains(Node node) {
+		return this.nonBarrierList.contains(node) || this.barrierSet.contains(node);
+	}
+
 	public Node removeFirstElementOfSameSCC(int sccId) {
 		if (this.stage == Stage.NONBARRIER) {
 			// In NONBARRIER stage.
@@ -293,16 +360,33 @@ public class ReversePostOrderWorkList {
 				if (this.hasEmptyBarrierSetForId(sccId)) {
 					return null;
 				} else {
+					assert (false);
 					this.stage = Stage.BARRIER;
 					return this.removeFirstElementOfSameSCC(sccId);
 				}
 			} else {
-				Node first = this.nonBarrierList.get(0);
-				this.nonBarrierList.remove(first);
+				Node first = this.nonBarrierList.remove(0);
+				/*
+				 * NEW CODE: The old code simply used this.nonBarrierList.get(0) -- this could
+				 * be wrong.
+				 */
+				// int i = -1;
+				// for (Node n : this.nonBarrierList) {
+				// i++;
+				// if (n.getInfo().getCFGInfo().getSCCRPOIndex() == sccId) {
+				// first = n;
+				// break;
+				// }
+				// }
+				// assert (i == 0 || i == this.nonBarrierList.size() - 1) : "Found the element
+				// at index " + i;
+				assert (first != null);
+				// this.nonBarrierList.remove(first);
 				return first;
 			}
 		} else {
 			// In BARRIER stage.
+			assert (false);
 			if (this.hasEmptyBarrierSetForId(sccId)) {
 				if (this.hasEmptyNonBarrierListForId(sccId)) {
 					return null;
@@ -323,7 +407,7 @@ public class ReversePostOrderWorkList {
 		}
 	}
 
-	private boolean hasEmptyNonBarrierListForId(int id) {
+	protected boolean hasEmptyNonBarrierListForId(int id) {
 		for (Node n : this.nonBarrierList) {
 			if (n.getInfo().getCFGInfo().getSCCRPOIndex() == id) {
 				return false;
@@ -332,7 +416,7 @@ public class ReversePostOrderWorkList {
 		return true;
 	}
 
-	private boolean hasEmptyBarrierSetForId(int id) {
+	protected boolean hasEmptyBarrierSetForId(int id) {
 		for (Node n : this.barrierSet) {
 			if (n.getInfo().getCFGInfo().getSCCRPOIndex() == id) {
 				return false;
@@ -343,7 +427,7 @@ public class ReversePostOrderWorkList {
 
 	@SuppressWarnings("unused")
 	@Deprecated
-	private void insertUsingBinarySearch(List<Node> list, final Node node, final int nodeWeight, final int startIndex,
+	protected void insertUsingBinarySearch(List<Node> list, final Node node, final int nodeWeight, final int startIndex,
 			final int endIndex) {
 		if (endIndex <= startIndex) {
 			// Insert on the correct end of the startIndex, and return.

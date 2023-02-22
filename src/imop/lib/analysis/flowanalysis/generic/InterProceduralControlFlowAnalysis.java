@@ -51,13 +51,13 @@ public abstract class InterProceduralControlFlowAnalysis<F extends FlowAnalysis.
 			}
 		}
 		BeginNode beginNode = funcDef.getInfo().getCFGInfo().getNestedCFG().getBegin();
-		this.workList.recreate();
-		this.workList.add(beginNode);
+		this.globalWorkList.recreate();
+		this.globalWorkList.add(beginNode);
 		do {
-			Node nodeToBeAnalysed = this.workList.removeFirstElement();
+			Node nodeToBeAnalysed = this.globalWorkList.removeFirstElement();
 			this.debugRecursion(nodeToBeAnalysed);
 			this.processWhenNotUpdated(nodeToBeAnalysed);
-		} while (!workList.isEmpty());
+		} while (!globalWorkList.isEmpty());
 	}
 
 	/**
@@ -175,17 +175,17 @@ public abstract class InterProceduralControlFlowAnalysis<F extends FlowAnalysis.
 		// Step 3: Process the successors, if needed.
 		propagateFurther |= inChanged;
 		if (propagateFurther) {
-			workList.addAll(nodeInfo.getCFGInfo().getInterProceduralLeafSuccessors());
+			globalWorkList.addAll(nodeInfo.getCFGInfo().getInterProceduralLeafSuccessors());
 			if (node instanceof PreCallNode) {
 				PreCallNode pre = (PreCallNode) node;
-				this.workList.add(pre.getParent().getPostCallNode());
+				this.globalWorkList.add(pre.getParent().getPostCallNode());
 			}
 			// If we are adding successors of a BeginNode of a FunctionDefinition, we should
 			// add all the ParameterDeclarations.
 			if (node instanceof BeginNode && node.getParent() instanceof FunctionDefinition) {
 				FunctionDefinition func = (FunctionDefinition) node.getParent();
 				for (ParameterDeclaration paramDecl : func.getInfo().getCFGInfo().getParameterDeclarationList()) {
-					this.workList.add(paramDecl);
+					this.globalWorkList.add(paramDecl);
 				}
 			}
 		}
@@ -221,10 +221,10 @@ public abstract class InterProceduralControlFlowAnalysis<F extends FlowAnalysis.
 		 * processed.
 		 * We add all the entry points of the SCC of each node.
 		 */
-		this.workList.recreate();
+		this.globalWorkList.recreate();
 		for (Node n : nodesToBeUpdated) {
 			if (n.getInfo().isConnectedToProgram()) {
-				boolean added = this.workList.add(n);
+				boolean added = this.globalWorkList.add(n);
 			}
 		}
 		// OLD CODE: Now, if we ever find that a node is unconnected to the program, we
@@ -232,10 +232,10 @@ public abstract class InterProceduralControlFlowAnalysis<F extends FlowAnalysis.
 		this.nodesToBeUpdated.clear();
 		// this.nodesToBeUpdated.clear();
 
-		this.processedInThisUpdate = new HashSet<>();
-		this.yetToBeFinalized = new HashSet<>();
-		while (!workList.isEmpty()) {
-			Node nodeToBeAnalyzed = workList.removeFirstElement();
+		this.safeCurrentSCCNodes = new HashSet<>();
+		this.underApproximated = new HashSet<>();
+		while (!globalWorkList.isEmpty()) {
+			Node nodeToBeAnalyzed = globalWorkList.removeFirstElement();
 			CFGInfo nInfo = nodeToBeAnalyzed.getInfo().getCFGInfo();
 			if (nInfo.getSCC() == null) {
 				// Here, node itself is an SCC. We do not require two rounds.
@@ -269,7 +269,7 @@ public abstract class InterProceduralControlFlowAnalysis<F extends FlowAnalysis.
 	@SuppressWarnings("unchecked")
 	protected final void processWhenUpdated(Node node) {
 		boolean first = false;
-		if (!this.processedInThisUpdate.contains(node)) {
+		if (!this.safeCurrentSCCNodes.contains(node)) {
 			first = true;
 			// Don't add the node to this set unless its OUT has been populated.
 		}
@@ -312,7 +312,7 @@ public abstract class InterProceduralControlFlowAnalysis<F extends FlowAnalysis.
 				// If null, then pred clearly belongs to some other SCC.
 				if (node.getInfo().getCFGInfo().getSCC() == predSCC) {
 					// Predecessor lies within the SCC.
-					if (!this.processedInThisUpdate.contains(predNode)) {
+					if (!this.safeCurrentSCCNodes.contains(predNode)) {
 						anyPredMissed = true;
 						continue;
 					}
@@ -340,7 +340,7 @@ public abstract class InterProceduralControlFlowAnalysis<F extends FlowAnalysis.
 				// If null, then pred clearly belongs to some other SCC.
 				if (node.getInfo().getCFGInfo().getSCC() == preSCC) {
 					// Predecessor lies within the SCC.
-					if (!this.processedInThisUpdate.contains(preNode)) {
+					if (!this.safeCurrentSCCNodes.contains(preNode)) {
 						anyPredMissed = true;
 						doNotProcess = true;
 					}
@@ -352,9 +352,9 @@ public abstract class InterProceduralControlFlowAnalysis<F extends FlowAnalysis.
 
 		}
 		if (anyPredMissed) {
-			this.yetToBeFinalized.add(node);
+			this.underApproximated.add(node);
 		} else {
-			this.yetToBeFinalized.remove(node);
+			this.underApproximated.remove(node);
 		}
 		nodeInfo.setIN(analysisName, newIN);
 
@@ -362,22 +362,22 @@ public abstract class InterProceduralControlFlowAnalysis<F extends FlowAnalysis.
 		F newOUT;
 		newOUT = node.accept(this, newIN);
 		nodeInfo.setOUT(analysisName, newOUT);
-		this.processedInThisUpdate.add(node); // Mark a node as processed only after its OUT has been "purified".
+		this.safeCurrentSCCNodes.add(node); // Mark a node as processed only after its OUT has been "purified".
 
 		// Step 3: Process the successors.
 		propagateFurther |= inChanged;
 		if (propagateFurther) {
-			this.workList.addAll(nodeInfo.getCFGInfo().getInterProceduralLeafSuccessors());
+			this.globalWorkList.addAll(nodeInfo.getCFGInfo().getInterProceduralLeafSuccessors());
 			if (node instanceof PreCallNode) {
 				PreCallNode pre = (PreCallNode) node;
-				this.workList.add(pre.getParent().getPostCallNode());
+				this.globalWorkList.add(pre.getParent().getPostCallNode());
 			}
 			// If we are adding successors of a BeginNode of a FunctionDefinition, we should
 			// add all the ParameterDeclarations.
 			if (node instanceof BeginNode && node.getParent() instanceof FunctionDefinition) {
 				FunctionDefinition func = (FunctionDefinition) node.getParent();
 				for (ParameterDeclaration paramDecl : func.getInfo().getCFGInfo().getParameterDeclarationList()) {
-					this.workList.add(paramDecl);
+					this.globalWorkList.add(paramDecl);
 				}
 			}
 		}

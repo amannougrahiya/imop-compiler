@@ -2,7 +2,7 @@
  * Copyright (c) 2019 Aman Nougrahiya, V Krishna Nandivada, IIT Madras.
  * This file is a part of the project IMOP, licensed under the MIT license.
  * See LICENSE.md for the full text of the license.
- * 
+ *
  * The above notice shall be included in all copies or substantial
  * portions of this file.
  */
@@ -11,7 +11,7 @@ package imop.ast.info.cfgNodeInfo;
 import imop.ast.info.NodeInfo;
 import imop.ast.node.external.*;
 import imop.lib.analysis.flowanalysis.BranchEdge;
-import imop.lib.analysis.typeSystem.*;
+import imop.lib.analysis.typesystem.*;
 import imop.lib.getter.CellAccessGetter;
 import imop.lib.util.CellList;
 import imop.lib.util.Misc;
@@ -33,7 +33,7 @@ public class ExpressionInfo extends NodeInfo {
 	 * read or a write.
 	 * (This situation may occur when the owner node is not yet connected to
 	 * a leaf CFG node.)
-	 * 
+	 *
 	 * @return
 	 */
 	public CellList getLocationsOf() {
@@ -135,7 +135,13 @@ public class ExpressionInfo extends NodeInfo {
 
 	public boolean evaluatesToConstant() {
 		Expression exp = (Expression) getNode();
-		Type expType = Type.getType(exp);
+		Type expType;
+		try {
+			expType = Type.getType(exp);
+		} catch (Exception e) {
+			Misc.warnDueToLackOfFeature("Could not find the type information for something in the following expression: ", exp);
+			return false;
+		}
 		if (expType instanceof ArithmeticType) {
 			if (expType instanceof FloatingType) {
 				Float retVal = Misc.evaluateFloat(exp);

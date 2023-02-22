@@ -14,6 +14,7 @@ import imop.ast.info.NodeInfo;
 import imop.ast.node.external.*;
 import imop.ast.node.internal.*;
 import imop.lib.analysis.CoExistenceChecker;
+import imop.lib.analysis.ContextSensitiveCoExistenceChecker;
 import imop.lib.analysis.SVEChecker;
 import imop.lib.analysis.flowanalysis.BranchEdge;
 import imop.lib.analysis.flowanalysis.Cell;
@@ -21,10 +22,13 @@ import imop.lib.analysis.flowanalysis.SCC;
 import imop.lib.analysis.flowanalysis.Symbol;
 import imop.lib.analysis.flowanalysis.controlflow.PredicateAnalysis;
 import imop.lib.analysis.flowanalysis.controlflow.PredicateAnalysis.PredicateFlowFact;
+import imop.lib.analysis.flowanalysis.dataflow.PointsToAnalysis;
+import imop.lib.analysis.flowanalysis.dataflow.PointsToAnalysis.PointsToGlobalState;
 import imop.lib.analysis.flowanalysis.controlflow.ReversePath;
 import imop.lib.analysis.flowanalysis.generic.AnalysisDimension.SVEDimension;
 import imop.lib.analysis.flowanalysis.generic.AnalysisName;
 import imop.lib.analysis.flowanalysis.generic.FlowAnalysis;
+import imop.lib.analysis.flowanalysis.generic.InterThreadForwardCellularAnalysis;
 import imop.lib.analysis.mhp.AbstractPhase;
 import imop.lib.analysis.mhp.DependenceCounter;
 import imop.lib.analysis.mhp.incMHP.BeginPhasePoint;
@@ -35,8 +39,8 @@ import imop.lib.analysis.mhp.yuan.YuanConcurrencyAnalysis;
 import imop.lib.analysis.mhp.yuan.YuanConcurrencyAnalysis.YuanStaticPhase;
 import imop.lib.analysis.solver.ConstraintsGenerator;
 import imop.lib.analysis.solver.FieldSensitivity;
-import imop.lib.analysis.typeSystem.ArrayType;
-import imop.lib.analysis.typeSystem.Type;
+import imop.lib.analysis.typesystem.ArrayType;
+import imop.lib.analysis.typesystem.Type;
 import imop.lib.builder.Builder;
 import imop.lib.cfg.info.CFGInfo;
 import imop.lib.cfg.info.WhileStatementCFGInfo;
@@ -49,11 +53,13 @@ import imop.lib.transform.CopyEliminator;
 import imop.lib.transform.simplify.*;
 import imop.lib.transform.updater.InsertImmediatePredecessor;
 import imop.lib.transform.updater.InsertOnTheEdge;
+import imop.lib.transform.updater.sideeffect.RemovedDeadCode;
 import imop.lib.util.*;
 import imop.parser.FrontEnd;
 import imop.parser.Program;
 import imop.parser.Program.CPredAMode;
 import imop.parser.Program.ConcurrencyAlgorithm;
+import imop.parser.Program.UpdateCategory;
 
 import java.lang.instrument.Instrumentation;
 import java.text.DecimalFormat;
@@ -121,18 +127,20 @@ public class DriverModule {
 		// }
 		// TODO: Uncomment till here.
 		double totTime = (System.nanoTime() - Main.totalTime) / (1.0 * 1e9);
-		double incMHPTime = 0.0;
+		double totalMHPTime = 0.0;
 		double incIDFATime = 0.0;
 		long incMHPTriggers = 0;
 		long incIDFATriggers = 0;
 		long finalIncNodes = 0;
 		long tarjanCount = 0;
 		double sccTime = 0.0;
+		// List<Long> triggerSizeCountList = null;
 		System.err.println("Number of times IDFA update were triggered -- ");
 		for (FlowAnalysis<?> analysis : FlowAnalysis.getAllAnalyses().values()) {
 			System.err.println("\t For " + analysis.getAnalysisName() + ": " + analysis.autoUpdateTriggerCounter);
 			if (analysis.getAnalysisName() == AnalysisName.POINTSTO) {
 				incIDFATriggers = analysis.autoUpdateTriggerCounter;
+				// triggerSizeCountList = analysis.localList;
 			}
 		}
 		System.err.println("Total number of times nodes were processed during automated IDFA update -- ");
@@ -142,23 +150,34 @@ public class DriverModule {
 				finalIncNodes = analysis.nodesProcessed;
 			}
 		}
+		int cpredaUpdTimer = 0;
 		System.err.println("Time spent in forward IDFA updates -- ");
 		for (FlowAnalysis<?> analysis : FlowAnalysis.getAllAnalyses().values()) {
 			System.err.println(
 					"\t For " + analysis.getAnalysisName() + ": " + analysis.flowAnalysisUpdateTimer / (1e9) + "s.");
 			if (analysis.getAnalysisName() == AnalysisName.POINTSTO) {
 				incIDFATime = analysis.flowAnalysisUpdateTimer / (1e9 * 1.0);
+				Collections.sort(((PointsToAnalysis) analysis).counterList);
+				System.out.println(((PointsToAnalysis) analysis).counterList);
+				System.out.println(((PointsToAnalysis) analysis).firstPhaseCount);
+				System.out.println(((PointsToAnalysis) analysis).secondPhaseCount);
+			} else if (analysis.getAnalysisName() == AnalysisName.PSEUDO_INTER_PREDICATE_ANALYSIS) {
+				cpredaUpdTimer += analysis.flowAnalysisUpdateTimer;
+				cpredaUpdTimer += SVEChecker.cpredaTimer;
+				totalMHPTime += analysis.flowAnalysisUpdateTimer / (1e9 * 1.0);
+				totalMHPTime += SVEChecker.cpredaTimer / (1e9 * 1.0);
 			}
 		}
 		// System.err.println("Time spent in SVE queries: " + SVEChecker.sveTimer / (1e9
 		// * 1.0) + "s.");
 		System.err.println("Time spent in phase update: " + BeginPhasePoint.phaseAnalysisTime / (1e9 * 1.0) + "s.");
-		incMHPTime = BeginPhasePoint.phaseAnalysisTime / (1e9 * 1.0);
+		totalMHPTime += BeginPhasePoint.phaseAnalysisTime / (1e9 * 1.0);
 		System.err.println("Number of stabilizations of phase analysis: " + AutomatedUpdater.reinitMHPCounter);
 		incMHPTriggers = AutomatedUpdater.reinitMHPCounter;
 		System.err.println("Time spent generating SCCs: " + SCC.SCCTimer / (1e9 * 1.0) + "s.");
 		sccTime = SCC.SCCTimer / (1e9 * 1.0);
-		System.err.println("Total invocations of Tarjan's algorithm: " + SCC.tarjanCount);
+		System.err.println("Total invocations of Tarjan's algorithm: " + SCC.tarjanCount + " for " + SCC.getAllSCCSize()
+		+ " SCC nodes.");
 		tarjanCount = SCC.tarjanCount;
 		if (Program.fieldSensitive) {
 			System.err.println("Number of field-sensitive queries: " + FieldSensitivity.counter);
@@ -181,32 +200,61 @@ public class DriverModule {
 		// "_z3_queries.txt");
 		// }
 		System.err.println("TOTAL TIME (including disk I/O time): " + totTime + "s.");
-		System.err.println("This execution ran in " + Program.idfaUpdateCategory + " mode for IDFA update.");
+		System.err.println("This execution ran in " + Program.idfaUpdateCategory + " mode for IDFA update, and in "
+				+ Program.mhpUpdateCategory + " mode for MHP update.");
 		System.err.println("Optimized a total of " + AutomatedUpdater.hasBeenOtimized + " stale markings.");
 		System.err
-				.println("Number of times PTA would have had to run in semi-eager mode: " + ProfileSS.flagSwitchCount);
-		DumpSnapshot.printToFile(Program.getRoot(),
-				(Program.fileName + "imop_output_" + Program.mhpUpdateCategory + ".i").trim());
-		DumpSnapshot.dumpPointsTo("final" + Program.idfaUpdateCategory);
-		DumpSnapshot.dumpPhases("final" + Program.mhpUpdateCategory);
+		.println("Number of times PTA would have had to run in semi-eager mode: " + ProfileSS.flagSwitchCount);
+		System.err.println("Context-sensitivity of the coexistence query resolver was"
+				+ (Program.useContextSensitiveQueryResolver ? "" : " not") + " turned ON.");
+		String s = (Program.sveSensitive == SVEDimension.SVE_SENSITIVE) ? "S" : "I";
+		DumpSnapshot.forceDumpRoot((Program.fileName + "imop_output_" + Program.concurrencyAlgorithm + "_"
+				+ Program.mhpUpdateCategory + s + ".i").trim());
+		DumpSnapshot.dumpPointsTo("final" + Program.idfaUpdateCategory + Program.cpaMode);
+		DumpSnapshot.dumpPhases("final" + Program.concurrencyAlgorithm + "_" + Program.mhpUpdateCategory + s);
+		DumpSnapshot.dumpPredicates("final" + Program.concurrencyAlgorithm + "_" + Program.mhpUpdateCategory + s);
 		if (dumpIntermediate) {
-			DumpSnapshot.dumpNestedCFG(Program.getRoot(), "optimized" + Program.mhpUpdateCategory);
+			DumpSnapshot.dumpNestedCFG(Program.getRoot(), "optimized" + Program.mhpUpdateCategory + s);
 		}
 		DecimalFormat df2 = Program.df2;
-		System.out.println(Program.fileName + " " + Program.idfaUpdateCategory + " " + df2.format(totTime) + " "
-				+ df2.format(incMHPTime) + " " + df2.format(incIDFATime) + " " + incMHPTriggers + " " + incIDFATriggers
-				+ " " + finalIncNodes + " " + tarjanCount + " " + df2.format(sccTime));
+		// Count the number of aggregate phases
+		int numPhases;
+		if (Program.concurrencyAlgorithm == ConcurrencyAlgorithm.YCON) {
+			Set<YPhase> aggPhaseSet = new HashSet<>();
+			for (ParallelConstruct parCons : Misc.getExactEnclosee(Program.getRoot(), ParallelConstruct.class)) {
+				for (AbstractPhase<?, ?> ph : parCons.getInfo().getConnectedPhases()) {
+					aggPhaseSet.add((YPhase) ph);
+				}
+			}
+			numPhases = aggPhaseSet.size();
+		} else {
+			Set<Phase> aggPhaseSet = new HashSet<>();
+			for (ParallelConstruct parCons : Misc.getExactEnclosee(Program.getRoot(), ParallelConstruct.class)) {
+				for (AbstractPhase<?, ?> ph : parCons.getInfo().getConnectedPhases()) {
+					aggPhaseSet.add((Phase) ph);
+				}
+			}
+			numPhases = aggPhaseSet.size();
+		}
+
+		// Count the number of explicit barriers.
+		int numExplicitBarriers = Misc.getExactEnclosee(Program.getRoot(), BarrierDirective.class).size();
+		StringBuilder resultString = new StringBuilder(Program.fileName + " " + Program.idfaUpdateCategory + " "
+				+ df2.format(totTime) + " " + df2.format(totalMHPTime) + " " + df2.format(incIDFATime) + " "
+				+ incMHPTriggers + " " + incIDFATriggers + " " + finalIncNodes + " " + tarjanCount + " "
+				+ df2.format(sccTime) + " " + numPhases + " " + numExplicitBarriers + " "
+				+ df2.format(DriverModule.mayRelyPTATimer / (1e9 * 1.0)) + " " + CoExistenceChecker.queryCounter);
+		System.out.println(resultString);
+		System.err.println(resultString);
+
 		/*
 		 * NOTE: This commented portion is used to print all those traces from where the
 		 * flushing of the abstractions has been invoked. To enable this, we also need
 		 * to uncomment the call to Misc.isCalledFromMethod() in
 		 * AutomatedUpdate.flushCaches().
 		 *
-		 * String finalStrTrace = "";
-		 * for (String str : Misc.uniqueTraces) {
-		 * finalStrTrace += str + "\n";
-		 * }
-		 * System.out.println(finalStrTrace);
+		 * String finalStrTrace = ""; for (String str : Misc.uniqueTraces) {
+		 * finalStrTrace += str + "\n"; } System.out.println(finalStrTrace);
 		 */
 
 		if (Program.addRelCPs) {
@@ -218,6 +266,107 @@ public class DriverModule {
 			System.out.println("Active change-points for label-lookups: " + ProfileSS.labSet);
 			System.out.println("Active change-points for phase-queries: " + ProfileSS.phSet);
 		}
+		System.exit(0);
+	}
+
+	public static void clientAutoUpdateIDFA() {
+		assert (Program.concurrencyAlgorithm == ConcurrencyAlgorithm.YCON)
+		: "We have decided to run IncIDFA only with YCON concurrency analysis.";
+		assert (Program.idfaUpdateCategory == UpdateCategory.LZUPD
+				|| Program.idfaUpdateCategory == UpdateCategory.LZINV)
+		: "We have decided to run IncIDFA only with LZ modes of stabilization for IDFAs.";
+		// assert !Program.isPrePassPhase : "The input program should have been
+		// preprocessed already by IMOP.";
+
+		System.err.println("Pass: Removing declarations for unused elements.");
+		Program.getRoot().getInfo().removeUnusedElements();
+
+		System.err.println("Pass: Merging parallel regions.");
+		ParallelConstructExpander.mergeParallelRegions(Program.getRoot());
+
+		System.err.println("Pass: Removing redundant barriers.");
+		RedundantSynchronizationRemovalForYA.removeBarriers(Program.getRoot());
+
+		// Uncomment these:
+		System.err.println("Pass: Inlining function-calls, selectively. (See notes on BarrElim.)");
+		FunctionDefinition mainFunc = Program.getRoot().getInfo().getMainFunction();
+		FunctionInliner.inline(mainFunc);
+
+		System.err.println("Pass: Removing declarations for unused elements.");
+		Program.getRoot().getInfo().removeUnusedElements();
+
+		System.err.println("Pass: Removing redundant barriers.");
+		RedundantSynchronizationRemovalForYA.removeBarriers(Program.getRoot());
+
+		System.err.println("Pass: Removing declarations for unused elements.");
+		Program.getRoot().getInfo().removeUnusedElements();
+
+		double totTime = (System.nanoTime() - Main.totalTime) / (1.0 * 1e9);
+		double incIDFATime = 0.0;
+		long incIDFATriggers = 0;
+		long transferFunctionSkips = 0;
+		long finalIncNodes = 0;
+		long tarjanCount = 0;
+		double sccTime = 0.0;
+
+		DumpSnapshot.forceDumpRoot("imop_output_" + Program.idfaUpdateCategory);
+		DumpSnapshot.forceDumpPointsTo("final" + Program.idfaUpdateCategory + Program.stabilizationIDFAMode);
+		DumpSnapshot.forceDumpAccessedCellSets("final" + Program.idfaUpdateCategory + Program.stabilizationIDFAMode);
+
+		System.err.println("Number of times IDFA update were triggered -- ");
+		for (FlowAnalysis<?> analysis : FlowAnalysis.getAllAnalyses().values()) {
+			System.err.println("\t For " + analysis.getAnalysisName() + ": " + analysis.autoUpdateTriggerCounter);
+			if (analysis.getAnalysisName() == AnalysisName.POINTSTO) {
+				incIDFATriggers = analysis.autoUpdateTriggerCounter;
+				transferFunctionSkips = analysis.transferFunctionsSkipped;
+				// triggerSizeCountList = analysis.localList;
+			}
+		}
+		System.err.println("Total number of times nodes were processed during automated IDFA incremental update -- ");
+		for (FlowAnalysis<?> analysis : FlowAnalysis.getAllAnalyses().values()) {
+			System.err.println("\t For " + analysis.getAnalysisName() + ": " + analysis.nodesProcessedDuringUpdate);
+			if (analysis.getAnalysisName() == AnalysisName.POINTSTO) {
+				finalIncNodes = analysis.nodesProcessed;
+			}
+		}
+		System.err.println("Time spent in forward IDFA updates -- ");
+		for (FlowAnalysis<?> analysis : FlowAnalysis.getAllAnalyses().values()) {
+			System.err.println(
+					"\t For " + analysis.getAnalysisName() + ": " + analysis.flowAnalysisUpdateTimer / (1e9) + "s.");
+			if (analysis.getAnalysisName() == AnalysisName.POINTSTO) {
+				incIDFATime = analysis.flowAnalysisUpdateTimer / (1e9 * 1.0);
+				Collections.sort(((PointsToAnalysis) analysis).counterList);
+				System.err.println(
+						"\t Nodes processed per trigger (sorted): " + ((PointsToAnalysis) analysis).counterList);
+				System.err.println(
+						"\t Nodes processed in the first-pass: " + ((PointsToAnalysis) analysis).firstPhaseCount);
+				System.err.println(
+						"\t Nodes processed in the second-pass: " + ((PointsToAnalysis) analysis).secondPhaseCount);
+			}
+		}
+		System.err.println("Time spent generating SCCs: " + SCC.SCCTimer / (1e9 * 1.0) + "s.");
+		sccTime = SCC.SCCTimer / (1e9 * 1.0);
+		System.err.println("Total invocations of Tarjan's algorithm: " + SCC.tarjanCount + " for " + SCC.getAllSCCSize()
+		+ " SCC nodes.");
+		tarjanCount = SCC.tarjanCount;
+		System.err.println("Time spent in generating reverse postordering of the program nodes: "
+				+ TraversalOrderObtainer.orderGenerationTime / (1e9 * 1.0) + "s.");
+
+		System.err.println("IncIDFA Time: " + incIDFATime + "s.");
+		System.err.println("TOTAL TIME (including disk I/O time): " + totTime + "s.");
+		System.err.println("This execution ran in " + Program.idfaUpdateCategory + " mode for IDFA update");
+
+		StringBuilder resultString = new StringBuilder(Program.fileName + " " + Program.idfaUpdateCategory + " "
+				+ Program.stabilizationIDFAMode + " " + ((Program.useAccessedCellsWithExhaustive) ? "AE \t" : "NAE \t")
+				+ Program.df2.format(Program.timerForMarking / (1e9 * 1.0)) + " " + Program.df2.format(incIDFATime)
+				+ " " + Program.df2.format(totTime) + " " + incIDFATriggers + " " + transferFunctionSkips + " "
+				+ finalIncNodes + " " + tarjanCount + " " + Program.df2.format(sccTime) + " "
+				+ InterThreadForwardCellularAnalysis.innerCount + " "
+				+ Program.df2.format(InterThreadForwardCellularAnalysis.innerTimer / (1e9 * 1.0)));
+		System.out.println(resultString);
+		System.err.println(resultString);
+		DumpSnapshot.printToFile(FlowAnalysis.nodes, "allNodes" + Program.stabilizationIDFAMode + ".txt");
+
 		System.exit(0);
 	}
 
@@ -347,7 +496,9 @@ public class DriverModule {
 				+ Program.mhpUpdateCategory + " mode for MHP update.");
 		System.err.println("Optimized a total of " + AutomatedUpdater.hasBeenOtimized + " stale markings.");
 		System.err
-				.println("Number of times PTA would have had to run in semi-eager mode: " + ProfileSS.flagSwitchCount);
+		.println("Number of times PTA would have had to run in semi-eager mode: " + ProfileSS.flagSwitchCount);
+		System.err.println("Context-sensitivity of the coexistence query resolver was"
+				+ (Program.useContextSensitiveQueryResolver ? "" : " not") + " turned ON.");
 		String s = (Program.sveSensitive == SVEDimension.SVE_SENSITIVE) ? "S" : "I";
 		DumpSnapshot.forceDumpRoot((Program.fileName + "imop_output_" + Program.concurrencyAlgorithm + "_"
 				+ Program.mhpUpdateCategory + s + ".i").trim());
@@ -386,8 +537,8 @@ public class DriverModule {
 				+ ((Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.YCON) ? "SVE-sensitive (0)"
 						: ((Program.sveSensitive == SVEDimension.SVE_SENSITIVE)
 								? ("SVE-sensitive_" + Program.cpaMode + " (" + df2.format(cpredaUpdTimer * 1.0 / 1e9)
-										+ ")")
-								: "SVE-insensitive (0)"))
+								+ ")")
+										: "SVE-insensitive (0)"))
 				+ " [" + df2.format(totalMHPTime)
 				// + ((Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.YCON) ?
 				// df2.format(incMHPTime)
@@ -398,9 +549,9 @@ public class DriverModule {
 				+ incMHPTriggers + " " + incIDFATriggers + " " + finalIncNodes + " " + tarjanCount + " "
 				+ df2.format(sccTime)
 				+ (Program.concurrencyAlgorithm == ConcurrencyAlgorithm.ICON
-						&& Program.sveSensitive == SVEDimension.SVE_SENSITIVE
-								? " " + df2.format(SVEChecker.sveQueryTimer / (1e9 * 1.0))
-								: " 0")
+				&& Program.sveSensitive == SVEDimension.SVE_SENSITIVE
+				? " " + df2.format(SVEChecker.sveQueryTimer / (1e9 * 1.0))
+				: " 0")
 				+ " " + numPhases + " " + numExplicitBarriers + " "
 				+ df2.format(DriverModule.mayRelyPTATimer / (1e9 * 1.0)) + " " + CoExistenceChecker.queryCounter);
 		System.out.println(resultString);
@@ -412,7 +563,7 @@ public class DriverModule {
 		// System.err.println(Main.globalString);
 
 		// Query Count Checker Code Starts:
-		DriverModule.countPhysicalSizeOfCPA();
+		// DriverModule.countPhysicalSizeOfCPA();
 		// DriverModule.queryCount();
 
 		// DumpSnapshot.printToFile(Program.stabilizationStackDump.toString(),
@@ -578,7 +729,6 @@ public class DriverModule {
 		}
 
 		int counter = 0;
-		int negCounter = 0;
 		Comparator<SortedNodePair> comp2 = new Comparator<SortedNodePair>() {
 			@Override
 			public int compare(SortedNodePair o1, SortedNodePair o2) {
@@ -602,6 +752,7 @@ public class DriverModule {
 		for (Node n1 : sharedNodes) {
 			for (Node n2 : sharedNodes) {
 				if (n1 == n2) {
+					counter++;
 					continue;
 				}
 				if (Program.concurrencyAlgorithm == ConcurrencyAlgorithm.YCON) {
@@ -609,55 +760,53 @@ public class DriverModule {
 							(Collection<YPhase>) n2.getInfo().getNodePhaseInfo().getPhaseSet())) {
 						coexistingNodes.add(new SortedNodePair(n1, n2));
 						counter++;
-					} else {
-						negCounter++;
 					}
 				} else if (Program.sveSensitive == SVEDimension.SVE_SENSITIVE) {
 					if (Misc.doIntersect((Collection<Phase>) n1.getInfo().getNodePhaseInfo().getPhaseSet(),
 							(Collection<Phase>) n2.getInfo().getNodePhaseInfo().getPhaseSet())) {
-						if (CoExistenceChecker.canCoExistInAnyPhase(n1, n2)) {
+						// if (CoExistenceChecker.canCoExistInAnyPhase(n1, n2)) {
+						if (ContextSensitiveCoExistenceChecker.canCoExistInAnyPhase(n1, n2)) {
 							coexistingNodes.add(new SortedNodePair(n1, n2));
 							counter++;
-						} else {
-							negCounter++;
 						}
-					} else {
-						negCounter++;
 					}
 				} else {
 					if (Misc.doIntersect((Collection<Phase>) n1.getInfo().getNodePhaseInfo().getPhaseSet(),
 							(Collection<Phase>) n2.getInfo().getNodePhaseInfo().getPhaseSet())) {
 						coexistingNodes.add(new SortedNodePair(n1, n2));
 						counter++;
-					} else {
-						negCounter++;
 					}
 				}
 			}
 		}
-		int countActual = 0;
-		for (SortedNodePair snp : coexistingNodes) {
-			CellSet sh1Set = snp.one.getInfo().getSharedAccesses();
-			for (Cell sh2 : snp.two.getInfo().getSharedAccesses()) {
-				if (sh1Set.contains(sh2)) {
-					if (sh2 instanceof Symbol) {
-						Symbol sym = (Symbol) sh2;
-						if (sym.isAFunction()) {
-							continue;
-						} else {
-							countActual++;
-							break;
-						}
-					} else {
-						countActual++;
-						break;
-					}
-				}
-			}
-		}
+		// int countActual = 0;
+		// for (SortedNodePair snp : coexistingNodes) {
+		// CellSet sh1Set = snp.one.getInfo().getSharedAccesses();
+		// for (Cell sh2 : snp.two.getInfo().getSharedAccesses()) {
+		// if (sh1Set.contains(sh2)) {
+		// if (sh2 instanceof Symbol) {
+		// Symbol sym = (Symbol) sh2;
+		// if (sym.isAFunction()) {
+		// continue;
+		// } else {
+		// countActual++;
+		// break;
+		// }
+		// } else {
+		// countActual++;
+		// break;
+		// }
+		// }
+		// }
+		// }
+		DecimalFormat df2 = Program.df2;
 		timer = System.nanoTime() - timer;
-		System.out.println("Count: " + counter + "~~" + coexistingNodes.size() + "~~" + countActual + "; Neg Count: "
-				+ negCounter / 2 + "; Timer: " + timer / (1e9 * 1.0) + "s.");
+		System.out.println(coexistingNodes.size() + "\t" + (sharedNodes.size() * sharedNodes.size()) / 2 + "\t"
+				+ df2.format(timer / (1e9 * 1.0)));
+		// System.out.println("Count: " + counter + "~~" + coexistingNodes.size() + "~~"
+		// + countActual + "; Total: "
+		// + (sharedNodes.size()*sharedNodes.size())/2 + "; Timer: " + timer / (1e9 *
+		// 1.0) + "s.");
 		// for (SortedNodePair nP : coexistingNodes) {
 		// System.out.println(
 		// nP.one + "(" + Misc.getLineNum(nP.one) + ") : " + nP.two + "(" +
@@ -767,7 +916,7 @@ public class DriverModule {
 				+ Program.mhpUpdateCategory + " mode for MHP update.");
 		System.err.println("Optimized a total of " + AutomatedUpdater.hasBeenOtimized + " stale markings.");
 		System.err
-				.println("Number of times PTA would have had to run in semi-eager mode: " + ProfileSS.flagSwitchCount);
+		.println("Number of times PTA would have had to run in semi-eager mode: " + ProfileSS.flagSwitchCount);
 		String s = (Program.sveSensitive == SVEDimension.SVE_SENSITIVE) ? "S" : "I";
 		DumpSnapshot.printToFile(Program.getRoot(), (Program.fileName + "imop_output_" + Program.concurrencyAlgorithm
 				+ "_" + Program.mhpUpdateCategory + s + ".i").trim());
@@ -789,7 +938,7 @@ public class DriverModule {
 				+ ((Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.YCON) ? "SVE-sensitive"
 						: ((Program.sveSensitive == SVEDimension.SVE_SENSITIVE)
 								? ("SVE-sensitive (" + df2.format(SVEChecker.cpredaTimer * 1.0 / 1e9) + ")")
-								: "SVE-insensitive (0)"))
+										: "SVE-insensitive (0)"))
 				+ " " + df2.format(totTime) + " " + df2.format(incMHPTime) + " " + df2.format(incIDFATime) + " "
 				+ incMHPTriggers + " " + incIDFATriggers + " " + finalIncNodes + " " + tarjanCount + " "
 				+ df2.format(sccTime) + " " + numPhases + " " + numExplicitBarriers + " " + counter + " " + tim + "s.");
@@ -920,8 +1069,7 @@ public class DriverModule {
 	 * Performs synchronization optimizations on various loop statements in the
 	 * input program, if required.
 	 *
-	 * @param root
-	 *             root of the AST of the input program.
+	 * @param root root of the AST of the input program.
 	 */
 	public static void run(TranslationUnit root) {
 		System.err.println("Pass: Performing synchronization optimizations on the program.");
@@ -939,8 +1087,8 @@ public class DriverModule {
 					UpwardPercolater.initPercolate(parCons);
 				}
 				/*
-				 * Now we will try different scheduling options for shared
-				 * accesses in various phases of the loop.
+				 * Now we will try different scheduling options for shared accesses in various
+				 * phases of the loop.
 				 */
 				// Program.sveSensitive = true;
 				LoopInstructionsRescheduler.tryDifferentSchedulings(itStmt, minPhaseCount);
@@ -952,30 +1100,26 @@ public class DriverModule {
 
 	/**
 	 * Performs in-place synchronization optimizations in {@code itStmt}, by
-	 * applying code-percolation, loop unrolling
-	 * and memory renaming. These translations are performed in a way that
-	 * guarantees consistency of various
+	 * applying code-percolation, loop unrolling and memory renaming. These
+	 * translations are performed in a way that guarantees consistency of various
 	 * data-structures that represent the semantics of the input program.
 	 *
-	 * @param itStmt
-	 *               iteration-statement (a {@link WhileStatement}, a
-	 *               {@link ForStatement}, or a {@link DoStatement}), on
-	 *               which we need to apply synchronization elimination
-	 *               optimizations.
+	 * @param itStmt iteration-statement (a {@link WhileStatement}, a
+	 *               {@link ForStatement}, or a {@link DoStatement}), on which we
+	 *               need to apply synchronization elimination optimizations.
 	 *
 	 * @return true, if the number of phases per execution is more than one.
 	 */
 	private static boolean run(IterationStatement itStmt) {
 		/*
-		 * Step 1a: Obtain the number of abstract phases encountered in one
-		 * execution of this loop.
-		 * Save it as maximum unrolling factor.
+		 * Step 1a: Obtain the number of abstract phases encountered in one execution of
+		 * this loop. Save it as maximum unrolling factor.
 		 */
 		int swapLength = getSwapLength(itStmt);
 		int maxUnrollFactor = phaseCountPerExecution(itStmt);
 		if (maxUnrollFactor == 1) {
 			System.err.println("\t Not procesing the iteration at line #" + Misc.getLineNum(itStmt)
-					+ " since it contains only one abstract phase within.");
+			+ " since it contains only one abstract phase within.");
 			return false;
 		}
 
@@ -986,23 +1130,22 @@ public class DriverModule {
 
 		// Step 2: Remove unnecessary barriers from the original body of the loop.
 		System.err.println("\t Processing the iteration at line #" + Misc.getLineNum(itStmt)
-				+ " for maximum unrolling factor of " + maxUnrollFactor);
+		+ " for maximum unrolling factor of " + maxUnrollFactor);
 		BasicTransform.simplifyPredicate(itStmt);
 		if (itStmt instanceof WhileStatement) {
 			WhileStatement whileStmt = (WhileStatement) itStmt;
 			/*
-			 * Let's move all declarations from the level of this
-			 * whileStatement's body to outside the loop,
-			 * so that they do not hamper code percolation.
-			 * This method takes care of possible name collision.
+			 * Let's move all declarations from the level of this whileStatement's body to
+			 * outside the loop, so that they do not hamper code percolation. This method
+			 * takes care of possible name collision.
 			 */
 			DeclarationEscalator
-					.pushAllDeclarationsUpFromLevel((CompoundStatement) whileStmt.getInfo().getCFGInfo().getBody());
+			.pushAllDeclarationsUpFromLevel((CompoundStatement) whileStmt.getInfo().getCFGInfo().getBody());
 		}
 		DriverModule.intraIterationCodePercolation(itStmt);
 		RedundantSynchronizationRemoval.removeBarriers(itStmt);
 		System.err.println("\t Initial phase count per iteration: " + DriverModule.phaseCountPerExecution(itStmt)
-				+ " for loop at line#" + Misc.getLineNum(itStmt));
+		+ " for loop at line#" + Misc.getLineNum(itStmt));
 		// System.err.println("\t Initial phase count per iteration: " +
 		// NewDriverModule.getBarrierCountInNode(itStmt)
 		// + " for loop at line#" + Misc.getLineNum(itStmt));
@@ -1135,8 +1278,7 @@ public class DriverModule {
 	/**
 	 * Obtain the maximum size of swap-chain present anywhere within encloser.
 	 *
-	 * @param encloser
-	 *                 enclosing node, within which the length of swap-chain, if
+	 * @param encloser enclosing node, within which the length of swap-chain, if
 	 *                 any, has to be found.
 	 *
 	 * @return maximum length of swap-chain within the node.
@@ -1166,18 +1308,17 @@ public class DriverModule {
 
 		Set<Node> cleanWrites = new HashSet<>();
 		/*
-		 * Step 1: Collect the clean writes that are reachable from BPPs that
-		 * belong to itStmt, and that start a phase of which borderNode is a
-		 * part.
+		 * Step 1: Collect the clean writes that are reachable from BPPs that belong to
+		 * itStmt, and that start a phase of which borderNode is a part.
 		 */
 		assert (Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.ICON);
 		Set<Phase> borderPhases = (Set<Phase>) borderNode.getInfo().getNodePhaseInfo().getPhaseSet();
 		cleanWrites.addAll(extractCleanWrites(itContents, borderPhases));
 
 		/*
-		 * Step 2: Collect the clean writes that are reachable from BPPs that
-		 * belong to itStmt, and that start a phase which is a successor of
-		 * those of the borderNode.
+		 * Step 2: Collect the clean writes that are reachable from BPPs that belong to
+		 * itStmt, and that start a phase which is a successor of those of the
+		 * borderNode.
 		 */
 		Set<Phase> nextPhases = new HashSet<>();
 		for (Phase ph : borderPhases) {
@@ -1190,21 +1331,15 @@ public class DriverModule {
 
 	/**
 	 * Obtain clean writes of shared variables in phases present in
-	 * {@code phaseSet}, within the loop whose contents are
-	 * {@code itContents}.
-	 * <br>
+	 * {@code phaseSet}, within the loop whose contents are {@code itContents}. <br>
 	 * Note: We skip those clean writes which write to a symbol of complicated type
-	 * that does not overload "=" operator
-	 * (e.g., arrays, functions, etc.).
+	 * that does not overload "=" operator (e.g., arrays, functions, etc.).
 	 *
-	 * @param itContents
-	 *                     contents of a loop.
-	 * @param borderPhases
-	 *                     set of phases in which clean-writes have to be found.
+	 * @param itContents   contents of a loop.
+	 * @param borderPhases set of phases in which clean-writes have to be found.
 	 *
 	 * @return set of clean-writes (mostly {@link ExpressionStatement} nodes)
-	 *         present in {@code itContents}, occurring
-	 *         in {@code phaseSet}.
+	 *         present in {@code itContents}, occurring in {@code phaseSet}.
 	 */
 	private static Set<Node> extractCleanWrites(Set<Node> itContents, Set<Phase> borderPhases) {
 		Set<Node> cleanWrites = new HashSet<>();
@@ -1257,20 +1392,15 @@ public class DriverModule {
 
 	/**
 	 * This method starts at the {@code borderNode}, and tries to remove an
-	 * anti-edge across it, by renaming shared
-	 * variables, if required, up till exit points from this new copy of the
-	 * original iteration body.
+	 * anti-edge across it, by renaming shared variables, if required, up till exit
+	 * points from this new copy of the original iteration body.
 	 *
-	 * @param itStmt
-	 *                      iteration-statement that has recently been added with a
+	 * @param itStmt        iteration-statement that has recently been added with a
 	 *                      new copy of original iteration.
-	 * @param cleanWrites
-	 *                      set of those nodes which are reachable from BPPs that
-	 *                      belong to the itSmt, and that start a phase of
-	 *                      which the first node in the newly added iteration is a
-	 *                      part.
-	 * @param newBorderNode
-	 *                      borderNode that separates the new copy with the next.
+	 * @param cleanWrites   set of those nodes which are reachable from BPPs that
+	 *                      belong to the itSmt, and that start a phase of which the
+	 *                      first node in the newly added iteration is a part.
+	 * @param newBorderNode borderNode that separates the new copy with the next.
 	 *
 	 * @return true, if any code change was performed.
 	 */
@@ -1280,8 +1410,8 @@ public class DriverModule {
 		Set<Node> itContents = itStmt.getInfo().getCFGInfo().getLexicalCFGLeafContents();
 
 		/*
-		 * Step 1: For each clean write node, obtain the set of inside and
-		 * frontier nodes.
+		 * Step 1: For each clean write node, obtain the set of inside and frontier
+		 * nodes.
 		 */
 		Map<Node, Set<Node>> insideNodeMap = new HashMap<>();
 		Map<Node, Set<Node>> allInsideNodeMap = new HashMap<>();
@@ -1342,8 +1472,7 @@ public class DriverModule {
 		}
 
 		/*
-		 * Step 2: Make changes to the code, if required, to perform memory
-		 * renaming,
+		 * Step 2: Make changes to the code, if required, to perform memory renaming,
 		 * back and forth.
 		 */
 		// Step 2.a Set to obtain a set of renamings on each node.
@@ -1418,8 +1547,7 @@ public class DriverModule {
 		HashMap<Node, Node> swapNodeForFrontier = new HashMap<>();
 		for (Node frontier : swapBackMap.keySet()) {
 			/*
-			 * Step 1: Ignore those frontier which do not require any
-			 * swap-backs.
+			 * Step 1: Ignore those frontier which do not require any swap-backs.
 			 */
 			if (swapBackMap.get(frontier).isEmpty()) {
 				continue;
@@ -1430,9 +1558,8 @@ public class DriverModule {
 			// add the node before the frontier (if there is no data clash). Otherwise,
 			// proceed down.
 			/*
-			 * Step 2: If the original variable is not used before being
-			 * redefined anywhere after the frontier, then skip the swap of that
-			 * variable in this frontier.
+			 * Step 2: If the original variable is not used before being redefined anywhere
+			 * after the frontier, then skip the swap of that variable in this frontier.
 			 */
 			Set<String> keys = new HashSet<>(swapBackMap.get(frontier).keySet());
 			Set<String> needSwapping = new HashSet<>();
@@ -1444,8 +1571,7 @@ public class DriverModule {
 
 				for (Node succ : frontier.getInfo().getCFGInfo().getInterProceduralLeafSuccessors()) {
 					/*
-					 * Check if swapOldSym is used anywhere after succ without
-					 * being redefined.
+					 * Check if swapOldSym is used anywhere after succ without being redefined.
 					 */
 					if (succ.getInfo().getReads().contains(swapOldSym)) {
 						needSwapping.add(symName);
@@ -1483,8 +1609,7 @@ public class DriverModule {
 			}
 
 			/*
-			 * Step 3: Ignore all those frontiers that do not require any
-			 * swap-backs.
+			 * Step 3: Ignore all those frontiers that do not require any swap-backs.
 			 */
 			if (needSwapping.isEmpty()) {
 				continue;
@@ -1519,8 +1644,8 @@ public class DriverModule {
 		}
 
 		/*
-		 * Perform actual addition of all swapNode of a given frontier
-		 * immediately before that frontier, within the loop.
+		 * Perform actual addition of all swapNode of a given frontier immediately
+		 * before that frontier, within the loop.
 		 */
 		for (Node frontier : swapNodeForFrontier.keySet()) {
 			Node swapNode = swapNodeForFrontier.get(frontier);
@@ -1530,16 +1655,15 @@ public class DriverModule {
 			System.err.println("\t Adding the swap node " + swapNode + " for " + frontier + ".");
 			Set<Node> frontierPreds = frontier.getInfo().getCFGInfo().getInterProceduralLeafPredecessors();
 			/*
-			 * If all predecessors of a frontier are part of allInsideNodes,
-			 * then add a single copy of the swapNode before the frontier.
+			 * If all predecessors of a frontier are part of allInsideNodes, then add a
+			 * single copy of the swapNode before the frontier.
 			 */
 			if (frontierPreds.stream().allMatch((p) -> allInsideNodes.contains(p))) {
 				InsertImmediatePredecessor.insert(frontier, swapNode);
 			} else {
 				/*
-				 * Otherwise, add a copy of swapNode on only those edges
-				 * that originate within internal nodes and terminate at the
-				 * frontier.
+				 * Otherwise, add a copy of swapNode on only those edges that originate within
+				 * internal nodes and terminate at the frontier.
 				 */
 				boolean first = true;
 				for (Node frontierPred : frontierPreds) {
@@ -1584,11 +1708,10 @@ public class DriverModule {
 	/**
 	 * Modifies the iteration-statement {@code itStmt}, by incrementing its
 	 * unrolling factor by one, using {@code
-	 * origBody}.
-	 * <br>
+	 * origBody}. <br>
 	 * Note that this method places a special label marker: "__imopLoopBorder",
-	 * which can be used to extract the loop
-	 * border. Care should be taken to remove this label after border extraction.
+	 * which can be used to extract the loop border. Care should be taken to remove
+	 * this label after border extraction.
 	 *
 	 * @param itStmt
 	 * @param origBody
@@ -1688,19 +1811,19 @@ public class DriverModule {
 		List<Phase> phaseList = new ArrayList<>();
 		phaseList.addAll(entryPhases);
 		phaseList
-				.addAll(CollectorVisitor.collectNodeListInGenericGraph(entryPhases, lastPhases, (ph) -> false, (ph) -> {
-					List<Phase> nextPhaseList = new LinkedList<>();
-					Phase succPhase = ph.getSuccPhase();
-					if (succPhase != null) {
-						for (EndPhasePoint endPP : succPhase.getEndPoints()) {
-							if (cfgContents.contains(endPP.getNode())) {
-								nextPhaseList.add(succPhase);
-								break;
+		.addAll(CollectorVisitor.collectNodeListInGenericGraph(entryPhases, lastPhases, (ph) -> false, (ph) -> {
+			List<Phase> nextPhaseList = new LinkedList<>();
+			Phase succPhase = ph.getSuccPhase();
+			if (succPhase != null) {
+				for (EndPhasePoint endPP : succPhase.getEndPoints()) {
+					if (cfgContents.contains(endPP.getNode())) {
+						nextPhaseList.add(succPhase);
+						break;
 							}
-						}
-					}
-					return nextPhaseList;
-				}));
+				}
+			}
+			return nextPhaseList;
+		}));
 		phaseList.addAll(lastPhases);
 
 		boolean anyChange = false;
@@ -1717,11 +1840,10 @@ public class DriverModule {
 
 	/**
 	 * This method performs copy elimination on each node in the parent block of
-	 * {@code itStmt}, followed by dead code
-	 * removal, in an attempt to reduce the shared dependences.
+	 * {@code itStmt}, followed by dead code removal, in an attempt to reduce the
+	 * shared dependences.
 	 *
-	 * @param itStmt
-	 *               loop from within whose parent copy elimination has to be
+	 * @param itStmt loop from within whose parent copy elimination has to be
 	 *               performed.
 	 *
 	 * @return true, if any copy was eliminated.
@@ -1784,8 +1906,7 @@ public class DriverModule {
 	 * To obtain the maximum number of abstract phases that one execution of this
 	 * loop may observe.
 	 *
-	 * @param itStmt
-	 *               loop to be tested.
+	 * @param itStmt loop to be tested.
 	 *
 	 * @return maximum number of abstract phases that can be encountered in one
 	 *         execution of this loop.
@@ -1799,8 +1920,8 @@ public class DriverModule {
 		int thisOuterLength = 1;
 		for (AbstractPhase<?, ?> ph : loopEntryPoint.getInfo().getNodePhaseInfo().getPhaseSet()) {
 			/*
-			 * If this phase does not have any end point that lies within
-			 * the loop, then continue.
+			 * If this phase does not have any end point that lies within the loop, then
+			 * continue.
 			 */
 			if (!ph.getEndPoints().parallelStream().anyMatch(
 					n -> internalNodes.parallelStream().anyMatch(iN -> iN.getNode() == n.getNodeFromInterface()))) {
@@ -1808,9 +1929,8 @@ public class DriverModule {
 			}
 
 			/*
-			 * For this phase, let's try and count the number of reachable
-			 * phases that have at least one unique ending barrier in this
-			 * loop.
+			 * For this phase, let's try and count the number of reachable phases that have
+			 * at least one unique ending barrier in this loop.
 			 */
 			int thisLength = 1;
 			Phase nextPhase = ((Phase) ph).getSuccPhase();
@@ -1857,8 +1977,8 @@ public class DriverModule {
 			}
 		}
 		/*
-		 * Remove all those barriers which move out of the itStmt without moving
-		 * over the back-edge.
+		 * Remove all those barriers which move out of the itStmt without moving over
+		 * the back-edge.
 		 */
 		if (itStmt instanceof WhileStatement) {
 			Expression predicate;
@@ -1888,12 +2008,10 @@ public class DriverModule {
 	 * Obtains all those phases that either start in this loop, or enter through the
 	 * BeginNode and end in this loop.
 	 *
-	 * @param itStmt
-	 *               loop to be processed.
+	 * @param itStmt loop to be processed.
 	 *
 	 * @return set of all those phases that either start in this loop, or enter
-	 *         through the BeginNode and end in this
-	 *         loop.
+	 *         through the BeginNode and end in this loop.
 	 */
 	@SuppressWarnings("unused")
 	@Deprecated
@@ -1908,8 +2026,8 @@ public class DriverModule {
 				Phase ph = (Phase) absPh;
 				returningSet.add(ph);
 				/*
-				 * If this phase does not have any end point that lies within
-				 * the loop, then continue.
+				 * If this phase does not have any end point that lies within the loop, then
+				 * continue.
 				 */
 				if (!ph.getSuccPhase().getEndPoints().parallelStream()
 						.anyMatch(n -> internalNodes.parallelStream().anyMatch(iN -> iN.getNode() == n.getNode()))) {
@@ -1917,9 +2035,8 @@ public class DriverModule {
 				}
 
 				/*
-				 * For this phase, let's try and count the number of reachable
-				 * phases that have at least one unique ending barrier in this
-				 * loop.
+				 * For this phase, let's try and count the number of reachable phases that have
+				 * at least one unique ending barrier in this loop.
 				 */
 				Phase nextPhase = ph.getSuccPhase();
 				while (nextPhase != null) {
@@ -1996,8 +2113,7 @@ public class DriverModule {
 	 * Checks if there is any anti-dependence across the back-edge of
 	 * {@code itStmt}, for a shared variable.
 	 *
-	 * @param itStmt
-	 *               loop that needs to be tested.
+	 * @param itStmt loop that needs to be tested.
 	 *
 	 * @return true if there exists an anti-dependence on a shared variable across
 	 *         the back-edge of {@code itStmt}.

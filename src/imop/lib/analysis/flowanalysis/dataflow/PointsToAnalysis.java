@@ -15,15 +15,23 @@ import imop.ast.node.external.*;
 import imop.ast.node.internal.*;
 import imop.baseVisitor.DepthFirstProcess;
 import imop.lib.analysis.flowanalysis.*;
+import imop.lib.analysis.flowanalysis.dataflow.PointsToAnalysis.PointsToGlobalState;
 import imop.lib.analysis.flowanalysis.generic.AnalysisDimension;
 import imop.lib.analysis.flowanalysis.generic.AnalysisName;
 import imop.lib.analysis.flowanalysis.generic.CellularDataFlowAnalysis;
+import imop.lib.analysis.flowanalysis.generic.FlowAnalysis;
 import imop.lib.analysis.flowanalysis.generic.InterThreadForwardCellularAnalysis;
-import imop.lib.analysis.typeSystem.*;
+import imop.lib.analysis.typesystem.*;
 import imop.lib.cfg.info.CFGInfo;
+import imop.lib.cg.CallStack;
+import imop.lib.cg.NodeWithStack;
 import imop.lib.util.*;
+import imop.lib.util.CollectorVisitor.NeighbourSetGetter;
 import imop.parser.Program;
+import imop.parser.Program.StabilizationIDFAMode;
 
+import java.util.function.Predicate;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -61,13 +69,23 @@ public class PointsToAnalysis extends InterThreadForwardCellularAnalysis<PointsT
 		affectedCellsInThisEpoch.clear();
 	}
 
+	/**
+	 * Old implementation of IncIDFA, which was cell unaware.
+	 */
+	@Override
 	public void restartAnalysisFromStoredNodes() {
 		assert (!SCC.processingTarjan);
-		if (this.analysisName == AnalysisName.POINTSTO
-				&& PointsToAnalysis.stateOfPointsTo != PointsToGlobalState.STALE) {
-			nodesToBeUpdated.clear();
+		FlowAnalysis.nodes += "/////\n";
+		if (Program.stabilizationIDFAMode == StabilizationIDFAMode.INCIDFA) {
+			this.newStabilizationTriggerHandler(); // NOTE: THIS METHOD IS PRESENT IN
+			// INTERTHREADFORWARDCELLULARANALYSIS.
 			return;
 		}
+		// if (this.analysisName == AnalysisName.POINTSTO
+		// && PointsToAnalysis.stateOfPointsTo != PointsToGlobalState.STALE) {
+		// nodesToBeUpdated.clear();
+		// return;
+		// }
 		// String localStr = "";
 		// for (StackTraceElement ste : Thread.currentThread().getStackTrace()) {
 		// localStr += ste.getFileName() + ":" + ste.getLineNumber() + "\n";
@@ -82,38 +100,251 @@ public class PointsToAnalysis extends InterThreadForwardCellularAnalysis<PointsT
 		// Program.stabilizationStackDump.append("#######\n\n");
 		// }
 		PointsToAnalysis.enableHeuristic(); // Mark start of next epoch.
+		/*
+		 * Maintain a copy of nodes-to-be-updated for certain heuristic later.
+		 */
+		// this.copyOfSeedNodesForFirstPhase.clear();
+		// this.copyOfSeedNodesForFirstPhase.addAll(this.nodesToBeUpdated);
 		long localTimer = System.nanoTime();
 
 		/*
-		 * From the set of nodes to be updated, we obtain the workList to be
-		 * processed.
-		 * We add all the entry points of the SCC of each node.
+		 * From the set of nodes to be updated, we obtain the workList to be processed.
+		 * OLD: We add all the entry points of the SCC of each node.
 		 */
-		this.workList.recreate();
+		long thisUpdateNodeCounter = this.nodesProcessedDuringUpdate;
+		this.globalWorkList.recreate();
 		Set<Node> remSet = new HashSet<>();
 		// TODO: Check why on Earth are we getting a ConcurrentModificationException
 		// here for EGUPD mode of IDFA-stabilization! This might mostly be due to some
 		// assert in the add().
 		for (Node n : new HashSet<>(nodesToBeUpdated)) {
-			boolean added = this.workList.add(n);
+			boolean added = this.globalWorkList.add(n);
 			if (added) {
 				remSet.add(n);
+				/*
+				 * New code: If n is a Declaration, add the EndNode of its scope to the
+				 * worklist.
+				 */
+				if (n instanceof Declaration) {
+					Scopeable definingScope = Misc.getEnclosingBlock(n);
+					if (definingScope instanceof CompoundStatement) {
+						this.globalWorkList.add(
+								((CompoundStatement) definingScope).getInfo().getCFGInfo().getNestedCFG().getBegin());
+						this.globalWorkList.add(
+								((CompoundStatement) definingScope).getInfo().getCFGInfo().getNestedCFG().getEnd());
+					}
+				}
 			}
 			// OLD CODE: Now we do not add the entry points of SCCs to be processed.
-			// SCC nSCC = n.getInfo().getCFGInfo().getSCC();
-			// if (nSCC != null) {
-			// this.workList.addAll(nSCC.getEntryNodes());
-			// }
+			// NEW CODE: And now we do. Thu Jan 27 11:47:06 IST 2022
+			SCC nSCC = n.getInfo().getCFGInfo().getSCC();
+			if (nSCC != null) {
+				this.globalWorkList.addAll(nSCC.getEntryNodes());
+			}
+		}
+		if (Program.profileSCC) {
+			System.out.println("Size of the seed set for trigger #" + autoUpdateTriggerCounter + ": " + remSet.size());
 		}
 		// OLD CODE: Now, if we ever find that a node is unconnected to the program, we
 		// remove it from processing.
 		this.nodesToBeUpdated.removeAll(remSet);
 		// this.nodesToBeUpdated.clear();
 
-		this.processedInThisUpdate = new HashSet<>();
-		this.yetToBeFinalized = new HashSet<>();
-		while (!workList.isEmpty()) {
-			Node nodeToBeAnalyzed = workList.removeFirstElement();
+		/*
+		 * A new piece of code starts: Count the number of SCCs (with cycles) that have
+		 * seed nodes.
+		 */
+		if (Program.countSeededSCCs && Program.profileSCC) {
+			Set<SCC> seededSCCs = new HashSet<>();
+			for (Node n : globalWorkList.getIteratorForNonBarrierNodes()) {
+				SCC thisSCC = n.getInfo().getCFGInfo().getSCC();
+				if (thisSCC != null) {
+					seededSCCs.add(thisSCC);
+				}
+			}
+			System.out.println("Seeded SCC: " + seededSCCs.size());
+		}
+		/*
+		 * .. New code for counter ends.
+		 */
+
+		switch (Program.stabilizationIDFAMode) {
+		case ALL_NOSCC:
+			this.reinitAllAndRunNonSCC();
+			break;
+		case ALL_SCC:
+			this.reinitAllAndRunSCC();
+			break;
+		case RESTART:
+			restartingIterationsAfterInit();
+			break;
+		case INIT_RESTART:
+			markFlowFactsOfReachableNodesAsNull();
+			Program.timerForMarking += System.nanoTime() - localTimer;
+			localTimer = System.nanoTime();
+			restartingIterationsAfterInit();
+			break;
+		case INCIDFA:
+			Misc.exitDueToError(
+					"Use the alternative for restartAnalaysisFromStoredNodes given in PTA, with name newStabilizationTriggerHandler");
+		case OLD_INCIDFA:
+			obsolete_twoPassPerSCC();
+			break;
+		default:
+			break;
+		}
+
+		localTimer = System.nanoTime() - localTimer;
+		counterList.add(this.nodesProcessedDuringUpdate - thisUpdateNodeCounter);
+		this.flowAnalysisUpdateTimer += localTimer;
+		if (this.analysisName == AnalysisName.POINTSTO
+				&& PointsToAnalysis.stateOfPointsTo == PointsToGlobalState.STALE) {
+			PointsToAnalysis.stateOfPointsTo = PointsToGlobalState.CORRECT;
+		}
+	}
+
+	private void reinitAllAndRunSCC() {
+		for (Node node : Program.getRoot().getInfo().getCFGInfo().getLexicalCFGLeafContents()) {
+			node.getInfo().removeAnalysisInformation(this.getAnalysisName());
+		}
+		FunctionDefinition mainFunc = Program.getRoot().getInfo().getMainFunction();
+		Program.basePointsTo = false; // Unneeded for second and further runs.
+		Program.memoizeAccesses++;
+		BeginNode beginNode = mainFunc.getInfo().getCFGInfo().getNestedCFG().getBegin();
+		this.globalWorkList.recreate();
+		this.globalWorkList.add(beginNode);
+		int processedSCCCount = 0;
+		while (!globalWorkList.isEmpty()) {
+			Node nodeToBeAnalyzed = globalWorkList.removeFirstElement();
+			CFGInfo nInfo = nodeToBeAnalyzed.getInfo().getCFGInfo();
+			if (nInfo.getSCC() == null) {
+				// Here, node itself is an SCC. We do not require two rounds.
+				this.nodesProcessedDuringUpdate++;
+				this.debugRecursion(nodeToBeAnalyzed);
+				this.processWhenNotUpdated(nodeToBeAnalyzed); // Directly invoke the second round processing.
+				continue;
+			} else {
+				stabilizeSCCOfInOnePassAfterInit(nodeToBeAnalyzed);
+				processedSCCCount++;
+			}
+		}
+		if (Program.profileSCC) {
+			System.out.println("Total SCCs processed: " + processedSCCCount + " out of " + SCC.getAllSCCSize());
+		}
+		Program.memoizeAccesses--;
+	}
+
+	private void reinitAllAndRunNonSCC() {
+		for (Node node : Program.getRoot().getInfo().getCFGInfo().getLexicalCFGLeafContents()) {
+			node.getInfo().removeAnalysisInformation(this.getAnalysisName());
+		}
+		FunctionDefinition mainFunc = Program.getRoot().getInfo().getMainFunction();
+		Program.basePointsTo = false; // Unneeded for second and further runs.
+		Program.memoizeAccesses++;
+		// String typeList = "";
+		BeginNode beginNode = mainFunc.getInfo().getCFGInfo().getNestedCFG().getBegin();
+		this.globalWorkList.recreate();
+		this.globalWorkList.add(beginNode);
+		do {
+			Node nodeToBeAnalysed = this.globalWorkList.removeFirstElement();
+			this.debugRecursion(nodeToBeAnalysed);
+			this.processWhenNotUpdated(nodeToBeAnalysed);
+		} while (!this.globalWorkList.isEmpty());
+		Program.memoizeAccesses--;
+	}
+
+	private void markFlowFactsOfReachableNodesAsNull() {
+		Set<Node> seedNodes = new HashSet<>();
+		for (Node n : globalWorkList.getIteratorForNonBarrierNodes()) {
+			seedNodes.add(n);
+		}
+		for (Node n : globalWorkList.getIteratorForBarrierNodes()) {
+			seedNodes.add(n);
+		}
+		Set<NodeWithStack> workSet = new HashSet<>();
+		for (Node n : seedNodes) {
+			workSet.add(new NodeWithStack(n, new CallStack()));
+		}
+
+		Set<NodeWithStack> collectedNodeSet = new HashSet<>();
+		while (!workSet.isEmpty()) {
+			NodeWithStack currentNode = Misc.getAnyElement(workSet);
+			workSet.remove(currentNode);
+			for (NodeWithStack succNode : currentNode.getNode().getInfo().getCFGInfo()
+					.getInterProceduralLeafSuccessors(currentNode.getCallStack())) {
+				if (!collectedNodeSet.contains(succNode)) {
+					collectedNodeSet.add(succNode);
+					workSet.add(succNode);
+				}
+			}
+		}
+		for (NodeWithStack nodeWithStack : collectedNodeSet) {
+			nodeWithStack.getNode().getInfo().removeAnalysisInformation(this.getAnalysisName());
+		}
+	}
+
+	private void restartingIterationsAfterInit() {
+		int processedSCCCount = 0;
+		Program.basePointsTo = false; // Unneeded for second and further runs.
+		Program.memoizeAccesses++;
+		while (!globalWorkList.isEmpty()) {
+			Node nodeToBeAnalyzed = globalWorkList.removeFirstElement();
+			CFGInfo nInfo = nodeToBeAnalyzed.getInfo().getCFGInfo();
+			if (nInfo.getSCC() == null) {
+				// Here, node itself is an SCC. We do not require two rounds.
+				this.nodesProcessedDuringUpdate++;
+				this.debugRecursion(nodeToBeAnalyzed);
+				this.processWhenNotUpdated(nodeToBeAnalyzed); // Directly invoke the second round processing.
+				continue;
+			} else {
+				stabilizeSCCOfInOnePassAfterInit(nodeToBeAnalyzed);
+				processedSCCCount++;
+			}
+		}
+		if (Program.profileSCC) {
+			System.out.println("Total SCCs processed: " + processedSCCCount + " out of " + SCC.getAllSCCSize());
+		}
+		Program.memoizeAccesses--;
+	}
+
+	@SuppressWarnings("unused")
+	private void restartingIterationsWithoutInit() {
+		int processedSCCCount = 0;
+		Program.basePointsTo = false; // Unneeded for second and further runs.
+		Program.memoizeAccesses++;
+		Set<Node> visited = new HashSet<>();
+		while (!globalWorkList.isEmpty()) {
+			Node nodeToBeAnalyzed = globalWorkList.removeFirstElement();
+			if (!visited.contains(nodeToBeAnalyzed)) {
+				nodeToBeAnalyzed.getInfo().removeAnalysisInformation(AnalysisName.POINTSTO);
+				visited.add(nodeToBeAnalyzed);
+			}
+			CFGInfo nInfo = nodeToBeAnalyzed.getInfo().getCFGInfo();
+			if (nInfo.getSCC() == null) {
+				// Here, node itself is an SCC. We do not require two rounds.
+				this.nodesProcessedDuringUpdate++;
+				this.debugRecursion(nodeToBeAnalyzed);
+				this.processWhenNotUpdated(nodeToBeAnalyzed); // Directly invoke the second round processing.
+				continue;
+			} else {
+				stabilizeSCCOfInOnePassWithoutInit(nodeToBeAnalyzed, visited);
+				processedSCCCount++;
+			}
+		}
+		if (Program.profileSCC) {
+			System.out.println("Total SCCs processed: " + processedSCCCount + " out of " + SCC.getAllSCCSize());
+		}
+		Program.memoizeAccesses--;
+	}
+
+	private void obsolete_twoPassPerSCC() {
+		int processedSCCCount = 0;
+		Program.basePointsTo = false; // Not needed for second and further runs.
+		Program.memoizeAccesses++;
+		this.safeCurrentSCCNodes = new HashSet<>();
+		this.underApproximated = new HashSet<>();
+		while (!globalWorkList.isEmpty()) {
+			Node nodeToBeAnalyzed = globalWorkList.removeFirstElement();
 			CFGInfo nInfo = nodeToBeAnalyzed.getInfo().getCFGInfo();
 			if (nInfo.getSCC() == null) {
 				// Here, node itself is an SCC. We do not require two rounds.
@@ -123,22 +354,18 @@ public class PointsToAnalysis extends InterThreadForwardCellularAnalysis<PointsT
 				continue;
 			} else {
 				/*
-				 * This node belongs to an SCC. We should process the whole of
-				 * SCC in the first phase, followed by its processing in the
-				 * second phase, and only then shall we move on to the next SCC.
+				 * This node belongs to an SCC. We should process the whole of SCC in the first
+				 * phase, followed by its processing in the second phase, and only then shall we
+				 * move on to the next SCC.
 				 */
 				stabilizeSCCOf(nodeToBeAnalyzed);
+				processedSCCCount++;
 			}
 		}
-
-		localTimer = System.nanoTime() - localTimer;
-		this.flowAnalysisUpdateTimer += localTimer;
-		if (this.analysisName == AnalysisName.POINTSTO
-				&& PointsToAnalysis.stateOfPointsTo == PointsToGlobalState.STALE) {
-			PointsToAnalysis.stateOfPointsTo = PointsToGlobalState.CORRECT;
-			// DumpSnapshot.dumpPointsTo("stable" + Program.updateCategory +
-			// this.autoUpdateTriggerCounter);
+		if (Program.profileSCC) {
+			System.out.println("Total SCCs processed: " + processedSCCCount + " out of " + SCC.getAllSCCSize());
 		}
+		Program.memoizeAccesses--;
 	}
 
 	public PointsToAnalysis() {
@@ -182,7 +409,17 @@ public class PointsToAnalysis extends InterThreadForwardCellularAnalysis<PointsT
 					s3 = s1;
 				} else {
 					CellSet newSet = new CellSet(s1);
-					newSet.addAll(s2);
+					if (Program.retainNullCellsInPTAMaps) {
+						newSet.addAll(s2);
+					} else {
+						while (newSet.remove(Cell.getNullCell()))
+							;
+						for (Cell c : s2) {
+							if (c != Cell.getNullCell()) {
+								newSet.add(c);
+							}
+						}
+					}
 					s3 = new ImmutableCellSet(newSet);
 				}
 			}
@@ -240,7 +477,7 @@ public class PointsToAnalysis extends InterThreadForwardCellularAnalysis<PointsT
 								} else if (c instanceof FieldCell) {
 									ptsTo.add(c);
 								} else {
-									ptsTo = entryFact.flowMap.get(c);
+									ptsTo = entryFact.getFlowMap().get(c);
 								}
 								if (ptsTo != null && !ptsTo.isEmpty()) {
 									rhsPtsToSet.addAll(ptsTo);
@@ -252,7 +489,7 @@ public class PointsToAnalysis extends InterThreadForwardCellularAnalysis<PointsT
 					}
 
 					if (!rhsPtsToSet.isEmpty()) {
-						entryFact.flowMap.put(sym, new ImmutableCellSet(rhsPtsToSet));
+						entryFact.getFlowMap().put(sym, new ImmutableCellSet(rhsPtsToSet));
 					}
 				}
 			}
@@ -269,7 +506,7 @@ public class PointsToAnalysis extends InterThreadForwardCellularAnalysis<PointsT
 				Cell pointedTo = HeapCell.getUnknownParamPointee(param);
 				if (pointedTo != null) {
 					pointedSet.add(pointedTo);
-					entryFact.flowMap.put(declaredSym, new ImmutableCellSet(pointedSet));
+					entryFact.getFlowMap().put(declaredSym, new ImmutableCellSet(pointedSet));
 				}
 			}
 		}
@@ -278,9 +515,7 @@ public class PointsToAnalysis extends InterThreadForwardCellularAnalysis<PointsT
 	}
 
 	/**
-	 * f0 ::= DeclarationSpecifiers()
-	 * f1 ::= ( InitDeclaratorList() )?
-	 * f2 ::= ";"
+	 * f0 ::= DeclarationSpecifiers() f1 ::= ( InitDeclaratorList() )? f2 ::= ";"
 	 */
 	@Override
 	public PointsToFlowMap visit(Declaration n, PointsToFlowMap flowFactIN) {
@@ -288,8 +523,8 @@ public class PointsToAnalysis extends InterThreadForwardCellularAnalysis<PointsT
 		Symbol sym = n.getInfo().getDeclaredSymbol();
 		if (sym == null || (!(sym.getType() instanceof PointerType))) {
 			/*
-			 * This is a type definition -- struct/union/enum/typedef, etc,
-			 * or definition of some non pointer type.
+			 * This is a type definition -- struct/union/enum/typedef, etc, or definition of
+			 * some non pointer type.
 			 */
 			return flowFactIN;
 		}
@@ -316,7 +551,7 @@ public class PointsToAnalysis extends InterThreadForwardCellularAnalysis<PointsT
 					new ImmutableCellSet(rhsPtsToSet));
 			if (!affectedMap.isEmpty()) {
 				flowFactOUT = new PointsToFlowMap(flowFactIN);
-				flowFactOUT.flowMap.mergeWith(affectedMap, (s1, s2) -> {
+				flowFactOUT.getFlowMap().mergeWith(affectedMap, (s1, s2) -> {
 					ImmutableCellSet s3;
 					if (s2 != null) {
 						s3 = s2; // We use same CellSet objects as present in affectedMap.
@@ -332,8 +567,7 @@ public class PointsToAnalysis extends InterThreadForwardCellularAnalysis<PointsT
 	}
 
 	/**
-	 * f0 ::= "#"
-	 * f1 ::= <UNKNOWN_CPP>
+	 * f0 ::= "#" f1 ::= <UNKNOWN_CPP>
 	 */
 	@Override
 	public PointsToFlowMap visit(UnknownCpp n, PointsToFlowMap flowFactIN) {
@@ -341,9 +575,7 @@ public class PointsToAnalysis extends InterThreadForwardCellularAnalysis<PointsT
 	}
 
 	/**
-	 * f0 ::= "#"
-	 * f1 ::= <PRAGMA>
-	 * f2 ::= <UNKNOWN_CPP>
+	 * f0 ::= "#" f1 ::= <PRAGMA> f2 ::= <UNKNOWN_CPP>
 	 */
 	@Override
 	public PointsToFlowMap visit(UnknownPragma n, PointsToFlowMap flowFactIN) {
@@ -351,18 +583,15 @@ public class PointsToAnalysis extends InterThreadForwardCellularAnalysis<PointsT
 	}
 
 	/**
-	 * f0 ::= <IDENTIFIER>
-	 * f1 ::= "="
-	 * f2 ::= Expression()
+	 * f0 ::= <IDENTIFIER> f1 ::= "=" f2 ::= Expression()
 	 */
 	@Override
 	public PointsToFlowMap visit(OmpForInitExpression n, PointsToFlowMap flowFactIN) {
 		PointsToFlowMap flowFactOUT = flowFactIN;
 		/*
-		 * Note that in a well-defined OpenMP program, no side-effects should
-		 * exist in the
-		 * computation of the RHS expression.
-		 * Next, we model the effect of f0 = f2, if f0 is a pointer-type.
+		 * Note that in a well-defined OpenMP program, no side-effects should exist in
+		 * the computation of the RHS expression. Next, we model the effect of f0 = f2,
+		 * if f0 is a pointer-type.
 		 */
 		Symbol lhs = Misc.getSymbolEntry(n.getF0().toString(), n);
 		if (lhs == null || !(lhs.getType() instanceof PointerType)) {
@@ -385,7 +614,7 @@ public class PointsToAnalysis extends InterThreadForwardCellularAnalysis<PointsT
 					new ImmutableCellSet(rhsPtsToSet));
 			if (!affectedMap.isEmpty()) {
 				flowFactOUT = new PointsToFlowMap(flowFactIN);
-				flowFactOUT.flowMap.mergeWith(affectedMap, (s1, s2) -> {
+				flowFactOUT.getFlowMap().mergeWith(affectedMap, (s1, s2) -> {
 					ImmutableCellSet s3;
 					if (s2 != null) {
 						s3 = s2; // We use same CellSet objects as present in affectedMap.
@@ -400,31 +629,22 @@ public class PointsToAnalysis extends InterThreadForwardCellularAnalysis<PointsT
 	}
 
 	/**
-	 * f0 ::= OmpForLTCondition()
-	 * | OmpForLECondition()
-	 * | OmpForGTCondition()
-	 * | OmpForGECondition()
+	 * f0 ::= OmpForLTCondition() | OmpForLECondition() | OmpForGTCondition() |
+	 * OmpForGECondition()
 	 */
 	@Override
 	public PointsToFlowMap visit(OmpForCondition n, PointsToFlowMap flowFactIN) {
 		/*
-		 * Note that in a well-defined OpenMP program, no side-effects should
-		 * exist in the
-		 * computation of the RHS operator.
+		 * Note that in a well-defined OpenMP program, no side-effects should exist in
+		 * the computation of the RHS operator.
 		 */
 		return flowFactIN;
 	}
 
 	/**
-	 * f0 ::= PostIncrementId()
-	 * | PostDecrementId()
-	 * | PreIncrementId()
-	 * | PreDecrementId()
-	 * | ShortAssignPlus()
-	 * | ShortAssignMinus()
-	 * | OmpForAdditive()
-	 * | OmpForSubtractive()
-	 * | OmpForMultiplicative()
+	 * f0 ::= PostIncrementId() | PostDecrementId() | PreIncrementId() |
+	 * PreDecrementId() | ShortAssignPlus() | ShortAssignMinus() | OmpForAdditive()
+	 * | OmpForSubtractive() | OmpForMultiplicative()
 	 */
 	@Override
 	public PointsToFlowMap visit(OmpForReinitExpression n, PointsToFlowMap flowFactIN) {
@@ -432,10 +652,7 @@ public class PointsToAnalysis extends InterThreadForwardCellularAnalysis<PointsT
 	}
 
 	/**
-	 * f0 ::= OmpPragma()
-	 * f1 ::= <FLUSH>
-	 * f2 ::= ( FlushVars() )?
-	 * f3 ::= OmpEol()
+	 * f0 ::= OmpPragma() f1 ::= <FLUSH> f2 ::= ( FlushVars() )? f3 ::= OmpEol()
 	 */
 	@Override
 	public PointsToFlowMap visit(FlushDirective n, PointsToFlowMap flowFactIN) {
@@ -448,9 +665,7 @@ public class PointsToAnalysis extends InterThreadForwardCellularAnalysis<PointsT
 	}
 
 	/**
-	 * f0 ::= OmpPragma()
-	 * f1 ::= <TASKWAIT>
-	 * f2 ::= OmpEol()
+	 * f0 ::= OmpPragma() f1 ::= <TASKWAIT> f2 ::= OmpEol()
 	 */
 	@Override
 	public PointsToFlowMap visit(TaskwaitDirective n, PointsToFlowMap flowFactIN) {
@@ -458,9 +673,7 @@ public class PointsToAnalysis extends InterThreadForwardCellularAnalysis<PointsT
 	}
 
 	/**
-	 * f0 ::= OmpPragma()
-	 * f1 ::= <TASKYIELD>
-	 * f2 ::= OmpEol()
+	 * f0 ::= OmpPragma() f1 ::= <TASKYIELD> f2 ::= OmpEol()
 	 */
 	@Override
 	public PointsToFlowMap visit(TaskyieldDirective n, PointsToFlowMap flowFactIN) {
@@ -468,8 +681,7 @@ public class PointsToAnalysis extends InterThreadForwardCellularAnalysis<PointsT
 	}
 
 	/**
-	 * f0 ::= ( Expression() )?
-	 * f1 ::= ";"
+	 * f0 ::= ( Expression() )? f1 ::= ";"
 	 */
 	@Override
 	public PointsToFlowMap visit(ExpressionStatement n, PointsToFlowMap flowFactIN) {
@@ -482,9 +694,7 @@ public class PointsToAnalysis extends InterThreadForwardCellularAnalysis<PointsT
 	}
 
 	/**
-	 * f0 ::= <GOTO>
-	 * f1 ::= <IDENTIFIER>
-	 * f2 ::= ";"
+	 * f0 ::= <GOTO> f1 ::= <IDENTIFIER> f2 ::= ";"
 	 */
 	@Override
 	public PointsToFlowMap visit(GotoStatement n, PointsToFlowMap flowFactIN) {
@@ -492,8 +702,7 @@ public class PointsToAnalysis extends InterThreadForwardCellularAnalysis<PointsT
 	}
 
 	/**
-	 * f0 ::= <CONTINUE>
-	 * f1 ::= ";"
+	 * f0 ::= <CONTINUE> f1 ::= ";"
 	 */
 	@Override
 	public PointsToFlowMap visit(ContinueStatement n, PointsToFlowMap flowFactIN) {
@@ -501,8 +710,7 @@ public class PointsToAnalysis extends InterThreadForwardCellularAnalysis<PointsT
 	}
 
 	/**
-	 * f0 ::= <BREAK>
-	 * f1 ::= ";"
+	 * f0 ::= <BREAK> f1 ::= ";"
 	 */
 	@Override
 	public PointsToFlowMap visit(BreakStatement n, PointsToFlowMap flowFactIN) {
@@ -510,9 +718,7 @@ public class PointsToAnalysis extends InterThreadForwardCellularAnalysis<PointsT
 	}
 
 	/**
-	 * f0 ::= <RETURN>
-	 * f1 ::= ( Expression() )?
-	 * f2 ::= ";"
+	 * f0 ::= <RETURN> f1 ::= ( Expression() )? f2 ::= ";"
 	 */
 	@Override
 	public PointsToFlowMap visit(ReturnStatement n, PointsToFlowMap flowFactIN) {
@@ -525,8 +731,7 @@ public class PointsToAnalysis extends InterThreadForwardCellularAnalysis<PointsT
 	}
 
 	/**
-	 * f0 ::= AssignmentExpression()
-	 * f1 ::= ( "," AssignmentExpression() )*
+	 * f0 ::= AssignmentExpression() f1 ::= ( "," AssignmentExpression() )*
 	 */
 	@Override
 	public PointsToFlowMap visit(Expression n, PointsToFlowMap flowFactIN) {
@@ -536,10 +741,7 @@ public class PointsToAnalysis extends InterThreadForwardCellularAnalysis<PointsT
 	}
 
 	/**
-	 * f0 ::= <IF>
-	 * f1 ::= "("
-	 * f2 ::= Expression()
-	 * f3 ::= ")"
+	 * f0 ::= <IF> f1 ::= "(" f2 ::= Expression() f3 ::= ")"
 	 */
 	@Override
 	public PointsToFlowMap visit(IfClause n, PointsToFlowMap flowFactIN) {
@@ -549,10 +751,7 @@ public class PointsToAnalysis extends InterThreadForwardCellularAnalysis<PointsT
 	}
 
 	/**
-	 * f0 ::= <NUM_THREADS>
-	 * f1 ::= "("
-	 * f2 ::= Expression()
-	 * f3 ::= ")"
+	 * f0 ::= <NUM_THREADS> f1 ::= "(" f2 ::= Expression() f3 ::= ")"
 	 */
 	@Override
 	public PointsToFlowMap visit(NumThreadsClause n, PointsToFlowMap flowFactIN) {
@@ -562,10 +761,7 @@ public class PointsToAnalysis extends InterThreadForwardCellularAnalysis<PointsT
 	}
 
 	/**
-	 * f0 ::= <FINAL>
-	 * f1 ::= "("
-	 * f2 ::= Expression()
-	 * f3 ::= ")"
+	 * f0 ::= <FINAL> f1 ::= "(" f2 ::= Expression() f3 ::= ")"
 	 */
 	@Override
 	public PointsToFlowMap visit(FinalClause n, PointsToFlowMap flowFactIN) {
@@ -697,7 +893,7 @@ public class PointsToAnalysis extends InterThreadForwardCellularAnalysis<PointsT
 		CellMap<ImmutableCellSet> affectedMap = OptimizedPointsToUpdateGetter.generateUpdateMap(n, lhsSet,
 				new ImmutableCellSet(rhsPtsToSet));
 		if (!affectedMap.isEmpty()) {
-			flowFactOUT.flowMap.mergeWith(affectedMap, (s1, s2) -> {
+			flowFactOUT.getFlowMap().mergeWith(affectedMap, (s1, s2) -> {
 				ImmutableCellSet s3;
 				if (s2 != null) {
 					s3 = s2; // We use same CellSet objects as present in affectedMap.
@@ -712,22 +908,17 @@ public class PointsToAnalysis extends InterThreadForwardCellularAnalysis<PointsT
 
 	/**
 	 * Given a parameter-declaration {@code parameter}, and a
-	 * simple-primary-expression {@code argument} that represents the argument
-	 * for this parameter from some call-site, this method should model the
+	 * simple-primary-expression {@code argument} that represents the argument for
+	 * this parameter from some call-site, this method should model the
 	 * flow-function of the write to the parameter that happens implicitly.
 	 *
-	 * @param parameter
-	 *                   a {@code ParameterDeclaration} which needs to be assigned
-	 *                   with
-	 *                   the {@code argument}.
-	 * @param argument
-	 *                   a {@code SimplePrimaryExpression} which is assigned to the
+	 * @param parameter  a {@code ParameterDeclaration} which needs to be assigned
+	 *                   with the {@code argument}.
+	 * @param argument   a {@code SimplePrimaryExpression} which is assigned to the
 	 *                   {@code parameter}.
-	 * @param flowFactIN
-	 *                   the IN flow-fact for the implicit assignment of the
+	 * @param flowFactIN the IN flow-fact for the implicit assignment of the
 	 *                   {@code argument} to the {@code parameter}.
-	 * @return
-	 *         the OUT flow-fact, as a result of the implicit assignment of the
+	 * @return the OUT flow-fact, as a result of the implicit assignment of the
 	 *         {@code argument} to the {@code parameter}.
 	 */
 	@Override
@@ -764,7 +955,7 @@ public class PointsToAnalysis extends InterThreadForwardCellularAnalysis<PointsT
 				new ImmutableCellSet(rhsPtsToSet));
 		if (!affectedMap.isEmpty()) {
 			flowFactOUT = new PointsToFlowMap(flowFactIN);
-			flowFactOUT.flowMap.mergeWith(affectedMap, (s1, s2) -> {
+			flowFactOUT.getFlowMap().mergeWith(affectedMap, (s1, s2) -> {
 				ImmutableCellSet s3;
 				if (s2 != null) {
 					s3 = s2; // We use same CellSet objects as present in affectedMap.
@@ -785,7 +976,7 @@ public class PointsToAnalysis extends InterThreadForwardCellularAnalysis<PointsT
 		CellMap<ImmutableCellSet> affectedMap = ptsToUpdateGetter.updateMap;
 		if (!affectedMap.isEmpty()) {
 			flowFactOUT = new PointsToFlowMap(flowFactIN);
-			flowFactOUT.flowMap.mergeWith(affectedMap, (s1, s2) -> {
+			flowFactOUT.getFlowMap().mergeWith(affectedMap, (s1, s2) -> {
 				ImmutableCellSet s3;
 				if (s2 != null) {
 					s3 = s2; // We use same CellSet objects as present in affectedMap.
@@ -800,8 +991,8 @@ public class PointsToAnalysis extends InterThreadForwardCellularAnalysis<PointsT
 
 	/**
 	 *
-	 * This visitor is used to obtain the "modifications" in the points-to sets
-	 * of various symbols, as a result of the symbolic execution of the visited
+	 * This visitor is used to obtain the "modifications" in the points-to sets of
+	 * various symbols, as a result of the symbolic execution of the visited
 	 * expression.
 	 *
 	 * @author Aman Nougrahiya
@@ -811,9 +1002,8 @@ public class PointsToAnalysis extends InterThreadForwardCellularAnalysis<PointsT
 		public CellMap<ImmutableCellSet> updateMap = new ExtensibleCellMap<>();
 
 		/**
-		 * f0 ::= UnaryExpression()
-		 * f1 ::= AssignmentOperator()
-		 * f2 ::= AssignmentExpression()
+		 * f0 ::= UnaryExpression() f1 ::= AssignmentOperator() f2 ::=
+		 * AssignmentExpression()
 		 */
 		@Override
 		public void visit(NonConditionalExpression n) {
@@ -828,7 +1018,23 @@ public class PointsToAnalysis extends InterThreadForwardCellularAnalysis<PointsT
 					if (lhsSym != Cell.genericCell && !(lhsSym.getType() instanceof PointerType)) {
 						return;
 					}
+				} else if (lhsCell instanceof FieldCell) {
+					/*
+					 * New Code: Now we do not maintain points-to sets for those field-cells whose
+					 * aggregate's element type is not of an ArrayType or PointerType.
+					 */
+					Symbol lhsParentSym = ((FieldCell) lhsCell).getAggregateElement();
+					if (lhsParentSym.getType() instanceof ArrayType) {
+						Type elementType = ((ArrayType) lhsParentSym.getType()).getElementType();
+						if (elementType != null && !(elementType instanceof PointerType)
+								&& !(elementType instanceof ArrayType)) {
+							// System.err.println(">>>> Skipping the expression: " + n);
+							return;
+						}
+					}
+
 				}
+
 			}
 			CellSet rhsPtsToSet = new CellSet();
 			if (rhsSet.isUniversal()) {
@@ -854,8 +1060,7 @@ public class PointsToAnalysis extends InterThreadForwardCellularAnalysis<PointsT
 		}
 
 		/**
-		 * f0 ::= SizeofTypeName()
-		 * | SizeofUnaryExpression()
+		 * f0 ::= SizeofTypeName() | SizeofUnaryExpression()
 		 */
 		@Override
 		public void visit(UnarySizeofExpression n) {
@@ -864,8 +1069,7 @@ public class PointsToAnalysis extends InterThreadForwardCellularAnalysis<PointsT
 		}
 
 		/**
-		 * f0 ::= <SIZEOF>
-		 * f1 ::= UnaryExpression()
+		 * f0 ::= <SIZEOF> f1 ::= UnaryExpression()
 		 */
 		@Override
 		public void visit(SizeofUnaryExpression n) {
@@ -879,10 +1083,21 @@ public class PointsToAnalysis extends InterThreadForwardCellularAnalysis<PointsT
 				return updateMap;
 			}
 			boolean strongUpdate = true;
-			if (lhsSet.size() > 1) {
+			if (lhsSet.size() > 1 && !(lhsSet.size() == 2 && lhsSet.contains(Cell.getNullCell()))) {
 				strongUpdate = false;
 			} else {
-				Cell cell = lhsSet.getAnyElement();
+				Cell cell = null;
+				if (lhsSet.size() == 2) {
+					for (Cell cell1 : lhsSet) {
+						if (cell1 == Cell.getNullCell()) {
+							continue;
+						}
+						cell = cell1;
+						break;
+					}
+				} else {
+					cell = lhsSet.getAnyElement();
+				}
 				if (cell == Cell.genericCell) {
 					strongUpdate = false;
 				}
@@ -897,11 +1112,21 @@ public class PointsToAnalysis extends InterThreadForwardCellularAnalysis<PointsT
 			}
 
 			if (strongUpdate) {
-				Cell lhsCell = lhsSet.getAnyElement();
-				if (lhsCell == Cell.getNullCell()) {
-					return updateMap;
+				if (lhsSet.size() == 2) {
+					for (Cell lhsCell : lhsSet) {
+						if (lhsCell == Cell.getNullCell()) {
+							continue;
+						}
+						updateMap.put(lhsCell, rhsPtsToSet);
+						break;
+					}
+				} else { // lhsSet singleton
+					Cell lhsCell = lhsSet.getAnyElement();
+					if (lhsCell == Cell.getNullCell()) {
+						return updateMap;
+					}
+					updateMap.put(lhsCell, rhsPtsToSet);
 				}
-				updateMap.put(lhsCell, rhsPtsToSet);
 				return updateMap;
 			} else {
 				if (lhsSet.isUniversal()) {

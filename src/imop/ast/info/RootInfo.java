@@ -13,7 +13,7 @@ import imop.ast.node.internal.*;
 import imop.lib.analysis.flowanalysis.Cell;
 import imop.lib.analysis.flowanalysis.HeapCell;
 import imop.lib.analysis.flowanalysis.Symbol;
-import imop.lib.analysis.typeSystem.*;
+import imop.lib.analysis.typesystem.*;
 import imop.lib.cfg.link.autoupdater.AutomatedUpdater;
 import imop.lib.getter.AllFunctionDefinitionGetter;
 import imop.lib.util.*;
@@ -26,8 +26,8 @@ public class RootInfo extends NodeInfo {
 	private List<FunctionDefinition> allFunctionDefinitions;
 
 	/**
-	 * Set of all the symbols that can be accessed within this
-	 * translation-unit (after corresponding declarations).
+	 * Set of all the symbols that can be accessed within this translation-unit
+	 * (after corresponding declarations).
 	 */
 	private CellSet allCellsInclusive;
 
@@ -109,8 +109,7 @@ public class RootInfo extends NodeInfo {
 
 	/**
 	 * Obtain a set of all those symbols that are accessible at this node
-	 * (inclusively)
-	 * (after their declarations).
+	 * (inclusively) (after their declarations).
 	 */
 	@Override
 	public CellSet getAllCellsAtNode() {
@@ -123,8 +122,7 @@ public class RootInfo extends NodeInfo {
 
 	/**
 	 * Obtain a set of all those symbols that are accessible at this node
-	 * (inclusively)
-	 * (after their declarations).
+	 * (inclusively) (after their declarations).
 	 */
 	@Override
 	public CellSet getSharedCellsAtNode() {
@@ -187,9 +185,9 @@ public class RootInfo extends NodeInfo {
 	}
 
 	/**
-	 * This method ensures that whenever a function definition is present
-	 * for a particular function, we remove all the duplicate declarations
-	 * of that function from the symbol table.
+	 * This method ensures that whenever a function definition is present for a
+	 * particular function, we remove all the duplicate declarations of that
+	 * function from the symbol table.
 	 */
 	// public void removeDuplicateSymbols() {
 	// // Get a list of function names whose definitions are present in symbolTable
@@ -253,8 +251,8 @@ public class RootInfo extends NodeInfo {
 	}
 
 	/**
-	 * This method populates all the symbol and type tables of
-	 * the owner CompoundStatement "node" of this info.
+	 * This method populates all the symbol and type tables of the owner
+	 * CompoundStatement "node" of this info.
 	 * <p>
 	 * Various structures that get populated are:
 	 * <ol>
@@ -307,17 +305,11 @@ public class RootInfo extends NodeInfo {
 						this.typedefTable.put(declaratorName, newTypedef);
 					} else {
 						/*
-						 * Note that if this symbol is a function, we should
-						 * ensure that
-						 * there are no entries for prototypes unless one
-						 * without the body
-						 * is indeed present.
-						 * The following line (and the last one of the
-						 * outer-most if-else) ensures
-						 * that a function declaration is added (and
-						 * persisted)
-						 * only if we do not encounter the definition for
-						 * this function anywhere.
+						 * Note that if this symbol is a function, we should ensure that there are no
+						 * entries for prototypes unless one without the body is indeed present. The
+						 * following line (and the last one of the outer-most if-else) ensures that a
+						 * function declaration is added (and persisted) only if we do not encounter the
+						 * definition for this function anywhere.
 						 */
 						if (symbolTable.containsKey(declaratorName)) {
 							continue;
@@ -410,17 +402,11 @@ public class RootInfo extends NodeInfo {
 				this.typedefTable.put(declaratorName, newTypedef);
 			} else {
 				/*
-				 * Note that if this symbol is a function, we should
-				 * ensure that
-				 * there are no entries for prototypes unless one
-				 * without the body
-				 * in indeed present.
-				 * The following line (and the last one of the
-				 * outer-most if-else) ensures
-				 * that a function declaration is added (and
-				 * persisted)
-				 * only if we do not encounter the definition for
-				 * this function anywhere.
+				 * Note that if this symbol is a function, we should ensure that there are no
+				 * entries for prototypes unless one without the body in indeed present. The
+				 * following line (and the last one of the outer-most if-else) ensures that a
+				 * function declaration is added (and persisted) only if we do not encounter the
+				 * definition for this function anywhere.
 				 */
 
 				if (symbolTable.containsKey(declaratorName)) {
@@ -431,6 +417,17 @@ public class RootInfo extends NodeInfo {
 				this.symbolTable.put(declaratorName, newSymbol);
 			}
 		}
+
+		/*
+		 * Code to add entry point of main() to the set of nodes starting which all
+		 * forward IDFAs need to be updated.
+		 */
+		Set<Node> entryNodes = new HashSet<>();
+		if (Program.getRoot().getInfo().getMainFunction() != null) {
+			entryNodes.add(
+					Program.getRoot().getInfo().getMainFunction().getInfo().getCFGInfo().getNestedCFG().getBegin());
+		}
+		AutomatedUpdater.updateFlowFactsForward(entryNodes);
 	}
 
 	public void removeDeclarationEffects(Declaration declaration) {
@@ -460,6 +457,17 @@ public class RootInfo extends NodeInfo {
 			}
 		}
 		Program.invalidColumnNum = Program.invalidLineNum = true;
+
+		/*
+		 * Code to add entry point of main() to the set of nodes starting which all
+		 * forward IDFAs need to be updated.
+		 */
+		Set<Node> entryNodes = new HashSet<>();
+		if (Program.getRoot().getInfo().getMainFunction() != null) {
+			entryNodes.add(
+					Program.getRoot().getInfo().getMainFunction().getInfo().getCFGInfo().getNestedCFG().getBegin());
+		}
+		AutomatedUpdater.updateFlowFactsForward(entryNodes);
 	}
 
 	public void removeTypeDeclarationEffects(Declaration declaration) {
@@ -508,10 +516,9 @@ public class RootInfo extends NodeInfo {
 	}
 
 	/**
-	 * Removes unused functions from this {@link TranslationUnit}.
-	 * Then, this methods performs the removal of other elements (symbols,
-	 * types, etc.) by calling the super-class
-	 * {@link NodeInfo#removeUnusedElements()} method.
+	 * Removes unused functions from this {@link TranslationUnit}. Then, this
+	 * methods performs the removal of other elements (symbols, types, etc.) by
+	 * calling the super-class {@link NodeInfo#removeUnusedElements()} method.
 	 */
 	@Override
 	public void removeUnusedElements() {
@@ -523,15 +530,13 @@ public class RootInfo extends NodeInfo {
 	 * Removes the function definition and declaration for all those functions
 	 * (except {@code main}) that have not been called anywhere in the program.
 	 *
-	 * @param baseNode
-	 *                 a {@link TranslationUnit} from within which all unused
+	 * @param baseNode a {@link TranslationUnit} from within which all unused
 	 *                 function definitions and declarations have to be removed.
 	 */
 	public void removeUnusedFunctions() {
 		TranslationUnit baseNode = (TranslationUnit) getNode();
 		/**
-		 * Step 1: Obtain the set of function names that have been called
-		 * somewhere.
+		 * Step 1: Obtain the set of function names that have been called somewhere.
 		 */
 		FunctionDefinition mainFunc = baseNode.getInfo().getMainFunction();
 		if (mainFunc == null) {
@@ -561,9 +566,9 @@ public class RootInfo extends NodeInfo {
 		}
 
 		/*
-		 * Step 2: In a no-update manner, remove all those FunctionDefinition
-		 * and Declaration which define or declare a function that has not been
-		 * used anywhere.
+		 * Step 2: In a no-update manner, remove all those FunctionDefinition and
+		 * Declaration which define or declare a function that has not been used
+		 * anywhere.
 		 */
 		System.err.print("\tDeleting the definitions/declarations for the following unused functions: ");
 		boolean deletedAny = false;
@@ -640,13 +645,12 @@ public class RootInfo extends NodeInfo {
 	}
 
 	/**
-	 * Returns a set of all those CFG leaf nodes in the program that are
-	 * accessible from {@code main}, if any.
+	 * Returns a set of all those CFG leaf nodes in the program that are accessible
+	 * from {@code main}, if any.
 	 *
-	 * @return:
-	 *          a set of all the CFG leaf nodes in the program, that are
-	 *          accessible from {@code main}, if any. If program contains no
-	 *          {@code main()} method, then an empty set is returned.
+	 * @return: a set of all the CFG leaf nodes in the program, that are accessible
+	 *          from {@code main}, if any. If program contains no {@code main()}
+	 *          method, then an empty set is returned.
 	 */
 	public Set<Node> getAllLeafNodesInTheProgram() {
 		FunctionDefinition mainFunc = Program.getRoot().getInfo().getMainFunction();
@@ -663,8 +667,7 @@ public class RootInfo extends NodeInfo {
 	/**
 	 * Adds newFunc to the cached list of functions.
 	 *
-	 * @param newFunc
-	 *                a newly added function.
+	 * @param newFunc a newly added function.
 	 */
 	public void addFunctionToList(FunctionDefinition newFunc) {
 		this.allFunctionDefinitions.add(newFunc);
@@ -673,8 +676,7 @@ public class RootInfo extends NodeInfo {
 	/**
 	 * Removes a function from the cached list of functions.
 	 *
-	 * @param oldFunc
-	 *                an old function to be removed.
+	 * @param oldFunc an old function to be removed.
 	 */
 	public void removeFunctionFromList(FunctionDefinition oldFunc) {
 		this.allFunctionDefinitions.remove(oldFunc);

@@ -29,8 +29,10 @@ import imop.lib.analysis.flowanalysis.controlflow.CrossCallPredicateAnalysis;
 import imop.lib.analysis.flowanalysis.dataflow.*;
 import imop.lib.analysis.flowanalysis.dataflow.CopyPropagationAnalysis.CopyPropagationFlowMap;
 import imop.lib.analysis.flowanalysis.dataflow.DataDependenceForward.DataDependenceForwardFF;
+import imop.lib.analysis.flowanalysis.dataflow.PointsToAnalysis.PointsToFlowMap;
 import imop.lib.analysis.flowanalysis.dataflow.ReachingDefinitionAnalysis.ReachingDefinitionFlowMap;
 import imop.lib.analysis.flowanalysis.generic.AnalysisName;
+import imop.lib.analysis.flowanalysis.generic.CellularDataFlowAnalysis;
 import imop.lib.analysis.flowanalysis.generic.ControlFlowAnalysis;
 import imop.lib.analysis.flowanalysis.generic.FlowAnalysis;
 import imop.lib.analysis.flowanalysis.generic.FlowAnalysis.FlowFact;
@@ -46,7 +48,7 @@ import imop.lib.analysis.solver.PointerDereferenceGetter;
 import imop.lib.analysis.solver.SyntacticAccessExpression;
 import imop.lib.analysis.solver.SyntacticAccessExpressionGetter;
 import imop.lib.analysis.solver.tokens.Tokenizable;
-import imop.lib.analysis.typeSystem.*;
+import imop.lib.analysis.typesystem.*;
 import imop.lib.cfg.info.CFGInfo;
 import imop.lib.cfg.link.autoupdater.AutomatedUpdater;
 import imop.lib.cg.CallSite;
@@ -93,6 +95,11 @@ public class NodeInfo implements Cloneable {
 	 */
 	protected HashMap<AnalysisName, FlowFact> flowFactsOUT;
 
+	protected CellSet impactedSet;
+	protected Map<CellularDataFlowAnalysis<?>, CellSet> accessedCellSets;
+	protected Map<CellularDataFlowAnalysis<?>, CellSet> readCellSets;
+	protected Map<CellularDataFlowAnalysis<?>, CellSet> writtenCellSets;
+
 	protected CFGInfo cfgInfo;
 	private NodePhaseInfo phaseInfo;
 	// private List<InterTaskEdge> interTaskEdgeList; // Not needed, since we will
@@ -110,75 +117,61 @@ public class NodeInfo implements Cloneable {
 	private int reversePostOrderId = -1;
 	/**
 	 * Set of all the cells that may be read in the execution of this node (and the
-	 * called methods, if any).
-	 * <br>
+	 * called methods, if any). <br>
 	 * Note that this field is used only for CFG leaf nodes. Once we add
-	 * {@link Predicate} to appropriate places in the
-	 * production rules, we can create appropriate interfaces for CFG leaf and
-	 * non-leaf nodes, and add this field in the
-	 * corresponding CFG nodes.
+	 * {@link Predicate} to appropriate places in the production rules, we can
+	 * create appropriate interfaces for CFG leaf and non-leaf nodes, and add this
+	 * field in the corresponding CFG nodes.
 	 */
 	private CellList readList;
 
 	/**
 	 * Set of all the cells that may be written in the execution of this node (and
-	 * the called methods, if any).
-	 * <br>
+	 * the called methods, if any). <br>
 	 * Note that this field is used only for CFG leaf nodes. Once we add
-	 * {@link Predicate} to appropriate places in the
-	 * production rules, we can create appropriate interfaces for CFG leaf and
-	 * non-leaf nodes, and add this field in the
-	 * corresponding CFG nodes.
+	 * {@link Predicate} to appropriate places in the production rules, we can
+	 * create appropriate interfaces for CFG leaf and non-leaf nodes, and add this
+	 * field in the corresponding CFG nodes.
 	 */
 	private CellList writeList;
 
 	/**
 	 * Set of all the shared cells that may be read in the execution of this node
-	 * (and the called methods, if any).
-	 * <br>
+	 * (and the called methods, if any). <br>
 	 * Note that this field is used only for CFG leaf nodes. Once we add
-	 * {@link Predicate} to appropriate places in the
-	 * production rules, we can create appropriate interfaces for CFG leaf and
-	 * non-leaf nodes, and add this field in the
-	 * corresponding CFG nodes.
+	 * {@link Predicate} to appropriate places in the production rules, we can
+	 * create appropriate interfaces for CFG leaf and non-leaf nodes, and add this
+	 * field in the corresponding CFG nodes.
 	 */
 	private CellSet sharedReadSet;
 
 	/**
 	 * Set of all the shared cells that may be written in the execution of this node
-	 * (and the called methods, if any).
-	 * <br>
+	 * (and the called methods, if any). <br>
 	 * Note that this field is used only for CFG leaf nodes. Once we add
-	 * {@link Predicate} to appropriate places in the
-	 * production rules, we can create appropriate interfaces for CFG leaf and
-	 * non-leaf nodes, and add this field in the
-	 * corresponding CFG nodes.
+	 * {@link Predicate} to appropriate places in the production rules, we can
+	 * create appropriate interfaces for CFG leaf and non-leaf nodes, and add this
+	 * field in the corresponding CFG nodes.
 	 */
 	private CellSet sharedWriteSet;
 
 	/**
 	 * Set of all the shared cells that may be written in the execution of this node
-	 * (and the called methods, if any),
-	 * excluding all field accesses.
-	 * <br>
+	 * (and the called methods, if any), excluding all field accesses. <br>
 	 * Note that this field is used only for CFG leaf nodes. Once we add
-	 * {@link Predicate} to appropriate places in the
-	 * production rules, we can create appropriate interfaces for CFG leaf and
-	 * non-leaf nodes, and add this field in the
-	 * corresponding CFG nodes.
+	 * {@link Predicate} to appropriate places in the production rules, we can
+	 * create appropriate interfaces for CFG leaf and non-leaf nodes, and add this
+	 * field in the corresponding CFG nodes.
 	 */
 	private CellSet nonFieldReadSet;
 
 	/**
 	 * Set of all the shared cells that may be written in the execution of this node
-	 * (and the called methods, if any),
-	 * excluding all field accesses.
-	 * <br>
+	 * (and the called methods, if any), excluding all field accesses. <br>
 	 * Note that this field is used only for CFG leaf nodes. Once we add
-	 * {@link Predicate} to appropriate places in the
-	 * production rules, we can create appropriate interfaces for CFG leaf and
-	 * non-leaf nodes, and add this field in the
-	 * corresponding CFG nodes.
+	 * {@link Predicate} to appropriate places in the production rules, we can
+	 * create appropriate interfaces for CFG leaf and non-leaf nodes, and add this
+	 * field in the corresponding CFG nodes.
 	 */
 	private CellSet nonFieldWriteSet;
 
@@ -211,16 +204,14 @@ public class NodeInfo implements Cloneable {
 
 	/**
 	 * List of all the {@link CastExpression} expressions on which dereference may
-	 * have been made using an asterisk
-	 * ({@code *}), and whose dereferenced location may have been read within this
-	 * node.
+	 * have been made using an asterisk ({@code *}), and whose dereferenced location
+	 * may have been read within this node.
 	 */
 	private List<CastExpression> pointerDereferencedExpressionReads;
 	/**
 	 * List of all the {@link CastExpression} expressions on which dereference may
-	 * have been made using an asterisk
-	 * ({@code *}), and whose dereferenced location may have been written within
-	 * this node.
+	 * have been made using an asterisk ({@code *}), and whose dereferenced location
+	 * may have been written within this node.
 	 */
 	private List<CastExpression> pointerDereferencedExpressionWrites;
 
@@ -298,7 +289,7 @@ public class NodeInfo implements Cloneable {
 				.getInterProceduralLeafSuccessors(new CallStack())) {
 			Set<NodeWithStack> someEndPoints = new HashSet<>();
 			reachablesWithStack
-					.addAll(CollectorVisitor.collectNodesIntraTaskForwardBarrierFreePath(succ, someEndPoints));
+			.addAll(CollectorVisitor.collectNodesIntraTaskForwardBarrierFreePath(succ, someEndPoints));
 			reachablesWithStack.add(succ);
 			reachablesWithStack.addAll(someEndPoints);
 			endPoints.addAll(someEndPoints);
@@ -320,7 +311,7 @@ public class NodeInfo implements Cloneable {
 				.getInterProceduralLeafPredecessors(new CallStack())) {
 			Set<NodeWithStack> someEndPoints = new HashSet<>();
 			reachablesWithStack
-					.addAll(CollectorVisitor.collectNodesIntraTaskBackwardBarrierFreePath(pred, someEndPoints));
+			.addAll(CollectorVisitor.collectNodesIntraTaskBackwardBarrierFreePath(pred, someEndPoints));
 			reachablesWithStack.add(pred);
 			reachablesWithStack.addAll(someEndPoints);
 			endPoints.addAll(someEndPoints);
@@ -369,10 +360,8 @@ public class NodeInfo implements Cloneable {
 
 	/**
 	 * This method ensures that the points-to flow facts for all nodes have been
-	 * stabilized, if required. Note that
-	 * memoization of all access lists is disabled when running the stabilization of
-	 * points-to.
-	 * <br>
+	 * stabilized, if required. Note that memoization of all access lists is
+	 * disabled when running the stabilization of points-to. <br>
 	 * IMPORTANT: This method must always be called before attempting to read any
 	 * (of the six) memoized access list.
 	 *
@@ -394,8 +383,8 @@ public class NodeInfo implements Cloneable {
 
 	/**
 	 * Checks whether the points-to flow-facts might be stale, without resetting the
-	 * invalid flag. When this flag is
-	 * set, none of the memoized access lists are used as they are.
+	 * invalid flag. When this flag is set, none of the memoized access lists are
+	 * used as they are.
 	 *
 	 * @return
 	 */
@@ -421,8 +410,7 @@ public class NodeInfo implements Cloneable {
 	 * For some special cases, if the analysis has not yet been run even once, this
 	 * method runs the analysis.
 	 *
-	 * @param analysisName
-	 *                     an analysis name; check the method body to add more
+	 * @param analysisName an analysis name; check the method body to add more
 	 *                     analyses to the list of allowed analyses here.
 	 */
 	public static void checkFirstRun(AnalysisName analysisName) {
@@ -567,8 +555,7 @@ public class NodeInfo implements Cloneable {
 	 * {@code analysisName}.</li>
 	 * </ul>
 	 *
-	 * @param analysisName
-	 *                     name (ID) of the analysis for which the IN flow-fact of
+	 * @param analysisName name (ID) of the analysis for which the IN flow-fact of
 	 *                     this node has to be obtained.
 	 *
 	 * @return
@@ -581,14 +568,14 @@ public class NodeInfo implements Cloneable {
 		ProfileSS.addRelevantChangePoint(ProfileSS.ptaSet);
 		checkFirstRun(analysisName);
 		/*
-		 * Step 1: Get the analysis. If the analysis is INVALID, then mark it to
-		 * be valid, after running the analysis.
+		 * Step 1: Get the analysis. If the analysis is INVALID, then mark it to be
+		 * valid, after running the analysis.
 		 */
 		FlowAnalysis<?> analysisHandle = FlowAnalysis.getAllAnalyses().get(analysisName);
 		if (analysisHandle != null) {
 			/*
-			 * For this forward analysis, let's make the state consistent first,
-			 * if required.
+			 * For this forward analysis, let's make the state consistent first, if
+			 * required.
 			 */
 			if (Program.idfaUpdateCategory == UpdateCategory.EGINV || Program.idfaUpdateCategory == UpdateCategory.EGUPD
 					|| Program.idfaUpdateCategory == UpdateCategory.CPINV
@@ -623,6 +610,7 @@ public class NodeInfo implements Cloneable {
 						}
 						analysisHandle.markStateToBeValid();
 						if (analysisName == AnalysisName.POINTSTO) {
+							Program.basePointsTo = false;
 							Program.memoizeAccesses++;
 							// System.out.println("Triggering PTA stabilization in response to a query of
 							// points-to on " + Symbol.tempNow.getName());
@@ -636,7 +624,7 @@ public class NodeInfo implements Cloneable {
 					// if (analysisHandle.stateIsInvalid()) {
 					if (analysisHandle.stateIsInvalid()
 							&& (analysisName != AnalysisName.POINTSTO || !PointsToAnalysis.isHeuristicEnabled
-									|| PointsToAnalysis.affectedCellsInThisEpoch.contains(thisCell))) {
+							|| PointsToAnalysis.affectedCellsInThisEpoch.contains(thisCell))) {
 						if (Program.concurrencyAlgorithm == Program.ConcurrencyAlgorithm.YCON
 								|| Program.mhpUpdateCategory == UpdateCategory.LZINV) {
 							if (AbstractPhase.globalMHPStale) {
@@ -648,6 +636,7 @@ public class NodeInfo implements Cloneable {
 						}
 						analysisHandle.markStateToBeValid();
 						if (analysisName == AnalysisName.POINTSTO) {
+							Program.basePointsTo = false;
 							Program.memoizeAccesses++;
 							// System.out.println("Triggering PTA stabilization in response to a query of
 							// points-to on " + Symbol.tempNow.getName());
@@ -673,8 +662,7 @@ public class NodeInfo implements Cloneable {
 	 * Get the current IN object for give data-flow analysis, without running
 	 * stabilization pass.
 	 *
-	 * @param analysisName
-	 *                     analysis whose IN object has to be obtained.
+	 * @param analysisName analysis whose IN object has to be obtained.
 	 *
 	 * @return (unstable) IN flow-fact for {@code analysisName}.
 	 */
@@ -691,8 +679,7 @@ public class NodeInfo implements Cloneable {
 	 * Get the current OUT object for give data-flow analysis, without running
 	 * stabilization pass.
 	 *
-	 * @param analysisName
-	 *                     analysis whose OUT object has to be obtained.
+	 * @param analysisName analysis whose OUT object has to be obtained.
 	 *
 	 * @return (unstable) OUT flow-fact for {@code analysisName}.
 	 */
@@ -709,16 +696,33 @@ public class NodeInfo implements Cloneable {
 	 * Sets {@code flowFact} as the IN flow-fact for {@code analysisName} for this
 	 * node.
 	 *
-	 * @param analysisName
-	 *                     name (ID) of the analysis for which the OUT flow-fact of
+	 * @param analysisName name (ID) of the analysis for which the OUT flow-fact of
 	 *                     this node has to be obtained.
-	 * @param flowFact
-	 *                     new flow-fact to be set.
+	 * @param flowFact     new flow-fact to be set.
 	 */
 	public void setIN(AnalysisName analysisName, FlowFact flowFact) {
 		if (flowFactsIN == null) {
 			flowFactsIN = new HashMap<>();
 		}
+		// /*
+		// * Debugging code starts.
+		// */
+		// if (flowFact instanceof PointsToFlowMap) {
+		// PointsToFlowMap map = (PointsToFlowMap) flowFact;
+		// for (Cell key : map.getFlowMap().keySet()) {
+		// if (!key.toString().contains("363")) {
+		// continue;
+		// }
+		// ImmutableCellSet ics = map.getFlowMap().get(key);
+		// if (ics.size() == 2) {
+		// System.err.println("Found 363 in IN.");
+		// }
+		// }
+		// }
+		// /*
+		// * Debugging code ends.
+		// */
+
 		FlowFact oldIN = flowFactsIN.get(analysisName);
 		if (oldIN == flowFact) {
 			return;
@@ -746,8 +750,7 @@ public class NodeInfo implements Cloneable {
 	 * {@code analysisName}, even once.</li>
 	 * </ul>
 	 *
-	 * @param analysisName
-	 *                     name (ID) of the analysis for which the OUT flow-fact of
+	 * @param analysisName name (ID) of the analysis for which the OUT flow-fact of
 	 *                     this node has to be obtained.
 	 *
 	 * @return
@@ -756,14 +759,14 @@ public class NodeInfo implements Cloneable {
 		ProfileSS.addRelevantChangePoint(ProfileSS.ptaSet);
 		checkFirstRun(analysisName);
 		/*
-		 * Step 1: Get the analysis. If the analysis is INVALID, then mark it to
-		 * be valid, after running the analysis.
+		 * Step 1: Get the analysis. If the analysis is INVALID, then mark it to be
+		 * valid, after running the analysis.
 		 */
 		FlowAnalysis<?> analysisHandle = FlowAnalysis.getAllAnalyses().get(analysisName);
 		if (analysisHandle != null) {
 			/*
-			 * For this forward analysis, let's make the state consistent first,
-			 * if required.
+			 * For this forward analysis, let's make the state consistent first, if
+			 * required.
 			 */
 			if (Program.idfaUpdateCategory == UpdateCategory.EGINV || Program.idfaUpdateCategory == UpdateCategory.EGUPD
 					|| Program.idfaUpdateCategory == UpdateCategory.CPINV
@@ -797,6 +800,7 @@ public class NodeInfo implements Cloneable {
 					}
 					analysisHandle.markStateToBeValid();
 					if (analysisName == AnalysisName.POINTSTO) {
+						Program.basePointsTo = false;
 						Program.memoizeAccesses++;
 						analysisHandle.restartAnalysisFromStoredNodes();
 						Program.memoizeAccesses--;
@@ -823,16 +827,34 @@ public class NodeInfo implements Cloneable {
 	 * Sets {@code flowFact} as the OUT flow-fact for {@code analysisName} for this
 	 * node.
 	 *
-	 * @param analysisName
-	 *                     name (ID) of the analysis for which the OUT flow-fact of
+	 * @param analysisName name (ID) of the analysis for which the OUT flow-fact of
 	 *                     this node has to be obtained.
-	 * @param flowFact
-	 *                     new flow-fact to be set.
+	 * @param flowFact     new flow-fact to be set.
 	 */
 	public void setOUT(AnalysisName analysisName, FlowFact flowFact) {
 		if (flowFactsOUT == null) {
 			flowFactsOUT = new HashMap<>();
 		}
+
+		// /*
+		// * Debugging code starts.
+		// */
+		// if (flowFact instanceof PointsToFlowMap) {
+		// PointsToFlowMap map = (PointsToFlowMap) flowFact;
+		// for (Cell key : map.getFlowMap().keySet()) {
+		// if (!key.toString().contains("363")) {
+		// continue;
+		// }
+		// ImmutableCellSet ics = map.getFlowMap().get(key);
+		// if (ics.size() == 2) {
+		// System.err.println("Found 363 in OUT.");
+		// }
+		// }
+		// }
+		// /*
+		// * Debugging code ends.
+		// */
+
 		FlowFact oldOUT = flowFactsOUT.get(analysisName);
 		if (oldOUT == flowFact) {
 			return;
@@ -843,6 +865,166 @@ public class NodeInfo implements Cloneable {
 			}
 		}
 		flowFactsOUT.put(analysisName, flowFact);
+		return;
+	}
+
+	public CellSet getImpactedSet() {
+		if (impactedSet == null) {
+			this.impactedSet = new CellSet();
+		}
+		return this.impactedSet;
+	}
+
+	public boolean hasAccessedCellSetsFor(CellularDataFlowAnalysis<?> analysis) {
+		if (this.accessedCellSets == null) {
+			return false;
+		}
+		return this.accessedCellSets.keySet().contains(analysis);
+	}
+
+	public boolean hasReadCellSetsFor(CellularDataFlowAnalysis<?> analysis) {
+		if (this.readCellSets == null) {
+			return false;
+		}
+		return this.readCellSets.keySet().contains(analysis);
+	}
+
+	public boolean hasWrittenCellSetsFor(CellularDataFlowAnalysis<?> analysis) {
+		if (this.writtenCellSets == null) {
+			return false;
+		}
+		return this.writtenCellSets.keySet().contains(analysis);
+	}
+
+	public CellSet getAccessedCellSets(AnalysisName analysisName) {
+		if (this.accessedCellSets == null) {
+			return new CellSet();
+		}
+		for (CellularDataFlowAnalysis<?> analysis : this.accessedCellSets.keySet()) {
+			if (analysis.getAnalysisName().equals(analysisName)) {
+				return this.accessedCellSets.get(analysis);
+			}
+		}
+		return new CellSet();
+	}
+
+	public CellSet getReadCellSets(AnalysisName analysisName) {
+		if (this.readCellSets == null) {
+			return new CellSet();
+		}
+		for (CellularDataFlowAnalysis<?> analysis : this.readCellSets.keySet()) {
+			if (analysis.getAnalysisName().equals(analysisName)) {
+				return this.readCellSets.get(analysis);
+			}
+		}
+		return new CellSet();
+	}
+
+	public CellSet getWrittenCellSets(AnalysisName analysisName) {
+		if (this.writtenCellSets == null) {
+			return new CellSet();
+		}
+		for (CellularDataFlowAnalysis<?> analysis : this.writtenCellSets.keySet()) {
+			if (analysis.getAnalysisName().equals(analysisName)) {
+				return this.writtenCellSets.get(analysis);
+			}
+		}
+		return new CellSet();
+	}
+
+	public Set<CellularDataFlowAnalysis<?>> getAnalysesWithAccessedCells() {
+		Set<CellularDataFlowAnalysis<?>> retSet = new HashSet<>();
+		if (this.accessedCellSets == null) {
+			return retSet;
+		}
+		return this.accessedCellSets.keySet();
+	}
+
+	public Set<CellularDataFlowAnalysis<?>> getAnalysesWithReadCells() {
+		Set<CellularDataFlowAnalysis<?>> retSet = new HashSet<>();
+		if (this.readCellSets == null) {
+			return retSet;
+		}
+		return this.readCellSets.keySet();
+	}
+
+	public Set<CellularDataFlowAnalysis<?>> getAnalysesWithWrittenCells() {
+		Set<CellularDataFlowAnalysis<?>> retSet = new HashSet<>();
+		if (this.writtenCellSets == null) {
+			return retSet;
+		}
+		return this.writtenCellSets.keySet();
+	}
+
+	public CellSet getAccessedCellSets(CellularDataFlowAnalysis<?> analysis) {
+		if (accessedCellSets == null) {
+			accessedCellSets = new HashMap<>();
+		}
+		CellSet retSet = accessedCellSets.get(analysis);
+		if (retSet == null) {
+			retSet = new CellSet();
+			accessedCellSets.put(analysis, retSet);
+		}
+		return retSet;
+	}
+
+	public CellSet getReadCellSets(CellularDataFlowAnalysis<?> analysis) {
+		if (readCellSets == null) {
+			readCellSets = new HashMap<>();
+		}
+		CellSet retSet = readCellSets.get(analysis);
+		if (retSet == null) {
+			retSet = new CellSet();
+			readCellSets.put(analysis, retSet);
+		}
+		return retSet;
+	}
+
+	public CellSet getWrittenCellSets(CellularDataFlowAnalysis<?> analysis) {
+		if (writtenCellSets == null) {
+			writtenCellSets = new HashMap<>();
+		}
+		CellSet retSet = writtenCellSets.get(analysis);
+		if (retSet == null) {
+			retSet = new CellSet();
+			writtenCellSets.put(analysis, retSet);
+		}
+		return retSet;
+	}
+
+	public void clearAccessedCellSets(CellularDataFlowAnalysis<?> analysis) {
+		if (accessedCellSets == null) {
+			return;
+		}
+		CellSet retSet = accessedCellSets.get(analysis);
+		if (retSet == null) {
+			return;
+		}
+		retSet.clear();
+		return;
+	}
+
+	public void clearReadCellSets(CellularDataFlowAnalysis<?> analysis) {
+		if (readCellSets == null) {
+			return;
+		}
+		CellSet retSet = readCellSets.get(analysis);
+		if (retSet == null) {
+			return;
+		}
+		retSet.clear();
+		return;
+	}
+
+	public void clearWrittenCellSets(CellularDataFlowAnalysis<?> analysis) {
+		if (writtenCellSets == null) {
+			return;
+		}
+		CellSet retSet = writtenCellSets.get(analysis);
+		if (retSet == null) {
+			return;
+		}
+		retSet.clear();
 		return;
 	}
 
@@ -943,8 +1125,7 @@ public class NodeInfo implements Cloneable {
 
 	/**
 	 * For a given symbol, this method tells whether the corresponding block of
-	 * storage is shared or private at this
-	 * node.
+	 * storage is shared or private at this node.
 	 *
 	 * @param name
 	 *
@@ -1206,9 +1387,8 @@ public class NodeInfo implements Cloneable {
 
 	/**
 	 * Returns a set of all the cells that may be read in the execution of this node
-	 * (and the called methods, if any),
-	 * excluding the nodes that are encountered after the control leaves this node
-	 * from any exit-point.
+	 * (and the called methods, if any), excluding the nodes that are encountered
+	 * after the control leaves this node from any exit-point.
 	 *
 	 * @return set of all those cells that may be read between the entry to and exit
 	 *         from this node.
@@ -1216,9 +1396,8 @@ public class NodeInfo implements Cloneable {
 	public CellList getReads() {
 		if (Misc.isCFGLeafNode(this.getNode())) {
 			/*
-			 * If the pointer analysis is invalid, stabilize it first; while
-			 * running the pointer analysis, make sure that the memoization is
-			 * turned off.
+			 * If the pointer analysis is invalid, stabilize it first; while running the
+			 * pointer analysis, make sure that the memoization is turned off.
 			 */
 			if (this.readList == null) {
 				readList = CellAccessGetter.getReads(this.getNode());
@@ -1245,18 +1424,15 @@ public class NodeInfo implements Cloneable {
 
 	/**
 	 * Returns a set of all the cells that may be written in the execution of this
-	 * node (and the called methods, if
-	 * any). Note that this method also considers those accesses that may happen in
-	 * nodes that are not lexically inside
-	 * the owner node, and those that may be reachable via some jumps (not just
-	 * calls).
+	 * node (and the called methods, if any). Note that this method also considers
+	 * those accesses that may happen in nodes that are not lexically inside the
+	 * owner node, and those that may be reachable via some jumps (not just calls).
 	 *
 	 * <br>
 	 * Note that this field is used only for CFG leaf nodes. Once we add
-	 * {@link Predicate} to appropriate places in the
-	 * production rules, we can create appropriate interfaces for CFG leaf and
-	 * non-leaf nodes, and add this field in the
-	 * corresponding CFG nodes.
+	 * {@link Predicate} to appropriate places in the production rules, we can
+	 * create appropriate interfaces for CFG leaf and non-leaf nodes, and add this
+	 * field in the corresponding CFG nodes.
 	 *
 	 * @return set of all those cells that may be written in the execution of this
 	 *         node.
@@ -1264,9 +1440,8 @@ public class NodeInfo implements Cloneable {
 	public CellList getWrites() {
 		if (Misc.isCFGLeafNode(this.getNode())) {
 			/*
-			 * If the pointer analysis is invalid, stabilize it first; while
-			 * running the pointer analysis, make sure that the memoization is
-			 * turned off.
+			 * If the pointer analysis is invalid, stabilize it first; while running the
+			 * pointer analysis, make sure that the memoization is turned off.
 			 */
 
 			if (this.writeList == null) {
@@ -1309,17 +1484,14 @@ public class NodeInfo implements Cloneable {
 
 	/**
 	 * Returns a set of all the shared cells that may be read in the execution of
-	 * this node (and the called methods, if
-	 * any). Note that this method also considers those accesses that may happen in
-	 * nodes that are not lexically inside
-	 * the owner node, and those that may be reachable via some jumps (not just
-	 * calls).
-	 * <br>
+	 * this node (and the called methods, if any). Note that this method also
+	 * considers those accesses that may happen in nodes that are not lexically
+	 * inside the owner node, and those that may be reachable via some jumps (not
+	 * just calls). <br>
 	 * Note that this field is used only for CFG leaf nodes. Once we add
-	 * {@link Predicate} to appropriate places in the
-	 * production rules, we can create appropriate interfaces for CFG leaf and
-	 * non-leaf nodes, and add this field in the
-	 * corresponding CFG nodes.
+	 * {@link Predicate} to appropriate places in the production rules, we can
+	 * create appropriate interfaces for CFG leaf and non-leaf nodes, and add this
+	 * field in the corresponding CFG nodes.
 	 *
 	 * @return set of all those shared cells that may be read in the execution of
 	 *         this node.
@@ -1327,9 +1499,8 @@ public class NodeInfo implements Cloneable {
 	public CellSet getSharedReads() {
 		if (Misc.isCFGLeafNode(this.getNode())) {
 			/*
-			 * If the pointer analysis is invalid, stabilize it first; while
-			 * running the pointer analysis, make sure that the memoization is
-			 * turned off.
+			 * If the pointer analysis is invalid, stabilize it first; while running the
+			 * pointer analysis, make sure that the memoization is turned off.
 			 */
 			if (this.sharedReadSet == null) {
 				sharedReadSet = CellAccessGetter.getSharedReads(this.getNode());
@@ -1364,17 +1535,14 @@ public class NodeInfo implements Cloneable {
 
 	/**
 	 * Returns a set of all the shared cells that may be written in the execution of
-	 * this node (and the called methods,
-	 * if any). Note that this method also considers those accesses that may happen
-	 * in nodes that are not lexically
+	 * this node (and the called methods, if any). Note that this method also
+	 * considers those accesses that may happen in nodes that are not lexically
 	 * inside the owner node, and those that may be reachable via some jumps (not
-	 * just calls).
-	 * <br>
+	 * just calls). <br>
 	 * Note that this field is used only for CFG leaf nodes. Once we add
-	 * {@link Predicate} to appropriate places in the
-	 * production rules, we can create appropriate interfaces for CFG leaf and
-	 * non-leaf nodes, and add this field in the
-	 * corresponding CFG nodes.
+	 * {@link Predicate} to appropriate places in the production rules, we can
+	 * create appropriate interfaces for CFG leaf and non-leaf nodes, and add this
+	 * field in the corresponding CFG nodes.
 	 *
 	 * @return set of all those shared cells that may be written in the execution of
 	 *         this node.
@@ -1382,9 +1550,8 @@ public class NodeInfo implements Cloneable {
 	public CellSet getSharedWrites() {
 		if (Misc.isCFGLeafNode(this.getNode())) {
 			/*
-			 * If the pointer analysis is invalid, stabilize it first; while
-			 * running the pointer analysis, make sure that the memoization is
-			 * turned off.
+			 * If the pointer analysis is invalid, stabilize it first; while running the
+			 * pointer analysis, make sure that the memoization is turned off.
 			 */
 			if (this.sharedWriteSet == null) {
 				sharedWriteSet = CellAccessGetter.getSharedWrites(this.getNode());
@@ -1411,9 +1578,8 @@ public class NodeInfo implements Cloneable {
 
 	/**
 	 * Returns a set of all the symbols that may be read in the execution of this
-	 * node (and the called methods, if any),
-	 * excluding the nodes that are encountered after the control leaves this node
-	 * from any exit-point.
+	 * node (and the called methods, if any), excluding the nodes that are
+	 * encountered after the control leaves this node from any exit-point.
 	 *
 	 * @return set of all those symbols that may be read between the entry to and
 	 *         exit from this node.
@@ -1451,9 +1617,8 @@ public class NodeInfo implements Cloneable {
 
 	/**
 	 * Returns a set of all the symbols that may be written in the execution of this
-	 * node (and the called methods, if
-	 * any), excluding the nodes that are encountered after the control leaves this
-	 * node from any exit-point.
+	 * node (and the called methods, if any), excluding the nodes that are
+	 * encountered after the control leaves this node from any exit-point.
 	 *
 	 * @return set of all those symbols that may be written between the entry to and
 	 *         exit from this node.
@@ -1498,28 +1663,23 @@ public class NodeInfo implements Cloneable {
 
 	/**
 	 * Returns a set of all the shared cells that may be read in the execution of
-	 * this node (and the called methods, if
-	 * any), excluding all the field cells. Note that this method also considers
-	 * those accesses that may happen in nodes
+	 * this node (and the called methods, if any), excluding all the field cells.
+	 * Note that this method also considers those accesses that may happen in nodes
 	 * that are not lexically inside the owner node, and those that may be reachable
-	 * via some jumps (not just calls).
-	 * <br>
+	 * via some jumps (not just calls). <br>
 	 * Note that this field is used only for CFG leaf nodes. Once we add
-	 * {@link Predicate} to appropriate places in the
-	 * production rules, we can create appropriate interfaces for CFG leaf and
-	 * non-leaf nodes, and add this field in the
-	 * corresponding CFG nodes.
+	 * {@link Predicate} to appropriate places in the production rules, we can
+	 * create appropriate interfaces for CFG leaf and non-leaf nodes, and add this
+	 * field in the corresponding CFG nodes.
 	 *
 	 * @return set of all those shared cells that may be read in the execution of
-	 *         this node, excluding all the field
-	 *         cells.
+	 *         this node, excluding all the field cells.
 	 */
 	public CellSet getNonFieldSharedReads() {
 		if (Misc.isCFGLeafNode(this.getNode())) {
 			/*
-			 * If the pointer analysis is invalid, stabilize it first; while
-			 * running the pointer analysis, make sure that the memoization is
-			 * turned off.
+			 * If the pointer analysis is invalid, stabilize it first; while running the
+			 * pointer analysis, make sure that the memoization is turned off.
 			 */
 			boolean update = false;
 			if (this.nonFieldReadSet == null) {
@@ -1574,29 +1734,23 @@ public class NodeInfo implements Cloneable {
 
 	/**
 	 * Returns a set of all the shared cells that may be written in the execution of
-	 * this node (and the called methods,
-	 * if any), excluding all the field cells. Note that this method also considers
-	 * those accesses that may happen in
-	 * nodes that are not lexically inside the owner node, and those that may be
-	 * reachable via some jumps (not just
-	 * calls).
-	 * <br>
+	 * this node (and the called methods, if any), excluding all the field cells.
+	 * Note that this method also considers those accesses that may happen in nodes
+	 * that are not lexically inside the owner node, and those that may be reachable
+	 * via some jumps (not just calls). <br>
 	 * Note that this field is used only for CFG leaf nodes. Once we add
-	 * {@link Predicate} to appropriate places in the
-	 * production rules, we can create appropriate interfaces for CFG leaf and
-	 * non-leaf nodes, and add this field in the
-	 * corresponding CFG nodes.
+	 * {@link Predicate} to appropriate places in the production rules, we can
+	 * create appropriate interfaces for CFG leaf and non-leaf nodes, and add this
+	 * field in the corresponding CFG nodes.
 	 *
 	 * @return set of all those shared cells that may be written in the execution of
-	 *         this node, excluding all the field
-	 *         cells.
+	 *         this node, excluding all the field cells.
 	 */
 	public CellSet getNonFieldSharedWrites() {
 		if (Misc.isCFGLeafNode(this.getNode())) {
 			/*
-			 * If the pointer analysis is invalid, stabilize it first; while
-			 * running the pointer analysis, make sure that the memoization is
-			 * turned off.
+			 * If the pointer analysis is invalid, stabilize it first; while running the
+			 * pointer analysis, make sure that the memoization is turned off.
 			 */
 			boolean update = false;
 			if (this.nonFieldWriteSet == null) {
@@ -1666,14 +1820,12 @@ public class NodeInfo implements Cloneable {
 
 	/**
 	 * Obtain the list of access-expressions (composed up of {@link BaseSyntax} and
-	 * List{@literal <}{@link
-	 * Tokenizable}{@literal >}) representing array dereferences that may be read
-	 * anywhere in this node.
+	 * List{@literal <}{@link Tokenizable}{@literal >}) representing array
+	 * dereferences that may be read anywhere in this node.
 	 *
 	 * @return list of access-expressions (composed up of {@link BaseSyntax} and
-	 *         List{@literal <}{@link
-	 *         Tokenizable}{@literal >}) representing array dereferences that may be
-	 *         read anywhere in this node.
+	 *         List{@literal <}{@link Tokenizable}{@literal >}) representing array
+	 *         dereferences that may be read anywhere in this node.
 	 */
 	public List<SyntacticAccessExpression> getBaseAccessExpressionReads() {
 		Node node = this.getNode();
@@ -1690,14 +1842,12 @@ public class NodeInfo implements Cloneable {
 
 	/**
 	 * Obtain the list of access-expressions (composed up of {@link BaseSyntax} and
-	 * List{@literal <}{@link
-	 * Tokenizable}{@literal >}) representing array dereferences that may be written
-	 * anywhere in this node.
+	 * List{@literal <}{@link Tokenizable}{@literal >}) representing array
+	 * dereferences that may be written anywhere in this node.
 	 *
 	 * @return list of access-expressions (composed up of {@link BaseSyntax} and
-	 *         List{@literal <}{@link
-	 *         Tokenizable}{@literal >}) representing array dereferences that may be
-	 *         written anywhere in this node.
+	 *         List{@literal <}{@link Tokenizable}{@literal >}) representing array
+	 *         dereferences that may be written anywhere in this node.
 	 */
 	public List<SyntacticAccessExpression> getBaseAccessExpressionWrites() {
 		Node node = this.getNode();
@@ -1714,17 +1864,14 @@ public class NodeInfo implements Cloneable {
 
 	/**
 	 * Obtain a list of all the {@link CastExpression} expressions on which
-	 * dereference may have been made using an
-	 * asterisk ({@code *}), and whose dereferenced location may have been read
-	 * within this node.
-	 * <br>
+	 * dereference may have been made using an asterisk ({@code *}), and whose
+	 * dereferenced location may have been read within this node. <br>
 	 * For example, in {@code ... = *(e1);}, this method returns a set containing
 	 * {@code e1}.
 	 *
 	 * @return list of all the {@link CastExpression} expressions on which
-	 *         dereference may have been made using an
-	 *         asterisk ({@code *}), and whose dereferenced location may have been
-	 *         read within this node.
+	 *         dereference may have been made using an asterisk ({@code *}), and
+	 *         whose dereferenced location may have been read within this node.
 	 */
 	public List<CastExpression> getPointerDereferencedExpressionReads() {
 		Node node = this.getNode();
@@ -1741,17 +1888,14 @@ public class NodeInfo implements Cloneable {
 
 	/**
 	 * Obtain a list of all the {@link CastExpression} expressions on which
-	 * dereference may have been made using an
-	 * asterisk ({@code *}), and whose dereferenced location may have been written
-	 * within this node.
-	 * <br>
+	 * dereference may have been made using an asterisk ({@code *}), and whose
+	 * dereferenced location may have been written within this node. <br>
 	 * For example, in {@code *(e1) = ...;}, this method returns a set containing
 	 * {@code e1}.
 	 *
 	 * @return list of all the {@link CastExpression} expressions on which
-	 *         dereference may have been made using an
-	 *         asterisk ({@code *}), and whose dereferenced location may have been
-	 *         written within this node.
+	 *         dereference may have been made using an asterisk ({@code *}), and
+	 *         whose dereferenced location may have been written within this node.
 	 */
 	public List<CastExpression> getPointerDereferencedExpressionWrites() {
 		Node node = this.getNode();
@@ -1840,11 +1984,10 @@ public class NodeInfo implements Cloneable {
 
 	/**
 	 * Replaces all the occurrences of {@link Symbol} having names in
-	 * {@code freeNames} by {@link FreeVariable}, for the
-	 * {@link #readList} and {@link #writeList} of the owner leaf node.
+	 * {@code freeNames} by {@link FreeVariable}, for the {@link #readList} and
+	 * {@link #writeList} of the owner leaf node.
 	 *
-	 * @param freeNames
-	 *                  list of identifiers that refer to free variables in the
+	 * @param freeNames list of identifiers that refer to free variables in the
 	 *                  owner leaf node.
 	 */
 	public void makeSymbolsFreeInRWList(Set<String> freeNames) {
@@ -1952,9 +2095,8 @@ public class NodeInfo implements Cloneable {
 
 	/**
 	 * Returns a set of all those cells that may be accessible at the given node,
-	 * exclusively -- i.e., if this node is a
-	 * {@link Scopeable} object, then we do not include the set of those cells that
-	 * are created within this scope.
+	 * exclusively -- i.e., if this node is a {@link Scopeable} object, then we do
+	 * not include the set of those cells that are created within this scope.
 	 *
 	 * @return a set of all those cells that may be accessible at the given node,
 	 *         exclusively.
@@ -1973,9 +2115,8 @@ public class NodeInfo implements Cloneable {
 
 	/**
 	 * Returns the set of symbol names that are accessible at this node, exclusively
-	 * -- i.e., if this node is a {@link
-	 * Scopeable} object, then the names from the symbol table of this object are
-	 * not added to the return set.
+	 * -- i.e., if this node is a {@link Scopeable} object, then the names from the
+	 * symbol table of this object are not added to the return set.
 	 *
 	 * @return set of symbol names that are accessible at this node, exclusively.
 	 */
@@ -2225,13 +2366,12 @@ public class NodeInfo implements Cloneable {
 
 	/**
 	 * Returns the set of all those function-definitions (including the current node
-	 * itself, if it's a
-	 * function-definition), that may get executed during the processing of this
-	 * node.
+	 * itself, if it's a function-definition), that may get executed during the
+	 * processing of this node.
 	 *
 	 * @return set of all those function-definitions that may get executed during
-	 *         the execution of this node (including
-	 *         the node itself, if it's a function-definition).
+	 *         the execution of this node (including the node itself, if it's a
+	 *         function-definition).
 	 */
 	public Set<FunctionDefinition> getReachableCallGraphNodes() {
 		Set<FunctionDefinition> returnSet = new HashSet<>();
@@ -2250,12 +2390,10 @@ public class NodeInfo implements Cloneable {
 
 	/**
 	 * Obtain a set of all those function-definitions that may be the target of any
-	 * call-statement that is lexically
-	 * enclosed within the owner node.
+	 * call-statement that is lexically enclosed within the owner node.
 	 *
 	 * @return set of all those function-definitions that may be the target of any
-	 *         call-statement that is lexically
-	 *         enclosed within the owner node.
+	 *         call-statement that is lexically enclosed within the owner node.
 	 */
 	public Set<FunctionDefinition> getCallGraphSuccessors() {
 		Set<FunctionDefinition> calledFDs = new HashSet<>();
@@ -2265,20 +2403,27 @@ public class NodeInfo implements Cloneable {
 		return calledFDs;
 	}
 
+	private Set<CallStatement> reachableCallSites;
+	private int localCounter = -1;
+
 	public Set<CallStatement> getReachableCallStatementsInclusive() {
-		Set<CallStatement> callStmts = new HashSet<>();
-		Set<CallStatement> startSet = new HashSet<>(this.getLexicallyEnclosedCallStatements());
-		Set<CallStatement> endSet = new HashSet<>();
-		callStmts.addAll(CollectorVisitor.collectNodeSetInGenericGraph(startSet, endSet, (cs) -> false, (cs) -> {
-			Set<CallStatement> nextSet = new HashSet<>();
-			for (FunctionDefinition fd : cs.getInfo().getCalledDefinitions()) {
-				nextSet.addAll(fd.getInfo().getLexicallyEnclosedCallStatements());
-			}
-			return nextSet;
-		}));
-		callStmts.addAll(startSet);
-		callStmts.addAll(endSet);
-		return callStmts;
+		if (reachableCallSites == null || localCounter != AutomatedUpdater.reachableCounter) {
+			Set<CallStatement> callStmts = new HashSet<>();
+			Set<CallStatement> startSet = new HashSet<>(this.getLexicallyEnclosedCallStatements());
+			Set<CallStatement> endSet = new HashSet<>();
+			callStmts.addAll(CollectorVisitor.collectNodeSetInGenericGraph(startSet, endSet, (cs) -> false, (cs) -> {
+				Set<CallStatement> nextSet = new HashSet<>();
+				for (FunctionDefinition fd : cs.getInfo().getCalledDefinitions()) {
+					nextSet.addAll(fd.getInfo().getLexicallyEnclosedCallStatements());
+				}
+				return nextSet;
+			}));
+			callStmts.addAll(startSet);
+			callStmts.addAll(endSet);
+			this.reachableCallSites = callStmts;
+			localCounter = AutomatedUpdater.reachableCounter;
+		}
+		return reachableCallSites;
 	}
 
 	/**
@@ -2327,8 +2472,7 @@ public class NodeInfo implements Cloneable {
 	 * Obtain a set of all the non-leaf nodes that lexically enclose the node
 	 * {@code node}.
 	 *
-	 * @param node
-	 *             node of whose all non-leaf enclosers have to be found.
+	 * @param node node of whose all non-leaf enclosers have to be found.
 	 *
 	 * @return a set of all those non-leaf nodes that lexically enclose the node
 	 *         {@code node}
@@ -2348,13 +2492,12 @@ public class NodeInfo implements Cloneable {
 
 	/**
 	 * Returns the list of all the non-leaf nodes that enclose the owner node,
-	 * starting with the immediately enclosing
-	 * non-leaf encloser (exclusively). Note that root of the tree would be the last
-	 * element.
+	 * starting with the immediately enclosing non-leaf encloser (exclusively). Note
+	 * that root of the tree would be the last element.
 	 *
 	 * @return the list of all the non-leaf nodes that enclose {@code node},
-	 *         starting with the immediately enclosing
-	 *         non-leaf encloser (exclusively).
+	 *         starting with the immediately enclosing non-leaf encloser
+	 *         (exclusively).
 	 */
 	public List<Node> getNonLeafNestingPathExclusive() {
 		List<Node> nonLeafEnclosingPathExclusive = new LinkedList<>();
@@ -2369,12 +2512,12 @@ public class NodeInfo implements Cloneable {
 
 	/**
 	 * Get a set of all those non-leaf nodes that may enclose the given statement,
-	 * including those that may reside in
-	 * the callers of the function in which the given node exists.
+	 * including those that may reside in the callers of the function in which the
+	 * given node exists.
 	 *
 	 * @return a set of all those non-leaf nodes that may enclose the given
-	 *         statement, including those that may reside
-	 *         in the callers of the function in which the given node exists.
+	 *         statement, including those that may reside in the callers of the
+	 *         function in which the given node exists.
 	 */
 	public Set<Node> getCFGNestingNonLeafNodes() {
 		Set<Node> allEnclosers = CollectorVisitor.collectNodeSetInGenericGraph(this.node, null, (n) -> (n == null),
@@ -2402,8 +2545,7 @@ public class NodeInfo implements Cloneable {
 
 	/**
 	 * Find whether the control can flow in and out of this AST node except from the
-	 * beginning and end of it,
-	 * respectively.
+	 * beginning and end of it, respectively.
 	 *
 	 * @return
 	 */
@@ -2441,12 +2583,10 @@ public class NodeInfo implements Cloneable {
 
 	/**
 	 * Returns a set of those nodes which are sources of (intra-procedural) edges
-	 * that enter this node from somewhere
-	 * apart from BeginNode.
+	 * that enter this node from somewhere apart from BeginNode.
 	 *
 	 * @return a set of those nodes which are sources of (intra-procedural) edges
-	 *         that enter this node from somewhere
-	 *         apart from BeginNode.
+	 *         that enter this node from somewhere apart from BeginNode.
 	 */
 	public Set<Node> getInJumpSources() {
 		Set<Node> inJumpSources = new HashSet<>();
@@ -2466,12 +2606,10 @@ public class NodeInfo implements Cloneable {
 
 	/**
 	 * Returns a set of those nodes which are destinations of (intra-procedural)
-	 * edges that enter this node from
-	 * somewhere apart from BeginNode.
+	 * edges that enter this node from somewhere apart from BeginNode.
 	 *
 	 * @return a set of those nodes which are destinations of (intra-procedural)
-	 *         edges that enter this node from
-	 *         somewhere apart from BeginNode.
+	 *         edges that enter this node from somewhere apart from BeginNode.
 	 */
 	public Set<Node> getInJumpDestinations() {
 		Set<Node> inJumpDestinations = new HashSet<>();
@@ -2489,12 +2627,10 @@ public class NodeInfo implements Cloneable {
 
 	/**
 	 * Returns a set of those nodes which are destinations of (intra-procedural)
-	 * edges that leave this node from
-	 * somewhere apart from EndNode.
+	 * edges that leave this node from somewhere apart from EndNode.
 	 *
 	 * @return a set of those nodes which are destinations of (intra-procedural)
-	 *         edges that leave this node from
-	 *         somewhere apart from EndNode.
+	 *         edges that leave this node from somewhere apart from EndNode.
 	 */
 	public Set<Node> getOutJumpDestinations() {
 		Set<Node> outJumpDestinations = new HashSet<>();
@@ -2563,13 +2699,11 @@ public class NodeInfo implements Cloneable {
 
 	/**
 	 * Removes the unnecessary scoping of statements within this node, without
-	 * resorting to renaming of the nested
-	 * variables.
+	 * resorting to renaming of the nested variables.
 	 * <p>
 	 * Note: The pair of braces across each single-statement body is preserved.
 	 *
-	 * @param in
-	 *           input node which might contain more braces than it needs.
+	 * @param in input node which might contain more braces than it needs.
 	 */
 	public void removeExtraScopes() {
 		CompoundStatementNormalizer.removeExtraScopes(this.getNode());
@@ -2608,32 +2742,44 @@ public class NodeInfo implements Cloneable {
 
 	public String getDebugString() {
 		List<Commentor> commentors = new ArrayList<>();
-		commentors.add((n) -> {
-			String tempStr = "";
-			// FlowFact flow = n.getInfo().getCurrentIN(AnalysisName.PREDICATE_ANALYSIS);
-			// if (flow != null) {
-			// tempStr += "IN: " + flow.getString();
-			// }
-			FlowFact flow = n.getInfo().getCurrentOUT(AnalysisName.CROSSCALL_PREDICATE_ANALYSIS);
-			if (flow != null) {
-				tempStr += "OUT: " + flow.getString();
-			}
-			return tempStr;
-		});
 		// commentors.add((n) -> {
 		// String tempStr = "";
-		// FlowFact flow;
-		// // flow = n.getInfo().getIN(AnalysisName.POINTSTO);
+		// // FlowFact flow = n.getInfo().getCurrentIN(AnalysisName.PREDICATE_ANALYSIS);
 		// // if (flow != null) {
 		// // tempStr += "IN: " + flow.getString();
 		// // }
-		// // tempStr += "\n";
-		// flow = n.getInfo().getCurrentOUT(AnalysisName.POINTSTO);
+		// FlowFact flow =
+		// n.getInfo().getCurrentOUT(AnalysisName.CROSSCALL_PREDICATE_ANALYSIS);
 		// if (flow != null) {
 		// tempStr += "OUT: " + flow.getString();
 		// }
 		// return tempStr;
 		// });
+		commentors.add((n) -> {
+			String tempStr = "";
+			FlowFact flow;
+			// flow = n.getInfo().getIN(AnalysisName.POINTSTO);
+			// if (flow != null) {
+			// tempStr += "IN: " + flow.getString();
+			// }
+			// tempStr += "\n";
+			flow = n.getInfo().getCurrentOUT(AnalysisName.POINTSTO);
+			if (n instanceof BeginNode) {
+				tempStr += "[BeginNode of " + n.getParent().getClass().getSimpleName() + "]";
+			} else if (n instanceof EndNode) {
+				tempStr += "[EndNode of " + n.getParent().getClass().getSimpleName() + "]";
+			} else if (n instanceof ParameterDeclaration) {
+				tempStr += "[Parameter: " + n + "]";
+			} else if (n instanceof PreCallNode) {
+				tempStr += "[PRECALL NODE] ";
+			} else if (n instanceof PostCallNode) {
+				tempStr += "[POSTCALL NODE] ";
+			}
+			if (flow != null) {
+				tempStr += "OUT: " + flow.getString();
+			}
+			return tempStr;
+		});
 		// commentors.add((n) -> {
 		// String tempStr = "[";
 		// for (AbstractPhase<?, ?> ph :
@@ -2670,8 +2816,7 @@ public class NodeInfo implements Cloneable {
 	 * Obtain an internal CFG node in owner {@code node}, that contains the label
 	 * {@code l}.
 	 *
-	 * @param l
-	 *          label that has to be searched for.
+	 * @param l label that has to be searched for.
 	 *
 	 * @return CFG node that has a label-annotation of {@code l}; null, otherwise.
 	 */
@@ -2712,7 +2857,7 @@ public class NodeInfo implements Cloneable {
 		if (cpf == null) {
 			return returnSet;
 		}
-		returnSet = new ExtensibleCellMap<>(cpf.flowMap);
+		returnSet = new ExtensibleCellMap<>(cpf.getFlowMap());
 		return returnSet;
 	}
 
@@ -2741,8 +2886,7 @@ public class NodeInfo implements Cloneable {
 	 * the owner node, for cell {@code
 	 * cell}.
 	 *
-	 * @param cell
-	 *             whose reaching definition has to be found .
+	 * @param cell whose reaching definition has to be found .
 	 *
 	 * @return set of nodes which may represent definitions that are reachable at
 	 *         the owner node, for cell {@code cell}.
@@ -2753,7 +2897,7 @@ public class NodeInfo implements Cloneable {
 		if (rdf == null) {
 			return returnSet;
 		}
-		return rdf.flowMap.get(cell);
+		return rdf.getFlowMap().get(cell);
 		// OLD CODE:
 		// for (Definition def : rdf.flowMap.get(cell).getInternalSetCopy()) {
 		// Node defNode = def.getDefiningNode();
@@ -2776,16 +2920,16 @@ public class NodeInfo implements Cloneable {
 		if (rdf == null) {
 			return reachingDefinitions;
 		}
-		for (Cell key : rdf.flowMap.nonGenericKeySet()) {
+		for (Cell key : rdf.getFlowMap().nonGenericKeySet()) {
 			if (!cellsHere.contains(key)) {
 				continue;
 			}
 			// ImmutableDefinitionSet tempSet = rdf.flowMap.get(key);
-			reachingDefinitions.addAll(rdf.flowMap.get(key));
+			reachingDefinitions.addAll(rdf.getFlowMap().get(key));
 		}
-		if (rdf.flowMap.isUniversal()) {
+		if (rdf.getFlowMap().isUniversal()) {
 			reachingDefinitions = new HashSet<>(reachingDefinitions);
-			reachingDefinitions.addAll(rdf.flowMap.get(Cell.genericCell));
+			reachingDefinitions.addAll(rdf.getFlowMap().get(Cell.genericCell));
 			// ImmutableDefinitionSet tempSet = rdf.flowMap.get(Cell.genericCell);
 			// for (Definition def : tempSet) {
 			// reachingDefinitions.add(def.getDefiningNode());
@@ -2829,16 +2973,13 @@ public class NodeInfo implements Cloneable {
 
 	/**
 	 * Obtain the set of nodes which may represent definitions that may be reachable
-	 * to instances of the owner node in
-	 * given phase {@code ph}.
+	 * to instances of the owner node in given phase {@code ph}.
 	 *
-	 * @param ph
-	 *                                            phase in which the owner node
+	 * @param ph                                  phase in which the owner node
 	 *                                            exists, and for which the
 	 *                                            reaching-definitions have to be
 	 *                                            found.
-	 * @param phaseInsensitiveReachingDefinitions
-	 *                                            set of nodes that are
+	 * @param phaseInsensitiveReachingDefinitions set of nodes that are
 	 *                                            reaching-definitions of this node
 	 *                                            across all phases.
 	 *
@@ -3010,12 +3151,12 @@ public class NodeInfo implements Cloneable {
 
 	/**
 	 * Obtain the set of all those nodes for which there exists a symbol {@code s}
-	 * such that the value of {@code s} read
-	 * by that node is same as the value visible at the owner node.
+	 * such that the value of {@code s} read by that node is same as the value
+	 * visible at the owner node.
 	 *
 	 * @return set of all those nodes for which there exists a symbol {@code s} such
-	 *         that the value of {@code s} read by
-	 *         that node is same as the value visiable at the owner node.
+	 *         that the value of {@code s} read by that node is same as the value
+	 *         visiable at the owner node.
 	 */
 	public CellMap<NodeSet> getReadDestinations() {
 		if (!NodeInfo.ddfDone) {
@@ -3035,12 +3176,12 @@ public class NodeInfo implements Cloneable {
 
 	/**
 	 * Obtain the set of all those nodes for which there exists a symbol {@code s}
-	 * such that the value of {@code s}
-	 * written by that node is same as the value visible at owner node.
+	 * such that the value of {@code s} written by that node is same as the value
+	 * visible at owner node.
 	 *
 	 * @return set of all those nodes for which there exists a symbol {@code s} such
-	 *         that the value of {@code s} written
-	 *         by that node is same as the value visible at the owner node.
+	 *         that the value of {@code s} written by that node is same as the value
+	 *         visible at the owner node.
 	 */
 	public CellMap<NodeSet> getWriteDestinations() {
 		if (!NodeInfo.ddfDone) {
@@ -3060,8 +3201,8 @@ public class NodeInfo implements Cloneable {
 
 	/**
 	 * Populate the data structures {@link NodeInfo#readDestinations} and
-	 * {@link NodeInfo#writeDestinations} using the
-	 * forward data-dependence information, for all the nodes.
+	 * {@link NodeInfo#writeDestinations} using the forward data-dependence
+	 * information, for all the nodes.
 	 */
 	public static void setReadWriteDestinations() {
 		NodeInfo.readWriteDestinationsSet = true;
@@ -3230,15 +3371,13 @@ public class NodeInfo implements Cloneable {
 
 	/**
 	 * Collect first nodes reachable on all forward paths that may kill the value(s)
-	 * for any cell in {@code atStack}, as
-	 * visible at the exit to this node.
+	 * for any cell in {@code atStack}, as visible at the exit to this node.
 	 *
-	 * @param atStake
-	 *                a set of cells whose killers have to be found.
+	 * @param atStake a set of cells whose killers have to be found.
 	 *
 	 * @return set of all those first nodes reachable on all forward paths that may
-	 *         kill the value(s) for any cell in
-	 *         {@code atStack}, as visible at the exit to this node.
+	 *         kill the value(s) for any cell in {@code atStack}, as visible at the
+	 *         exit to this node.
 	 */
 	public Set<Node> getFirstPossibleKillersForwardExclusively(CellSet atStake) {
 		final Set<Node> nodeSet = new HashSet<>();
@@ -3259,18 +3398,14 @@ public class NodeInfo implements Cloneable {
 
 	/**
 	 * Collect all those forward reachable leaf nodes that may read same value for
-	 * the cell {@code w} as is visible at
-	 * the exit to this node.
-	 * <br>
+	 * the cell {@code w} as is visible at the exit to this node. <br>
 	 * Note that in this version, a node that both reads as well as writes to
 	 * {@code w} is not added to the return set.
 	 *
-	 * @param w
-	 *          a cell.
+	 * @param w a cell.
 	 *
 	 * @return set of all those forward reachable leaf nodes that may read same
-	 *         value for the cell {@code w} as is
-	 *         visible at the exit to this node.
+	 *         value for the cell {@code w} as is visible at the exit to this node.
 	 */
 	public Set<Node> getAllUsesForwardsExclusively(Cell w) {
 		Node leafNode = this.getNode();
@@ -3286,10 +3421,8 @@ public class NodeInfo implements Cloneable {
 				readSet.add(n.getNode());
 			}
 			/*
-			 * Stop the processing only when write to "w" is not optional at
-			 * this node.
-			 * Even on the termination node, if there is any read to "w", it
-			 * must be considered.
+			 * Stop the processing only when write to "w" is not optional at this node. Even
+			 * on the termination node, if there is any read to "w", it must be considered.
 			 */
 			CellSet writesOfN = new CellSet(n.getNode().getInfo().getWrites());
 			if (writesOfN.size() == 1 && writesOfN.contains(w)) {
@@ -3304,15 +3437,12 @@ public class NodeInfo implements Cloneable {
 
 	/**
 	 * A traversal based liveness information. This seems to be a much better
-	 * alternative than a costly IDFA pass, for
-	 * many scenarios.
+	 * alternative than a costly IDFA pass, for many scenarios.
 	 *
-	 * @param w
-	 *          a cell.
+	 * @param w a cell.
 	 *
 	 * @return true, if there may be any use of {@code w} on any path without it
-	 *         being overwritten, starting at the exit
-	 *         of this node.
+	 *         being overwritten, starting at the exit of this node.
 	 */
 	public boolean isCellLiveOut(Cell w) {
 		return this.hasUsesForwardsExclusively(w);
@@ -3320,17 +3450,13 @@ public class NodeInfo implements Cloneable {
 
 	/**
 	 * Checks if there is a forward reachable leaf node that may read same value for
-	 * the cell {@code w} as is visible at
-	 * the exit to this node.
-	 * <br>
+	 * the cell {@code w} as is visible at the exit to this node. <br>
 	 * Note that such node may even be a writer of {@code w}.
 	 *
-	 * @param w
-	 *          a cell.
+	 * @param w a cell.
 	 *
 	 * @return true if there exists a forward reachable leaf node that may read same
-	 *         value for the cell {@code w} as is
-	 *         visible at the exit to this node.
+	 *         value for the cell {@code w} as is visible at the exit to this node.
 	 */
 	public boolean hasUsesForwardsExclusively(Cell w) {
 		Node leafNode = this.getNode();
@@ -3346,10 +3472,8 @@ public class NodeInfo implements Cloneable {
 				readSet.add(n.getNode());
 			}
 			/*
-			 * Stop the processing only when write to "w" is not optional at
-			 * this node.
-			 * Even on the termination node, if there is any read to "w", it
-			 * must be considered.
+			 * Stop the processing only when write to "w" is not optional at this node. Even
+			 * on the termination node, if there is any read to "w", it must be considered.
 			 */
 			CellSet writesOfN = new CellSet(n.getNode().getInfo().getWrites());
 			if (writesOfN.size() == 1 && writesOfN.contains(w)) {
@@ -3368,15 +3492,12 @@ public class NodeInfo implements Cloneable {
 
 	/**
 	 * Collect all those backwards reachable leaf nodes that may read same value for
-	 * the cell {@code w} as is visible at
-	 * the entry to this node.
+	 * the cell {@code w} as is visible at the entry to this node.
 	 *
-	 * @param w
-	 *          a cell.
+	 * @param w a cell.
 	 *
 	 * @return set of all those backward reachable leaf nodes that may read same
-	 *         value for the cell {@code w} as is
-	 *         visible at the entry to this node.
+	 *         value for the cell {@code w} as is visible at the entry to this node.
 	 */
 	public Set<Node> getAllUsesBackwardsExclusively(Cell w) {
 		Node leafNode = this.getNode();
@@ -3388,10 +3509,9 @@ public class NodeInfo implements Cloneable {
 
 		CollectorVisitor.collectNodeSetInGenericGraph(startPoint, null, (n) -> {
 			/*
-			 * Stop the processing only when write to "w" is not optional at
-			 * this node.
-			 * Note that since write is assumed to happen at the end, we do not
-			 * consider the reads of n, if it already has a write to w.
+			 * Stop the processing only when write to "w" is not optional at this node. Note
+			 * that since write is assumed to happen at the end, we do not consider the
+			 * reads of n, if it already has a write to w.
 			 */
 			CellSet writesOfN = new CellSet(n.getNode().getInfo().getWrites());
 			if (writesOfN.size() == 1 && writesOfN.contains(w)) {
@@ -3410,15 +3530,13 @@ public class NodeInfo implements Cloneable {
 
 	/**
 	 * Checks if there is a backward reachable leaf node that may read same value
-	 * for the cell {@code w} as is visible
-	 * at the entry to this node.
+	 * for the cell {@code w} as is visible at the entry to this node.
 	 *
-	 * @param w
-	 *          a cell.
+	 * @param w a cell.
 	 *
 	 * @return true if there exists a backward reachable leaf node that may read
-	 *         same value for the cell {@code w} as is
-	 *         visible at the exit to this node.
+	 *         same value for the cell {@code w} as is visible at the exit to this
+	 *         node.
 	 */
 	public boolean hasUsesBackwardsExclusively(Cell w) {
 		Node leafNode = this.getNode();
@@ -3430,10 +3548,9 @@ public class NodeInfo implements Cloneable {
 
 		CollectorVisitor.collectNodeSetInGenericGraph(startPoint, null, (n) -> {
 			/*
-			 * Stop the processing only when write to "w" is not optional at
-			 * this node.
-			 * Note that since write is assumed to happen at the end, we do not
-			 * consider the reads of n, if it already has a write to w.
+			 * Stop the processing only when write to "w" is not optional at this node. Note
+			 * that since write is assumed to happen at the end, we do not consider the
+			 * reads of n, if it already has a write to w.
 			 */
 			CellSet writesOfN = new CellSet(n.getNode().getInfo().getWrites());
 			if (writesOfN.size() == 1 && writesOfN.contains(w)) {
@@ -3465,8 +3582,7 @@ public class NodeInfo implements Cloneable {
 
 	/**
 	 * Obtain a list of {@code #pragma imop ....} annotations. Note that this field
-	 * is applicable only for CFG nodes.
-	 * For other nodes, we simply return null.
+	 * is applicable only for CFG nodes. For other nodes, we simply return null.
 	 *
 	 * @return list of pragma imop annotations, corresponding to the owner CFG node.
 	 */
@@ -3482,9 +3598,8 @@ public class NodeInfo implements Cloneable {
 
 	/**
 	 * Given a set of nodes (possibly non-leaf), this method checks whether the
-	 * owner expression is a predicate of a
-	 * some non-leaf node that (i) is SCOPed, and (ii) does not contain any element
-	 * from the given set.
+	 * owner expression is a predicate of a some non-leaf node that (i) is SCOPed,
+	 * and (ii) does not contain any element from the given set.
 	 *
 	 * @param nodeSet
 	 *
@@ -3526,8 +3641,8 @@ public class NodeInfo implements Cloneable {
 
 	/**
 	 * Given a nodes, this method checks whether the owner expression is a predicate
-	 * of some non-leaf node that (i) is
-	 * SCOPed, and (ii) does not contain the given node.
+	 * of some non-leaf node that (i) is SCOPed, and (ii) does not contain the given
+	 * node.
 	 *
 	 * @param nodeSet
 	 *
@@ -3765,12 +3880,11 @@ public class NodeInfo implements Cloneable {
 
 	/**
 	 * For the owner node, this method returns a list of {@link Assignment} that may
-	 * possibly happen during the
-	 * execution of the owner node, and are lexically within the node. Note that the
-	 * assignment of arguments to
-	 * parameters, and returned value to the returned receiver are not considered as
-	 * lexically enclosed assignments.
-	 * Hence, an assignment may represent any of the following forms:
+	 * possibly happen during the execution of the owner node, and are lexically
+	 * within the node. Note that the assignment of arguments to parameters, and
+	 * returned value to the returned receiver are not considered as lexically
+	 * enclosed assignments. Hence, an assignment may represent any of the following
+	 * forms:
 	 * <ol>
 	 * <li>NonConditionalExpressions, e.g., {@code x = y + 3}</li>
 	 * <li>Initializations, e.g., {@code int x = y + 3}</li>
@@ -3796,12 +3910,10 @@ public class NodeInfo implements Cloneable {
 
 	/**
 	 * For the owner node, this method returns a list of {@link Assignment} that may
-	 * possibly happen during the
-	 * execution of the owner node. This list will also contain assignments that may
-	 * happen in any of the called
-	 * procedures, and also the assignments of arguments to parameters, and returned
-	 * values to return receiver. Hence,
-	 * Note an assignment may represent any of the following form:
+	 * possibly happen during the execution of the owner node. This list will also
+	 * contain assignments that may happen in any of the called procedures, and also
+	 * the assignments of arguments to parameters, and returned values to return
+	 * receiver. Hence, Note an assignment may represent any of the following form:
 	 * <ol>
 	 * <li>NonConditionalExpressions, e.g., {@code x = y + 3}</li>
 	 * <li>Initializations, e.g., {@code int x = y + 3}</li>
@@ -3833,17 +3945,14 @@ public class NodeInfo implements Cloneable {
 	 * Obtain string equivalent of the owner node, with the string of
 	 * {@code changeSource} replaced by the string {@code
 	 * replacementString} (if the replacement would actually be possible in the
-	 * AST).
-	 * <br>
+	 * AST). <br>
 	 * Note that no resulting changes are done to the AST of the owner node, or the
-	 * {@code changeSource} node. Also note
-	 * that this method is very different from a simple substring replacement.
+	 * {@code changeSource} node. Also note that this method is very different from
+	 * a simple substring replacement.
 	 *
-	 * @param changeSource
-	 *                          node whose string equivalent should be replaced with
+	 * @param changeSource      node whose string equivalent should be replaced with
 	 *                          {@code changeDestination}, in the return value.
-	 * @param replacementString
-	 *                          string that should replace the string of
+	 * @param replacementString string that should replace the string of
 	 *                          {@code changeSource} in the return value.
 	 *
 	 * @return string of the owner node, with the string of {@code changeSource},
@@ -3911,11 +4020,9 @@ public class NodeInfo implements Cloneable {
 	 * Used to obtain the cell, if any, that has been written cleanly in this node.
 	 * <br>
 	 * We assume that a leaf CFG node performs a clean write to a cell, if it does
-	 * not perform any other write, and if
-	 * it does not read from that cell.
+	 * not perform any other write, and if it does not read from that cell.
 	 *
-	 * @param n
-	 *          node that has to be tested.
+	 * @param n node that has to be tested.
 	 *
 	 * @return cell that has been cleanly written in this node, otherwise null.
 	 */
@@ -3937,14 +4044,11 @@ public class NodeInfo implements Cloneable {
 	}
 
 	/**
-	 * Used to check if this node is a clean-write to any cell.
-	 * <br>
+	 * Used to check if this node is a clean-write to any cell. <br>
 	 * We assume that a leaf CFG node performs a clean write to a cell, if it does
-	 * not perform any other write, and if
-	 * it does not read from that cell.
+	 * not perform any other write, and if it does not read from that cell.
 	 *
-	 * @param n
-	 *          node that has to be tested.
+	 * @param n node that has to be tested.
 	 *
 	 * @return true, if this node is a clean-write to the node n.
 	 */
@@ -3974,9 +4078,8 @@ public class NodeInfo implements Cloneable {
 
 	/**
 	 * List of locks that are taken before execution of the current node. <br>
-	 * Note that the list is maintained in the
-	 * increasing order of closeness of locks to the node -- the
-	 * immediately-enclosing lock should be present as the
+	 * Note that the list is maintained in the increasing order of closeness of
+	 * locks to the node -- the immediately-enclosing lock should be present as the
 	 * last element of this list.
 	 */
 	@Deprecated
@@ -3984,9 +4087,8 @@ public class NodeInfo implements Cloneable {
 
 	/**
 	 * A relatively faster version of clone. However, note that this method works on
-	 * an existing object. This method
-	 * should be called first from the overridden setInfo method in the subclasses
-	 * of Info.
+	 * an existing object. This method should be called first from the overridden
+	 * setInfo method in the subclasses of Info.
 	 *
 	 * @param oldInfo
 	 */
@@ -3998,8 +4100,7 @@ public class NodeInfo implements Cloneable {
 		this.setIdNumber(oldInfo.getIdNumber());
 
 		/*
-		 * For each analysis, the data flow-facts should be copied from the
-		 * oldInfo,
+		 * For each analysis, the data flow-facts should be copied from the oldInfo,
 		 * while making a duplicate of a CFG node.
 		 */
 		if (Misc.isCFGNode(oldInfo.getNode())) {
@@ -4054,12 +4155,10 @@ public class NodeInfo implements Cloneable {
 
 	/**
 	 * Find whether the control can flow in and out of this AST node except from the
-	 * beginning and end of it,
-	 * respectively.
+	 * beginning and end of it, respectively.
 	 *
 	 * @return true, if the control can flow in and out of this AST node except from
-	 *         the beginning and end of it,
-	 *         respectively.
+	 *         the beginning and end of it, respectively.
 	 *
 	 * @see NodeInfo#isControlConfined()
 	 * @deprecated
@@ -4139,11 +4238,9 @@ public class NodeInfo implements Cloneable {
 
 	/**
 	 * Returns true if a parallel-flow-fact IN object exists for the owner node,
-	 * corresponding to the specified analysis
-	 * name.
+	 * corresponding to the specified analysis name.
 	 *
-	 * @param analysisName
-	 *                     enumeration constant corresponding to the analysis for
+	 * @param analysisName enumeration constant corresponding to the analysis for
 	 *                     which the object has to be checked.
 	 *
 	 * @return true, if the object for parallel-flow-fact IN, corresponding to
@@ -4160,11 +4257,9 @@ public class NodeInfo implements Cloneable {
 
 	/**
 	 * Returns true if a parallel-flow-fact OUT object exists for the owner node,
-	 * corresponding to the specified
-	 * analysis name.
+	 * corresponding to the specified analysis name.
 	 *
-	 * @param analysisName
-	 *                     enumeration constant corresponding to the analysis for
+	 * @param analysisName enumeration constant corresponding to the analysis for
 	 *                     which the object has to be checked.
 	 *
 	 * @return true, if the object for parallel-flow-fact OUT, corresponding to
@@ -4183,8 +4278,7 @@ public class NodeInfo implements Cloneable {
 	 * Returns true if a flow-fact IN object exists for the owner node,
 	 * corresponding to the specified analysis name.
 	 *
-	 * @param analysisName
-	 *                     enumeration constant corresponding to the analysis for
+	 * @param analysisName enumeration constant corresponding to the analysis for
 	 *                     which the object has to be checked.
 	 *
 	 * @return true, if the object for flow-fact IN, corresponding to
@@ -4203,8 +4297,7 @@ public class NodeInfo implements Cloneable {
 	 * Returns true if a flow-fact OUT object exists for the owner node,
 	 * corresponding to the specified analysis name.
 	 *
-	 * @param analysisName
-	 *                     enumeration constant corresponding to the analysis for
+	 * @param analysisName enumeration constant corresponding to the analysis for
 	 *                     which the object has to be checked.
 	 *
 	 * @return true, if the object for flow-fact OUT, corresponding to
@@ -4221,15 +4314,11 @@ public class NodeInfo implements Cloneable {
 
 	/**
 	 * Returns the parallel-flow-fact IN object stored with the key
-	 * {@code analysisName} in {@code parallelFlowFactsIN}
-	 * map of the owner node.
+	 * {@code analysisName} in {@code parallelFlowFactsIN} map of the owner node.
 	 *
-	 * @param analysisName
-	 *                     Enumerator constant that corresponds to the analysis for
-	 *                     which the parallel flow-fact IN object is
-	 *                     needed.
-	 * @param pass
-	 *                     An object of the analysis of type
+	 * @param analysisName Enumerator constant that corresponds to the analysis for
+	 *                     which the parallel flow-fact IN object is needed.
+	 * @param pass         An object of the analysis of type
 	 *                     {@code analysisName</code>}.
 	 *
 	 * @return The parallel-flow-fact IN object corresponding to the analysis
@@ -4252,12 +4341,9 @@ public class NodeInfo implements Cloneable {
 	 * {@code analysisName} in {@code
 	 * parallelFlowFactsOUT} map of the owner node.
 	 *
-	 * @param analysisName
-	 *                     Enumerator constant that corresponds to the analysis for
-	 *                     which the parallel flow-fact OUT object is
-	 *                     needed.
-	 * @param pass
-	 *                     An object of the analysis of type
+	 * @param analysisName Enumerator constant that corresponds to the analysis for
+	 *                     which the parallel flow-fact OUT object is needed.
+	 * @param pass         An object of the analysis of type
 	 *                     {@code analysisName</code>}.
 	 *
 	 * @return The parallel-flow-fact OUT object corresponding to the analysis
@@ -4276,24 +4362,19 @@ public class NodeInfo implements Cloneable {
 	}
 
 	/**
-	 * Returns the flow-fact IN object stored with the key
-	 * <code>analysisName</code> in <code>flowFactsIN</code> map of the owner
-	 * node.
+	 * Returns the flow-fact IN object stored with the key <code>analysisName</code>
+	 * in <code>flowFactsIN</code> map of the owner node.
 	 * <p>
 	 * If there is no entry for {@code analysisName}, this method initializes the
-	 * entry with {@code Top} element
-	 * corresponding to the specified {@code pass}.
+	 * entry with {@code Top} element corresponding to the specified {@code pass}.
 	 *
-	 * @param analysisName
-	 *                     Enumerator constant that corresponds to the analysis for
+	 * @param analysisName Enumerator constant that corresponds to the analysis for
 	 *                     which the flow-fact IN object is needed.
-	 * @param pass
-	 *                     An object of the analysis of type
+	 * @param pass         An object of the analysis of type
 	 *                     <code>analysisName</code>.
 	 *
 	 * @return The flow-fact IN object corresponding to the specified {@code pass},
-	 *         else <code>Top</code> corresponding
-	 *         to the specified {@code pass}.
+	 *         else <code>Top</code> corresponding to the specified {@code pass}.
 	 */
 	@Deprecated
 	public Deprecated_FlowFact getFlowFactIN(AnalysisName analysisName,
@@ -4314,15 +4395,13 @@ public class NodeInfo implements Cloneable {
 	}
 
 	/**
-	 * Returns the flow-fact IN object stored with the key
-	 * <code>analysisName</code> in <code>flowFactsIN</code> map of the owner
-	 * node.
+	 * Returns the flow-fact IN object stored with the key <code>analysisName</code>
+	 * in <code>flowFactsIN</code> map of the owner node.
 	 * <p>
 	 * If this method returns <code>null</code>, one should use the
 	 * <code>setFlowFactOUT</code> to add the flow-fact entry to the map.
 	 *
-	 * @param analysisName
-	 *                     Enumerator constant that corresponds to the analysis for
+	 * @param analysisName Enumerator constant that corresponds to the analysis for
 	 *                     which the flow-fact IN object is needed.
 	 *
 	 * @return The flow-fact IN object corresponding to the specified {@code pass},
@@ -4344,20 +4423,16 @@ public class NodeInfo implements Cloneable {
 
 	/**
 	 * Returns the flow-fact OUT object stored with the key
-	 * <code>analysisName</code> in <code>flowFactsOUT</code> map of the owner
-	 * node.
+	 * <code>analysisName</code> in <code>flowFactsOUT</code> map of the owner node.
 	 * <p>
 	 *
-	 * @param analysisName
-	 *                     Enumerator constant that corresponds to the analysis for
+	 * @param analysisName Enumerator constant that corresponds to the analysis for
 	 *                     which the flow-fact OUT object is needed.
-	 * @param pass
-	 *                     An object of the analysis of type
+	 * @param pass         An object of the analysis of type
 	 *                     <code>analysisName</code>.
 	 *
 	 * @return The flow-fact OUT object corresponding to the specified {@code pass},
-	 *         else <code>Top</code> corresponding
-	 *         to the specified {@code pass}.
+	 *         else <code>Top</code> corresponding to the specified {@code pass}.
 	 */
 	@Deprecated
 	public Deprecated_FlowFact getFlowFactOUT(AnalysisName analysisName,
@@ -4379,12 +4454,10 @@ public class NodeInfo implements Cloneable {
 
 	/**
 	 * Returns the flow-fact OUT object stored with the key
-	 * <code>analysisName</code> in <code>flowFactsOUT</code> map of the owner
-	 * node.
+	 * <code>analysisName</code> in <code>flowFactsOUT</code> map of the owner node.
 	 * <p>
 	 *
-	 * @param analysisName
-	 *                     Enumerator constant that corresponds to the analysis for
+	 * @param analysisName Enumerator constant that corresponds to the analysis for
 	 *                     which the flow-fact OUT object is needed.
 	 *
 	 * @return The flow-fact OUT object corresponding to the specified {@code pass},
@@ -4406,15 +4479,12 @@ public class NodeInfo implements Cloneable {
 
 	/**
 	 * Stores the provided flow-fact object, <code>flowFact</code>, with the
-	 * specified analysis
-	 * <code>analysisName</code>, as a key in the {@code parallelFlowFactsIN} map.
+	 * specified analysis <code>analysisName</code>, as a key in the
+	 * {@code parallelFlowFactsIN} map.
 	 *
-	 * @param analysisName
-	 *                     Enumerator constant that corresponds to the analysis for
-	 *                     which the parallel-flow-fact IN object has to be
-	 *                     stored.
-	 * @param flowFact
-	 *                     The parallel-flow-fact IN object corresponding to the
+	 * @param analysisName Enumerator constant that corresponds to the analysis for
+	 *                     which the parallel-flow-fact IN object has to be stored.
+	 * @param flowFact     The parallel-flow-fact IN object corresponding to the
 	 *                     analysis specified with <code>analysisName</code>.
 	 */
 	@Deprecated
@@ -4427,16 +4497,12 @@ public class NodeInfo implements Cloneable {
 
 	/**
 	 * Stores the provided flow-fact object, <code>flowFact</code>, with the
-	 * specified analysis
-	 * <code>analysisName</code>, as a key in the
+	 * specified analysis <code>analysisName</code>, as a key in the
 	 * <code>flowFactsOUT</code> map.
 	 *
-	 * @param analysisName
-	 *                     Enumerator constant that corresponds to the analysis for
-	 *                     which the flow-fact OUT object has to be
-	 *                     stored.
-	 * @param flowFact
-	 *                     The flow-fact OUT object corresponding to the analysis
+	 * @param analysisName Enumerator constant that corresponds to the analysis for
+	 *                     which the flow-fact OUT object has to be stored.
+	 * @param flowFact     The flow-fact OUT object corresponding to the analysis
 	 *                     specified with <code>analysisName</code>.
 	 */
 	@Deprecated
@@ -4449,15 +4515,12 @@ public class NodeInfo implements Cloneable {
 
 	/**
 	 * Stores the provided flow-fact object, <code>flowFact</code>, with the
-	 * specified analysis
-	 * <code>analysisName</code>, as a key in the
+	 * specified analysis <code>analysisName</code>, as a key in the
 	 * <code>flowFactsIN</code> map.
 	 *
-	 * @param analysisName
-	 *                     Enumerator constant that corresponds to the analysis for
+	 * @param analysisName Enumerator constant that corresponds to the analysis for
 	 *                     which the flow-fact IN object has to be stored.
-	 * @param flowFact
-	 *                     The flow-fact IN object corresponding to the analysis
+	 * @param flowFact     The flow-fact IN object corresponding to the analysis
 	 *                     specified with <code>analysisName</code>.
 	 */
 	@Deprecated
@@ -4470,16 +4533,12 @@ public class NodeInfo implements Cloneable {
 
 	/**
 	 * Stores the provided flow-fact object, <code>flowFact</code>, with the
-	 * specified analysis
-	 * <code>analysisName</code>, as a key in the
+	 * specified analysis <code>analysisName</code>, as a key in the
 	 * <code>flowFactsOUT</code> map.
 	 *
-	 * @param analysisName
-	 *                     Enumerator constant that corresponds to the analysis for
-	 *                     which the flow-fact OUT object has to be
-	 *                     stored.
-	 * @param flowFact
-	 *                     The flow-fact OUT object corresponding to the analysis
+	 * @param analysisName Enumerator constant that corresponds to the analysis for
+	 *                     which the flow-fact OUT object has to be stored.
+	 * @param flowFact     The flow-fact OUT object corresponding to the analysis
 	 *                     specified with <code>analysisName</code>.
 	 */
 	@Deprecated
@@ -4494,8 +4553,7 @@ public class NodeInfo implements Cloneable {
 	 * Loses all references to the information related to particular analysis,
 	 * thereby helping the GC.
 	 *
-	 * @param type
-	 *             Analysis related to which the complete information has to be
+	 * @param type Analysis related to which the complete information has to be
 	 *             deleted.
 	 */
 	@Deprecated
@@ -4514,8 +4572,7 @@ public class NodeInfo implements Cloneable {
 	 * Loses all references to the information related to particular analysis,
 	 * thereby helping the GC.
 	 *
-	 * @param type
-	 *             Analysis related to which the complete information has to be
+	 * @param type Analysis related to which the complete information has to be
 	 *             deleted.
 	 */
 	@Deprecated

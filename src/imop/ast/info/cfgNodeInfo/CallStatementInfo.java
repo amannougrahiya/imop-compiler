@@ -2,7 +2,7 @@
  * Copyright (c) 2019 Aman Nougrahiya, V Krishna Nandivada, IIT Madras.
  * This file is a part of the project IMOP, licensed under the MIT license.
  * See LICENSE.md for the full text of the license.
- * 
+ *
  * The above notice shall be included in all copies or substantial
  * portions of this file.
  */
@@ -15,13 +15,14 @@ import imop.lib.analysis.flowanalysis.Cell;
 import imop.lib.analysis.flowanalysis.FreeVariable;
 import imop.lib.analysis.flowanalysis.Symbol;
 import imop.lib.analysis.mhp.lock.RoutineLock;
-import imop.lib.analysis.typeSystem.FunctionType;
-import imop.lib.analysis.typeSystem.PointerType;
+import imop.lib.analysis.typesystem.FunctionType;
+import imop.lib.analysis.typesystem.PointerType;
 import imop.lib.cfg.info.CallStatementCFGInfo;
 import imop.lib.util.CellList;
 import imop.lib.util.ImmutableCellSet;
 import imop.lib.util.Misc;
 import imop.lib.util.ProfileSS;
+import imop.parser.Program;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -68,7 +69,7 @@ public class CallStatementInfo extends StatementInfo {
 	 * Returns the symbol for the function-designator at this
 	 * call-statement.<br>
 	 * Note that this symbol could be a direct call, or a function-pointer.
-	 * 
+	 *
 	 * @return
 	 */
 	public Cell getFunctionDesignator() {
@@ -78,10 +79,10 @@ public class CallStatementInfo extends StatementInfo {
 			if (sym instanceof FreeVariable) {
 				Node encloser = callStmt.getFunctionDesignatorNode().getInfo().getOuterMostNonLeafEncloser();
 				if (!(encloser instanceof FunctionDefinition)) {
-					System.err.println("Cannot find any parent for " + callStmt.getFunctionDesignatorNode());
+					System.err.println("Warning: Cannot find any parent for " + callStmt.getFunctionDesignatorNode());
 				} else {
 					Misc.warnDueToLackOfFeature(
-							"Could not find any declaration for " + callStmt.getFunctionDesignatorNode() + ".",
+							"Warning: Could not find any declaration for " + callStmt.getFunctionDesignatorNode() + ".",
 							this.getNode());
 				}
 				this.functionDesignatorCell = null;
@@ -96,7 +97,7 @@ public class CallStatementInfo extends StatementInfo {
 	 * Returns true if we deterministically know the called function symbol at
 	 * this
 	 * call-statement.
-	 * 
+	 *
 	 * @return
 	 */
 	public boolean hasKnownCalledFunctionSymbol() {
@@ -110,7 +111,7 @@ public class CallStatementInfo extends StatementInfo {
 	/**
 	 * Returns the set of FunctionDefinitions that
 	 * this call-statement may potentially target.
-	 * 
+	 *
 	 * @return
 	 */
 	public List<FunctionDefinition> getCalledDefinitions() {
@@ -121,14 +122,25 @@ public class CallStatementInfo extends StatementInfo {
 				Cell funcDesig = this.getFunctionDesignator();
 				if (funcDesig != null) {
 					ImmutableCellSet set = funcDesig.getPointsTo(this.getNode());
-					set.applyAllExpanded((cell) -> {
-						if (cell instanceof Symbol) {
-							Symbol sym = (Symbol) cell;
-							if (sym.getDeclaringNode() instanceof FunctionDefinition) {
-								calledDefinitions.add((FunctionDefinition) sym.getDeclaringNode());
+					if (set.isUniversal()) {
+						// New Code: Now we do not add definition for main
+						for (FunctionDefinition fd : Program.getRoot().getInfo().getAllFunctionDefinitions()) {
+							if (fd != Program.getRoot().getInfo().getMainFunction()) {
+								calledDefinitions.add(fd);
 							}
 						}
-					});
+						// Old Code: We were adding all the function definitions.
+						// calledDefinitions.addAll(Program.getRoot().getInfo().getAllFunctionDefinitions());
+					} else {
+						set.applyAllExpanded((cell) -> {
+							if (cell instanceof Symbol) {
+								Symbol sym = (Symbol) cell;
+								if (sym.getDeclaringNode() instanceof FunctionDefinition) {
+									calledDefinitions.add((FunctionDefinition) sym.getDeclaringNode());
+								}
+							}
+						});
+					}
 				}
 			} else {
 				Cell cell = this.getFunctionDesignator();
@@ -157,7 +169,7 @@ public class CallStatementInfo extends StatementInfo {
 	/**
 	 * Returns the set of function-designator symbols that may
 	 * be the potential called functions of this call-statement.
-	 * 
+	 *
 	 * @return
 	 */
 	public CellList getCalledSymbols() {
@@ -183,7 +195,7 @@ public class CallStatementInfo extends StatementInfo {
 	/**
 	 * Returns a copy of the ordered list of simple-primary expressions,
 	 * that represent the various arguments passed at this call-statement.
-	 * 
+	 *
 	 * @return
 	 */
 	public List<SimplePrimaryExpression> getArgumentList() {

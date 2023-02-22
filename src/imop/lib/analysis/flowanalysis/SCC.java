@@ -13,15 +13,20 @@ import imop.ast.node.external.*;
 import imop.ast.node.internal.*;
 import imop.lib.analysis.CoExistenceChecker;
 import imop.lib.analysis.flowanalysis.generic.AnalysisDimension.SVEDimension;
+import imop.lib.analysis.flowanalysis.generic.CellularDataFlowAnalysis;
 import imop.lib.analysis.mhp.AbstractPhase;
 import imop.lib.analysis.mhp.AbstractPhasePointable;
 import imop.lib.cfg.info.CFGInfo;
 import imop.lib.cfg.parallel.InterTaskEdge;
+import imop.lib.util.CellSet;
+import imop.lib.util.Misc;
 import imop.lib.util.TraversalOrderObtainer;
 import imop.parser.Program;
 
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.Stack;
 
@@ -43,9 +48,18 @@ public class SCC implements DFable {
 
 	private static Stack<Node> internalStack;
 	private static int tarjanI;
+	private static int currentNonCircularSCCCount = -1;
 
-	private static Set<SCC> allSCCs = new HashSet<>();
+	public static Set<SCC> allSCCs = new HashSet<>();
 	private static Set<Node> allSCCNodes = new HashSet<>();
+
+	public static void setCurrentNonCircularSCCCount(int count) {
+		SCC.currentNonCircularSCCCount = count;
+	}
+
+	public static int getCurrentNonCircularSCCCount() {
+		return currentNonCircularSCCCount;
+	}
 
 	public SCC(Set<Node> nodes) {
 		// We allow generation of only those SCCs that have at least two nodes within
@@ -59,6 +73,10 @@ public class SCC implements DFable {
 		allSCCs.add(this);
 		// tempSum += this.nodes.size();
 		// System.out.println("Creating an SCC of size " + this.nodes.size());
+	}
+
+	public static int getAllSCCSize() {
+		return SCC.allSCCs.size();
 	}
 
 	@Override
@@ -77,6 +95,10 @@ public class SCC implements DFable {
 
 	public Set<Node> getNodes() {
 		return this.nodes;
+	}
+
+	public int getNodeCount() {
+		return this.nodes.size();
 	}
 
 	public Set<Node> getEntryNodes() {
@@ -187,7 +209,7 @@ public class SCC implements DFable {
 
 	public static void initializeSCC() {
 		// TODO: Check whether the next line should be here (risking incorrect recursive
-		// radings until the end of this method),
+		// readings until the end of this method),
 		// or whether it should be at the end (risking infinite recursive calls of this
 		// method from appropriate getters)?
 		CFGInfo.isSCCStale = false;
@@ -216,12 +238,16 @@ public class SCC implements DFable {
 		// }
 		// Now, invoke the Tarjan's algorithm.
 		BeginNode begin = main.getInfo().getCFGInfo().getNestedCFG().getBegin();
+		// if (!Program.useNoSCCs) {
 		Set<Node> visitedSet = new HashSet<>();
 		SCC.processingTarjan = true;
 		tarjan(begin, visitedSet);
 		SCC.processingTarjan = false;
-		SCCTimer += System.nanoTime() - timer;
 		SCC.tarjanCount++;
+		// } else {
+		// new SCC(Program.getRoot().getInfo().getAllLeafNodesInTheProgram());
+		// }
+		SCCTimer += System.nanoTime() - timer;
 		assert (SCC.internalStack.isEmpty())
 				: "The stack of nodes is not empty at the end of Tarjan's algorithm! Its contents are:\n"
 						+ SCC.internalStack;
@@ -340,4 +366,38 @@ public class SCC implements DFable {
 		}
 		return returnSet;
 	}
+
+	public boolean processKeyDependenceGraphForAnalysis(CellularDataFlowAnalysis<?> dfa, Set<Node> thisSeeds) {
+		Map<Cell, Set<Cell>> adjacencyListMap = new HashMap<>();
+		Set<Node> allImpacted = new HashSet<>();
+		for (Node seed : thisSeeds) {
+			allImpacted.add(seed);
+			if (seed instanceof BeginNode) {
+				allImpacted.addAll(seed.getParent().getInfo().getCFGInfo().getIntraTaskCFGLeafContents());
+			}
+		}
+		for (Node node : allImpacted) {
+			if (!node.getInfo().hasAccessedCellSetsFor(dfa)) {
+				continue;
+			}
+			for (Cell sourceCell : node.getInfo().getReadCellSets(dfa)) {
+				Set<Cell> neighbours = adjacencyListMap.get(sourceCell);
+				if (neighbours == null) {
+					neighbours = new HashSet<>();
+					adjacencyListMap.put(sourceCell, neighbours);
+				}
+				neighbours.addAll(node.getInfo().getWrittenCellSets(dfa));
+			}
+		}
+
+		// Check if a cycle exists in adjacencyListMap.
+		boolean foundACycle = false;
+		for (Cell src : adjacencyListMap.keySet()) {
+			foundACycle |= TraversalOrderObtainer.containsACycle(src, node -> {
+				return adjacencyListMap.get(node);
+			});
+		}
+		return foundACycle;
+	}
+
 }

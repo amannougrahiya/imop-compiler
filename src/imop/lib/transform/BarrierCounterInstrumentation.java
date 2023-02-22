@@ -9,7 +9,7 @@
 package imop.lib.transform;
 
 import imop.ast.node.external.*;
-import imop.lib.analysis.typeSystem.SignedLongLongIntType;
+import imop.lib.analysis.typesystem.SignedLongLongIntType;
 import imop.lib.builder.Builder;
 import imop.lib.cg.NodeWithStack;
 import imop.lib.transform.updater.InsertImmediatePredecessor;

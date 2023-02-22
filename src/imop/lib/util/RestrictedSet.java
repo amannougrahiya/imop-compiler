@@ -2,7 +2,7 @@
  * Copyright (c) 2019 Aman Nougrahiya, V Krishna Nandivada, IIT Madras.
  * This file is a part of the project IMOP, licensed under the MIT license.
  * See LICENSE.md for the full text of the license.
- * 
+ *
  * The above notice shall be included in all copies or substantial
  * portions of this file.
  */
@@ -19,7 +19,7 @@ import java.util.function.Predicate;
  * of a set in such a way that any invocation of a method that has not been
  * overridden by the specialized subclass would throw an
  * {@link UnsupportedOperationException}.
- * 
+ *
  * @author Aman Nougrahiya
  *
  * @param <E>
@@ -116,8 +116,10 @@ public class RestrictedSet<E> extends AbstractSet<E> {
 
 	@Override
 	public String toString() {
-		Thread.dumpStack();
-		throw new UnsupportedOperationException("Invoked unimplemented method toString() from RestrictedSet.");
+		return super.toString();
+		// Thread.dumpStack();
+		// throw new UnsupportedOperationException("Invoked unimplemented method
+		// toString() from RestrictedSet.");
 	}
 
 	@Override
