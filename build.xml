@@ -3,20 +3,30 @@
               Any modifications will be overwritten.
               To include a user specific buildfile here, simply create one in the same
               directory with the processing instruction <?eclipse.ant.import?>
-              as the first entry and export the buildfile again. --><project basedir="." default="build" name="imop-develop">
+              as the first entry and export the buildfile again. --><project basedir="." default="build" name="imop-compiler">
     <property environment="env"/>
-    <property name="ECLIPSE_HOME" value="../../../../eclipse/egit-master/Eclipse.app/Contents/Eclipse/"/>
-    <property name="workspace_loc:imop-develop/bin" value="bin"/>
+    <property name="ECLIPSE_HOME" value="../../../../eclipse/cdt-master/ws/.metadata/.plugins/org.eclipse.pde.core/.install_folders/1655300659131"/>
+    <property name="workspace_loc:imop-compiler/bin" value="bin"/>
     <property name="debuglevel" value="source,lines,vars"/>
     <property name="target" value="1.8"/>
     <property name="source" value="1.8"/>
-    <path id="imop-develop.classpath">
+    <path id="imop-compiler.classpath">
         <pathelement location="bin"/>
-        <pathelement location="jtb132.jar"/>
-        <pathelement location="third-party-tools/com.microsoft.z3.jar"/>
-        <pathelement location="third-party-tools/jtb132.jar"/>
         <pathelement location="third-party-tools/junit.jar"/>
         <pathelement location="third-party-tools/org.hamcrest.core_1.3.0.v201303031735.jar"/>
+        <pathelement location="third-party-tools/com.microsoft.z3.jar"/>
+    </path>
+    <path id="run.Demo0 (1).classpath">
+        <path refid="imop-compiler.classpath"/>
+        <pathelement location="third-party-tools/junit.jar"/>
+        <pathelement location="third-party-tools/org.hamcrest.core_1.3.0.v201303031735.jar"/>
+        <pathelement location="third-party-tools/com.microsoft.z3.jar"/>
+    </path>
+    <path id="run.Main (2).classpath">
+        <path refid="imop-compiler.classpath"/>
+        <pathelement location="third-party-tools/junit.jar"/>
+        <pathelement location="third-party-tools/org.hamcrest.core_1.3.0.v201303031735.jar"/>
+        <pathelement location="third-party-tools/com.microsoft.z3.jar"/>
     </path>
     <target name="init">
         <mkdir dir="bin"/>
@@ -24,6 +34,7 @@
             <fileset dir="src">
                 <exclude name="**/*.launch"/>
                 <exclude name="**/*.java"/>
+                <exclude name="imop/projects/"/>
                 <exclude name="imop/projects/"/>
             </fileset>
         </copy>
@@ -39,7 +50,8 @@
         <javac debug="true" debuglevel="${debuglevel}" destdir="bin" includeantruntime="false" source="${source}" target="${target}">
             <src path="src"/>
             <exclude name="imop/projects/"/>
-            <classpath refid="imop-develop.classpath"/>
+            <exclude name="imop/projects/"/>
+            <classpath refid="imop-compiler.classpath"/>
         </javac>
     </target>
     <target description="Build all projects which reference this project. Useful to propagate changes." name="build-refprojects"/>
@@ -56,10 +68,14 @@
         <property name="build.compiler" value="org.eclipse.jdt.core.JDTCompilerAdapter"/>
         <antcall target="build"/>
     </target>
-    <target name="Main">
-        <java classname="imop.Main" dir="${workspace_loc:imop-develop/bin}" failonerror="true" fork="yes">
-            <jvmarg line="-ea -Xms512M -Xmx2048M"/>
-            <classpath refid="imop-develop.classpath"/>
+    <target name="Demo0 (1)">
+        <java classname="demo.cgo2023.demo0.Demo0" failonerror="true" fork="yes">
+            <classpath refid="run.Demo0 (1).classpath"/>
+        </java>
+    </target>
+    <target name="Main (2)">
+        <java classname="imop.Main" dir="${workspace_loc:imop-compiler/bin}" failonerror="true" fork="yes">
+            <classpath refid="run.Main (2).classpath"/>
         </java>
     </target>
 </project>
