@@ -119,7 +119,7 @@ public class Program {
 	 * Decides whether intermediate states of the program should be dumped.
 	 */
 	public static boolean dumpIntermediateStates = false;
-	public static boolean printNoFiles = true;
+	public static boolean printNoFiles = false;
 	public static boolean printNoPredicates = true;
 	/*
 	 * When set, certain checks are performed regarding phase-set of a barrier while
