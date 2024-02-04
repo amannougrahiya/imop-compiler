@@ -64,8 +64,7 @@ Following are the steps to set up the project in Eclipse.
         ```
     * Next, we need to set up a default run-configuration, say *Main*.
     If a default configuration doesn't already exist, create one using *Run/Debug Settings* --> *New...* --> *Java Application* --> *Edit Configuration*. The *Name* field can be set as *Main* (or any other name of your choice). Set `imop.Main` as the *Main class*.
-    In our default configuration, we need to make the following changes:
-        * In *Arguments* --> *Working Directory*, select *Other*, and set it as `${workspace_loc:imop-compiler/bin}`.
+    In our default configuration, we need to make the following change:
         * In *Arguments* --> *VM Arguments*, add the following: `-ea -Xms512M -Xmx2048M` (Feel free to use smaller values for smaller projects.)
     
 #### Testing IMOP via Eclipse ####

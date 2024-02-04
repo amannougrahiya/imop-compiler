@@ -386,7 +386,8 @@ public class DumpSnapshot {
 		commentors.add((n) -> {
 			String tempStr = "";
 			if (!n.getInfo().getAnalysesWithAccessedCells().isEmpty()) {
-				tempStr += "accessedCells: " + n.getInfo().getAccessedCellSets(AnalysisName.POINTSTO).toString() + "\n\t";
+				tempStr += "accessedCells: " + n.getInfo().getAccessedCellSets(AnalysisName.POINTSTO).toString()
+						+ "\n\t";
 			}
 			if (!n.getInfo().getAnalysesWithReadCells().isEmpty()) {
 				tempStr += "readCells: " + n.getInfo().getReadCellSets(AnalysisName.POINTSTO).toString() + "\n\t";
@@ -593,8 +594,8 @@ public class DumpSnapshot {
 		String fileName = Program.fileName + "-" + identifier + ".i";
 		List<Commentor> commentors = new ArrayList<>();
 		String fs = System.getProperty("file.separator");
-		String filePath = Program.class.getProtectionDomain().getCodeSource().getLocation().getFile();
-		fileName = filePath + ".." + fs + "output-dump" + fs + fileName;
+		String filePath = DumpSnapshot.getFullPathToImopCompiler();
+		fileName = filePath + fs + "output-dump" + fs + fileName;
 		BufferedWriter bw = Misc.getBufferedWriter(fileName);
 		try {
 			bw.write(root.getInfo().getString(commentors));
@@ -633,8 +634,7 @@ public class DumpSnapshot {
 
 	/**
 	 * This method returns a BufferedWriter object which wraps within it a stream to
-	 * write to a file for dot graphs
-	 * generation.
+	 * write to a file for dot graphs generation.
 	 *
 	 * @param fileName
 	 *
@@ -657,8 +657,8 @@ public class DumpSnapshot {
 			}
 
 			String fs = System.getProperty("file.separator");
-			String filePath = Program.class.getProtectionDomain().getCodeSource().getLocation().getFile();
-			fileName = filePath + ".." + fs + "output-dump" + fs + name;
+			String filePath = DumpSnapshot.getFullPathToImopCompiler();
+			fileName = filePath + fs + "output-dump" + fs + name;
 
 			System.err.println("\tCreating the dot file at " + fileName);
 			File file = new File(fileName);
@@ -675,8 +675,8 @@ public class DumpSnapshot {
 
 	public static void forcePrintToFile(Node root, String fileName, List<Commentor> commentors) {
 		String fs = System.getProperty("file.separator");
-		String filePath = Program.class.getProtectionDomain().getCodeSource().getLocation().getFile();
-		fileName = filePath + ".." + fs + "output-dump" + fs + fileName;
+		String filePath = DumpSnapshot.getFullPathToImopCompiler();
+		fileName = filePath + fs + "output-dump" + fs + fileName;
 		BufferedWriter bw = Misc.getBufferedWriter(fileName);
 		try {
 			bw.write(root.getInfo().getString(commentors));
@@ -692,8 +692,8 @@ public class DumpSnapshot {
 			return;
 		}
 		String fs = System.getProperty("file.separator");
-		String filePath = Program.class.getProtectionDomain().getCodeSource().getLocation().getFile();
-		fileName = filePath + ".." + fs + "output-dump" + fs + fileName;
+		String filePath = DumpSnapshot.getFullPathToImopCompiler();
+		fileName = filePath + fs + "output-dump" + fs + fileName;
 		BufferedWriter bw = Misc.getBufferedWriter(fileName);
 		try {
 			bw.write(root.getInfo().getString(commentors));
@@ -724,8 +724,8 @@ public class DumpSnapshot {
 			return;
 		}
 		String fs = System.getProperty("file.separator");
-		String filePath = Program.class.getProtectionDomain().getCodeSource().getLocation().getFile();
-		fileName = filePath + ".." + fs + "output-dump" + fs + fileName;
+		String filePath = DumpSnapshot.getFullPathToImopCompiler();
+		fileName = filePath + fs + "output-dump" + fs + fileName;
 		BufferedWriter bw = Misc.getBufferedWriter(fileName);
 		try {
 			bw.write(str);
@@ -738,8 +738,8 @@ public class DumpSnapshot {
 
 	public static void printToFile(String str, String fileName, boolean b) {
 		String fs = System.getProperty("file.separator");
-		String filePath = Program.class.getProtectionDomain().getCodeSource().getLocation().getFile();
-		fileName = filePath + ".." + fs + "output-dump" + fs + fileName;
+		String filePath = DumpSnapshot.getFullPathToImopCompiler();
+		fileName = filePath + fs + "output-dump" + fs + fileName;
 		BufferedWriter bw = Misc.getBufferedWriter(fileName);
 		try {
 			bw.write(str);
@@ -756,6 +756,26 @@ public class DumpSnapshot {
 		}
 		DotGraphGenerator graphGen = new DotGraphGenerator(root, fileName);
 		graphGen.create(TypeOfCFG.NESTED);
+	}
+
+	public static String getFullPathToImopCompiler() {
+		File projectRoot = findProjectRoot();
+		return projectRoot.getAbsolutePath();
+	}
+
+	private static File findProjectRoot() {
+		File currentDir = new File(System.getProperty("user.dir"));
+		while (currentDir != null) {
+			if (containsProjectIndicator(currentDir)) {
+				return currentDir;
+			}
+			currentDir = currentDir.getParentFile();
+		}
+		return null;
+	}
+
+	private static boolean containsProjectIndicator(File directory) {
+		return new File(directory, "src").isDirectory();
 	}
 
 }
