@@ -1180,10 +1180,10 @@ public class FrontEnd {
 	public static TranslationUnit getOtherBuiltins() {
 		if (otherBuiltins == null) {
 			try {
-				String filePath = Program.class.getProtectionDomain().getCodeSource().getLocation().getFile();
+				String filePath = System.getProperty("user.dir");
 				String fs = System.getProperty("file.separator");
 				System.setIn(new FileInputStream(
-						filePath + ".." + fs + "src" + fs + "imop" + fs + "parser" + fs + "builtin.h"));
+						filePath + fs + "src" + fs + "imop" + fs + "parser" + fs + "builtin.h"));
 				FrontEnd.otherBuiltins = FrontEnd.parseBuiltin(System.in);
 			} catch (FileNotFoundException e) {
 				e.printStackTrace();
@@ -1196,10 +1196,10 @@ public class FrontEnd {
 	public static TranslationUnit getMacBuiltins() {
 		if (macBuiltins == null) {
 			try {
-				String filePath = Program.class.getProtectionDomain().getCodeSource().getLocation().getFile();
+				String filePath = DumpSnapshot.getFullPathToImopCompiler();
 				String fs = System.getProperty("file.separator");
 				System.setIn(new FileInputStream(
-						filePath + ".." + fs + "src" + fs + "imop" + fs + "parser" + fs + "headerMac.h"));
+						filePath + fs + "src" + fs + "imop" + fs + "parser" + fs + "headerMac.h"));
 				FrontEnd.macBuiltins = FrontEnd.parseBuiltin(System.in);
 			} catch (FileNotFoundException e) {
 				e.printStackTrace();
@@ -1213,10 +1213,10 @@ public class FrontEnd {
 	public static TranslationUnit getK2Builtins() {
 		if (k2Builtins == null) {
 			try {
-				String filePath = Program.class.getProtectionDomain().getCodeSource().getLocation().getFile();
+				String filePath = DumpSnapshot.getFullPathToImopCompiler();
 				String fs = System.getProperty("file.separator");
 				System.setIn(new FileInputStream(
-						filePath + ".." + fs + "src" + fs + "imop" + fs + "parser" + fs + "headerK2.h"));
+						filePath + fs + "src" + fs + "imop" + fs + "parser" + fs + "headerK2.h"));
 				FrontEnd.k2Builtins = FrontEnd.parseBuiltin(System.in);
 			} catch (FileNotFoundException e) {
 				e.printStackTrace();
