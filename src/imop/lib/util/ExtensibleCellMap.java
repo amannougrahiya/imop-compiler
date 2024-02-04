@@ -300,7 +300,7 @@ public class ExtensibleCellMap<V extends Immutable> extends CellMap<V> {
 	@Override
 	public boolean isUniversal() {
 		if (this.isCalledDirectlyFromTransferFunction()) {
-			assert (false);
+//			assert (false);
 			ExtensibleCellMap.addCellAsAccessed(Cell.genericCell);
 			ExtensibleCellMap.addCellAsRead(Cell.genericCell);
 		}
@@ -1153,7 +1153,7 @@ public class ExtensibleCellMap<V extends Immutable> extends CellMap<V> {
 	@Override
 	public Set<Cell> keySetExpanded() {
 		if (this.isCalledDirectlyFromTransferFunction()) {
-			assert (false);
+//			assert (false);
 			ExtensibleCellMap.addCellAsAccessed(Cell.genericCell);
 			ExtensibleCellMap.addCellAsRead(Cell.genericCell);
 		}

@@ -45,7 +45,7 @@ import java.util.Set;
  * iterative data-flow analysis.
  */
 public abstract class InterThreadForwardCellularAnalysis<F extends CellularDataFlowAnalysis.CellularFlowMap<?>>
-extends CellularDataFlowAnalysis<F> {
+	extends CellularDataFlowAnalysis<F> {
 
 	public InterThreadForwardCellularAnalysis(AnalysisName analysisName, AnalysisDimension analysisDimension) {
 		super(analysisName, analysisDimension);
@@ -136,7 +136,7 @@ extends CellularDataFlowAnalysis<F> {
 		boolean proceedAhead = false; // To indicate whether the transfer function should be applied.
 		NodeInfo nodeInfo = node.getInfo();
 		Set<IDFAEdge> predecessors = nodeInfo.getCFGInfo()
-				.getInterTaskLeafPredecessorEdges(this.analysisDimension.getSVEDimension());
+			.getInterTaskLeafPredecessorEdges(this.analysisDimension.getSVEDimension());
 		F newIN = (F) nodeInfo.getIN(analysisName);
 		if (newIN == null) {
 			/*
@@ -190,10 +190,10 @@ extends CellularDataFlowAnalysis<F> {
 			}
 			if (node instanceof ParameterDeclaration) {
 				proceedAhead = true; // Note that the value of arguments won't be present in the IN flow-map. Hence,
-				// conservatively, we set this flag.
+									 // conservatively, we set this flag.
 			} else if (node instanceof PostCallNode) {
 				proceedAhead = true;
-			}
+				}
 		}
 
 		/**
@@ -277,7 +277,7 @@ extends CellularDataFlowAnalysis<F> {
 					.getInterTaskLeafSuccessorEdges(this.analysisDimension.getSVEDimension())) {
 				Node n = idfaEdge.getNode();
 				this.globalWorkList.add(n);
-			}
+					}
 			if (node instanceof PreCallNode) {
 				PreCallNode pre = (PreCallNode) node;
 				this.globalWorkList.add(pre.getParent().getPostCallNode());
@@ -310,7 +310,7 @@ extends CellularDataFlowAnalysis<F> {
 		boolean propagateFurther = false;
 		NodeInfo nodeInfo = barr.getInfo();
 		Set<IDFAEdge> predecessors = nodeInfo.getCFGInfo()
-				.getInterTaskLeafPredecessorEdges(this.analysisDimension.getSVEDimension());
+			.getInterTaskLeafPredecessorEdges(this.analysisDimension.getSVEDimension());
 		F newIN = (F) nodeInfo.getIN(analysisName);
 		if (newIN == null) {
 			/*
@@ -349,7 +349,7 @@ extends CellularDataFlowAnalysis<F> {
 					.getInterTaskLeafSuccessorEdges(this.analysisDimension.getSVEDimension())) {
 				Node n = idfaEdge.getNode();
 				this.globalWorkList.add(n);
-			}
+					}
 		}
 		return;
 	}
@@ -370,7 +370,7 @@ extends CellularDataFlowAnalysis<F> {
 					.getInterTaskLeafSuccessorEdges(this.analysisDimension.getSVEDimension())) {
 				Node n = idfaEdge.getNode();
 				this.globalWorkList.add(n);
-			}
+					}
 		}
 		return;
 	}
@@ -512,7 +512,7 @@ extends CellularDataFlowAnalysis<F> {
 				&& PointsToAnalysis.stateOfPointsTo != PointsToGlobalState.STALE) {
 			nodesToBeUpdated.clear();
 			return;
-		}
+				}
 		if (Program.stabilizationIDFAMode == StabilizationIDFAMode.INCIDFA) {
 			this.newStabilizationTriggerHandler();
 			return;
@@ -581,7 +581,7 @@ extends CellularDataFlowAnalysis<F> {
 			PointsToAnalysis.stateOfPointsTo = PointsToGlobalState.CORRECT;
 			// DumpSnapshot.dumpPointsTo("stable" + Program.updateCategory +
 			// this.autoUpdateTriggerCounter);
-		}
+				}
 	}
 
 	/**
@@ -745,7 +745,7 @@ extends CellularDataFlowAnalysis<F> {
 		}
 		NodeInfo nodeInfo = node.getInfo();
 		Set<IDFAEdge> predecessors = nodeInfo.getCFGInfo()
-				.getInterTaskLeafPredecessorEdges(this.analysisDimension.getSVEDimension());
+			.getInterTaskLeafPredecessorEdges(this.analysisDimension.getSVEDimension());
 		F oldIN = (F) nodeInfo.getIN(analysisName);
 		boolean inOrOUTChanged = false;
 		F newIN;
@@ -903,7 +903,7 @@ extends CellularDataFlowAnalysis<F> {
 					.getInterTaskLeafSuccessorEdges(this.analysisDimension.getSVEDimension())) {
 				Node n = idfaEdge.getNode();
 				this.globalWorkList.add(n);
-			}
+					}
 			if (node instanceof PreCallNode) {
 				PreCallNode pre = (PreCallNode) node;
 				this.globalWorkList.add(pre.getParent().getPostCallNode());
@@ -1101,7 +1101,7 @@ extends CellularDataFlowAnalysis<F> {
 							&& this.analysisDimension.getSVEDimension() == SVEDimension.SVE_SENSITIVE
 							&& !CoExistenceChecker.canCoExistInPhase(n, siblingBarrier, ph)) {
 						continue;
-					}
+							}
 					// OLD CODE: changed = changed | flowFactOUT.merge(siblingFlowFactIN,
 					// n.getInfo().getSharedCellsAtNode());
 					flowFactOUT.merge(siblingFlowFactIN, n.getInfo().getSharedCellsAtNode());
@@ -1189,7 +1189,7 @@ extends CellularDataFlowAnalysis<F> {
 					// without
 					// marking this barrier for processing in the second round.
 					assert (false) : "Found a sibling barrier with different SCC id!";
-					continue;
+						continue;
 				}
 				// Ignore this sibling if if it has not been processed yet.
 				F siblingFlowFactIN = (F) siblingBarrier.getInfo().getIN(analysisName);
@@ -1204,7 +1204,7 @@ extends CellularDataFlowAnalysis<F> {
 							&& this.analysisDimension.getSVEDimension() == SVEDimension.SVE_SENSITIVE
 							&& !CoExistenceChecker.canCoExistInPhase(n, siblingBarrier, ph)) {
 						continue;
-					}
+							}
 					newOUT.merge(siblingFlowFactIN, n.getInfo().getSharedCellsAtNode());
 				}
 			}
@@ -1224,7 +1224,7 @@ extends CellularDataFlowAnalysis<F> {
 		if (node.getInfo().getCFGInfo().getInterTaskLeafPredecessorEdges(this.analysisDimension.getSVEDimension())
 				.stream().anyMatch(e -> !this.safeCurrentSCCNodes.contains(e.getNode()))) {
 			return false;
-		}
+				}
 		return true;
 	}
 
@@ -1284,7 +1284,7 @@ extends CellularDataFlowAnalysis<F> {
 
 		NodeInfo nodeInfo = node.getInfo();
 		Set<IDFAEdge> predecessors = nodeInfo.getCFGInfo()
-				.getInterTaskLeafPredecessorEdges(this.analysisDimension.getSVEDimension());
+			.getInterTaskLeafPredecessorEdges(this.analysisDimension.getSVEDimension());
 		F ffForAll = predecessors.isEmpty() ? this.getEntryFact() : this.getTop();
 
 		for (IDFAEdge idfaEdge : predecessors) {
@@ -1357,7 +1357,7 @@ extends CellularDataFlowAnalysis<F> {
 							&& this.analysisDimension.getSVEDimension() == SVEDimension.SVE_SENSITIVE
 							&& !CoExistenceChecker.canCoExistInPhase(n, siblingBarrier, ph)) {
 						continue;
-					}
+							}
 					changed = changed | flowFactOUT.merge(siblingFlowFactIN, n.getInfo().getSharedCellsAtNode());
 				}
 			}
@@ -1380,7 +1380,7 @@ extends CellularDataFlowAnalysis<F> {
 							&& this.analysisDimension.getSVEDimension() == SVEDimension.SVE_SENSITIVE
 							&& !CoExistenceChecker.canCoExistInPhase(n, siblingBarrier, ph)) {
 						continue;
-					}
+							}
 					F siblingFlowOUT = (F) siblingBarrier.getInfo().getOUT(analysisName);
 					if (siblingFlowOUT == null) {
 						continue;
@@ -1412,7 +1412,7 @@ extends CellularDataFlowAnalysis<F> {
 							&& this.analysisDimension.getSVEDimension() == SVEDimension.SVE_SENSITIVE
 							&& !CoExistenceChecker.canCoExistInPhase(n, siblingBarrier, ph)) {
 						continue;
-					}
+							}
 					this.globalWorkList.add(siblingBarrier);
 				}
 			}
@@ -1426,7 +1426,7 @@ extends CellularDataFlowAnalysis<F> {
 				&& PointsToAnalysis.stateOfPointsTo != PointsToGlobalState.STALE) {
 			nodesToBeUpdated.clear();
 			return;
-		}
+				}
 		this.autoUpdateTriggerCounter++;
 		long localTimer = System.nanoTime();
 
@@ -1472,7 +1472,7 @@ extends CellularDataFlowAnalysis<F> {
 		if (this.analysisName == AnalysisName.POINTSTO
 				&& PointsToAnalysis.stateOfPointsTo == PointsToGlobalState.STALE) {
 			PointsToAnalysis.stateOfPointsTo = PointsToGlobalState.CORRECT;
-		}
+				}
 	}
 
 	/**
@@ -1492,7 +1492,7 @@ extends CellularDataFlowAnalysis<F> {
 		}
 		NodeInfo nodeInfo = node.getInfo();
 		Set<IDFAEdge> predecessors = nodeInfo.getCFGInfo()
-				.getInterTaskLeafPredecessorEdges(this.analysisDimension.getSVEDimension());
+			.getInterTaskLeafPredecessorEdges(this.analysisDimension.getSVEDimension());
 		F oldIN = (F) nodeInfo.getIN(analysisName);
 		F newIN = predecessors.isEmpty() ? this.getEntryFact() : this.getTop();
 
@@ -1559,7 +1559,7 @@ extends CellularDataFlowAnalysis<F> {
 			for (IDFAEdge idfaEdge : nodeInfo.getCFGInfo()
 					.getInterTaskLeafSuccessorEdges(this.analysisDimension.getSVEDimension())) {
 				this.globalWorkList.add(idfaEdge.getNode());
-			}
+					}
 			if (node instanceof PreCallNode) {
 				PreCallNode pre = (PreCallNode) node;
 				this.globalWorkList.add(pre.getParent().getPostCallNode());
@@ -1731,7 +1731,7 @@ extends CellularDataFlowAnalysis<F> {
 		}
 
 		counterList.add(this.nodesProcessedDuringUpdate - thisUpdateNodeCounter); // Total number of nodes processed in
-		// this stabilization trigger.
+																				  // this stabilization trigger.
 		if (Program.checkForCyclesInKeyDependenceGraph) {
 			System.out.println("Time spent in this trigger: " + localTimer / 1e9 + "s.");
 		}
@@ -1739,7 +1739,7 @@ extends CellularDataFlowAnalysis<F> {
 		if (this.analysisName == AnalysisName.POINTSTO
 				&& PointsToAnalysis.stateOfPointsTo == PointsToGlobalState.STALE) {
 			PointsToAnalysis.stateOfPointsTo = PointsToGlobalState.CORRECT;
-		}
+				}
 		/*
 		 * New Code: To check the key dependencies.
 		 */
@@ -1883,7 +1883,7 @@ extends CellularDataFlowAnalysis<F> {
 				double percentInFirst = this.safeCurrentSCCNodes.size() / (SCCSize * 1.0) * 100;
 				if (SCCSize != 1) {
 					System.out.println("Total " + Program.df2.format(percentInFirst)
-					+ "% of unique nodes processed out of " + SCCSize + " in this SCC.");
+							+ "% of unique nodes processed out of " + SCCSize + " in this SCC.");
 				}
 			}
 			/*
@@ -1943,7 +1943,7 @@ extends CellularDataFlowAnalysis<F> {
 				if (otherSCC != thisSCC) {
 					this.globalWorkList.add(n);
 				}
-			}
+					}
 		}
 		// System.err.println("Finished processing SCC ID#" +
 		// copyNode.getInfo().getCFGInfo().getSCCRPOIndex() + " having "
@@ -1979,7 +1979,7 @@ extends CellularDataFlowAnalysis<F> {
 		}
 		NodeInfo nodeInfo = node.getInfo();
 		Set<IDFAEdge> predecessors = nodeInfo.getCFGInfo()
-				.getInterTaskLeafPredecessorEdges(this.analysisDimension.getSVEDimension());
+			.getInterTaskLeafPredecessorEdges(this.analysisDimension.getSVEDimension());
 		F oldIN = (F) nodeInfo.getIN(analysisName);
 		F newIN;
 		boolean inChanged = false; // To indicate whether the IN has changed.
@@ -2068,18 +2068,22 @@ extends CellularDataFlowAnalysis<F> {
 			assert (oldIN != null);
 			if (!proceedAhead) {
 				if (oldIN.flowMap != null && newIN.flowMap != null) {
-					for (Cell c : accessedCells) {
-						boolean oldContains = oldIN.flowMap.containsKey(c);
-						boolean newContains = newIN.flowMap.containsKey(c);
-						// If the entry is present in OLD, but not NEW, then we should re-apply the
-						// transfer function.
-						if (oldContains && !newContains) {
-							proceedAhead = true;
-							break;
-						}
-						if (newContains && !newIN.flowMap.get(c).equals(oldIN.flowMap.get(c))) {
-							proceedAhead = true;
-							break;
+					if (accessedCells.isUniversal()) {
+						proceedAhead = true;
+					} else {
+						for (Cell c : accessedCells) {
+							boolean oldContains = oldIN.flowMap.containsKey(c);
+							boolean newContains = newIN.flowMap.containsKey(c);
+							// If the entry is present in OLD, but not NEW, then we should re-apply the
+							// transfer function.
+							if (oldContains && !newContains) {
+								proceedAhead = true;
+								break;
+							}
+							if (newContains && !newIN.flowMap.get(c).equals(oldIN.flowMap.get(c))) {
+								proceedAhead = true;
+								break;
+							}
 						}
 					}
 				}
@@ -2097,10 +2101,10 @@ extends CellularDataFlowAnalysis<F> {
 		}
 		if (node instanceof ParameterDeclaration) {
 			proceedAhead = true; // Note that the value of arguments won't be present in the IN flow-map. Hence,
-			// conservatively, we set this flag.
+								 // conservatively, we set this flag.
 		} else if (node instanceof PostCallNode) {
 			proceedAhead = true;
-		}
+			}
 		/**
 		 * If the IN of a BarrierDirective has changed, we should add all its sibling
 		 * barriers to the workList.
@@ -2150,7 +2154,7 @@ extends CellularDataFlowAnalysis<F> {
 			 * Refer to the last point in Note 21.0.1 from IMOP-CR. TODO: Verify the second
 			 * operand of || below. Taken from Phase II.
 			 */
-			if (proceedAhead || (node instanceof BeginNode && node.getParent() instanceof FunctionDefinition)) {
+			if (accessedCells.isUniversal() || proceedAhead || (node instanceof BeginNode && node.getParent() instanceof FunctionDefinition)) {
 				newOUT = node.accept(this, newIN);
 			} else {
 				this.transferFunctionsSkipped++;
@@ -2216,7 +2220,7 @@ extends CellularDataFlowAnalysis<F> {
 					// ReversePostOrderWorkList.checkNode(n, this.globalWorkList);
 					this.globalWorkList.add(n);
 				}
-			}
+					}
 			if (node instanceof PreCallNode) {
 				PreCallNode pre = (PreCallNode) node;
 				PostCallNode post = pre.getParent().getPostCallNode();
@@ -2258,7 +2262,7 @@ extends CellularDataFlowAnalysis<F> {
 		boolean inOrOUTChanged = false;
 		NodeInfo nodeInfo = node.getInfo();
 		Set<IDFAEdge> predecessors = nodeInfo.getCFGInfo()
-				.getInterTaskLeafPredecessorEdges(this.analysisDimension.getSVEDimension());
+			.getInterTaskLeafPredecessorEdges(this.analysisDimension.getSVEDimension());
 		F newIN = (F) nodeInfo.getIN(analysisName);
 		if (newIN == null) {
 			/*
@@ -2345,7 +2349,7 @@ extends CellularDataFlowAnalysis<F> {
 				if (otherSCC == thisSCC) {
 					this.intraSCCWorkList.add(n);
 				}
-			}
+					}
 			if (node instanceof PreCallNode) {
 				PreCallNode pre = (PreCallNode) node;
 				PostCallNode post = pre.getParent().getPostCallNode();
@@ -2382,7 +2386,7 @@ extends CellularDataFlowAnalysis<F> {
 		boolean first = true; // We just assume that each non-SCC node is processed exactly once in RPO.
 		NodeInfo nodeInfo = node.getInfo();
 		Set<IDFAEdge> predecessors = nodeInfo.getCFGInfo()
-				.getInterTaskLeafPredecessorEdges(this.analysisDimension.getSVEDimension());
+			.getInterTaskLeafPredecessorEdges(this.analysisDimension.getSVEDimension());
 		F oldIN = (F) nodeInfo.getIN(analysisName);
 		F newIN;
 		boolean inChanged = false;
@@ -2456,10 +2460,10 @@ extends CellularDataFlowAnalysis<F> {
 
 		if (node instanceof ParameterDeclaration) {
 			proceedAhead = true; // Note that the value of arguments won't be present in the IN flow-map. Hence,
-			// conservatively, we set this flag.
+								 // conservatively, we set this flag.
 		} else if (node instanceof PostCallNode) {
 			proceedAhead = true;
-		}
+			}
 
 		/**
 		 * If the IN of a BarrierDirective has changed, we should add all its sibling
@@ -2565,7 +2569,7 @@ extends CellularDataFlowAnalysis<F> {
 					.getInterTaskLeafSuccessorEdges(this.analysisDimension.getSVEDimension())) {
 				Node n = idfaEdge.getNode();
 				this.globalWorkList.add(n);
-			}
+					}
 			if (node instanceof PreCallNode) {
 				PreCallNode pre = (PreCallNode) node;
 				this.globalWorkList.add(pre.getParent().getPostCallNode());

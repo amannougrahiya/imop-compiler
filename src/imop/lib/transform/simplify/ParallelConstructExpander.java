@@ -9,6 +9,7 @@
 package imop.lib.transform.simplify;
 
 import imop.ast.info.OmpClauseInfo;
+import imop.ast.info.cfgNodeInfo.CompoundStatementInfo;
 import imop.ast.info.cfgNodeInfo.ParameterDeclarationInfo;
 import imop.ast.node.external.*;
 import imop.ast.node.internal.*;
@@ -202,6 +203,15 @@ public class ParallelConstructExpander {
 				if (!nextNode.getInfo().isControlConfined()) {
 					return changed;
 				}
+
+				Set<String> freeNames = Misc.getFreeNames(nextNode);
+				if (!Misc.setIntersection(freeNames,
+						((CompoundStatementInfo) parCons.getInfo().getCFGInfo().getBody().getInfo()).getSymbolTable()
+								.keySet())
+						.isEmpty()) {
+					return changed;
+				}
+
 				Set<NodeWithStack> contentsWithStack = nextNode.getInfo().getCFGInfo()
 						.getIntraTaskCFGLeafContentsOfSameParLevel(new CallStack());
 				for (NodeWithStack nS : contentsWithStack) {
