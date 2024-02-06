@@ -65,6 +65,21 @@ public class CallStatementInfo extends StatementInfo {
 		}
 	}
 
+
+	/**
+	 * Checks whether this call-statement may target a function that is recursive.
+	 * @return
+	 * 	true, if this call-statement may lead to recursive calls.
+	 */
+	public boolean isRecursive() {
+		for (FunctionDefinition func : this.getCalledDefinitions()) {
+			if (func.getInfo().isRecursive()) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 	/**
 	 * Returns the symbol for the function-designator at this
 	 * call-statement.<br>
