@@ -77,15 +77,22 @@ public class Main {
 	public static long totalTime;
 	public static String globalString = "";
 	public static boolean timerOn = false;
-
-	public static void main(String[] args) throws FileNotFoundException, InterruptedException {
+	static {
 		FrontEnd.getK2Builtins();
 		FrontEnd.getMacBuiltins();
 		FrontEnd.getOtherBuiltins();
-		// System.err.println("Profile now.");
-		// Thread.sleep(10000);
-		totalTime = System.nanoTime();
+	}
+
+	public static void main(String[] args) throws FileNotFoundException, InterruptedException {
+		totalTime = System.nanoTime(); // This timer can be used to calculate the total compilation time.
 		Program.parseNormalizeInput(args);
+		System.err.println("Program parsed and normalized successfully. Check $IMOPHOME/output-dump for the generated files.");
+		/*
+		 * TODO: Insert your passes here.
+		 */
+	}
+
+	public static void practiceMain(String[] args) {
 		// DumpSnapshot.forceDumpPointsTo("init");
 		// System.exit(0);
 		// DriverModule.askCoExistenceQueries();
@@ -143,7 +150,7 @@ public class Main {
 		// System.out.println("Start the profiler in next 10 seconds.");
 		// Thread.sleep(10000);
 
-		DriverModule.clientAutoUpdateIDFA();
+		// DriverModule.clientAutoUpdateIDFA();
 		// DriverModule.clientAutoUpdateIncEPA();
 		// DriverModule.mergeParRegs();
 		// DriverModule.optimizeBarriers();
@@ -723,11 +730,12 @@ public class Main {
 		// }
 
 		// System.err.println(root.getInfo().getPhaseInfo().phaseList.size());
+
 	}
 
 	public static void countPhases() {
 		assert (Program.concurrencyAlgorithm == ConcurrencyAlgorithm.YCON)
-		: "Run this method only with Yuan's analysis. Single-barrier paired static phases won't make sense otherwise.";
+				: "Run this method only with Yuan's analysis. Single-barrier paired static phases won't make sense otherwise.";
 		Set<YPhase> aggPhaseSet = new HashSet<>();
 		for (ParallelConstruct parCons : Misc.getExactEnclosee(Program.getRoot(), ParallelConstruct.class)) {
 			for (AbstractPhase<?, ?> ph : parCons.getInfo().getConnectedPhases()) {
@@ -813,7 +821,7 @@ public class Main {
 
 	private static void debugDeclarationEscalator(WhileStatement whileStmt) {
 		DeclarationEscalator
-		.pushAllDeclarationsUpFromLevel((CompoundStatement) whileStmt.getInfo().getCFGInfo().getBody());
+				.pushAllDeclarationsUpFromLevel((CompoundStatement) whileStmt.getInfo().getCFGInfo().getBody());
 		DumpSnapshot.dumpVisibleSharedReadWrittenCells("");
 		System.exit(0);
 	}
@@ -1221,7 +1229,7 @@ public class Main {
 				continue;
 			}
 			System.err.println(exp + ": " + tokens + "\n Postfix: " + ExpressionTokenizer.getPostfixTokens(exp)
-			+ "\n Prefix: " + ExpressionTokenizer.getPrefixTokens(exp));
+					+ "\n Prefix: " + ExpressionTokenizer.getPrefixTokens(exp));
 		}
 		System.exit(0);
 	}
@@ -2196,7 +2204,7 @@ public class Main {
 					str = "EndNode";
 				}
 				System.out
-				.println("Following node has some issue: " + str + " of type " + n.getClass().getSimpleName());
+						.println("Following node has some issue: " + str + " of type " + n.getClass().getSimpleName());
 			}
 		}
 
