@@ -2314,6 +2314,42 @@ public class ExpressionSimplifier extends GJNoArguDepthFirstProcess<ExpressionSi
 			expSS.getPrelude().append(tempName + " = " + expSS.getReplacementString() + ";");
 			expSS.setReplacementString(new StringBuilder(" " + tempName + " "));
 		}
+		if (expSS.hasPrelude() != 0) {
+			// New code: Sat Jun 8 10:48:45 IST 2024
+			Set<Class<?>> setOfClasses = new HashSet<>();
+			setOfClasses.add(WhileStatement.class);
+			setOfClasses.add(ForStatement.class);
+			setOfClasses.add(ForConstruct.class);
+			setOfClasses.add(DoStatement.class);
+			for (ContinueStatement contStmt : Misc.getInheritedEnclosee(n, ContinueStatement.class)) {
+				Node enclosingLoopOrSwitch = Misc.getEnclosingNode(contStmt, setOfClasses);
+				if (enclosingLoopOrSwitch != n) {
+					continue;
+				}
+				CompoundStatement enclosingCSOfCont = Misc.getEnclosingNode(contStmt, CompoundStatement.class);
+				int index = -1;
+				for (Node enNode : enclosingCSOfCont.getF1().getNodes()) {
+					index++;
+					CompoundStatementElement cse = (CompoundStatementElement) enNode;
+					if (cse.getF0().getChoice() instanceof Statement) {
+						Statement s = (Statement) cse.getF0().getChoice();
+						if (s.getStmtF0().getChoice() instanceof JumpStatement) {
+							if (s.getStmtF0().getChoice().toString().equals("continue")) {
+								break;
+							}
+						}
+					}
+				}
+				CompoundStatement expPreludeCS = FrontEnd.parseCrude("{" + expSS.getPrelude() + "}",
+						CompoundStatement.class);
+				int expPreludeSize = expPreludeCS.getF1().getNodes().size();
+				for (int i = 0; i < expPreludeSize; i++) {
+					Node elem = expPreludeCS.getF1().removeNode(0);
+					enclosingCSOfCont.getF1().addNode(index++, elem);
+				}
+			}
+		}
+
 		SimplificationString stmtSS = n.getF4().accept(this);
 
 		boolean needsEncapsulation = this.needsEncapsulation(n);
@@ -2369,6 +2405,41 @@ public class ExpressionSimplifier extends GJNoArguDepthFirstProcess<ExpressionSi
 			expSS.getTemporaryDeclarations().add(decl);
 			expSS.getPrelude().append(tempName + " = " + expSS.getReplacementString() + ";");
 			expSS.setReplacementString(new StringBuilder(" " + tempName + " "));
+		}
+		if (expSS.hasPrelude() != 0) {
+			// New code: Sat Jun 8 10:48:45 IST 2024
+			Set<Class<?>> setOfClasses = new HashSet<>();
+			setOfClasses.add(WhileStatement.class);
+			setOfClasses.add(ForStatement.class);
+			setOfClasses.add(ForConstruct.class);
+			setOfClasses.add(DoStatement.class);
+			for (ContinueStatement contStmt : Misc.getInheritedEnclosee(n, ContinueStatement.class)) {
+				Node enclosingLoopOrSwitch = Misc.getEnclosingNode(contStmt, setOfClasses);
+				if (enclosingLoopOrSwitch != n) {
+					continue;
+				}
+				CompoundStatement enclosingCSOfCont = Misc.getEnclosingNode(contStmt, CompoundStatement.class);
+				int index = -1;
+				for (Node enNode : enclosingCSOfCont.getF1().getNodes()) {
+					index++;
+					CompoundStatementElement cse = (CompoundStatementElement) enNode;
+					if (cse.getF0().getChoice() instanceof Statement) {
+						Statement s = (Statement) cse.getF0().getChoice();
+						if (s.getStmtF0().getChoice() instanceof JumpStatement) {
+							if (s.getStmtF0().getChoice().toString().equals("continue")) {
+								break;
+							}
+						}
+					}
+				}
+				CompoundStatement expPreludeCS = FrontEnd.parseCrude("{" + expSS.getPrelude() + "}",
+						CompoundStatement.class);
+				int expPreludeSize = expPreludeCS.getF1().getNodes().size();
+				for (int i = 0; i < expPreludeSize; i++) {
+					Node elem = expPreludeCS.getF1().removeNode(0);
+					enclosingCSOfCont.getF1().addNode(index++, elem);
+				}
+			}
 		}
 
 		boolean needsEncapsulation = this.needsEncapsulation(n);
@@ -2442,6 +2513,56 @@ public class ExpressionSimplifier extends GJNoArguDepthFirstProcess<ExpressionSi
 				e3SS.setReplacementString(new StringBuilder(" " + tempName + " "));
 			}
 		}
+		if (e3SS.hasPrelude() != 0 || e2SS.hasPrelude() != 0) {
+			// New code: Sat Jun 8 10:48:45 IST 2024
+			Set<Class<?>> setOfClasses = new HashSet<>();
+			setOfClasses.add(WhileStatement.class);
+			setOfClasses.add(ForStatement.class);
+			setOfClasses.add(ForConstruct.class);
+			setOfClasses.add(DoStatement.class);
+			for (ContinueStatement contStmt : Misc.getInheritedEnclosee(n, ContinueStatement.class)) {
+				Node enclosingLoopOrSwitch = Misc.getEnclosingNode(contStmt, setOfClasses);
+				if (enclosingLoopOrSwitch != n) {
+					continue;
+				}
+				CompoundStatement enclosingCSOfCont = Misc.getEnclosingNode(contStmt, CompoundStatement.class);
+				int index = -1;
+				for (Node enNode : enclosingCSOfCont.getF1().getNodes()) {
+					index++;
+					CompoundStatementElement cse = (CompoundStatementElement) enNode;
+					if (cse.getF0().getChoice() instanceof Statement) {
+						Statement s = (Statement) cse.getF0().getChoice();
+						if (s.getStmtF0().getChoice() instanceof JumpStatement) {
+							if (s.getStmtF0().getChoice().toString().equals("continue")) {
+								break;
+							}
+						}
+					}
+				}
+				if (e3SS.hasPrelude() != 0) {
+					CompoundStatement expPreludeCS = FrontEnd.parseCrude("{" + e3SS.getPrelude() + "}",
+							CompoundStatement.class);
+					int expPreludeSize = expPreludeCS.getF1().getNodes().size();
+					for (int i = 0; i < expPreludeSize; i++) {
+						Node elem = expPreludeCS.getF1().removeNode(0);
+						enclosingCSOfCont.getF1().addNode(index++, elem);
+					}
+				}
+				if (e2SS.hasPrelude() != 0) {
+					CompoundStatementElement cse = FrontEnd.parseCrude(e3SS.getReplacementString() + ";",
+							CompoundStatementElement.class);
+					enclosingCSOfCont.getF1().addNode(index++, cse);
+					CompoundStatement expPreludeCS = FrontEnd.parseCrude("{" + e2SS.getPrelude() + "}",
+							CompoundStatement.class);
+					int expPreludeSize = expPreludeCS.getF1().getNodes().size();
+					for (int i = 0; i < expPreludeSize; i++) {
+						Node elem = expPreludeCS.getF1().removeNode(0);
+						enclosingCSOfCont.getF1().addNode(index++, elem);
+					}
+				}
+			}
+		}
+
 
 		SimplificationString stmtSS = n.getF8().accept(this);
 
