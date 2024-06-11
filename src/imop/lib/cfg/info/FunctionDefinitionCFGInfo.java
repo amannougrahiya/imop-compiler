@@ -2,7 +2,7 @@
  * Copyright (c) 2019 Aman Nougrahiya, V Krishna Nandivada, IIT Madras.
  * This file is a part of the project IMOP, licensed under the MIT license.
  * See LICENSE.md for the full text of the license.
- * 
+ *
  * The above notice shall be included in all copies or substantial
  * portions of this file.
  */
@@ -64,8 +64,14 @@ public class FunctionDefinitionCFGInfo extends CFGInfo {
 
 	public List<ParameterDeclaration> getParameterDeclarationList() {
 		List<ParameterDeclaration> paramDeclList = new ArrayList<>();
-		ParameterList paramList = Misc.getSingleton(
-				Misc.getInheritedEnclosee(((FunctionDefinition) getOwner()).getF1(), ParameterList.class));
+		ParameterList paramList = null;
+		for (ParameterList pl : Misc.getExactPostOrderEnclosee(((FunctionDefinition) getOwner()).getF1(),
+				ParameterList.class)) {
+			paramList = pl;
+		}
+		// ParameterList paramList = Misc.getSingleton(
+		// Misc.getInheritedEnclosee(((FunctionDefinition) getOwner()).getF1(),
+		// ParameterList.class));
 		if (paramList != null) {
 			paramDeclList.add(paramList.getF0());
 			for (Node paramDeclNodeSeq : paramList.getF1().getNodes()) {
@@ -90,14 +96,12 @@ public class FunctionDefinitionCFGInfo extends CFGInfo {
 	}
 
 	/**
-	 * Removes {@code paramDecl} from the list of parameters of the
-	 * corresponding FunctionDefinition.
-	 * 
-	 * @param paramDecl
-	 *                  parameter that has to be removed from the corresponding
+	 * Removes {@code paramDecl} from the list of parameters of the corresponding
+	 * FunctionDefinition.
+	 *
+	 * @param paramDecl parameter that has to be removed from the corresponding
 	 *                  FunctionDefinition.
-	 * @return
-	 *         true, if the parameter could have been removed from the list of
+	 * @return true, if the parameter could have been removed from the list of
 	 *         parameters.
 	 */
 	@Deprecated
@@ -282,7 +286,7 @@ public class FunctionDefinitionCFGInfo extends CFGInfo {
 	 * Updates the CFG edges upon removal of a parameter from this
 	 * function-definition. <br>
 	 * Note that this method should be called before changing the AST fields.
-	 * 
+	 *
 	 * @param removed
 	 */
 	private void updateCFGForParameterRemoval(ParameterDeclaration removed) {
@@ -345,9 +349,8 @@ public class FunctionDefinitionCFGInfo extends CFGInfo {
 
 	/**
 	 * Obtain the various CFG components of the {@code owner} node.
-	 * 
-	 * @return
-	 *         CFG components of the {@code owner} node.
+	 *
+	 * @return CFG components of the {@code owner} node.
 	 */
 	@Override
 	public List<Node> getAllComponents() {
