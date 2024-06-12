@@ -18,7 +18,9 @@ import imop.lib.util.Misc;
 import imop.parser.FrontEnd;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Returns the root of the type-tree obtained by traversing the
@@ -646,7 +648,16 @@ public class TypeTreeGetter extends GJDepthFirstProcess<Type, Type> {
 
 	private List<FunctionType.Parameter> getParameters(ParameterTypeList paramList, Scopeable scope) {
 		List<FunctionType.Parameter> parameters = new ArrayList<>();
-		for (ParameterDeclaration paramDeclNode : Misc.getInheritedPostOrderEnclosee(paramList, ParameterDeclaration.class)) {
+		Set<ParameterDeclaration> paramDeclSet = new HashSet<>();
+		ParameterList paramL = paramList.getF0();
+		paramDeclSet.add(paramL.getF0());
+		for (Node nsn : paramL.getF1().getNodes()) {
+			NodeSequence ns = (NodeSequence) nsn;
+			ParameterDeclaration pd = (ParameterDeclaration) ns.getNodes().get(1);
+			paramDeclSet.add(pd);
+		}
+
+		for (ParameterDeclaration paramDeclNode : paramDeclSet) {
 			// System.out.println("Processing the following parameter-declaration now: " +
 			// paramDeclNode.getInfo().getString());
 			if (paramDeclNode.toString().equals("void ")) {
