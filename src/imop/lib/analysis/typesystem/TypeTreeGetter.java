@@ -2,7 +2,7 @@
  * Copyright (c) 2019 Aman Nougrahiya, V Krishna Nandivada, IIT Madras.
  * This file is a part of the project IMOP, licensed under the MIT license.
  * See LICENSE.md for the full text of the license.
- * 
+ *
  * The above notice shall be included in all copies or substantial
  * portions of this file.
  */
@@ -195,7 +195,7 @@ public class TypeTreeGetter extends GJDepthFirstProcess<Type, Type> {
 	}
 
 	/**
-	 * 
+	 *
 	 * f0 ::= ( StructOrUnionSpecifierWithList() |
 	 * StructOrUnionSpecifierWithId()
 	 * )
@@ -219,7 +219,7 @@ public class TypeTreeGetter extends GJDepthFirstProcess<Type, Type> {
 	 * If we encounter this visit, then a corresponding struct/union type
 	 * must be created and inserted in the typeTable of the definingScope.
 	 * If the type already exists, we override the type.
-	 * 
+	 *
 	 * @return
 	 *         the created struct/union type, that is implicitly added to the
 	 *         typeTable of the definingScope.
@@ -646,7 +646,7 @@ public class TypeTreeGetter extends GJDepthFirstProcess<Type, Type> {
 
 	private List<FunctionType.Parameter> getParameters(ParameterTypeList paramList, Scopeable scope) {
 		List<FunctionType.Parameter> parameters = new ArrayList<>();
-		for (ParameterDeclaration paramDeclNode : Misc.getInheritedEnclosee(paramList, ParameterDeclaration.class)) {
+		for (ParameterDeclaration paramDeclNode : Misc.getInheritedPostOrderEnclosee(paramList, ParameterDeclaration.class)) {
 			// System.out.println("Processing the following parameter-declaration now: " +
 			// paramDeclNode.getInfo().getString());
 			if (paramDeclNode.toString().equals("void ")) {
