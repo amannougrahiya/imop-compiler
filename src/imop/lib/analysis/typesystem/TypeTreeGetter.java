@@ -648,7 +648,7 @@ public class TypeTreeGetter extends GJDepthFirstProcess<Type, Type> {
 
 	private List<FunctionType.Parameter> getParameters(ParameterTypeList paramList, Scopeable scope) {
 		List<FunctionType.Parameter> parameters = new ArrayList<>();
-		Set<ParameterDeclaration> paramDeclSet = new HashSet<>();
+		List<ParameterDeclaration> paramDeclSet = new ArrayList<>();
 		ParameterList paramL = paramList.getF0();
 		paramDeclSet.add(paramL.getF0());
 		for (Node nsn : paramL.getF1().getNodes()) {
